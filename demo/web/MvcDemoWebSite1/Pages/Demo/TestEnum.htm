@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TestEnum</title>
+    <script type="text/javascript" src="/static/js/jquery/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery/jquery.form.js"></script>
+</head>
+<body>
+
+<form action="/Ajax/ns/Demo/TestEnum.aspx" method="get">
+	<label><input type="radio" name="week" checked="checked" value="Monday" />Monday</label><br />
+	<label><input type="radio" name="week" value="Tuesday" />Tuesday</label><br />
+	<label><input type="radio" name="week" value="Wednesday" />Wednesday</label><br />
+	<label><input type="radio" name="week" value="Thursday" />Thursday</label><br />
+	<label><input type="radio" name="week" value="Friday" />Friday</label><br />
+	<label><input type="radio" name="week" value="Saturday" />Saturday</label><br />
+	<label><input type="radio" name="week" value="Sunday" />Sunday</label>
+	<hr />
+	<label><input type="radio" name="week" value="1" />Monday</label><br />
+	<label><input type="radio" name="week" value="2" />Tuesday</label><br />
+	<label><input type="radio" name="week" value="3" />Wednesday</label><br />
+	<label><input type="radio" name="week" value="4" />Thursday</label><br />
+	<label><input type="radio" name="week" value="5" />Friday</label><br />
+	<label><input type="radio" name="week" value="6" />Saturday</label><br />
+	<label><input type="radio" name="week" value="0" />Sunday</label>
+	<hr />
+	<input type="submit" name="submit" value="submit" />
+	<hr />
+	<div id="output"></div>
+</form>
+
+<script type="text/javascript">
+	$("form").ajaxForm(function(result) {
+		$("#output").text(result);
+	});
+</script>
+
+</body>
+</html>

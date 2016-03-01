@@ -1,0 +1,108 @@
+﻿
+
+html, body {
+    /*background: url("/images/bg.gif") repeat-x scroll left top #E9F1F8;*/
+    font: 12px/1.5 black Verdana,Arial,Helvetica,sans-serif;
+    height: 100%;
+    margin: auto;
+}
+#banner {
+    /*background: url("/images/banner.gif") repeat-x scroll left top transparent;*/
+    border: 0 solid #000000;
+    height: 160px;
+    width: 100%;
+}
+#main {
+    background: none repeat scroll 0 0 transparent;
+    height: 100%;
+    width: 100%;
+}
+
+#left {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 solid red;
+    height: 100%;
+    left: 240px;
+    position: absolute;
+    right: 20px;
+    top: 160px;
+}
+
+#right {
+    background: none repeat scroll 0 0 white;
+    border: 1px dashed #676767;
+    color: #666666;
+    float: left;
+    margin-left: 10px;
+    padding-bottom: 20px;
+    text-align: center;
+    width: 220px;
+}
+#right ul{
+	padding: 0;
+}
+
+#right ul li{
+	margin: 0px;
+	padding: 4px;
+	list-style-type: none;
+	text-align: left;
+}
+.headerText {
+    border: 0 solid red;
+    padding-left: 50px;
+    padding-top: 20px;
+}
+#bnr_pic {
+    border: 0 solid red;
+    height: 100%;
+    width: 100%;
+}
+.headerDis {
+    border: 0 solid red;
+    color: gray;
+    font-family: "courier new",verdana,monospace,sans-serif;
+    overflow: hidden;
+    padding-left: 50px;
+    padding-right: 10px;
+    text-align: left;
+    font-size: 12px;
+}
+
+#Header1_HeaderTitle {
+    color: #FF9999;
+    font-family: Verdana,Consolas,"Courier New",Arial;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+
+#blog-body pre {
+    font-family: "Courier New",Consolas;
+    font-size: 10pt;
+    margin: 0;
+}
+#blog-body pre.code {
+    background-color: #F7F7FF;
+    border-color: #F0F0FF #F0F0FF #F0F0FF #B0D8FF;
+    border-style: solid;
+    border-width: 2px 2px 2px 5px;
+    font-family: "Courier New",微软雅黑,Consolas,Arial,宋体;
+    padding: 8px;
+}
+#blog-body a{
+	text-decoration: none;
+}
+#blog-body p {
+    line-height: 180%;
+    padding: 0;
+}
+
+.redText {
+    color: #FF0000;
+}
+
+
+/*#bnr_pic {
+    background: url("/images/r_top_opacity_65.png") no-repeat scroll right center transparent;
+}*/

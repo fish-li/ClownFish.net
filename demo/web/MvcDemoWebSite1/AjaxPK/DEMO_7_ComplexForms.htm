@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>提交复杂表单</title>
+    <link type="text/css" href="/AjaxPK/css/StyleSheet.css" rel="Stylesheet" />
+    <script type="text/javascript" src="/AjaxPK/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/AjaxPK/js/jquery.form.js"></script>
+</head>
+<body>
+
+<form id="form1" action="/ajax/pk/DemoPk/AddProduct.cspx" method="post">
+<p><b>商品基本资源录入</b></p>
+<table style="border: 0px">
+<tr><td>商品分类：</td><td><select name="CategoryId" style="width: 300px">
+		<option value="1" selected="selected">手机</option><option value="2">计算机</option>
+		<option value="3">衣服</option><option value="4">生活用品</option>
+	</select></td></tr>
+<tr><td>商品名称：</td><td><input type="text" name="ProductName" style="width: 300px" value="" /></td></tr>
+<tr><td>库存单位：</td><td><select name="Unit" style="width: 100px">
+		<option value="个" selected="selected">个</option><option value="双">双</option>
+		<option value="箱">箱</option><option value="只">只</option>
+	</select>
+	&nbsp;&nbsp;&nbsp;
+	单价：<input type="text" name="Price" style="width: 120px" value="123.45" />
+	</td></tr>
+<tr><td>销售方式：</td><td>
+	<label><input type="radio" name="SaleMode" value="0" checked="checked" />零售</label>
+	<label><input type="radio" name="SaleMode" value="1" />批发</label>
+	</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td></td><td></td></tr>
+
+<tr><td>可选颜色：</td><td>
+	<label><input type="checkbox" name="Colors" value="Red" checked="checked" />红色</label>
+	<label><input type="checkbox" name="Colors" value="Green" />绿色</label>
+	<label><input type="checkbox" name="Colors" value="Blue" checked="checked" />蓝色</label>
+	<label><input type="checkbox" name="Colors" value="White" />白色</label>
+	<label><input type="checkbox" name="Colors" value="Black" />黑色</label>
+	</td></tr>
+<tr><td>备注信息：</td><td>
+	<textarea name="Remark" cols="20" rows="50" style="width: 300px; height: 50px">http://www.cnblogs.com/fish-li</textarea>
+	</td></tr>
+</table>
+<br />
+<input type="submit" name="submit" value="提交" />
+
+</form>
+
+<hr />
+<p><b>服务器返回的结果：</b></p>
+<textarea id="output" cols="20" rows="50" style="width: 90%; height: 200px"></textarea>
+
+
+<script type="text/javascript">
+$(function(){
+	
+	$("#form1").ajaxForm({
+		beforeSubmit: ValidateForm,
+		success:function(result){
+            $("#output").val(result);
+        }
+	});
+
+	function ValidateForm(formData, jqForm, options) { 
+		if( jqForm.context.ProductName.value.length == 0 ){
+			alert("商品名称不能为空。");
+			$(jqForm.context.ProductName).focus();
+			return false;
+		}
+		return true;
+	}
+});
+
+</script>
+
+</body>
+</html>

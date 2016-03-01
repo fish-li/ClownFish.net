@@ -1,0 +1,22 @@
+﻿<h1><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/fish-li/archive/2012/02/12/2348395.html" target="_blank">写自己的ASP.NET MVC框架</a></h1>
+
+
+<p>Javascript调用代码</p>
+<pre class="code">
+<span style="color:blue">function </span>InsertProduct(){
+    <b style="font-size: 14px">$(</b><span 
+		style="color:#a31515; font-weight: bold; font-size: 14px;">"#formCreateProduct"</span><span 
+		style="font-size: 14px"><b style="font-size: 14px">).ajaxSubmit({</b></span><b>
+</b><span style="font-size: 14px"><b style="font-size: 14px">     url</b></span><span 
+		style="color:red; font-weight: bold; font-size: 14px;">: </span><span 
+		style="color:#a31515; font-weight: bold; font-size: 14px;">"/AjaxProduct/Insert.cspx"</span><span style="color:red">,
+        </span>success<span style="color:red">: </span><span style="color:blue">function</span>(responseText) {
+            <span style="color:green">// ............</span>
+        }
+    });
+}
+</pre>
+
+
+<p>好了，就这样就可以了，此时JS就可以直接将当时RORM中所有输入提交到C#的方法，是不是很简单？</p>
+<p>只要一个调用$("form").ajaxSubmit()就把一个FORM提交到了C#方法，而且参数也给准备好了！</p>

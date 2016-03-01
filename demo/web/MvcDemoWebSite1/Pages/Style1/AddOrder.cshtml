@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "_Layout.cshtml";
+    Page.Title = "新增订单";
+}
+
+@section scripts {
+    @Html.Raw(UiHelper.RefJsFileHtml("/static/js/MyPage/AddOrder.js"))
+}
+
+
+
+<form id="formAddOrder" action="" method="post">
+    <table cellpadding="4" cellspacing="0" class="GridView2" style="width: 99%">
+        <tr class="GridView_HeaderStyle"><td colspan="2"><b>新增订单</b></td></tr>
+        <tr>
+            <td style="width: 100px">订单日期</td>
+            <td>
+                <input type="text" id="txtOrderDate" name="OrderDate" readonly="readonly"
+                       class="myTextboxReadonly" value='@DateTime.Now.ToString("yyyy-MM-dd")' />
+            </td>
+        </tr>
+
+        <tr>
+            <td>客户</td>
+            <td>
+                <input type="text" id="txtCustomerName" class="myTextbox" style="width: 400px" />
+                <input type="hidden" id="hfCustomerID" name="CustomerID" />
+            </td>
+        </tr>
+
+        <tr>
+            <td class="vertical">订单明细</td>
+            <td>
+                <table cellpadding="4" cellspacing="0" id="tblOrderDetail">
+                    <tr><td style="width: 25px"></td><td style="width: 500px">商品名称</td><td style="width: 100px">数量</td></tr>
+                </table>
+                <div style="padding-top: 5px">
+                    <a id="btnPickProduct" href="javascript:;;" class="easyui-linkbutton" plain="true" iconcls="icon-add">添加商品项目</a>
+                    <input type="hidden" id="hfProductIdList" />
+                    <input type="hidden" id="hfOrderDetail" name="OrderDetail" />
+                </div>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td class="vertical">备注</td>
+            <td>
+                <textarea id="txtComment" name="Comment" class="myTextbox"
+                          style="width: 650px; height: 70px" cols="50"></textarea>
+            </td>
+        </tr>
+
+        <tr><td style="height: 35px"></td><td></td></tr>
+
+        <tr>
+            <td></td>
+            <td>
+                <a id="btnSubmit" href="javascript:;;" class="easyui-linkbutton" iconcls="icon-ok">确定保存此订单记录　并继续新增</a>
+                <span style="padding-left: 25px"></span>
+                <a href="javascript:window.location = window.location;" id="anchorCancel"
+                   class="easyui-linkbutton" iconcls="icon-remove">放弃当前输入内容，我要新增记录</a>
+            </td>
+        </tr>
+    </table>
+
+</form>
+
+
+<div id="divProductList" title="（添加）商品项目" style="padding: 8px; display: none;">
+    <div id="divProductList_inner"></div>
+</div>
+
+<div id="divCustomerList" title="选择客户" style="padding: 8px; display: none;">
+    <div id="divCustomerList_inner"></div>
+</div>

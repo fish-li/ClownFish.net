@@ -1,0 +1,904 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ClownFish.Log</name>
+    </assembly>
+    <members>
+        <member name="T:ClownFish.Log.ICacheQueue">
+            <summary>
+            为了方便而定义的一个弱类型接口
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.CacheQueue`1">
+            <summary>
+            缓存日志信息的写入队列
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:ClownFish.Log.CacheQueue`1._lock">
+            <summary>
+            队列锁
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.CacheQueue`1._list">
+            <summary>
+            静态缓冲队列
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.CacheQueue`1.Add(`0)">
+            <summary>
+            写入一条日志信息到缓冲队列
+            </summary>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.CacheQueue`1.Flush">
+            <summary>
+            供外部定时器调用，一次性写入所有等待消息
+            此方法由定时器线程调用。
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.BaseWriterConfig">
+            <summary>
+            所有Writer的配置基类
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.BaseWriterConfig.Valid">
+            <summary>
+            验证属性是否配置正确
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.BaseWriterConfig.Name">
+            <summary>
+            对应Writer的名称
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.BaseWriterConfig.WriteType">
+            <summary>
+            对应Writer的类型，如果不使用，可以不指定
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.FileWriterConfig">
+            <summary>
+            执行文件写入的Writer
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.FileWriterConfig.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.FileWriterConfig.Valid">
+            <summary>
+            验证属性是否配置正确
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.FileWriterConfig.RootDirectory">
+            <summary>
+            文件的写入根路径（日志组件会根据数据类型再创建子目录）
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.LogConfigException">
+            <summary>
+            表示日志配置中存在的错误
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.LogConfigException.#ctor(System.String)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.LogConfigException.#ctor(System.String,System.Exception)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.MailWriterConfig">
+            <summary>
+            用于邮件发送的Writer
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.MailWriterConfig.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.MailWriterConfig.Valid">
+            <summary>
+            验证属性是否配置正确
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.MailWriterConfig.Receivers">
+            <summary>
+            邮件接收人地址
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.LogConfig">
+            <summary>
+            日志的配置数据结构
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.Enable">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.TimerPeriod">
+            <summary>
+            定时刷新间隔
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.Writers">
+            <summary>
+            所有Writer的配置集合
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.Types">
+            <summary>
+            所有要写入的数据类型集合
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.Performance">
+            <summary>
+            性能日志的配置信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.LogConfig.ExceptionWriter">
+            <summary>
+            写日志失败时，异常消息的写入器
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.MongDbWriterConfig">
+            <summary>
+            MongDbWriter的配置信息（空实现）
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.MongDbWriterConfig.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.MsmqWriterConfig">
+            <summary>
+            MSMQ的配置信息
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.MsmqWriterConfig.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.MsmqWriterConfig.Valid">
+            <summary>
+            验证属性是否配置正确
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.MsmqWriterConfig.RootPath">
+            <summary>
+            MSMQ路径
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.PerformanceConfig">
+            <summary>
+            配置日志的配置信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.PerformanceConfig.DbExecuteTimeout">
+            <summary>
+            数据库执行的阀值时间，单位：毫秒
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.PerformanceConfig.HttpExecuteTimeout">
+            <summary>
+            HTTP请求执行的阀值时间，单位：毫秒
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.TypeItemConfig">
+            <summary>
+            表示需要写入日志的数据类型配置
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.TypeItemConfig.DataType">
+            <summary>
+            要记录到日志的数据类型名称
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.TypeItemConfig.Writers">
+            <summary>
+            数据类型对应的写入器，允许指定多个名称，用【分号】分开
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.TypeItemConfig.Type">
+            <summary>
+            DataType 对应的 Type 实例
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.WinLogWriterConfig">
+            <summary>
+            Windows日志的配置信息
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.WinLogWriterConfig.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.WinLogWriterConfig.Valid">
+            <summary>
+            验证属性是否配置正确
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WinLogWriterConfig.LogName">
+            <summary>
+            日志文件名
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WinLogWriterConfig.SourceName">
+            <summary>
+            日志源名称
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Configuration.WritersConfig">
+            <summary>
+            所有Writer的配置集合
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Configuration.WritersConfig.GetWriters">
+            <summary>
+            获取集合的迭代器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WritersConfig.MongDb">
+            <summary>
+            MongDbWriterConfig
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WritersConfig.File">
+            <summary>
+            FileWriterConfig
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WritersConfig.Mail">
+            <summary>
+            MailWriterConfig
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WritersConfig.Msmq">
+            <summary>
+            MsmqWriterConfig
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Configuration.WritersConfig.WinLog">
+            <summary>
+            WinLogWriterConfig
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.ErrorEventHandler">
+            <summary>
+            写日志时出现异常不能被处理时引用的事件委托
+            </summary>
+            <param name="ex"></param>
+        </member>
+        <member name="T:ClownFish.Log.LogHelper">
+            <summary>
+            日志记录的工具类
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.LogHelper.s_lock">
+            <summary>
+            初始化锁
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.LogHelper.s_queueDict">
+            <summary>
+            保存 【Type / ICacehQueue】的映射字典
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.LogHelper.s_timer">
+            <summary>
+            定时器，用于定时刷新所有的写入队列
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.LogHelper.s_enableAsyncWrite">
+            <summary>
+            是否启用异常写入，默认就是启动，在测试时可以根据需要禁用。
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.LogHelper.SyncWrite``1(``0)">
+            <summary>
+            以同步方式把消息写入日志
+            如果需要写入到指定的持久化方式，可以直接调用相应的 Writter ，就不需要调用这个方法。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.LogHelper.Write``1(``0)">
+            <summary>
+            记录指定的日志信息
+            说明：此方法是一个异步版本，内部维护一个缓冲队列，每5秒钟执行一次写入动作
+            </summary>
+            <typeparam name="T">日志信息的类型参数</typeparam>
+            <param name="info">要写入的日志信息</param>
+        </member>
+        <member name="E:ClownFish.Log.LogHelper.OnError">
+            <summary>
+            写日志时出现异常不能被处理时引用的事件
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.BaseInfo">
+            <summary>
+            日志信息的数据结构基类
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.BaseInfo.FillBaseInfo">
+            <summary>
+            填充一些基础信息：InfoGuid，Time，HostName
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BaseInfo.InfoGuid">
+            <summary>
+            日志信息GUID，用于从数据库查询单条消息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BaseInfo.Time">
+            <summary>
+            消息的创建时间
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BaseInfo.Message">
+            <summary>
+            消息文本
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BaseInfo.HostName">
+            <summary>
+            服务器名
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.BusinessInfo">
+            <summary>
+            用于记录一些与业务相关的数据
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BusinessInfo.Key1">
+            <summary>
+            Key1（可根据具体程序表示实际数据）
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BusinessInfo.Key2">
+            <summary>
+            Key2（可根据具体程序表示实际数据）
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BusinessInfo.Key3">
+            <summary>
+            Key3（可根据具体程序表示实际数据）
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BusinessInfo.Key4">
+            <summary>
+            Key4（可根据具体程序表示实际数据）
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.BusinessInfo.Key5">
+            <summary>
+            Key5（可根据具体程序表示实际数据）
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.DebugInfo">
+            <summary>
+            记录调试信息的数据结构
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.ExceptionInfo">
+            <summary>
+            异常消息的持久化数据结构
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.ExceptionInfo.Create(System.Exception,System.Web.HttpContext,System.Data.Common.DbCommand)">
+            <summary>
+            根据异常及运行中的相关信息构造完整的异常日志信息
+            </summary>
+            <param name="ex">Exception实例（必选）</param>
+            <param name="context">HttpContext实例（可选）</param>
+            <param name="dbCommand">DbCommand实例（可选）</param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Model.ExceptionInfo.Create(System.Exception)">
+            <summary>
+            根据异常对象构造异常日志信息
+            </summary>
+            <param name="ex">Exception实例（必选）</param>
+            <returns></returns>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.HttpInfo">
+            <summary>
+            HTTP请求相关信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.BusinessInfo">
+            <summary>
+            业务相关信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.ExceptionType">
+            <summary>
+            异常类型
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.Exception">
+            <summary>
+            异常信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.SqlInfo">
+            <summary>
+            SQL相关的执行信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.ExceptionInfo.Addition">
+            <summary>
+            附加信息
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.HttpInfo">
+            <summary>
+            包含记录日志的HTTP相关信息
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.HttpInfo.Create(System.Web.HttpContext)">
+            <summary>
+            根据HttpContext实例创建并填充HttpInfo对象
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="F:ClownFish.Log.Model.HttpInfo.IgnoreHttpsRequestBody">
+            <summary>
+            一个特定的字符串，指示在日志记录时，不记录请求体内容。
+            如果不希望记录某个请求体的内容，可以设置 context.Items[IgnoreHttpsRequestBody] = "yes";
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.HttpInfo.SetHttpInfo(System.Web.HttpContext)">
+            <summary>
+            设置请求信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.HttpInfo.UserName">
+            <summary>
+            当前登录用户的用户名，可不填。
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.HttpInfo.RequestText">
+            <summary>
+            请求头信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.HttpInfo.Url">
+            <summary>
+            页面地址
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.HttpInfo.Browser">
+            <summary>
+            浏览器类型。注意：此信息可能不准确。
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.HttpInfo.Session">
+            <summary>
+            当前请求的Session信息（可能为 NULL）
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.NameValue">
+            <summary>
+            Name / Value 值对
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.NameValue.Name">
+            <summary>
+            Name 值
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.NameValue.Value">
+            <summary>
+            Value 值
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.PerformanceInfo">
+            <summary>
+            性能日志相关信息
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.PerformanceInfo.CreateByHttp(System.Web.HttpContext,System.String,System.TimeSpan)">
+            <summary>
+            根据HttpContext创建并填充PerformanceInfo对象
+            </summary>
+            <param name="context"></param>
+            <param name="message"></param>
+            <param name="executeTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Model.PerformanceInfo.CreateBySql(System.Data.Common.DbCommand,System.String,System.TimeSpan)">
+            <summary>
+            根据DbCommand创建并填充PerformanceInfo对象
+            </summary>
+            <param name="command"></param>
+            <param name="message"></param>
+            <param name="executeTime"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ClownFish.Log.Model.PerformanceInfo.HttpInfo">
+            <summary>
+            HTTP请求相关信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.PerformanceInfo.BusinessInfo">
+            <summary>
+            业务相关信息
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.PerformanceInfo.PerformanceType">
+            <summary>
+            性能日志的记录类型：HTTP， SQL
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.PerformanceInfo.ExecuteTime">
+            <summary>
+            执行时间
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.PerformanceInfo.SqlInfo">
+            <summary>
+            SQL相关的执行信息
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Model.SqlInfo">
+            <summary>
+            表示SQL执行相关的消息数据结构
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Model.SqlInfo.Create(System.Data.Common.DbCommand)">
+            <summary>
+            根据DbCommand创建并填充SqlInfo对象
+            </summary>
+            <param name="command"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ClownFish.Log.Model.SqlInfo.SqlText">
+            <summary>
+            SQL 文本
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.SqlInfo.InTranscation">
+            <summary>
+            SQL是否包含在事务中
+            </summary>
+        </member>
+        <member name="P:ClownFish.Log.Model.SqlInfo.Parameters">
+            <summary>
+            命令参数列表（可能为 NULL）
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.PerformanceModule">
+            <summary>
+            性能日志Moudle，可直接在 web.config 中配置
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.PerformanceModule.Init(System.Web.HttpApplication)">
+            <summary>
+            实现IHttpModule的Init接口
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="M:ClownFish.Log.PerformanceModule.Dispose">
+            <summary>
+            实现IHttpModule的Init接口
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.FileWriter">
+            <summary>
+            将日志记录到文件的写入器
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.ILogWriter">
+            <summary>
+            日志的持久化接口
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.ILogWriter.Init">
+            <summary>
+            第一次触发写日志时的初始化动作，例如：检查数据库连接是否已配置
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.ILogWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T">消息的数据类型</typeparam>
+            <param name="info">要写入的日志信息</param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.ILogWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T">消息的数据类型</typeparam>
+            <param name="list">要写入的日志信息</param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.ILogWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T">消息的数据类型</typeparam>
+            <param name="guid">MessageGuid</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.ILogWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
+            </summary>
+            <typeparam name="T">消息的数据类型</typeparam>
+            <param name="t1">开始时间</param>
+            <param name="t2">结束时间</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.FileWriter.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.FileWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.FileWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.FileWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.FileWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.MailWriter">
+            <summary>
+            将日志以邮件形式发送的写入器
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MailWriter.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MailWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MailWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MailWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MailWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.MongDbWriter">
+            <summary>
+            MongDbWriter的空实现
+            </summary>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.NullWriter">
+            <summary>
+            不做任何写入操作的Writer
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.NullWriter.Init">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.NullWriter.Write``1(``0)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.NullWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.NullWriter.Get``1(System.Guid)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.NullWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.MsmqWriter">
+            <summary>
+            将日志记录到MSMQ的写入器
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.WinLogWriter">
+            <summary>
+            将日志记录到Windows日志的写入器
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WinLogWriter.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WinLogWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WinLogWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WinLogWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WinLogWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="F:ClownFish.Log.Serializer.WriterFactory.s_writerTable">
+            <summary>
+            数据类型和Writer的映射表
+            </summary>
+        </member>
+        <member name="F:ClownFish.Log.Serializer.WriterFactory.s_ExceptionWriterKey">
+            <summary>
+            表示日志持久化时出现异常后的Writer键名，用于查找s_writerTable字典
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WriterFactory.IsSupport(System.Type)">
+            <summary>
+            判断指定的数据类型是否已配置到支持列表
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WriterFactory.CreateWriters(System.Type)">
+            <summary>
+            创建指定类型的日志序列化实例
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WriterFactory.GetWriters(System.Type)">
+            <summary>
+            获取指定类型的日志序列化实例（从缓存中获取）
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.WriterFactory.GetRetryWriter">
+            <summary>
+            获取写日志失败时的【重试】序列化实例
+            例如：正常情况下写数据库，失败就写入Windows日志
+            如果重试失败，就忽略记录操作
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:ClownFish.Log.Serializer.WriterFactory.Config">
+            <summary>
+            日志的配置信息
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.SomeExtenstions.ReadInputStream(System.Web.HttpRequest)">
+            <summary>
+            读取输入的流
+            </summary>
+            <param name="request">HttpRequest</param>
+            <returns>输入的流</returns>
+        </member>
+    </members>
+</doc>

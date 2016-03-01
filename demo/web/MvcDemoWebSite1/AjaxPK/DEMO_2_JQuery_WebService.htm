@@ -1,0 +1,69 @@
+﻿
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>第二代技术：Jquery直接调用WebService</title>
+    <link type="text/css" href="/AjaxPK/css/StyleSheet.css" rel="Stylesheet" />
+    <script type="text/javascript" src="/AjaxPK/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/AjaxPK/js/jquery.json-2.4.js"></script>
+</head>
+<body>
+<div>
+	<input type="button" id="btnAdd" value="计算 1 + 2" />
+</div>
+<hr />
+<div>
+	<p><b>Add Customer</b></p>
+	<span>Name: </span><input type="text" id="txtName" value="abc" /><br />
+	<span>Age: </span><input type="text" id="txtAge" value="20" /><br />
+	<span>Address: </span><input type="text" id="txtAddress" value="武汉" /><br />
+	<span>Tel:</span> <input type="text" id="txtTel" value="12345678" /><br />
+	<span>Email: </span><input type="text" id="txtEmail" value="test@163.com" /><br />
+	<input type="button" id="btnAddCustomer" value="保存客户资料" />
+</div>
+
+<hr />
+<p><b>服务器返回的结果：</b></p>
+<textarea id="output" cols="20" rows="50" style="width: 90%; height: 200px"></textarea>
+
+
+<script type="text/javascript">
+$(function(){
+	$("#btnAdd").click(function(){
+		$.ajax({
+		    type: "POST", url: "/AjaxPK/WebService1.asmx/Add",
+			contentType:"application/json",
+			data:"{a: 1, b: 2}",
+			dataType:'json',
+            success:function(result){                    
+                $("#output").val(result.d);
+            }
+		});
+	});
+	
+	$("#btnAddCustomer").click(function(){
+		var customer = {Name: $("#txtName").val(), 
+						Age: $("#txtAge").val(), 
+						Address: $("#txtAddress").val(), 
+						Tel: $("#txtTel").val(), 
+						Email: $("#txtEmail").val()};
+		var jsonStirng = $.toJSON( {customer:  customer} );
+		
+		$.ajax({
+		    type: "POST", url: "/AjaxPK/WebService1.asmx/AddCustomer",
+			contentType:"application/json",
+			data: jsonStirng,
+			dataType:'json',
+            success:function(result){
+				$("#output").val(result.d);
+            }
+		});
+	});
+
+
+});
+
+</script>
+</body>
+</html>

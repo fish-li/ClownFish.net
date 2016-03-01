@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{24B601A9-2B97-4B9B-86B0-9046F262523E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClownFish.Log</RootNamespace>
+    <AssemblyName>ClownFish.Log</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;_MongoDB_2</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\ClownFish.Log.XML</DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;_MongoDB_</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\ClownFish.Log.XML</DocumentationFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>../ClownFish.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MongoDB.Bson, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CacheQueue.cs" />
+    <Compile Include="Configuration\BaseWriterConfig.cs" />
+    <Compile Include="Configuration\FileWriterConfig.cs" />
+    <Compile Include="Configuration\LogConfigException.cs" />
+    <Compile Include="Configuration\MailWriterConfig.cs" />
+    <Compile Include="Configuration\LogConfig.cs" />
+    <Compile Include="Configuration\MongDbWriterConfig.cs" />
+    <Compile Include="Configuration\MsmqWriterConfig.cs" />
+    <Compile Include="Configuration\PerformanceConfig.cs" />
+    <Compile Include="Configuration\TypeItemConfig.cs" />
+    <Compile Include="Configuration\WinLogWriterConfig.cs" />
+    <Compile Include="Configuration\WritersConfig.cs" />
+    <Compile Include="LogHelper.cs" />
+    <Compile Include="Model\BaseInfo.cs" />
+    <Compile Include="Model\BusinessInfo.cs" />
+    <Compile Include="Model\DebugInfo.cs" />
+    <Compile Include="Model\ExceptionInfo.cs" />
+    <Compile Include="Model\HttpInfo.cs" />
+    <Compile Include="Model\NameValue.cs" />
+    <Compile Include="Model\PerformanceInfo.cs" />
+    <Compile Include="Model\SqlInfo.cs" />
+    <Compile Include="PerformanceModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer\FileWriter.cs" />
+    <Compile Include="Serializer\ILogWriter.cs" />
+    <Compile Include="Serializer\MailWriter.cs" />
+    <Compile Include="Serializer\MongDbWriter.cs" />
+    <Compile Include="Serializer\MsmqWriter.cs" />
+    <Compile Include="Serializer\NullWriter.cs" />
+    <Compile Include="Serializer\WinLogWriter.cs" />
+    <Compile Include="Serializer\WriterFactory.cs" />
+    <Compile Include="SomeExtenstions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Configuration\_Readme.txt" />
+    <Content Include="Model\_Readme.txt" />
+    <Content Include="Serializer\_Readme.txt" />
+    <Content Include="_Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
+      <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
+      <Name>ClownFish.Base</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

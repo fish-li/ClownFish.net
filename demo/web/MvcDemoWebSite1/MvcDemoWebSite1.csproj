@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9E66F43A-6D60-4E9D-8873-DADFD7B451E4}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MvcDemoWebSite1</RootNamespace>
+    <AssemblyName>MvcDemoWebSite1</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ClownFish, Version=1.2.0.0, Culture=neutral, PublicKeyToken=6d8c6494249e7c4d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\ClownFish\ClownFish.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Newtonsoft.Json.8.0.2\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AjaxPK\css\bk.png" />
+    <Content Include="AjaxPK\css\StyleSheet.css" />
+    <Content Include="AjaxPK\Default.htm" />
+    <Content Include="AjaxPK\DEMO_1_ScriptManager.aspx" />
+    <Content Include="AjaxPK\DEMO_2_JQuery_WebService.htm" />
+    <Content Include="AjaxPK\DEMO_3_JQuery_CS.htm" />
+    <Content Include="AjaxPK\DEMO_4_JQueryForm.htm" />
+    <Content Include="AjaxPK\DEMO_5_AutoFindAction.htm" />
+    <Content Include="AjaxPK\DEMO_6_BatchSubmit.htm" />
+    <Content Include="AjaxPK\DEMO_7_ComplexForms.htm" />
+    <Content Include="AjaxPK\js\jquery-1.4.4.min.js" />
+    <Content Include="AjaxPK\js\jquery.form.js" />
+    <Content Include="AjaxPK\js\jquery.json-2.4.js" />
+    <Content Include="AjaxPK\WebService1.asmx" />
+    <Content Include="App_Data\BigPipe\BlogBody.txt" />
+    <Content Include="App_Data\BigPipe\Comments.txt" />
+    <Content Include="App_Data\BigPipe\Links.txt" />
+    <Content Include="App_Data\MyNorthwindDataBase.xml" />
+    <Content Include="BigPipe\BigPipeDemo.aspx" />
+    <Content Include="BigPipe\css\StyleSheet.css" />
+    <Content Include="BigPipe\Default.aspx" />
+    <Content Include="BigPipe\images\banner.gif" />
+    <Content Include="BigPipe\images\bg.gif" />
+    <Content Include="BigPipe\images\r_fish-logo.png" />
+    <Content Include="BigPipe\images\r_top_opacity_65.png" />
+    <Content Include="BigPipe\UserControls\BlogBody.ascx" />
+    <Content Include="BigPipe\UserControls\CommentList.ascx" />
+    <Content Include="BigPipe\UserControls\PageEnd.ascx" />
+    <Content Include="BigPipe\UserControls\PageHeader.ascx" />
+    <Content Include="BigPipe\UserControls\TagLinks.ascx" />
+    <Content Include="Global.asax" />
+    <Content Include="Pages\Controls\MainMenu.ascx" />
+    <Content Include="Pages\Controls\PageHeader.ascx" />
+    <Content Include="Pages\Style2\Controls\CustomerInfo.ascx" />
+    <Content Include="Pages\Style2\Controls\CustomerPicker.ascx" />
+    <Content Include="Pages\Style2\Controls\OrderInfo.ascx" />
+    <Content Include="Pages\Style2\Controls\ProductInfo.ascx" />
+    <Content Include="Pages\Style2\Controls\ProductPicker.ascx" />
+    <Content Include="static\css\StyleSheet.css" />
+    <Content Include="static\css\StyleSheet2.css" />
+    <Content Include="static\css\StyleSheet3.css" />
+    <Content Include="Default.aspx" />
+    <Content Include="favicon.ico" />
+    <Content Include="static\Images\asax.gif" />
+    <Content Include="static\Images\ascx.gif" />
+    <Content Include="static\Images\ashx.gif" />
+    <Content Include="static\Images\aspx.gif" />
+    <Content Include="static\Images\config.gif" />
+    <Content Include="static\Images\cs.gif" />
+    <Content Include="static\Images\cs2.gif" />
+    <Content Include="static\Images\css.gif" />
+    <Content Include="static\Images\delete.gif" />
+    <Content Include="static\Images\delete2.gif" />
+    <Content Include="static\Images\EditTableHS.gif" />
+    <Content Include="static\Images\eps_openHS.png" />
+    <Content Include="static\Images\FindHS.png" />
+    <Content Include="static\Images\go.png" />
+    <Content Include="static\Images\js.gif" />
+    <Content Include="static\Images\layout_button_down.gif" />
+    <Content Include="static\Images\layout_button_up.gif" />
+    <Content Include="static\Images\master.gif" />
+    <Content Include="static\Images\MyLab-logo.png" />
+    <Content Include="static\Images\new.gif" />
+    <Content Include="static\Images\next.png" />
+    <Content Include="static\Images\number_1.gif" />
+    <Content Include="static\Images\number_2.gif" />
+    <Content Include="static\Images\number_3.gif" />
+    <Content Include="static\Images\ok2.gif" />
+    <Content Include="static\Images\page.gif" />
+    <Content Include="static\Images\progress_loading.gif" />
+    <Content Include="static\Images\refresh.gif" />
+    <Content Include="static\Images\removeformat.gif" />
+    <Content Include="static\Images\search.png" />
+    <Content Include="static\Images\SetStyle.png" />
+    <Content Include="static\Images\skin.gif" />
+    <Content Include="static\Images\sql.gif" />
+    <Content Include="static\Images\Style1.png" />
+    <Content Include="static\Images\Style2.png" />
+    <Content Include="static\js\jquery\jquery-1.4.4.min.js" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\easyui-lang-zh_CN.js" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\jquery.easyui.min.js" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\easyui.css" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\accordion_collapse.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\accordion_expand.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\button_a_bg.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\button_plain_hover.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\button_span_bg.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\calendar_nextmonth.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\calendar_nextyear.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\calendar_prevmonth.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\calendar_prevyear.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\combo_arrow.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_header_bg.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_row_collapse.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_row_expand.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_sort_asc.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_sort_desc.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datagrid_title_bg.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\datebox_arrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\layout_button_down.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\layout_button_left.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\layout_button_right.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\layout_button_up.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\menu.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\menu_downarrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\menu_rightarrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\menu_sep.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\menu_split_downarrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\messager_error.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\messager_info.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\messager_question.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\messager_warning.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_first.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_last.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_load.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_loading.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_next.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\pagination_prev.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\panel_loading.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\panel_title.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\panel_tools.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\panel_tool_collapse.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\panel_tool_expand.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\spinner_arrow_down.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\spinner_arrow_up.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tabs_active.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tabs_close.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tabs_enabled.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tabs_leftarrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tabs_rightarrow.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_arrows.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_checkbox_0.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_checkbox_1.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_checkbox_2.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_dnd_no.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_dnd_yes.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_file.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_folder.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_folder_open.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\tree_loading.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\validatebox_pointer.gif" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\default\images\validatebox_warning.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icon.css" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\back.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\cancel.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\cut.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\edit_add.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\edit_remove.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\filesave.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\help.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\no.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\ok.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\pencil.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\print.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\redo.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\reload.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\search.png" />
+    <Content Include="static\js\jquery\jquery-easyui-1.2\themes\icons\undo.png" />
+    <Content Include="static\js\jquery\jquery.cookie.js" />
+    <Content Include="static\js\jquery\jquery.form.js" />
+    <Content Include="static\js\MyPage2\AddOrder.js" />
+    <Content Include="static\js\MyPage2\Categories.js" />
+    <Content Include="static\js\MyPage2\CustomerPicker.js" />
+    <Content Include="static\js\MyPage2\Customers.js" />
+    <Content Include="static\js\MyPage2\dialog.js" />
+    <Content Include="static\js\MyPage2\fish.js" />
+    <Content Include="static\js\MyPage2\Orders.js" />
+    <Content Include="static\js\MyPage2\ProductPicker.js" />
+    <Content Include="static\js\MyPage2\Products.js" />
+    <Content Include="static\js\MyPage\AddOrder.js" />
+    <Content Include="static\js\MyPage\Categories.js" />
+    <Content Include="static\js\MyPage\CodeExplorer.js" />
+    <Content Include="static\js\MyPage\Customers.js" />
+    <Content Include="static\js\MyPage\dialog.js" />
+    <Content Include="static\js\MyPage\fish.js" />
+    <Content Include="static\js\MyPage\Orders.js" />
+    <Content Include="static\js\MyPage\Products.js" />
+    <Content Include="static\js\MyPage\SetStyle.js" />
+    <Content Include="static\js\syntaxhighlighter\shBrushCSharp.js" />
+    <Content Include="static\js\syntaxhighlighter\shBrushCss.js" />
+    <Content Include="static\js\syntaxhighlighter\shBrushJScript.js" />
+    <Content Include="static\js\syntaxhighlighter\shBrushSql.js" />
+    <Content Include="static\js\syntaxhighlighter\shBrushXml.js" />
+    <Content Include="static\js\syntaxhighlighter\shCore.css" />
+    <Content Include="static\js\syntaxhighlighter\shCore.js" />
+    <Content Include="static\js\syntaxhighlighter\shThemeDefault.css" />
+    <Content Include="Pages\Demo\404DiagnoseResult.aspx" />
+    <Content Include="Pages\Demo\404DiagnoseResult.css" />
+    <Content Include="Pages\Demo\404Page.aspx" />
+    <Content Include="Pages\Demo\ApplicationError.aspx" />
+    <Content Include="Pages\Demo\Default.aspx" />
+    <Content Include="Pages\Demo\RepeatRequest.html" />
+    <Content Include="Pages\Demo\StdAjaxDemo.htm" />
+    <Content Include="Pages\Demo\TestAuthorize\AllUser.aspx" />
+    <Content Include="Pages\Demo\TestAuthorize\Default.aspx" />
+    <Content Include="Pages\Demo\TestAuthorize\Fish.aspx" />
+    <Content Include="Pages\Demo\TestAuthorize\LoginUser.aspx" />
+    <Content Include="Pages\Demo\TestAuthorize\RightNo23.aspx" />
+    <Content Include="Pages\Demo\TestAutoFindAction.htm" />
+    <Content Include="Pages\Demo\TestCustomerType.htm" />
+    <Content Include="Pages\Demo\TestDataConvert.html" />
+    <Content Include="Pages\Demo\TestEnum.htm" />
+    <Content Include="Pages\Demo\TestFileDownload.aspx" />
+    <Content Include="Pages\Demo\TestFilePost.htm" />
+    <Content Include="Pages\Demo\TestMvcRouting.htm" />
+    <Content Include="Pages\Demo\TestOutputCache.aspx" />
+    <Content Include="Pages\Demo\TestSerializer.htm" />
+    <Content Include="Pages\Demo\TestServiceIsReady.html" />
+    <Content Include="Pages\Demo\TestTaskPage.aspx" />
+    <Content Include="Pages\Style2\AddOrder.aspx" />
+    <Content Include="Pages\Style2\Categories.aspx" />
+    <Content Include="Pages\Style2\Customers.aspx" />
+    <Content Include="Pages\Style2\Default.aspx" />
+    <Content Include="Pages\Style2\Orders.aspx" />
+    <Content Include="Pages\Style2\Products.aspx" />
+    <Content Include="Pages\Style3\AddOrder.aspx" />
+    <Content Include="Pages\Style3\Categories.aspx" />
+    <Content Include="Pages\Style3\CodeExplorer.aspx" />
+    <Content Include="Pages\Style3\Customers.aspx" />
+    <Content Include="Pages\Style3\Default.aspx" />
+    <Content Include="Pages\Style3\Orders.aspx" />
+    <Content Include="Pages\Style3\Products.aspx" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppCode\AppInit.cs" />
+    <Compile Include="AppCode\HtmlHelper.cs" />
+    <Compile Include="AjaxPK\WebService1.asmx.cs">
+      <DependentUpon>WebService1.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CodeExplorer.config" />
+    <Content Include="App_Data\XmlCommand\Customer.config" />
+    <Content Include="App_Data\XmlCommand\Order.config" />
+    <Content Include="App_Data\XmlCommand\Product.config" />
+    <Content Include="Pages\Demo\Test_IIS_time_taken.ashx" />
+    <Content Include="Pages\Style1\AddOrder.cshtml" />
+    <Content Include="Pages\Style1\Categories.cshtml" />
+    <Content Include="Pages\Style1\CodeExplorer.cshtml" />
+    <Content Include="Pages\Style1\Customers.cshtml" />
+    <Content Include="Pages\Style1\Default.cshtml" />
+    <Content Include="Pages\Style1\Orders.cshtml" />
+    <Content Include="Pages\Style1\Products.cshtml" />
+    <Content Include="Pages\Style1\Web.config" />
+    <Content Include="Pages\Style1\_Layout.cshtml" />
+    <Content Include="Pages\Style2\MasterPage.master" />
+    <Content Include="Pages\Style3\MasterPage.master" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\ClownFish.Base\ClownFish.Base.csproj">
+      <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
+      <Name>ClownFish.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\ClownFish.Web\ClownFish.Web.csproj">
+      <Project>{0151e882-2de2-44bf-bcf0-b7d10b60be62}</Project>
+      <Name>ClownFish.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DEMO.BLL\DEMO.BLL.csproj">
+      <Project>{7d5ebb97-63bb-46ea-a53c-670862c8d6ab}</Project>
+      <Name>DEMO.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DEMO.Common\DEMO.Common.csproj">
+      <Project>{09427d35-71f9-489b-862b-35565391cf27}</Project>
+      <Name>DEMO.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DEMO.Controllers\DEMO.Controllers.csproj">
+      <Project>{5824a08a-c178-41c6-91d6-35dedae5a455}</Project>
+      <Name>DEMO.Controllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DEMO.Model\DEMO.Model.csproj">
+      <Project>{34805986-b02b-4b85-bac3-a20a65b5cfce}</Project>
+      <Name>DEMO.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\CustomerInfo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\CustomerPicker.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\OrderInfo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\OrderList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\ProductInfo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Style1\Controls\ProductPicker.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\Demo\MasterPage.master" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClownFish.Web.config" />
+    <None Include="ClownFish.Web.OutputCache.config" />
+    <None Include="ClownFish.Web.RouteTable.config" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1751</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:1356/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

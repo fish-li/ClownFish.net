@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>重复发AJAX请求</title>
+    <script type="text/javascript" src="/static/js/jquery/jquery-1.4.4.min.js"></script>
+</head>
+<body>
+    <p>重复发AJAX请求，让服务端忙起来</p>
+    <p>
+        <button id="btnStart">开始</button>&nbsp;
+        <button id="btnStop">停止</button>
+
+    </p>
+
+    <script type="text/javascript">
+        var _isRun = false;
+
+        function DoWork() {
+            for (var i = 0; i < 10; i++) {
+                if (_isRun == false)
+                    return;
+
+                $.ajax({
+                    url: "/Ajax/Fish.AA.Test/Add.aspx?a=3&b=2",
+                    type: "GET",
+                    success: function () { }
+                });
+
+                $.ajax({
+                    url: "/Ajax/DEMO.Controllers.TestTask.TaskDemoService/Add.aspx?a=3&b=2",
+                    type: "GET",
+                    success: function () { }
+                });
+            }
+            if (_isRun)
+                setTimeout(DoWork, 100);
+        }
+
+        $("#btnStart").click(function () {
+            _isRun = true;
+            setTimeout(DoWork, 100);
+        });
+
+        $("#btnStop").click(function () {
+            _isRun = false;
+        });
+
+        
+
+    </script>
+</body>
+</html>

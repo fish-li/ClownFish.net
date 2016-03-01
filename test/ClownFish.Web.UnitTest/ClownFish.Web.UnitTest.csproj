@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A520F20-6F31-4270-B9A0-B6964C8EF562}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClownFish.Web.UnitTest</RootNamespace>
+    <AssemblyName>ClownFish.Web.UnitTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\src\ClownFish.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Newtonsoft.Json.8.0.2\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="..\..\demo\web\DEMO.Controllers\CheckRightAttribute.cs">
+      <Link>Controllers\CheckRightAttribute.cs</Link>
+    </Compile>
+    <Compile Include="Action\Http304ResultTest.cs" />
+    <Compile Include="Action\Http404ResultTest.cs" />
+    <Compile Include="Action\HttpCacheResultTest.cs" />
+    <Compile Include="Action\JsonResultTest.cs" />
+    <Compile Include="Action\StreamResultTest.cs" />
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="Cache\OutputCacheAttributeTest.cs" />
+    <Compile Include="Common\NameValueTest.cs" />
+    <Compile Include="Ext\ObjectFactoryTest2.cs" />
+    <Compile Include="Models\CDATAModel.cs" />
+    <Compile Include="Models\TM.cs" />
+    <Compile Include="Pipeline\ActionHandlerTest.cs" />
+    <Compile Include="Serializer\XmlCdataTest.cs" />
+    <Compile Include="TestCase\ArgumentNullExceptionTest.cs" />
+    <Compile Include="Cache\FileDependencyManagerTest.cs" />
+    <Compile Include="Common\FrameworkConfigTest.cs" />
+    <Compile Include="Controllers\ActionAutoFindService.cs" />
+    <Compile Include="Controllers\AttributeService.cs" />
+    <Compile Include="Controllers\AuthorizeTestController.cs" />
+    <Compile Include="Controllers\ComplexDataTypeService.cs" />
+    <Compile Include="Controllers\AdvancedDataService.cs" />
+    <Compile Include="Controllers\DataTypeTestService.cs" />
+    <Compile Include="Controllers\OverloadMethodService.cs" />
+    <Compile Include="Controllers\SomeService.cs" />
+    <Compile Include="Controllers\SpecialDataTypeService.cs" />
+    <Compile Include="Controllers\TaskService.cs" />
+    <Compile Include="Ext\ActionExecutorEventTest.cs" />
+    <Compile Include="Ext\ActionExecutorExt.cs" />
+    <Compile Include="Ext\EventClass.cs" />
+    <Compile Include="Ext\ExtendManagerTest.cs" />
+    <Compile Include="Ext\MvcRuntimeExt.cs" />
+    <Compile Include="Ext\ObjectFactoryTest.cs" />
+    <Compile Include="Ext\TypeHookClass.cs" />
+    <Compile Include="TestCase\MvcPageHandlerFactoryTest.cs" />
+    <Compile Include="TestCase\AuthorizeAttributeTest.cs" />
+    <Compile Include="TestCase\BaseActionHandlerFactoryTest.cs" />
+    <Compile Include="TestCase\BaseControllerTest.cs" />
+    <Compile Include="TestCase\Http404DebugModuleTest.cs" />
+    <Compile Include="Common\HttpHeaderCollectionTest.cs" />
+    <Compile Include="Common\HttpValueCollectionTest.cs" />
+    <Compile Include="TestCase\SerializerTest.cs" />
+    <Compile Include="View\ViewTest.cs" />
+    <Compile Include="WebTest\AdvancedDataTest.cs" />
+    <Compile Include="WebTest\AuthorizeTest.cs" />
+    <Compile Include="WebTest\AutoFindActionTest.cs" />
+    <Compile Include="WebTest\NoramlDataTypeTest.cs" />
+    <Compile Include="WebTest\AsyncServiceTest.cs" />
+    <Compile Include="WebTest\AttributeTest.cs" />
+    <Compile Include="WebTest\InputDtoTest.cs" />
+    <Compile Include="WebTest\InputEnumTest.cs" />
+    <Compile Include="WebTest\InputGuidTest.cs" />
+    <Compile Include="WebTest\InputNullableTest.cs" />
+    <Compile Include="WebTest\InputStringArrayTest.cs" />
+    <Compile Include="WebTest\OutputFormatTest.cs" />
+    <Compile Include="WebTest\OverloadMethodTest.cs" />
+    <Compile Include="WebTest\SpecialDataTypeTest.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="TestPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FrameworkTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">
+      <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
+      <Name>ClownFish.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ClownFish.MockAspnetRuntime\ClownFish.MockAspnetRuntime.csproj">
+      <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
+      <Name>ClownFish.MockAspnetRuntime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ClownFish.Web\ClownFish.Web.csproj">
+      <Project>{0151e882-2de2-44bf-bcf0-b7d10b60be62}</Project>
+      <Name>ClownFish.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

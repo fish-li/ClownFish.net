@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>第四代技术：使用Jquery.form插件快速提交表单</title>
+    <link type="text/css" href="/AjaxPK/css/StyleSheet.css" rel="Stylesheet" />
+    <script type="text/javascript" src="/AjaxPK/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/AjaxPK/js/jquery.form.js"></script>
+</head>
+<body>
+
+<form id="form1" action="/ajax/pk/DemoPk/AddCustomer.cspx" method="post">
+    <p><b>新增客户资料</b></p>
+    <span>Name: </span><input type="text" name="Name" value="abc" /><br />
+    <span>Age: </span><input type="text" name="Age" value="20" /><br />
+    <span>Address: </span><input type="text" name="Address" value="武汉" /><br />
+    <span>Tel:</span> <input type="text" name="Tel" value="12345678" /><br />
+    <span>Email: </span><input type="text" name="Email" value="test@163.com" /><br />
+    <br />
+    <input type="submit" name="btnAddCustomer" value="保存客户资料" />
+</form>
+
+<hr />
+<p><b>服务器返回的结果：</b></p>
+<textarea id="output" cols="20" rows="50" style="width: 90%; height: 200px"></textarea>
+
+
+<script type="text/javascript">
+$(function(){
+	
+	// 只需要下面这个调用就可以将表单改成异步提交方式！
+	$("#form1").ajaxForm({
+		success:function(result){
+            $("#output").val(result);
+        }
+	});
+});
+
+</script>
+
+</body>
+</html>
