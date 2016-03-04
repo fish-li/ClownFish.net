@@ -12,7 +12,7 @@ namespace ClownFish.MockAspnetRuntime
 	/// <summary>
 	/// 模拟HttpResponse
 	/// </summary>
-	public sealed class MockHttpResponse
+	public sealed class MockHttpResponse : IDisposable
 	{
 		private MockTextWriter _writer;
 
@@ -71,5 +71,17 @@ namespace ClownFish.MockAspnetRuntime
 			}
 			return null;
 		}
+
+		#region IDisposable 成员
+
+		public void Dispose()
+		{
+			if( _writer != null ) {
+				_writer.Dispose();
+				_writer = null;
+			}
+		}
+
+		#endregion
 	}
 }

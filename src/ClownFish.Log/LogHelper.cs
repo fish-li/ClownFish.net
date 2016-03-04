@@ -9,11 +9,18 @@ using ClownFish.Log.Serializer;
 
 namespace ClownFish.Log
 {
+
 	/// <summary>
-	/// 写日志时出现异常不能被处理时引用的事件委托
+	/// 日志时出现异常不能被处理时引用的事件参数
 	/// </summary>
-	/// <param name="ex"></param>
-	public delegate void ErrorEventHandler(Exception ex);
+	public sealed class LogExceptionEventArgs : System.EventArgs
+	{
+		/// <summary>
+		/// 新产生的异常实例
+		/// </summary>
+		public Exception Exception { get; internal set; }
+	}
+
 
 
 	/// <summary>
@@ -39,7 +46,7 @@ namespace ClownFish.Log
 		/// <summary>
 		/// 写日志时出现异常不能被处理时引用的事件
 		/// </summary>
-		public static event ErrorEventHandler OnError;
+		public static event EventHandler<LogExceptionEventArgs> OnError;
 		
 		/// <summary>
 		/// 是否启用异常写入，默认就是启动，在测试时可以根据需要禁用。
@@ -183,11 +190,15 @@ namespace ClownFish.Log
 
 		internal static void RaiseErrorEvent(Exception ex)
 		{
-			ErrorEventHandler handler = OnError;
+			EventHandler<LogExceptionEventArgs> handler = OnError;
 
 			try {
-				if( handler != null )
-					handler(ex);
+				if( handler != null ) {
+					LogExceptionEventArgs e = new LogExceptionEventArgs{
+						Exception = ex
+					};
+					handler(null, e);
+				}					
 			}
 			catch { /* 当事件订阅时，再出异常就不能处理了，否则会形成循环调用。 */ }
 		}

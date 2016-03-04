@@ -43,11 +43,10 @@ namespace ClownFish.Log.UnitTest
 			Test(1, 0);
 		}
 
-		static void LogHelper_OnError(Exception ex)
+		void LogHelper_OnError(object sender, LogExceptionEventArgs e)
 		{
-			Console.WriteLine(ex.ToString());
+			Console.WriteLine(e.Exception.ToString());
 		}
-
 
 		private static void Test(int a, int b)
 		{

@@ -276,11 +276,15 @@
             WinLogWriterConfig
             </summary>
         </member>
-        <member name="T:ClownFish.Log.ErrorEventHandler">
+        <member name="T:ClownFish.Log.LogExceptionEventArgs">
             <summary>
-            写日志时出现异常不能被处理时引用的事件委托
+            日志时出现异常不能被处理时引用的事件参数
             </summary>
-            <param name="ex"></param>
+        </member>
+        <member name="P:ClownFish.Log.LogExceptionEventArgs.Exception">
+            <summary>
+            新产生的异常实例
+            </summary>
         </member>
         <member name="T:ClownFish.Log.LogHelper">
             <summary>

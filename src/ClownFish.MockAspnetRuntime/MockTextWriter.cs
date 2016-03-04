@@ -9,7 +9,7 @@ namespace ClownFish.MockAspnetRuntime
 	/// <summary>
 	/// 模拟输出流的TextWriter
 	/// </summary>
-	public sealed class MockTextWriter : System.IO.TextWriter, IDisposable
+	public sealed class MockTextWriter : System.IO.TextWriter
 	{
 		//internal MockTextWriter() { }
 
@@ -59,11 +59,13 @@ namespace ClownFish.MockAspnetRuntime
 		}
 
 
-
-		void IDisposable.Dispose()
+		protected override void Dispose(bool disposing)
 		{
 			_stream.Dispose();
+
+			base.Dispose(disposing);
 		}
+		
 
 	}
 }

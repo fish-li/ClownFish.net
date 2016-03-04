@@ -19,7 +19,7 @@ namespace ClownFish.Base.Common
 		/// 为测试强制设置一个异常，然后在调用TryThrowException()时将会抛出，
 		/// 由于这个属性仅仅用于测试环境，因此不考虑线程安全问题
 		/// </summary>
-		public static Exception ExceptionForTest;
+		public static Exception ExceptionForTest { get; set; }
 
 		/// <summary>
 		/// 调用这个方法可以模拟意外的异常发生，用于检验catch的代码是否能正确工作。

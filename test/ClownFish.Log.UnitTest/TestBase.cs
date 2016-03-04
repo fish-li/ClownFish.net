@@ -14,9 +14,14 @@ namespace ClownFish.Log.UnitTest
 
 		public TestBase()
 		{
-			LogHelper.OnError += ex => _lastException = ex;
+			LogHelper.OnError += LogHelper_OnError;
 
 			WriterFactory.Init();
+		}
+
+		void LogHelper_OnError(object sender, LogExceptionEventArgs e)
+		{
+			_lastException = e.Exception;
 		}
 
 

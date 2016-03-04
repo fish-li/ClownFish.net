@@ -41,13 +41,17 @@ $RECYCLE.BIN/
 .AppleDesktop
 Network Trash Folder
 Temporary Items
-.apdisk
-*.pdb
-*.suo
 obj
 TestResults
 Log111
+
+.apdisk
+*.pdb
+*.suo
 *.user
+*.CodeAnalysisLog.xml
+*.lastcodeanalysissucceeded
+
 bin/*.dll
 bin/*.xml
 

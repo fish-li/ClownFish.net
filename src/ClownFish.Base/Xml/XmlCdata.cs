@@ -16,6 +16,7 @@ namespace ClownFish.Base.Xml
 	/// <summary>
 	/// 支持CDATA序列化的包装类
 	/// </summary>
+	[Serializable]
 	public sealed class XmlCdata : IXmlSerializable
 	{
 		private string _value;

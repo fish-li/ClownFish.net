@@ -7,6 +7,7 @@ namespace DEMO.Common
 	/// <summary>
 	/// 用于生成URL的工具类
 	/// </summary>
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
 	public class MyUrlGenerator : NameValueCollection
 	{
 		/// <summary>

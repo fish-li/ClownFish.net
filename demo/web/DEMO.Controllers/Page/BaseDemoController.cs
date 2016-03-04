@@ -24,23 +24,6 @@ namespace DEMO.Controllers.Page
 			return StyleArray[1];
 		}
 
-		public static string CurrentStyle
-		{
-			get
-			{
-				HttpContext context = System.Web.HttpContext.Current;
-				if( context == null )
-					throw new InvalidProgramException();
-
-				HttpCookie styleCookie = context.Request.Cookies[STR_PageStyle];
-
-				if( styleCookie != null && string.IsNullOrEmpty(styleCookie.Value) == false )
-					return styleCookie.Value;
-
-				return StyleArray[1];
-			}
-		}
-
 		public string GetTargetPageUrl(string pageName)
 		{
 			string currentPageStyle = GetPageStyle();

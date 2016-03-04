@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ClownFish.MockAspnetRuntime
 {
-	public class MockHttpApplication
+	[SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
+	public class MockHttpApplication 
 	{
 		private HttpApplication _application;
 

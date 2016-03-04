@@ -14,13 +14,22 @@ namespace ClownFish.Base.Json
 //    2. 重新实现ActionParametersProviderFactory
 
 
-	/// <summary>
-	/// 用于设置默认的JSON序列化配置事件的委托定义
-	/// </summary>
-	/// <param name="settings">JsonSerializerSettings实例引用，用于在事件处理器上修改属性，改变序列化行为</param>
-	/// <param name="isSerialize">当时事件触发是不是发生在序列化过程中，true: 是， false： 否</param>
-	public delegate void SetDefaultJsonSerializerSettingsEventHandler(JsonSerializerSettings settings, bool isSerialize);
 
+	/// <summary>
+	/// 设置默认的JSON序列化配置的事件参数
+	/// </summary>
+	public sealed class SetDefaultJsonSerializerSettingArgs : System.EventArgs
+	{
+		/// <summary>
+		/// 用于获取用效的JsonSerializerSettings实例，可重新赋值或者修改这个对象的属性
+		/// </summary>
+		public JsonSerializerSettings Settings { get; set; }
+
+		/// <summary>
+		/// True: 当前调用是用于序列化，False：用于反序列化
+		/// </summary>
+		public bool IsSerialize { get; internal set; }
+	}
 
 	/// <summary>
 	/// Json序列化的默认封装，不能建议直接使用，提供这个类型主要是为了可以替换JSON序列化的实现。
@@ -31,7 +40,7 @@ namespace ClownFish.Base.Json
 		/// <summary>
 		/// 设置默认的JSON序列化配置事件
 		/// </summary>
-		public static event SetDefaultJsonSerializerSettingsEventHandler SetDefaultJsonSerializerSettings;
+		public static event EventHandler<SetDefaultJsonSerializerSettingArgs> SetDefaultJsonSerializerSettings;
 
 
 		/// <summary>
@@ -47,9 +56,15 @@ namespace ClownFish.Base.Json
 			settings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
             settings.Converters.Add(XmlCdataJsonConverter.Instance);
 
-			SetDefaultJsonSerializerSettingsEventHandler eventHandler = SetDefaultJsonSerializerSettings;
-			if( eventHandler != null )
-				eventHandler(settings, isSerialize);
+			EventHandler<SetDefaultJsonSerializerSettingArgs> eventHandler = SetDefaultJsonSerializerSettings;
+			if( eventHandler != null ) {
+				SetDefaultJsonSerializerSettingArgs e = new SetDefaultJsonSerializerSettingArgs {
+					Settings = settings,
+					IsSerialize = isSerialize
+				};
+				eventHandler(this, e);
+			}
+				
 
 			return settings;
 		}
