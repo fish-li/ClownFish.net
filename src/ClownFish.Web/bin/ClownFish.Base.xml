@@ -490,6 +490,12 @@
             </summary>
             <param name="extType">继承类，表示将要对基类扩展（替代）</param>
         </member>
+        <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RemoveExtendType(System.Type)">
+            <summary>
+            移除扩展类型的注册（应该仅用于单元测试）
+            </summary>
+            <param name="extType"></param>
+        </member>
         <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RegisterExtendTypes(System.Reflection.Assembly,System.Func{System.Type,System.Boolean})">
             <summary>
             批量注册一个程序集中所有的扩展类型
@@ -510,12 +516,13 @@
             <param name="eventSrcType"></param>
             <returns></returns>
         </member>
-        <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RegisterSubscriber(System.Type,System.Type)">
+        <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RegisterSubscriber(System.Type,System.Type,System.Boolean)">
             <summary>
             注册事件订阅者
             </summary>
             <param name="subscriberType">事件订阅者类型，要求从EventSubscriber&lt;T&gt;继承</param>
             <param name="eventSrcType">事件源类型，要求从BaseEventObject继承</param>
+            <param name="isAdd">是：注册，否：移除注册</param>
         </member>
         <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RegisterSubscriber(System.Type)">
             <summary>
@@ -523,6 +530,12 @@
             为了便于识别，建议事件订阅者类型的名称以“EventSubscriber”结尾
             </summary>
             <param name="subscriberType">事件订阅者类型，要求从EventSubscriber&lt;T&gt;继承</param>
+        </member>
+        <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RemoveSubscriber(System.Type)">
+            <summary>
+            移除事件订阅者
+            </summary>
+            <param name="subscriberType"></param>
         </member>
         <member name="M:ClownFish.Base.TypeExtend.ExtenderManager.RegisterSubscribers(System.Reflection.Assembly)">
             <summary>

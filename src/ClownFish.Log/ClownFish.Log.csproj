@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_MongoDB_2</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_MongoDB_</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\ClownFish.Log.XML</DocumentationFile>

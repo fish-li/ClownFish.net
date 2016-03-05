@@ -53,6 +53,15 @@ namespace ClownFish.Log
 		/// </summary>
 		private static bool s_enableAsyncWrite = true;
 
+		/// <summary>
+		/// 日志组件内部初始化。
+		/// 一般是不需要调用的，除非是不做日志记录，反而直接调用各种Writer
+		/// </summary>
+		public static void Init()
+		{
+			WriterFactory.Init();
+		}
+
 
 
 		/// <summary>

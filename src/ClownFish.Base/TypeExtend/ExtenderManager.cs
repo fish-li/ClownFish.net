@@ -55,6 +55,21 @@ namespace ClownFish.Base.TypeExtend
 
 
 		/// <summary>
+		/// 移除扩展类型的注册（应该仅用于单元测试）
+		/// </summary>
+		/// <param name="extType"></param>
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static void RemoveExtendType(Type extType)
+		{
+			if( extType == null )
+				return;
+
+			Type srcType = extType.BaseType;
+			s_typeMapDict.Remove(srcType);
+		}
+
+
+		/// <summary>
 		/// 批量注册一个程序集中所有的扩展类型
 		/// </summary>
 		/// <param name="asm">包含扩展类型的程序集</param>
@@ -101,8 +116,9 @@ namespace ClownFish.Base.TypeExtend
 		/// </summary>
 		/// <param name="subscriberType">事件订阅者类型，要求从EventSubscriber&lt;T&gt;继承</param>
 		/// <param name="eventSrcType">事件源类型，要求从BaseEventObject继承</param>
+		/// <param name="isAdd">是：注册，否：移除注册</param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		private static void RegisterSubscriber(Type subscriberType, Type eventSrcType)
+		private static void RegisterSubscriber(Type subscriberType, Type eventSrcType, bool isAdd)
 		{
 			if( subscriberType.IsAbstract )
 				throw new ArgumentException(string.Format(
@@ -130,12 +146,21 @@ namespace ClownFish.Base.TypeExtend
 
 			// 将参数类型添加到事件源的订阅列表中
 			List<Type> list = s_eventDict[eventSrcType] as List<Type>;
-			if( list == null ) {
-				list = new List<Type>(4);
-				s_eventDict[eventSrcType] = list;
-			}
 
-			list.Add(subscriberType);
+			if( isAdd ) {
+				if( list == null ) {
+					list = new List<Type>(4);
+					s_eventDict[eventSrcType] = list;
+				}
+
+				list.Add(subscriberType);
+			}
+			else {
+				if( list == null ) 
+					return;				
+				else 
+					list.Remove(subscriberType);
+			}
 		}
 
 
@@ -159,7 +184,26 @@ namespace ClownFish.Base.TypeExtend
 						"事件订阅者类型 [{0}] 不是 EventSubscriber<T> 的继承类。", subscriberType.FullName));
 
 			// EventSubscriber<> 的类型参数就是事件源类型
-			RegisterSubscriber(subscriberType, argumentType);
+			RegisterSubscriber(subscriberType, argumentType, true);
+		}
+
+		/// <summary>
+		/// 移除事件订阅者
+		/// </summary>
+		/// <param name="subscriberType"></param>
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static void RemoveSubscriber(Type subscriberType)
+		{
+			if( subscriberType == null )
+				return;
+
+			// 检查是不是从 EventSubscriber<> 继承（这里不考虑多次继承）
+			Type argumentType = subscriberType.BaseType.GetArgumentType(typeof(EventSubscriber<>));
+
+			if( argumentType == null )
+				return;
+
+			RegisterSubscriber(subscriberType, argumentType, false);
 		}
 
 		/// <summary>
@@ -174,7 +218,7 @@ namespace ClownFish.Base.TypeExtend
 			foreach( Type t in asm.GetExportedTypes() ) {
 				Type argumentType = t.BaseType.GetArgumentType(typeof(EventSubscriber<>));
 				if( argumentType != null)
-					RegisterSubscriber(t, argumentType);
+					RegisterSubscriber(t, argumentType, true);
 			}
 		}
 

@@ -15,8 +15,14 @@ namespace ClownFish.Web.UnitTest.Ext
 		public void Init()
 		{
 			ExtenderManager.RegisterExtendType(typeof(BaseObjectExt));
-
 			ExtenderManager.RegisterSubscriber(typeof(BaseObjectEventSubscriber));
+		}
+
+		[TestCleanup]
+		public void TestCleanup()
+		{
+			ExtenderManager.RemoveExtendType(typeof(BaseObjectExt));
+			ExtenderManager.RemoveSubscriber(typeof(BaseObjectEventSubscriber));
 		}
 
 

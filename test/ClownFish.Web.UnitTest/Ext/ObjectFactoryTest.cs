@@ -11,6 +11,13 @@ namespace ClownFish.Web.UnitTest.Ext
 	[TestClass]
 	public class ObjectFactoryTest 
 	{
+		[TestCleanup]
+		public void TestCleanup()
+		{
+			ExtenderManager.RemoveExtendType(typeof(TypeHookClassExt));
+			ExtenderManager.RemoveSubscriber(typeof(EventClassEventSubscriber));
+		}
+
 		[TestMethod]
 		public void Test1()
 		{
