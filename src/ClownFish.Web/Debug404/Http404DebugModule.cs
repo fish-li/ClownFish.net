@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using ClownFish.Base.Reflection;
+using ClownFish.Base.TypeExtend;
 using ClownFish.Web.Reflection;
 
 namespace ClownFish.Web.Debug404
@@ -67,10 +68,12 @@ namespace ClownFish.Web.Debug404
 
 			DiagnoseResult diagnoseResult = TryGetDiagnoseResult(context);
 			if( diagnoseResult != null ) {
-				if( diagnoseResult.AssemblyList == null )
-					diagnoseResult.AssemblyList = (from a in ReflectionExtensions.GetAssemblyList<ControllerAssemblyAttribute>()
-												   select a.FullName).ToList();
-
+				if( diagnoseResult.AssemblyList == null ) {
+					ControllerRecognizer recognizer = ObjectFactory.New<ControllerRecognizer>();
+					List<Assembly> list = recognizer.GetControllerAssembly();
+					diagnoseResult.AssemblyList = (from a in list  select a.FullName).ToList();
+				}
+				
 				diagnoseResult.UrlActionInfo = context.Items[UrlActionInfo.HttpContextItemKey] as UrlActionInfo;
 
 				//diagnoseResult.ErrorMessages.Add("不能根据当前URL创建请求处理器，当前URL：" + context.Request.RawUrl);

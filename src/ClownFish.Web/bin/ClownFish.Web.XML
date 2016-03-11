@@ -1258,6 +1258,27 @@
             <param name="context"></param>
             <returns></returns>
         </member>
+        <member name="T:ClownFish.Web.WebPageExtensions">
+            <summary>
+            WebPage的一些扩展方法
+            </summary>
+        </member>
+        <member name="M:ClownFish.Web.WebPageExtensions.RenderJs(System.Web.WebPages.WebPage,System.String)">
+            <summary>
+            生成一个引用JS文件的HTML代码，其中URL包含了文件的最后更新时间。
+            </summary>
+            <param name="page">当前页面</param>
+            <param name="jsPath">要引用的JS文件路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Web.WebPageExtensions.RenderCss(System.Web.WebPages.WebPage,System.String)">
+            <summary>
+            生成一个引用CSS文件的HTML代码，其中URL包含了文件的最后更新时间。
+            </summary>
+            <param name="page">当前页面</param>
+            <param name="cssPath">要引用的CSS文件路径</param>
+            <returns></returns>
+        </member>
         <member name="T:ClownFish.Web.ActionHelper">
             <summary>
             Action的一些默认操作，可重写用于个性化调整
@@ -1674,6 +1695,12 @@
             如果希望在URL中使用简短或者缩写的命名空间，可以重写这个方法
             </summary>
             <param name="info">UrlActionInfo的实例</param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Web.Reflection.ControllerRecognizer.GetControllerAssembly">
+            <summary>
+            从当前已加载的所有程序集中筛选包含Controller, Servive的程序集
+            </summary>
             <returns></returns>
         </member>
         <member name="M:ClownFish.Web.Reflection.ReflectionHelper.IsSupportableType(System.Type)">

@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" %>
-<%@ OutputCache Duration="3" VaryByParam="None" %>
+<%@ OutputCache Duration="2" VaryByParam="None" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

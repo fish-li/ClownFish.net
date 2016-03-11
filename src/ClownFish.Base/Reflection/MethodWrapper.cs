@@ -76,29 +76,40 @@ namespace ClownFish.Base.Reflection
 	{
 		private static readonly Hashtable s_dict = Hashtable.Synchronized(new Hashtable(10240));
 
-		private static readonly Dictionary<string, Type> s_genericTypeDefinitions;
+		private static Dictionary<string, Type> s_genericTypeDefinitions;
 
-		static MethodInvokerFactory()
+		private static readonly object s_lock = new object();
+
+		private static void Init()
 		{
-			Type reflectMethodBase = typeof(ReflectMethodBase<>).GetGenericTypeDefinition();
+			if( s_genericTypeDefinitions == null ) {
+				lock( s_lock ) {
+					if( s_genericTypeDefinitions == null ) {
 
-			s_genericTypeDefinitions = (from t in typeof(MethodInvokerFactory).Assembly.GetTypes()
-										where t.BaseType != null
-										&& t.BaseType.IsGenericType
-										&& t.BaseType.GetGenericTypeDefinition() == reflectMethodBase
-										select t).ToDictionary(x => x.Name);
+						Type reflectMethodBase = typeof(ReflectMethodBase<>).GetGenericTypeDefinition();
 
-			// 说明：这个工厂还有一种设计方法，
-			// 直接分析类型的基类，检查是不是从ReflectMethodBase<>继承过来的，
-			// 再分析类型参数中的委托的类型参数，从而得知这个类型可用于处理哪类方法的优化，
-			// 并可以生成KEY，这样就不必与类型的名字有关了。
-			// 但这种方法也有麻烦问题：由于每个实现类的类名没有名字上的约束，有可能生成相同的KEY，
-			// 因为不同的类型都可以用于某一类方法的优化的，KEY就自然相同了。
-			// 也正因为这个原因，CreateMethodWrapper 方法在生成KEY时，需要每个实现类的名字符合一定的约束条件。
+						s_genericTypeDefinitions = (from t in typeof(MethodInvokerFactory).Assembly.GetTypes()
+													where t.BaseType != null
+													&& t.BaseType.IsGenericType
+													&& t.BaseType.GetGenericTypeDefinition() == reflectMethodBase
+													select t).ToDictionary(x => x.Name);
+
+						// 说明：这个工厂还有一种设计方法，
+						// 直接分析类型的基类，检查是不是从ReflectMethodBase<>继承过来的，
+						// 再分析类型参数中的委托的类型参数，从而得知这个类型可用于处理哪类方法的优化，
+						// 并可以生成KEY，这样就不必与类型的名字有关了。
+						// 但这种方法也有麻烦问题：由于每个实现类的类名没有名字上的约束，有可能生成相同的KEY，
+						// 因为不同的类型都可以用于某一类方法的优化的，KEY就自然相同了。
+						// 也正因为这个原因，CreateMethodWrapper 方法在生成KEY时，需要每个实现类的名字符合一定的约束条件。
+					}
+				}
+			}
 		}
 
 		internal static IInvokeMethod GetMethodInvokerWrapper(MethodInfo methodInfo)
 		{
+			Init();
+
 			IInvokeMethod method = (IInvokeMethod)s_dict[methodInfo];
 			if( method == null ) {
 				method = CreateMethodInvokerWrapper(methodInfo);
@@ -115,6 +126,8 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static IInvokeMethod CreateMethodInvokerWrapper(MethodInfo method)
 		{
+			Init();
+
 			// 在这个类型的静态构造方法中，我已将所有能优化反射调用的泛型找出来，保存在s_genericTypeDefinitions中。
 			// 这个工厂方法将根据：
 			//	    1. 方法是否有返回值，

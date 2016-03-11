@@ -9,6 +9,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using ClownFish.Log.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace ClownFish.Log.Serializer
 {
@@ -19,40 +20,73 @@ namespace ClownFish.Log.Serializer
 	/// </summary>
 	public sealed class MongDbWriter : ILogWriter
 	{
-		private static string s_connectionString;
+		internal class MongDbSetting
+		{
+			public string ConnectionString { get; set; }
+			public string Database { get; set; }
+
+			internal static MongDbSetting Create(string connectionString)
+			{
+				if( string.IsNullOrEmpty(connectionString) )
+					throw new ArgumentNullException("connectionString");
+
+				MongoUrlBuilder mongoUrlBuilder = new MongoUrlBuilder(connectionString);
+
+				MongDbSetting setting = new MongDbSetting();
+				setting.Database = mongoUrlBuilder.DatabaseName;
+				setting.ConnectionString = connectionString;
+				return setting;
+			}
+		}
 
 		/// <summary>
-		/// 数据库名称
+		/// 配置文件中的连接设置
 		/// </summary>
-		private static string s_dataBase;
+		private static MongDbSetting s_configSetting;
+
 		/// <summary>
-		/// 连接超时时限
+		/// 当前实例的连接设置
 		/// </summary>
-		private static TimeSpan s_connectTimeout;
+		private MongDbSetting _currentSetting;
+		
+		/// <summary>
+		/// 可用于当前实例的连接设置
+		/// </summary>
+		private MongDbSetting CrrentSetting
+		{
+			get { return _currentSetting ?? s_configSetting; }
+		}
 
 
 		#region ILogWriter 成员
 
 		/// <summary>
-		/// 初始化
+		/// 从配置文件中初始化
+		/// 注意：仅供框架调用，不需要在代码中调用。
 		/// </summary>
 		public void Init()
 		{
 			MongDbWriterConfig config = WriterFactory.Config.Writers.MongDb;
-			s_connectionString = config.ConnectionString;
 
-			MongoUrlBuilder mongoUrlBuilder = new MongoUrlBuilder(s_connectionString);
+			s_configSetting = MongDbSetting.Create(config.ConnectionString);
+		}
 
-			s_dataBase = mongoUrlBuilder.DatabaseName;
-			s_connectTimeout = mongoUrlBuilder.ConnectTimeout;
+		/// <summary>
+		/// 设置默认的连接字符串。
+		/// 注意：默认情况下并不需要调用这个方法，除非需要直接使用MongDbWriter
+		/// </summary>
+		/// <param name="connectionString"></param>
+		public void SetConnectionString(string connectionString)
+		{
+			_currentSetting = MongDbSetting.Create(connectionString);
 		}
 
 
 		private IMongoDatabase GetMongoDatabase()
 		{
-			MongoClient mongoClient = new MongoClient(s_connectionString);
+			MongoClient mongoClient = new MongoClient(CrrentSetting.ConnectionString);
 
-			return mongoClient.GetDatabase(s_dataBase);
+			return mongoClient.GetDatabase(CrrentSetting.Database);
 		}
 
 

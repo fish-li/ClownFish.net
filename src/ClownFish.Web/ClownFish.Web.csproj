@@ -82,8 +82,7 @@
     </Reference>
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\lib\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -130,6 +129,7 @@
     <Compile Include="Common\FrameworkExt.cs" />
     <Compile Include="Common\HttpValueCollection.cs" />
     <Compile Include="Debug404\Http404DebugModule.cs" />
+    <Compile Include="Output\WebPageExtensions.cs" />
     <Compile Include="Pipeline\ActionHelper.cs" />
     <Compile Include="Pipeline\ControllerFactory.cs" />
     <Compile Include="Pipeline\IControllerResolver.cs" />

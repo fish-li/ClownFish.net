@@ -103,7 +103,7 @@ namespace ClownFish.Base.Reflection
 				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
 					continue;
 
-				if( assembly.GetCustomAttributes(typeof(T), false).Length == 0 )
+				if( assembly.GetCustomAttributes(typeof(T), true).Length == 0 )
 					continue;
 
 				list.Add(assembly);

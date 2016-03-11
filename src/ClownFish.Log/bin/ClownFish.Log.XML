@@ -746,20 +746,28 @@
             将日志记录到MongDb的写入器
             </summary>
         </member>
-        <member name="F:ClownFish.Log.Serializer.MongDbWriter.s_dataBase">
+        <member name="F:ClownFish.Log.Serializer.MongDbWriter.s_configSetting">
             <summary>
-            数据库名称
+            配置文件中的连接设置
             </summary>
         </member>
-        <member name="F:ClownFish.Log.Serializer.MongDbWriter.s_connectTimeout">
+        <member name="F:ClownFish.Log.Serializer.MongDbWriter._currentSetting">
             <summary>
-            连接超时时限
+            当前实例的连接设置
             </summary>
         </member>
         <member name="M:ClownFish.Log.Serializer.MongDbWriter.Init">
             <summary>
-            初始化
+            从配置文件中初始化
+            注意：仅供框架调用，不需要在代码中调用。
             </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MongDbWriter.SetConnectionString(System.String)">
+            <summary>
+            设置默认的连接字符串。
+            注意：默认情况下并不需要调用这个方法，除非需要直接使用MongDbWriter
+            </summary>
+            <param name="connectionString"></param>
         </member>
         <member name="M:ClownFish.Log.Serializer.MongDbWriter.Write``1(``0)">
             <summary>
@@ -815,6 +823,11 @@
             <param name="func">lambda表达式</param>
             <param name="totalCount">总数</param>
             <returns>查询结果</returns>
+        </member>
+        <member name="P:ClownFish.Log.Serializer.MongDbWriter.CrrentSetting">
+            <summary>
+            可用于当前实例的连接设置
+            </summary>
         </member>
         <member name="T:ClownFish.Log.Serializer.MsmqWriter">
             <summary>

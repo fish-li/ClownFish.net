@@ -67,7 +67,8 @@ namespace ClownFish.Web.Reflection
 				lock( _lock ) {
 					if( _inited == false ) {
 
-						List<Assembly> actionAssemblyList = ReflectionExtensions.GetAssemblyList<ControllerAssemblyAttribute>();
+						ControllerRecognizer recognizer = ObjectFactory.New<ControllerRecognizer>();
+						List<Assembly> actionAssemblyList = recognizer.GetControllerAssembly();
 
 						BuildRestNamespaceDict(actionAssemblyList);
 
@@ -91,7 +92,7 @@ namespace ClownFish.Web.Reflection
 
 			foreach( Assembly assembly in actionAssemblyList ) {
 
-				NamespaceMapAttribute[] namespaceAttrs = (NamespaceMapAttribute[])assembly.GetCustomAttributes(typeof(NamespaceMapAttribute), false);
+				NamespaceMapAttribute[] namespaceAttrs = (NamespaceMapAttribute[])assembly.GetCustomAttributes(typeof(NamespaceMapAttribute), true);
 
 				foreach( NamespaceMapAttribute attr in namespaceAttrs )
 					try {

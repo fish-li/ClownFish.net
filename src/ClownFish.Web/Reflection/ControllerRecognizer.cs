@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using ClownFish.Base.Reflection;
 
 namespace ClownFish.Web.Reflection
 {
@@ -63,6 +66,15 @@ namespace ClownFish.Web.Reflection
 			return info.Namesapce
 				+ (string.IsNullOrEmpty(info.Namesapce) ? string.Empty : ".")
 				+ EnsureServicePostfix(info.ClassName);
+		}
+
+		/// <summary>
+		/// 从当前已加载的所有程序集中筛选包含Controller, Servive的程序集
+		/// </summary>
+		/// <returns></returns>
+		public virtual List<Assembly> GetControllerAssembly()
+		{
+			return ReflectionExtensions.GetAssemblyList<ControllerAssemblyAttribute>();
 		}
 
 	}
