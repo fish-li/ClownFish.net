@@ -59,7 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClownFish">
-      <HintPath>..\MvcDemoWebSite1\bin\ClownFish.dll</HintPath>
+      <HintPath>..\..\..\lib\ClownFish\ClownFish.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

@@ -152,22 +152,12 @@
         </member>
         <member name="T:ClownFish.Log.Configuration.MongDbWriterConfig">
             <summary>
-            MongDbWriter的配置信息
+            MongDbWriter的配置信息（空实现）
             </summary>
         </member>
         <member name="M:ClownFish.Log.Configuration.MongDbWriterConfig.#ctor">
             <summary>
             构造函数
-            </summary>
-        </member>
-        <member name="M:ClownFish.Log.Configuration.MongDbWriterConfig.Valid">
-            <summary>
-            验证属性是否配置正确
-            </summary>
-        </member>
-        <member name="P:ClownFish.Log.Configuration.MongDbWriterConfig.ConnectionString">
-            <summary>
-            MongDB的连接字符串
             </summary>
         </member>
         <member name="T:ClownFish.Log.Configuration.MsmqWriterConfig">
@@ -743,132 +733,8 @@
         </member>
         <member name="T:ClownFish.Log.Serializer.MongDbWriter">
             <summary>
-            将日志记录到MongDb的写入器
+            MongDbWriter的空实现
             </summary>
-        </member>
-        <member name="F:ClownFish.Log.Serializer.MongDbWriter.s_configSetting">
-            <summary>
-            配置文件中的连接设置
-            </summary>
-        </member>
-        <member name="F:ClownFish.Log.Serializer.MongDbWriter._currentSetting">
-            <summary>
-            当前实例的连接设置
-            </summary>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.Init">
-            <summary>
-            从配置文件中初始化
-            注意：仅供框架调用，不需要在代码中调用。
-            </summary>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.SetConnectionString(System.String)">
-            <summary>
-            设置默认的连接字符串。
-            注意：默认情况下并不需要调用这个方法，除非需要直接使用MongDbWriter
-            </summary>
-            <param name="connectionString"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.Write``1(``0)">
-            <summary>
-            写入单条日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="info"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.Write``1(System.Collections.Generic.List{``0})">
-            <summary>
-            批量写入日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.Get``1(System.Guid)">
-            <summary>
-            根据日志ID获取单条日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="guid"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.Delete``1(System.Guid[])">
-            <summary>
-            根据指定的一段时间获取对应的日志记录
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="guidArray"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.GetList``1(System.DateTime,System.DateTime)">
-            <summary>
-            根据指定的一段时间获取对应的日志记录
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="t1"></param>
-            <param name="t2"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.GetList``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
-            <summary>
-            日志查询
-            </summary>
-            <param name="func">lambda表达式</param>
-            <returns>查询结果</returns>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MongDbWriter.GetPageList``1(System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Int32@)">
-            <summary>
-            日志分页查询
-            </summary>
-            <param name="pageIndex">页码</param>
-            <param name="pageSize">分页大小</param>
-            <param name="func">lambda表达式</param>
-            <param name="totalCount">总数</param>
-            <returns>查询结果</returns>
-        </member>
-        <member name="P:ClownFish.Log.Serializer.MongDbWriter.CrrentSetting">
-            <summary>
-            可用于当前实例的连接设置
-            </summary>
-        </member>
-        <member name="T:ClownFish.Log.Serializer.MsmqWriter">
-            <summary>
-            将日志记录到MSMQ的写入器
-            </summary>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Init">
-            <summary>
-            初始化
-            </summary>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(``0)">
-            <summary>
-            写入单条日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="info"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(System.Collections.Generic.List{``0})">
-            <summary>
-            批量写入日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Get``1(System.Guid)">
-            <summary>
-            根据日志ID获取单条日志信息
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="guid"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ClownFish.Log.Serializer.MsmqWriter.GetList``1(System.DateTime,System.DateTime)">
-            <summary>
-            根据指定的一段时间获取对应的日志记录
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="t1"></param>
-            <param name="t2"></param>
-            <returns></returns>
         </member>
         <member name="T:ClownFish.Log.Serializer.NullWriter">
             <summary>
@@ -905,6 +771,47 @@
         <member name="M:ClownFish.Log.Serializer.NullWriter.GetList``1(System.DateTime,System.DateTime)">
             <summary>
             
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="t1"></param>
+            <param name="t2"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ClownFish.Log.Serializer.MsmqWriter">
+            <summary>
+            将日志记录到MSMQ的写入器
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(``0)">
+            <summary>
+            写入单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="info"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Write``1(System.Collections.Generic.List{``0})">
+            <summary>
+            批量写入日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.Get``1(System.Guid)">
+            <summary>
+            根据日志ID获取单条日志信息
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="guid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ClownFish.Log.Serializer.MsmqWriter.GetList``1(System.DateTime,System.DateTime)">
+            <summary>
+            根据指定的一段时间获取对应的日志记录
             </summary>
             <typeparam name="T"></typeparam>
             <param name="t1"></param>

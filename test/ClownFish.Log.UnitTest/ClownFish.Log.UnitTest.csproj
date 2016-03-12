@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;_MongoDB_</DefineConstants>
+    <DefineConstants>TRACE;_MongoDB_2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -79,6 +79,7 @@
     <Compile Include="ConfigTest.cs" />
     <Compile Include="ErrorWriter.cs" />
     <Compile Include="HttpInfoTest.cs" />
+    <Compile Include="Initializer.cs" />
     <Compile Include="LogHelperTest.cs" />
     <Compile Include="MongDbWriterTest.cs" />
     <Compile Include="PerformanceMoudleTest.cs" />

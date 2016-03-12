@@ -17,21 +17,7 @@ namespace ClownFish.Web.UnitTest
 	[TestClass]
 	public abstract class BaseTest
 	{
-		private static readonly HttpRuntime HttpRuntimeInstance = new HttpRuntime();
-
-
-		[AssemblyInitialize]
-		public static void InitRuntime(TestContext context)
-		{
-			ExtenderManager.RegisterExtendType(typeof(MvcRuntimeExt));
-
-			MockHttpRuntime.AppDomainAppPath = AppDomain.CurrentDomain.BaseDirectory;
-			MockHttpRuntime.AppDomainAppVirtualPath = "/";
-		}
-
 		
-	
-
 		public string ExecuteService(string requestText)
 		{
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

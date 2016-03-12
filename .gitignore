@@ -44,6 +44,7 @@ Temporary Items
 obj
 TestResults
 Log111
+bin
 
 .apdisk
 *.pdb
@@ -52,6 +53,4 @@ Log111
 *.CodeAnalysisLog.xml
 *.lastcodeanalysissucceeded
 
-bin/*.dll
-bin/*.xml
 

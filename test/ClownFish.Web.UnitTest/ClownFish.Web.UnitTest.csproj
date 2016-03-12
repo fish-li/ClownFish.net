@@ -80,6 +80,7 @@
     <Compile Include="Common\NameValueTest.cs" />
     <Compile Include="Ext\ExtenderManagerTest.cs" />
     <Compile Include="Ext\ObjectFactoryTest2.cs" />
+    <Compile Include="Initializer.cs" />
     <Compile Include="Models\CDATAModel.cs" />
     <Compile Include="Models\TM.cs" />
     <Compile Include="Pipeline\ActionHandlerTest.cs" />
