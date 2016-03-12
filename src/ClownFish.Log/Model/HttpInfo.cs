@@ -19,28 +19,24 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// 当前登录用户的用户名，可不填。
 		/// </summary>
-		[XmlElement(Order = 1)]
 		public string UserName { get; set; }
 
 
 		/// <summary>
 		/// 请求头信息
 		/// </summary>
-		[XmlElement(Order = 2)]
 		public XmlCdata RequestText { get; set; }
 
 
 		/// <summary>
 		/// 页面地址
 		/// </summary>
-		[XmlElement(Order = 3)]
 		public string Url { get; set; }
 
 
 		/// <summary>
 		/// 浏览器类型。注意：此信息可能不准确。
 		/// </summary>
-		[XmlElement(Order = 4)]
 		public string Browser { get; set; }
 
 			
@@ -48,7 +44,6 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// 当前请求的Session信息（可能为 NULL）
 		/// </summary>
-		[XmlElement(Order = 5)]
 		public XmlCdata Session { get; set; }
 
 

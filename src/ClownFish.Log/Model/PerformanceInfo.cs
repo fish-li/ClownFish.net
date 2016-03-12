@@ -22,35 +22,30 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// HTTP请求相关信息
 		/// </summary>
-		[XmlElement(Order = 1)]
 		public HttpInfo HttpInfo { get; set; }
 
 
 		/// <summary>
 		/// 业务相关信息
 		/// </summary>
-		[XmlElement(Order = 2)]
 		public BusinessInfo BusinessInfo { get; set; }
 
 
 		/// <summary>
 		/// 性能日志的记录类型：HTTP， SQL
 		/// </summary>
-		[XmlElement(Order = 3)]
 		public string PerformanceType { get; set; }
 
 
 		/// <summary>
 		/// 执行时间
 		/// </summary>
-		[XmlElement(Order = 4)]
 		public TimeSpan ExecuteTime { get; set; }
 
 
 		/// <summary>
 		/// SQL相关的执行信息
 		/// </summary>
-		[XmlElement(Order = 5)]
 		public SqlInfo SqlInfo { get; set; }
 
 

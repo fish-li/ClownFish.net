@@ -26,7 +26,7 @@ namespace ClownFish.Web.Serializer
 		// 所以这里采用单例模式保存 ActionParametersProviderFactory 或者它的继承类型的实例
 
 		private static readonly LazyObject<ActionParametersProviderFactory> s_instance
-											= new LazyObject<ActionParametersProviderFactory>();
+											= new LazyObject<ActionParametersProviderFactory>(true);
 
 		/// <summary>
 		/// ActionParametersProviderFactory的实例

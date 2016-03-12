@@ -114,8 +114,10 @@ namespace ClownFish.Web.Client
 		private void InitTextStream()
 		{
 			string contentType = _response.Headers["Content-Type"];
-			_httpHeaderEncoding = GetEncodingFromHttpHeader(contentType);
-			_isHtml = contentType.StartsWithIgnoreCase("text/html");
+			if( string.IsNullOrEmpty(contentType) == false ) {
+				_httpHeaderEncoding = GetEncodingFromHttpHeader(contentType);
+				_isHtml = contentType.StartsWithIgnoreCase("text/html");
+			}
 
 
 			if( _httpHeaderEncoding == null )

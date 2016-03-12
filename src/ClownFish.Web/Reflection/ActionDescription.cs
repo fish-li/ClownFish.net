@@ -15,7 +15,7 @@ namespace ClownFish.Web.Reflection
 	internal sealed class ActionDescription : BaseDescription
 	{
 		// 创建一个ActionProcessor的实例，用于返回默认的ActionAttriubte实例
-		private static LazyObject<ActionHelper> s_actionProcessorInstance = new LazyObject<ActionHelper>();
+		private static LazyObject<ActionHelper> s_actionProcessorInstance = new LazyObject<ActionHelper>(true);
 
 		public ControllerDescription PageController { get; set; } //为PageAction保留
 		public MethodInfo MethodInfo { get; private set; }

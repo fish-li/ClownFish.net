@@ -12,11 +12,11 @@ namespace ClownFish.Base.Framework
 	/// <remarks>
 	///  说明：
 	///  ASP.NET也有一个同名的类型，即：System.Web.PreApplicationStartMethodAttribute
-	/// 
-	///  如果使用那个类型，在初始化时不能调用（会抛异常） BuildManager.GetReferencedAssemblies(); 
-	/// 
-	///  这个类型的执行时间也会晚一点，它是由Global.asax的Application_Start调用触发的。
-	///  而且它允许执行一个内部方法。
+	///  那个类型的初始化执行时间比较早，而且不能由我们的代码来决定何时启动初始化，例如：
+	///  如果使用那个类型，在初始化时不能调用 BuildManager.GetReferencedAssemblies(); （会抛异常）
+	///  
+	///  使用当前这个类型，可以由我们决定什么时候开始初始化，例如：
+	///  我们可以在Global.asax的Application_Start中调用AppInitializer.Start()来触发初始化。
 	/// </remarks>
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 	public sealed class PreApplicationStartMethodAttribute : Attribute

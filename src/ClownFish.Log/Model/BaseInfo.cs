@@ -21,7 +21,6 @@ namespace ClownFish.Log.Model
 #if _MongoDB_
 		[BsonId]
 #endif		
-		[XmlElement(Order = 1)]
 		public Guid InfoGuid { get; set; }
 
 		/// <summary>
@@ -30,19 +29,16 @@ namespace ClownFish.Log.Model
 #if _MongoDB_
 		[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
 #endif
-		[XmlElement(Order = 2)]
 		public DateTime Time { get; set; }
 
 		/// <summary>
 		/// 消息文本
 		/// </summary>
-		[XmlElement(Order = 3)]
 		public XmlCdata Message { get; set; }
 
 		/// <summary>
 		/// 服务器名
 		/// </summary>
-		[XmlElement(Order = 4)]
 		public string HostName { get; set; }
 
 

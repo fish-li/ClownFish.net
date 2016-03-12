@@ -11,6 +11,7 @@ namespace ClownFish.Base.Framework
 	/// <summary>
 	/// 应用程序初始化工具类
 	/// </summary>
+	/// 
 	public static class AppInitializer
 	{
 		/// <summary>

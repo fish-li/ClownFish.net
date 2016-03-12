@@ -74,9 +74,9 @@ namespace ClownFish.Web.Client
 
 
 		/// <summary>
-		/// 框架自动计算，不需要调用者指定，避免产生错误
+		/// 框架自动计算，不需要调用者指定
 		/// </summary>
-		public string ContentType { get; set; }
+		public string ContentType { get; internal set; }
 
 		/// <summary>
 		/// 根据Method属性，返回是不是必须以查询字符串形式提交数据
@@ -161,7 +161,7 @@ namespace ClownFish.Web.Client
 		
 
 		/// <summary>
-		/// 根据原始请求信息文本构建 HttpRequestOption 对象（格式可参考Fiddler的Inspectors标签页内容）
+		/// 根据原始请求信息文本构建 HttpOption 对象（格式可参考Fiddler的Inspectors标签页内容）
 		/// </summary>
 		/// <param name="text"></param>
 		/// <returns></returns>

@@ -16,20 +16,34 @@
             定义HttpClient的扩展方法的工具类
             </summary>
         </member>
+        <member name="M:ClownFish.Web.Client.ClientExtensions.Send(ClownFish.Web.Client.HttpOption)">
+            <summary>
+            根据指定的HttpOption参数，用【同步】方式发起一次HTTP请求
+            </summary>
+            <param name="option">HttpOption的实例，用于描述请求参数</param>
+            <returns>返回服务端的调用结果，并转换成指定的类型</returns>
+        </member>
+        <member name="M:ClownFish.Web.Client.ClientExtensions.SendAsync(ClownFish.Web.Client.HttpOption)">
+            <summary>
+            根据指定的HttpOption参数，用【异步】方式发起一次HTTP请求
+            </summary>
+            <param name="option">HttpOption的实例，用于描述请求参数</param>
+            <returns>返回服务端的调用结果，并转换成指定的类型</returns>
+        </member>
         <member name="M:ClownFish.Web.Client.ClientExtensions.Send``1(ClownFish.Web.Client.HttpOption)">
             <summary>
-            根据指定的HttpRequestOption参数，用【同步】方式发起一次HTTP请求
+            根据指定的HttpOption参数，用【同步】方式发起一次HTTP请求
             </summary>
             <typeparam name="T">返回值的类型参数</typeparam>
-            <param name="option">HttpRequestOption的实例，用于描述请求参数</param>
+            <param name="option">HttpOption的实例，用于描述请求参数</param>
             <returns>返回服务端的调用结果，并转换成指定的类型</returns>
         </member>
         <member name="M:ClownFish.Web.Client.ClientExtensions.SendAsync``1(ClownFish.Web.Client.HttpOption)">
             <summary>
-            根据指定的HttpRequestOption参数，用【异步】方式发起一次HTTP请求
+            根据指定的HttpOption参数，用【异步】方式发起一次HTTP请求
             </summary>
             <typeparam name="T">返回值的类型参数</typeparam>
-            <param name="option">HttpRequestOption的实例，用于描述请求参数</param>
+            <param name="option">HttpOption的实例，用于描述请求参数</param>
             <returns>返回服务端的调用结果，并转换成指定的类型</returns>
         </member>
         <member name="T:ClownFish.Web.Client.HttpClient">
@@ -190,7 +204,7 @@
         </member>
         <member name="M:ClownFish.Web.Client.HttpOption.FromRawText(System.String)">
             <summary>
-            根据原始请求信息文本构建 HttpRequestOption 对象（格式可参考Fiddler的Inspectors标签页内容）
+            根据原始请求信息文本构建 HttpOption 对象（格式可参考Fiddler的Inspectors标签页内容）
             </summary>
             <param name="text"></param>
             <returns></returns>
@@ -225,7 +239,7 @@
         </member>
         <member name="P:ClownFish.Web.Client.HttpOption.ContentType">
             <summary>
-            框架自动计算，不需要调用者指定，避免产生错误
+            框架自动计算，不需要调用者指定
             </summary>
         </member>
         <member name="P:ClownFish.Web.Client.HttpOption.UserAgent">

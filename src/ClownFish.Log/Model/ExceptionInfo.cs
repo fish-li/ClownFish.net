@@ -23,28 +23,24 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// HTTP请求相关信息
 		/// </summary>
-		[XmlElement(Order = 1)]
 		public HttpInfo HttpInfo { get; set; }
 
 
 		/// <summary>
 		/// 业务相关信息
 		/// </summary>
-		[XmlElement(Order = 2)]
 		public BusinessInfo BusinessInfo { get; set; }
 
 
 		/// <summary>
 		/// 异常类型
 		/// </summary>
-		[XmlElement(Order = 3)]
 		public string ExceptionType { get; set; }
 
 
 		/// <summary>
 		/// 异常信息
 		/// </summary>
-		[XmlElement(Order = 4)]
 		public XmlCdata Exception { get; set; }
 
 
@@ -54,19 +50,16 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// SQL相关的执行信息
 		/// </summary>
-		[XmlElement(Order = 5)]
 		public SqlInfo SqlInfo { get; set; }
 
 
 		/// <summary>
 		/// 附加信息
 		/// </summary>
-		[XmlElement(Order = 6)]
 		public XmlCdata Addition { get; set; }
 
 
 
-		//public string A1 { get; set; }
 
 
 		/// <summary>
