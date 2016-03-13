@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\FromBodyAttribute.cs" />
+    <Compile Include="Attributes\PageRegexUrlAttribute.cs" />
     <Compile Include="Client\ClientExtensions.cs" />
     <Compile Include="Client\HttpClient.cs" />
     <Compile Include="Client\HttpOption.cs" />

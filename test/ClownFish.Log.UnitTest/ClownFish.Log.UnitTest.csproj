@@ -94,9 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="bin\ClownFish.Log.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="bin_bak\ClownFish.Log.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">

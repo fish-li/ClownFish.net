@@ -75,6 +75,7 @@
     <Compile Include="Action\HttpCacheResultTest.cs" />
     <Compile Include="Action\JsonResultTest.cs" />
     <Compile Include="Action\StreamResultTest.cs" />
+    <Compile Include="Attributes\PageRegexUrlAttributeTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Cache\OutputCacheAttributeTest.cs" />
     <Compile Include="Common\NameValueTest.cs" />

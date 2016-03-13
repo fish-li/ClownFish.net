@@ -44,7 +44,7 @@ Temporary Items
 obj
 TestResults
 Log111
-bin/
+bin
 
 .apdisk
 *.pdb

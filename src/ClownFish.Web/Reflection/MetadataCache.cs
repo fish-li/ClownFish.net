@@ -180,13 +180,13 @@ namespace ClownFish.Web.Reflection
 
 					// 提取 PageRegexUrlAttribute
 					PageRegexUrlAttribute[] regexAttrs = m.GetMyAttributes<PageRegexUrlAttribute>();
-					foreach( PageUrlAttribute attr2 in regexAttrs ) {
+					foreach( PageRegexUrlAttribute attr2 in regexAttrs ) {
 						if( string.IsNullOrEmpty(attr2.Url) == false ) {
 
 							if( actionDescription == null )
 								actionDescription = CreatePageActionDescription(controller, m);
 
-							Regex regex = new Regex(attr2.Url, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+							Regex regex = attr2.GetRegex();
 							regexActions.Add(new RegexActionDescription { Regex = regex, ActionDescription = actionDescription });
 						}
 					}

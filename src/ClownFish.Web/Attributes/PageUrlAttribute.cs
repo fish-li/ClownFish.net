@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ClownFish.Web
 {
@@ -19,27 +20,7 @@ namespace ClownFish.Web
 		public string Url { get; set; }
 	}
 
-
-	/// <summary>
-	/// 继承于PageUrlAttribute，指示Url是一个正则表达式
-	/// // 注意：正则表达式的匹配的次序未知。
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-	public sealed class PageRegexUrlAttribute : PageUrlAttribute
-	{
-		// 使用方法：
-
-		//[Action]
-		//[OutputCache(Duration = 31536000)]
-		//[PageRegexUrl(Url = @"/m/(?<id>[^/]{36})\.aspx")]
-		//public object ShowMedia(string id)
-		//{
-		//    MediaObject media = _bll.GetMediaObject(id);
-
-		//    return new StreamResult(media.bits, media.type);
-		//}
-		
-	}
+	
 }
 
 
