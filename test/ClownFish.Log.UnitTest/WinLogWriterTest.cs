@@ -19,7 +19,7 @@ namespace ClownFish.Log.UnitTest
 		{
 			// 正常情况测试
 
-			Exception ex = new NotImplementedException(Guid.NewGuid().ToString());
+			Exception ex = LogHelperTest.CreateException();
 			ExceptionInfo exInfo = ExceptionInfo.Create(ex);
 
 			WinLogWriter writer = new WinLogWriter();
@@ -45,7 +45,8 @@ namespace ClownFish.Log.UnitTest
 			field.SetValue(null, false);
 
 			try {
-				Exception ex = new NotImplementedException("TestMessage: 顺序拟安排如下：集成专项、建模专项、越秀专项、售楼+公共专项 ");
+				Exception ex = LogHelperTest.CreateException();
+						//("TestMessage: 顺序拟安排如下：集成专项、建模专项、越秀专项、售楼+公共专项 ");
 				ExceptionInfo exInfo = ExceptionInfo.Create(ex);
 
 

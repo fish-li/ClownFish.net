@@ -68,12 +68,30 @@ namespace ClownFish.Log.UnitTest
 		//	EventLog.CreateEventSource(sourceName, logName);
 		//}
 
+		internal static Exception CreateException()
+		{
+			try {
+				int a = 2;
+				int b = 0;
+				int c = a / b;
+				return null;
+			}
+			catch( Exception ex ) {
+				return ex;
+			}
+		}
+
+		internal static Exception CreateException(string message)
+		{
+			Exception ex = CreateException();
+			return new InvalidOperationException(message, ex);
+		}
 
 
 		[TestMethod]
 		public void Test_SyncLog()
 		{
-			Exception ex = new NotImplementedException(Guid.NewGuid().ToString());
+			Exception ex = CreateException();
 			ExceptionInfo exInfo = ExceptionInfo.Create(ex);
 			LogHelper.SyncWrite(exInfo);
 
@@ -101,7 +119,7 @@ namespace ClownFish.Log.UnitTest
 				DbCommand command = SqlInfoTest.CreateDbCommand();
 
 
-				Exception ex = new NotImplementedException("Test: HttpInfo.Create");
+				Exception ex = CreateException("Test: HttpInfo.Create");
 				ExceptionInfo info = ExceptionInfo.Create(ex, context.HttpContext, command);
 				info.Addition = Guid.NewGuid().ToString();
 
@@ -117,7 +135,7 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test_AsyncLog()
 		{
-			Exception ex = new NotImplementedException(Guid.NewGuid().ToString());
+			Exception ex = CreateException(Guid.NewGuid().ToString());
 			ExceptionInfo exInfo = ExceptionInfo.Create(ex);
 			LogHelper.Write(exInfo);
 

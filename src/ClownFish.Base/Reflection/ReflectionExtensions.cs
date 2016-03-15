@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -103,8 +104,14 @@ namespace ClownFish.Base.Reflection
 				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
 					continue;
 
-				if( assembly.GetCustomAttributes(typeof(T), true).Length == 0 )
-					continue;
+				try {
+					if( assembly.GetCustomAttributes(typeof(T), true).Length == 0 )
+						continue;
+				}
+				catch( FileNotFoundException ex ) {
+					throw new InvalidOperationException(
+								"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+				}
 
 				list.Add(assembly);
 			}

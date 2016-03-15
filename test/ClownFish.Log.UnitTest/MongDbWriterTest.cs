@@ -18,7 +18,7 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test_Write()
 		{
-			Exception ex = new NotImplementedException("M-" + Guid.NewGuid().ToString());
+			Exception ex = LogHelperTest.CreateException("M-" + Guid.NewGuid().ToString());
 			ExceptionInfo exceptionInfo1 = ExceptionInfo.Create(ex);
 			exceptionInfo1.Addition = "If you liked Fiddler, we also recommend";
 
@@ -37,7 +37,7 @@ namespace ClownFish.Log.UnitTest
 
 		private List<ExceptionInfo> WriteList()
 		{
-			Exception ex1 = new NotImplementedException("M1-" + Guid.NewGuid().ToString());
+			Exception ex1 = LogHelperTest.CreateException("M1-" + Guid.NewGuid().ToString());
 			ExceptionInfo exceptionInfo1 = ExceptionInfo.Create(ex1);
 			exceptionInfo1.Addition = "If you liked Fiddler, we also recommend";
 			//exceptionInfo1.A1 = "aaaaaaaaaaaa";
@@ -46,7 +46,7 @@ namespace ClownFish.Log.UnitTest
 			System.Threading.Thread.Sleep(1000);
 
 
-			Exception ex2 = new NotImplementedException("M2-" + Guid.NewGuid().ToString());
+			Exception ex2 = LogHelperTest.CreateException("M2-" + Guid.NewGuid().ToString());
 			ExceptionInfo exceptionInfo2 = ExceptionInfo.Create(ex2);
 			exceptionInfo2.Addition = "Test Studio - Create Automated Tests Quickly";
 			//exceptionInfo2.A1 = "aaaaaaaaaaaa";

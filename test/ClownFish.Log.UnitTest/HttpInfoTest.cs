@@ -47,7 +47,7 @@ Cookie: SRCHUSR=AUTOREDIR=0&GEOVAR=&DOB=20141216; _EDGE_V=1; SRCHUID=V=2&GUID=72
 				context.Request.SetInputStream("a=1&b=2");
 
 
-				Exception ex = new NotImplementedException("Test: HttpInfo.Create");
+				Exception ex = LogHelperTest.CreateException("Test: HttpInfo.Create");
 				ExceptionInfo info = ExceptionInfo.Create(ex, context.HttpContext, null);
 				info.Addition = Guid.NewGuid().ToString();
 
@@ -84,7 +84,7 @@ Cookie: SRCHUSR=AUTOREDIR=0&GEOVAR=&DOB=20141216; _EDGE_V=1; SRCHUID=V=2&GUID=72
 				context.Request.SetForm("a=1&b=2");
 
 
-				Exception ex = new NotImplementedException("Test: HttpInfo.Create");
+				Exception ex = LogHelperTest.CreateException("Test: HttpInfo.Create");
 				ExceptionInfo info = ExceptionInfo.Create(ex, context.HttpContext, null);
 				info.Addition = Guid.NewGuid().ToString();
 

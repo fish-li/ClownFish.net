@@ -24,6 +24,6 @@ namespace ClownFish.Log.Model
 		/// Value 值
 		/// </summary>
 		//[XmlAttribute]
-		public XmlCdata Value { get; set; }
+		public string Value { get; set; }
 	}
 }
