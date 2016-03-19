@@ -81,7 +81,7 @@ namespace ClownFish.Base.TypeExtend
 			if( extendTypeChecker == null )
 				throw new ArgumentNullException("extendTypeChecker");
 
-			foreach( Type t in asm.GetExportedTypes() ) {
+			foreach( Type t in asm.GetPublicTypes() ) {
 				if( extendTypeChecker(t) )
 					RegisterExtendType(t);
 			}
@@ -215,7 +215,7 @@ namespace ClownFish.Base.TypeExtend
 			if( asm == null )
 				throw new ArgumentNullException("asm");
 
-			foreach( Type t in asm.GetExportedTypes() ) {
+			foreach( Type t in asm.GetPublicTypes() ) {
 				Type argumentType = t.BaseType.GetArgumentType(typeof(EventSubscriber<>));
 				if( argumentType != null)
 					RegisterSubscriber(t, argumentType, true);

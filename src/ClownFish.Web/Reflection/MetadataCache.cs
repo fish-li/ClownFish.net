@@ -117,7 +117,7 @@ namespace ClownFish.Web.Reflection
 
 			foreach( Assembly assembly in actionAssemblyList ) {
 
-				foreach( Type t in assembly.GetExportedTypes() ) {
+				foreach( Type t in assembly.GetPublicTypes() ) {
 					if( t.IsClass == false || (t.IsAbstract && t.IsSealed ==false ) /* 抽象类不能实例化 */ )
 						continue;
 

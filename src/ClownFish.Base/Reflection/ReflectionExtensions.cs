@@ -90,6 +90,54 @@ namespace ClownFish.Base.Reflection
 		}
 
 		/// <summary>
+		/// 等同于调用 Assembly实例的GetExportedTypes()，只是在缺少依赖程序集时能指出当前程序集的名称。
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public static Type[] GetPublicTypes(this Assembly assembly)
+		{
+			if( assembly == null )
+				throw new ArgumentNullException("assembly");
+
+			try {
+				return assembly.GetExportedTypes();
+			}
+			catch( FileNotFoundException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( FileLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+		}
+
+		
+		/// <summary>
+		/// 等同于调用 Assembly实例的GetCustomAttributes()，只是在缺少依赖程序集时能指出当前程序集的名称。
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public static T[] GetAttributes<T>(this Assembly assembly) where T : Attribute
+		{
+			if( assembly == null )
+				throw new ArgumentNullException("assembly");
+
+			try {
+				return (T[])assembly.GetCustomAttributes(typeof(T), true);
+			}
+			catch( FileNotFoundException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( FileLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+		}
+
+		/// <summary>
 		/// 获取带个指定修饰属性的程序集列表
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -103,16 +151,10 @@ namespace ClownFish.Base.Reflection
 				// 过滤以【System】开头的程序集，加快速度
 				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
 					continue;
-
-				try {
-					if( assembly.GetCustomAttributes(typeof(T), true).Length == 0 )
-						continue;
-				}
-				catch( FileNotFoundException ex ) {
-					throw new InvalidOperationException(
-								"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
-				}
-
+				
+				if( assembly.GetAttributes<T>().Length == 0 )
+					continue;
+				
 				list.Add(assembly);
 			}
 

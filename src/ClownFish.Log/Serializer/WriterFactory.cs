@@ -67,6 +67,9 @@ namespace ClownFish.Log.Serializer
 		private static LogConfig ReadConfigFile()
 		{
 			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
+			if( File.Exists(configFile) == false )
+				throw new FileNotFoundException("配置文件不存在：" + configFile);
+
 			return XmlHelper.XmlDeserializeFromFile<LogConfig>(configFile);
 		}
 
