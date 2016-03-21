@@ -23,6 +23,9 @@ namespace ClownFish.Log
 		/// <param name="app"></param>
 		public void Init(HttpApplication app)
 		{
+			// 确保配置文件已读取
+			WriterFactory.Init();
+
 			// 这里只记录 Handler 的执行时间，排除管线过程中HttpModule的执行时间
 			app.PreRequestHandlerExecute += app_PreRequestHandlerExecute;
 			app.PostRequestHandlerExecute += app_PostRequestHandlerExecute;
