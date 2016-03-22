@@ -110,6 +110,10 @@ namespace ClownFish.Base.Reflection
 				throw new InvalidOperationException(
 							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
 			}
+			catch( TypeLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
 		}
 
 		
@@ -132,6 +136,10 @@ namespace ClownFish.Base.Reflection
 							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
 			}
 			catch( FileLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( TypeLoadException ex ) {
 				throw new InvalidOperationException(
 							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
 			}
