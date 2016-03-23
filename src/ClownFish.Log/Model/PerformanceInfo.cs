@@ -40,7 +40,19 @@ namespace ClownFish.Log.Model
 		/// <summary>
 		/// 执行时间
 		/// </summary>
+		[XmlIgnore]
 		public TimeSpan ExecuteTime { get; set; }
+
+
+		/// <summary>
+		/// 执行时间（解决XML序列化问题，等同于使用ExecuteTime属性）
+		/// </summary>
+		[XmlElement("ExecuteTime")]
+		public string ExecuteTimeString
+		{
+			get { return ExecuteTime.ToString(); }
+			set { ExecuteTime = TimeSpan.Parse(value); }
+		}
 
 
 		/// <summary>

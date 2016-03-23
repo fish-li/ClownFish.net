@@ -52,7 +52,7 @@ namespace ClownFish.Log
 			if( timeSpan.TotalMilliseconds >= WriterFactory.Config.Performance.HttpExecuteTimeout ) {
 				PerformanceInfo info = PerformanceInfo.CreateByHttp(
 					app.Context,
-					string.Format("HttpHandler请求执行时间超出性能指标，已执行 {0} 毫秒。", WriterFactory.Config.Performance.HttpExecuteTimeout),
+					"HttpHandler请求执行时间超出性能指标，已执行：" + timeSpan.ToString(),
 					timeSpan);
 
 				LogHelper.Write(info);
@@ -67,7 +67,7 @@ namespace ClownFish.Log
 			if( timeSpan.TotalMilliseconds >= WriterFactory.Config.Performance.DbExecuteTimeout ) {
 				PerformanceInfo info = PerformanceInfo.CreateBySql(
 					command,
-					string.Format("SQL请求执行时间超出性能指标，已执行 {0} 毫秒。", WriterFactory.Config.Performance.DbExecuteTimeout),
+					"SQL请求执行时间超出性能指标，已执行：" + timeSpan.ToString(),
 					timeSpan);
 
 				LogHelper.Write(info);
