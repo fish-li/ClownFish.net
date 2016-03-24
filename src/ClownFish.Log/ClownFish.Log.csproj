@@ -78,6 +78,7 @@
     <Compile Include="Configuration\TypeItemConfig.cs" />
     <Compile Include="Configuration\WinLogWriterConfig.cs" />
     <Compile Include="Configuration\WritersConfig.cs" />
+    <Compile Include="LogFilter.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="Model\BaseInfo.cs" />
     <Compile Include="Model\BusinessInfo.cs" />

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base.Common;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
 
@@ -53,6 +54,8 @@ namespace ClownFish.Log
 		/// </summary>
 		private static bool s_enableAsyncWrite = true;
 
+		private static LazyObject<LogFilter> s_filter = new LazyObject<LogFilter>(true);
+
 		/// <summary>
 		/// 日志组件内部初始化。
 		/// 一般是不需要调用的，除非是不做日志记录，反而直接调用各种Writer
@@ -76,6 +79,10 @@ namespace ClownFish.Log
 
 			// 触发日志的配置检查
 			WriterFactory.Init();
+
+			// 忽略特定的对象类型
+			if( s_filter.Instance.IgnoreWrite(info) )
+				return;
 
 
 			// 获取写日志的实例，注意：允许一个类型配置多个写入方式
@@ -101,6 +108,10 @@ namespace ClownFish.Log
 		{
 			// 触发日志的配置检查
 			WriterFactory.Init();
+
+			// 忽略特定的对象类型
+			if( s_filter.Instance.IgnoreWrite(info) )
+				return;
 
 			// 所有需要记录到日志的数据类型必须配置，否则不记录（因为不知道以什么方式记录）！
 			if( WriterFactory.IsSupport(typeof(T)) == false )
