@@ -14,19 +14,22 @@ namespace DEMO.Controllers.Page
 		public static readonly string[] StyleArray = new string[] { "Style1", "Style2", "Style3" };
 
 
-		public string GetPageStyle()
+		public static string CurrentStyle
 		{
-			HttpCookie styleCookie = this.GetCookie(STR_PageStyle);
+			get
+			{
+				HttpCookie styleCookie = HttpContext.Current.Request.Cookies[STR_PageStyle];
 
-			if( styleCookie != null && string.IsNullOrEmpty(styleCookie.Value) == false )
-				return styleCookie.Value;
+				if( styleCookie != null && string.IsNullOrEmpty(styleCookie.Value) == false )
+					return styleCookie.Value;
 
-			return StyleArray[1];
+				return StyleArray[1];
+			}
 		}
 
 		public string GetTargetPageUrl(string pageName)
 		{
-			string currentPageStyle = GetPageStyle();
+			string currentPageStyle = CurrentStyle;
 
 			if( currentPageStyle == StyleArray[0] ) {
 				string cshtml = pageName.Substring(0, pageName.Length - 4) + "cshtml";
@@ -39,7 +42,7 @@ namespace DEMO.Controllers.Page
 
 		public bool IsStyle2
 		{
-			get { return this.GetPageStyle() == StyleArray[1]; }
+			get { return CurrentStyle == StyleArray[1]; }
 		}
 	}
 }

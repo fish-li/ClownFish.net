@@ -64,6 +64,7 @@
     <Compile Include="Files\FileDependencyManager.cs" />
     <Compile Include="Framework\AppInitializer.cs" />
     <Compile Include="Framework\PreApplicationStartMethodAttribute.cs" />
+    <Compile Include="Framework\RunTimeEnvironment.cs" />
     <Compile Include="Json\JsonExtensions.cs" />
     <Compile Include="Json\DefaultJsonSerializer.cs" />
     <Compile Include="Json\XmlCdataJsonConverter.cs" />

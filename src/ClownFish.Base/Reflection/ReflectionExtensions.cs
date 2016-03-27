@@ -75,19 +75,7 @@ namespace ClownFish.Base.Reflection
 		{
 			return m.GetCustomAttributes(typeof(T), inherit) as T[];
 		}
-
-
-		/// <summary>
-		/// 获取当前程序加载的所有程序集
-		/// </summary>
-		/// <returns></returns>
-		public static ICollection GetReferencedAssemblies()
-		{
-			if( WebConfig.IsAspnetApp )
-				return System.Web.Compilation.BuildManager.GetReferencedAssemblies();
-			else
-				return AppDomain.CurrentDomain.GetAssemblies();
-		}
+				
 
 		/// <summary>
 		/// 等同于调用 Assembly实例的GetExportedTypes()，只是在缺少依赖程序集时能指出当前程序集的名称。
@@ -154,7 +142,7 @@ namespace ClownFish.Base.Reflection
 		{
 			List<Assembly> list = new List<Assembly>(128);
 
-			ICollection assemblies = GetReferencedAssemblies();
+			ICollection assemblies = RunTimeEnvironment.GetLoadAssemblies();
 			foreach( Assembly assembly in assemblies ) {
 				// 过滤以【System】开头的程序集，加快速度
 				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )

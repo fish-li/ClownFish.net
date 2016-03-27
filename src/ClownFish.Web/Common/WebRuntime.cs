@@ -39,7 +39,7 @@ namespace ClownFish.Web
 		{
 			// 扩展点：允许测试时，指定不同的目录
 
-			return WebConfig.IsAspnetApp
+			return RunTimeEnvironment.IsAspnetApp
 						? System.Web.HttpRuntime.AppDomainAppPath
 						: AppDomain.CurrentDomain.BaseDirectory;
 		}
