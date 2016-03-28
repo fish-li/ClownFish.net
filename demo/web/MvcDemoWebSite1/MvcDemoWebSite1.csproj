@@ -316,6 +316,7 @@
       <DependentUpon>WebService1.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Common\HtmlHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

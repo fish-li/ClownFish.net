@@ -37,7 +37,7 @@
 </div>
 
 <div id="divProductInfo" title="查看商品资料" style="padding: 8px; display: none;">
-<%= UcExecutor.Render("/Pages//Style2/ControlsProductInfo.ascx", null)%>
+<%= UcExecutor.Render("/Pages/Style2/Controls/ProductInfo.ascx", null)%>
 </div>
 
 

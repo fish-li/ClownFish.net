@@ -92,7 +92,7 @@ namespace ClownFish.Web.Reflection
 
 			foreach( Assembly assembly in actionAssemblyList ) {
 
-				NamespaceMapAttribute[] namespaceAttrs = (NamespaceMapAttribute[])assembly.GetCustomAttributes(typeof(NamespaceMapAttribute), true);
+				NamespaceMapAttribute[] namespaceAttrs = assembly.GetAttributes<NamespaceMapAttribute>();
 
 				foreach( NamespaceMapAttribute attr in namespaceAttrs )
 					try {

@@ -27,7 +27,7 @@ namespace ClownFish.Base.Framework
 				if( asm.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
 					continue;
 
-				IEnumerable<PreApplicationStartMethodAttribute> attrs = asm.GetCustomAttributes<PreApplicationStartMethodAttribute>();
+				PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();
 
 				foreach( PreApplicationStartMethodAttribute attr in attrs ) {
 					Invoke(attr);

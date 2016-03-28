@@ -52,7 +52,7 @@ namespace ClownFish.Log
 			if( timeSpan.TotalMilliseconds >= WriterFactory.Config.Performance.HttpExecuteTimeout ) {
 				PerformanceInfo info = PerformanceInfo.CreateByHttp(
 					app.Context,
-					"HttpHandler请求执行时间超出性能指标，已执行：" + timeSpan.ToString(),
+					"HTP请求执行时间超出性能指标，已执行：" + timeSpan.ToString(),
 					timeSpan);
 
 				LogHelper.Write(info);
