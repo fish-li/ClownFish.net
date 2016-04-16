@@ -10,20 +10,20 @@ namespace ClownFish.Log.Configuration
 #if _MongoDB_
 
 	/// <summary>
-	/// MongDbWriter的配置信息
+	/// MongoDbWriter的配置信息
 	/// </summary>
-	public sealed class MongDbWriterConfig : BaseWriterConfig
+	public sealed class MongoDbWriterConfig : BaseWriterConfig
 	{
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		public MongDbWriterConfig()
+		public MongoDbWriterConfig()
 		{
-			this.Name = "MongDb";
+			this.Name = "MongoDb";
 		}
 
 		/// <summary>
-		/// MongDB的连接字符串
+		/// MongoDB的连接字符串
 		/// </summary>
 		[XmlAttribute]
 		public string ConnectionString { get; set; }
@@ -35,7 +35,7 @@ namespace ClownFish.Log.Configuration
 		public override void Valid()
 		{
 			if( string.IsNullOrEmpty(ConnectionString) )
-				throw new LogConfigException("日志配置文件中，没有为MongDbWriter指定ConnectionString属性。");
+				throw new LogConfigException("日志配置文件中，没有为MongoDbWriter指定ConnectionString属性。");
 
 		}
 
@@ -44,16 +44,16 @@ namespace ClownFish.Log.Configuration
 
 #else
 	/// <summary>
-	/// MongDbWriter的配置信息（空实现）
+	/// MongoDbWriter的配置信息（空实现）
 	/// </summary>
-	public sealed class MongDbWriterConfig : BaseWriterConfig
+	public sealed class MongoDbWriterConfig : BaseWriterConfig
 	{
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		public MongDbWriterConfig()
+		public MongoDbWriterConfig()
 		{
-			this.Name = "MongDb";			
+			this.Name = "MongoDb";			
 		}
 	}
 #endif

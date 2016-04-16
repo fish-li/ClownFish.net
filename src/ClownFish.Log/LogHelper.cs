@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Base.Common;
+using ClownFish.Log.Configuration;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
 
@@ -57,12 +58,23 @@ namespace ClownFish.Log
 		private static LazyObject<LogFilter> s_filter = new LazyObject<LogFilter>(true);
 
 		/// <summary>
-		/// 日志组件内部初始化。
-		/// 一般是不需要调用的，除非是不做日志记录，反而直接调用各种Writer
+		/// 读取默认的配置文件，初始化日志组件。
+		/// 通常情况下不需要调用，除非是不做日志记录，反而直接调用各种Writer
 		/// </summary>
 		public static void Init()
 		{
 			WriterFactory.Init();
+		}
+
+
+		/// <summary>
+		/// 根据指定的配置信息，初始化日志组件。
+		/// 通常情况下不需要调用，除非不使用默认的配置文件
+		/// </summary>
+		/// <param name="config">配置信息</param>
+		public static void Init(LogConfig config)
+		{
+			WriterFactory.Init(config);
 		}
 
 

@@ -16,23 +16,23 @@ namespace ClownFish.Log.Serializer
 #if _MongoDB_
 
 	/// <summary>
-	/// 将日志记录到MongDb的写入器
+	/// 将日志记录到MongoDb的写入器
 	/// </summary>
-	public sealed class MongDbWriter : ILogWriter
+	public sealed class MongoDbWriter : ILogWriter
 	{
-		internal class MongDbSetting
+		internal class MongoDbSetting
 		{
 			public string ConnectionString { get; set; }
 			public string Database { get; set; }
 
-			internal static MongDbSetting Create(string connectionString)
+			internal static MongoDbSetting Create(string connectionString)
 			{
 				if( string.IsNullOrEmpty(connectionString) )
 					throw new ArgumentNullException("connectionString");
 
 				MongoUrlBuilder mongoUrlBuilder = new MongoUrlBuilder(connectionString);
 
-				MongDbSetting setting = new MongDbSetting();
+				MongoDbSetting setting = new MongoDbSetting();
 				setting.Database = mongoUrlBuilder.DatabaseName;
 				setting.ConnectionString = connectionString;
 				return setting;
@@ -42,17 +42,17 @@ namespace ClownFish.Log.Serializer
 		/// <summary>
 		/// 配置文件中的连接设置
 		/// </summary>
-		private static MongDbSetting s_configSetting;
+		private static MongoDbSetting s_configSetting;
 
 		/// <summary>
 		/// 当前实例的连接设置
 		/// </summary>
-		private MongDbSetting _currentSetting;
+		private MongoDbSetting _currentSetting;
 		
 		/// <summary>
 		/// 可用于当前实例的连接设置
 		/// </summary>
-		private MongDbSetting CrrentSetting
+		private MongoDbSetting CrrentSetting
 		{
 			get { return _currentSetting ?? s_configSetting; }
 		}
@@ -66,19 +66,19 @@ namespace ClownFish.Log.Serializer
 		/// </summary>
 		public void Init()
 		{
-			MongDbWriterConfig config = WriterFactory.Config.Writers.MongDb;
+			MongoDbWriterConfig config = WriterFactory.Config.Writers.MongoDb;
 
-			s_configSetting = MongDbSetting.Create(config.ConnectionString);
+			s_configSetting = MongoDbSetting.Create(config.ConnectionString);
 		}
 
 		/// <summary>
 		/// 设置默认的连接字符串。
-		/// 注意：默认情况下并不需要调用这个方法，除非需要直接使用MongDbWriter
+		/// 注意：默认情况下并不需要调用这个方法，除非需要直接使用MongoDbWriter
 		/// </summary>
 		/// <param name="connectionString"></param>
 		public void SetConnectionString(string connectionString)
 		{
-			_currentSetting = MongDbSetting.Create(connectionString);
+			_currentSetting = MongoDbSetting.Create(connectionString);
 		}
 
 
@@ -220,9 +220,9 @@ namespace ClownFish.Log.Serializer
 #else
 
 	/// <summary>
-	/// MongDbWriter的空实现
+	/// MongoDbWriter的空实现
 	/// </summary>
-	public sealed class MongDbWriter : NullWriter { }
+	public sealed class MongoDbWriter : NullWriter { }
 
 #endif
 }

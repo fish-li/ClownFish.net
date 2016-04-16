@@ -53,7 +53,7 @@ namespace ClownFish.Log.UnitTest
 		public void Test4()
 		{
 			// 没什么具体意义，只是为了覆盖代码
-			MongDbWriterConfig config = new MongDbWriterConfig();
+			MongoDbWriterConfig config = new MongoDbWriterConfig();
 			config.Valid();
 		}
 #endif

@@ -12,7 +12,7 @@ namespace ClownFish.Log.UnitTest
 {
 #if _MongoDB_
 	[TestClass]
-	public class MongDbWriterTest :  TestBase
+	public class MongoDbWriterTest :  TestBase
 	{
 
 		[TestMethod]
@@ -22,7 +22,7 @@ namespace ClownFish.Log.UnitTest
 			ExceptionInfo exceptionInfo1 = ExceptionInfo.Create(ex);
 			exceptionInfo1.Addition = "If you liked Fiddler, we also recommend";
 
-			MongDbWriter writer = new MongDbWriter();
+			MongoDbWriter writer = new MongoDbWriter();
 			writer.Write(exceptionInfo1);
 
 
@@ -52,7 +52,7 @@ namespace ClownFish.Log.UnitTest
 			//exceptionInfo2.A1 = "aaaaaaaaaaaa";
 
 
-			MongDbWriter writer = new MongDbWriter();
+			MongoDbWriter writer = new MongoDbWriter();
 			List<ExceptionInfo> list1 = new List<ExceptionInfo> { exceptionInfo1, exceptionInfo2 };
 			writer.Write(list1);
 
@@ -68,7 +68,7 @@ namespace ClownFish.Log.UnitTest
 			// 写入2条数据
 			List<ExceptionInfo> list = WriteList();
 
-			MongDbWriter writer = new MongDbWriter();
+			MongoDbWriter writer = new MongoDbWriter();
 			List<ExceptionInfo> list2 = writer.GetList<ExceptionInfo>(
 					x => x.InfoGuid == list[0].InfoGuid || x.InfoGuid == list[1].InfoGuid);
 
@@ -96,7 +96,7 @@ namespace ClownFish.Log.UnitTest
 			DateTime t1 = DateTime.Now.AddYears(-10);
 			DateTime t2 = DateTime.Now;
 
-			MongDbWriter writer = new MongDbWriter();
+			MongoDbWriter writer = new MongoDbWriter();
 			List<ExceptionInfo> list2 = writer.GetList<ExceptionInfo>(t1, t2);
 
 			// 确认数据是不是成功读取到
@@ -122,7 +122,7 @@ namespace ClownFish.Log.UnitTest
 
 			Expression<Func<ExceptionInfo, bool>> func = x => x.Time >= t1 && x.Time < t2;
 
-			MongDbWriter writer = new MongDbWriter();
+			MongoDbWriter writer = new MongoDbWriter();
 			List<ExceptionInfo> list2 = writer.GetPageList<ExceptionInfo>(0, 2, func, out totalCount);
 
 

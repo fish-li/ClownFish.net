@@ -81,7 +81,7 @@
     <Compile Include="HttpInfoTest.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="LogHelperTest.cs" />
-    <Compile Include="MongDbWriterTest.cs" />
+    <Compile Include="MongoDbWriterTest.cs" />
     <Compile Include="PerformanceMoudleTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SomeExtenstionsTest.cs" />

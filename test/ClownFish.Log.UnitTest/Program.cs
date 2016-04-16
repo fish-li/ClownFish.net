@@ -102,10 +102,10 @@ namespace ClownFish.Log.UnitTest
 			config.Writers.Mail.WriteType = "ClownFish.Log.Serializer.MailWriter, ClownFish.Log";
 
 #if _MongoDB_
-			config.Writers.MongDb = new MongDbWriterConfig();
-			//config.Writers.MongDb.ConnectionString = "server=10.5.106.100;database=Test;connectTimeout=5s;socketTimeout=5s";
-			config.Writers.MongDb.ConnectionString = "mongodb://10.5.106.100/Test?connectTimeout=5s;socketTimeout=5s";
-			config.Writers.MongDb.WriteType = "ClownFish.Log.Serializer.MongDbWriter, ClownFish.Log";
+			config.Writers.MongoDb = new MongoDbWriterConfig();
+			//config.Writers.MongoDb.ConnectionString = "server=10.5.106.100;database=Test;connectTimeout=5s;socketTimeout=5s";
+			config.Writers.MongoDb.ConnectionString = "mongodb://10.5.106.100/Test?connectTimeout=5s;socketTimeout=5s";
+			config.Writers.MongoDb.WriteType = "ClownFish.Log.Serializer.MongoDbWriter, ClownFish.Log";
 #endif
 
 			config.Writers.Msmq = new MsmqWriterConfig();
@@ -120,12 +120,12 @@ namespace ClownFish.Log.UnitTest
 			config.Types = new List<TypeItemConfig>();
 			TypeItemConfig t1 = new TypeItemConfig();
 			t1.DataType = "ClownFish.Log.Model.ExceptionInfo, ClownFish.Log";
-			t1.Writers = "MongDb,File";
+			t1.Writers = "MongoDb,File";
 			config.Types.Add(t1);
 
 			TypeItemConfig t2 = new TypeItemConfig();
 			t2.DataType = "ClownFish.Log.Model.PerformanceInfo, ClownFish.Log";
-			t2.Writers = "MongDb";
+			t2.Writers = "MongoDb";
 			config.Types.Add(t2);
 
 			config.Performance = new PerformanceConfig();

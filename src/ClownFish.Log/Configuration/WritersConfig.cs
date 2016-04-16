@@ -17,9 +17,9 @@ namespace ClownFish.Log.Configuration
 
 //#if _MongoDB_
 		/// <summary>
-		/// MongDbWriterConfig
+		/// MongoDbWriterConfig
 		/// </summary>
-		public MongDbWriterConfig MongDb { get; set; }
+		public MongoDbWriterConfig MongoDb { get; set; }
 //#endif 
 
 		/// <summary>
@@ -49,8 +49,8 @@ namespace ClownFish.Log.Configuration
 		public IEnumerable<BaseWriterConfig> GetWriters()
 		{
 //#if _MongoDB_
-			if( MongDb != null )
-				yield return MongDb;
+			if( MongoDb != null )
+				yield return MongoDb;
 //#endif
 			if( File != null )
 				yield return File;

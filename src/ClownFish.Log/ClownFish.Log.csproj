@@ -72,7 +72,7 @@
     <Compile Include="Configuration\LogConfigException.cs" />
     <Compile Include="Configuration\MailWriterConfig.cs" />
     <Compile Include="Configuration\LogConfig.cs" />
-    <Compile Include="Configuration\MongDbWriterConfig.cs" />
+    <Compile Include="Configuration\MongoDbWriterConfig.cs" />
     <Compile Include="Configuration\MsmqWriterConfig.cs" />
     <Compile Include="Configuration\PerformanceConfig.cs" />
     <Compile Include="Configuration\TypeItemConfig.cs" />
@@ -93,7 +93,7 @@
     <Compile Include="Serializer\FileWriter.cs" />
     <Compile Include="Serializer\ILogWriter.cs" />
     <Compile Include="Serializer\MailWriter.cs" />
-    <Compile Include="Serializer\MongDbWriter.cs" />
+    <Compile Include="Serializer\MongoDbWriter.cs" />
     <Compile Include="Serializer\MsmqWriter.cs" />
     <Compile Include="Serializer\NullWriter.cs" />
     <Compile Include="Serializer\WinLogWriter.cs" />

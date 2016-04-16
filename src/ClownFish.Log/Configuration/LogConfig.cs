@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ClownFish.Base.Xml;
 
 namespace ClownFish.Log.Configuration
 {
@@ -43,6 +45,20 @@ namespace ClownFish.Log.Configuration
 		/// 写日志失败时，异常消息的写入器
 		/// </summary>
 		public string ExceptionWriter { get; set; }
+
+
+		/// <summary>
+		/// 加载默认的配置文件（ClownFish.Log.config）
+		/// </summary>
+		/// <returns></returns>
+		public static LogConfig ReadConfigFile()
+		{
+			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
+			if( File.Exists(configFile) == false )
+				throw new FileNotFoundException("配置文件不存在：" + configFile);
+
+			return XmlHelper.XmlDeserializeFromFile<LogConfig>(configFile);
+		}
 
 	}
 

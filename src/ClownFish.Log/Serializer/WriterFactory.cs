@@ -14,6 +14,9 @@ namespace ClownFish.Log.Serializer
 
 	internal static class WriterFactory
 	{
+		private static bool s_inited = false;
+		private static readonly object s_lock = new object();
+
 		/// <summary>
 		/// 日志的配置信息
 		/// </summary>
@@ -38,21 +41,44 @@ namespace ClownFish.Log.Serializer
 		}
 
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static void Init()
 		{
-			if( Config != null )
+			if( s_inited )
 				return;
 
+			LogConfig config = LogConfig.ReadConfigFile();
 
-			LogConfig config = ReadConfigFile();
+			Init(config);
+		}
 
+
+		public static void Init(LogConfig config)
+		{
+			if( config == null )
+				throw new ArgumentNullException("config");
+
+
+			if( s_inited == false ) {
+				lock( s_lock ) {
+					if( s_inited == false ) {
+						InternalInit(config);
+
+						// 标记初始化已成功
+						s_inited = true;
+					}
+				}
+			}
+		}
+
+
+		internal static void InternalInit(LogConfig config)
+		{
 			// 检查配置参数是否正确
 			CheckConfig(config);
 
 
-			// 标记初始化已成功
-			Config = config;
+			// 保存配置信息
+			Config = config;		// 要不要克隆对象？？
 
 
 			// 初始化各个 Writer
@@ -63,15 +89,7 @@ namespace ClownFish.Log.Serializer
 				writer.Init();
 			}
 		}
-
-		private static LogConfig ReadConfigFile()
-		{
-			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
-			if( File.Exists(configFile) == false )
-				throw new FileNotFoundException("配置文件不存在：" + configFile);
-
-			return XmlHelper.XmlDeserializeFromFile<LogConfig>(configFile);
-		}
+		
 
 
 		internal static void CheckConfig(LogConfig config)
