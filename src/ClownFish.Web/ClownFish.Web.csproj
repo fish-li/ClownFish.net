@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\FileDownloadResult.cs" />
     <Compile Include="Attributes\FromBodyAttribute.cs" />
     <Compile Include="Attributes\PageRegexUrlAttribute.cs" />
     <Compile Include="Client\ClientExtensions.cs" />

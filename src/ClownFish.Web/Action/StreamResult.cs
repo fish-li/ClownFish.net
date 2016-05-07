@@ -18,6 +18,11 @@ namespace ClownFish.Web
 		private string _filename;
 
 		/// <summary>
+		/// 下载文件时，默认的文档类型申明，ContentType
+		/// </summary>
+		internal static readonly string DefaultContentType = "application/octet-stream";
+
+		/// <summary>
 		/// 构造函数
 		/// </summary>
 		/// <param name="buffer">文件内容的字节数组</param>
@@ -50,9 +55,31 @@ namespace ClownFish.Web
 
 
 			if( string.IsNullOrEmpty(contentType) )
-				_contentType = "application/octet-stream";
+				_contentType = DefaultContentType;
 			else
 				_contentType = contentType;
+		}
+
+
+		/// <summary>
+		/// 设置浏览器下载对话框中显示的文件名
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="filename"></param>
+		internal static void SetDownloadFileName(HttpContext context, string filename)
+		{
+			if( string.IsNullOrEmpty(filename) == false ) {
+
+				// 文件名编码这块不知道未来会不会有问题，
+				// 为了便于以后可以快速改进编码问题，且不修改这里的代码，这里定义一个类型和虚方法留着未来去重写。
+
+				DownloadFileNameEncoder encoder = ObjectFactory.New<DownloadFileNameEncoder>();
+
+				string headerValue = encoder.GetFileNameHeader(context, filename);
+
+				if( string.IsNullOrEmpty(headerValue) == false )
+					context.Response.AddHeader("Content-Disposition", headerValue);
+			}
 		}
 
 		/// <summary>
@@ -61,21 +88,13 @@ namespace ClownFish.Web
 		/// <param name="context"></param>
 		public void Ouput(HttpContext context)
 		{
+			// 设置当前响应的文档类型
 			context.Response.ContentType = _contentType;
 
-			if( string.IsNullOrEmpty(_filename) == false ) {
+			// 设置浏览器下载对话框中的保存文件名称
+			SetDownloadFileName(context, _filename);
 
-				// 文件名编码这块不知道未来会不会有问题，
-				// 为了便于以后可以快速改进编码问题，且不修改这里的代码，这里定义一个类型和虚方法留着未来去重写。
-
-				DownloadFileNameEncoder encoder = ObjectFactory.New<DownloadFileNameEncoder>();
-
-				string headerValue = encoder.GetFileNameHeader(context, _filename);
-
-				if( string.IsNullOrEmpty(headerValue)  == false )
-					context.Response.AddHeader("Content-Disposition", headerValue);
-			}
-
+			// 将流内容输出到浏览器
 			context.Response.OutputStream.Write(_buffer, 0, _buffer.Length);
 		}
 
