@@ -67,17 +67,26 @@ namespace ClownFish.Web.Serializer
 			ModelDescription descripton = GetModelDescription(model.GetType());
 
 			object val = null;
-			foreach( DataMember field in descripton.Fields ) {
-				if( field.Ignore )
-					continue;
-
+			foreach( PropertyInfo property in descripton.Properties ) {
 				// 这里的实现方式不支持嵌套类型的数据实体。
 				// 如果有这方面的需求，可以将这里改成递归的嵌套调用。
 
-				val = GetValueByNameAndType(field.Name, field.Type.GetRealType(), paramName);
+				string httpname = GetPropertyMapHttpName(property);
+				val = GetValueByNameAndType(httpname, property.PropertyType.GetRealType(), paramName);
 				if( val != null )
-					field.SetValue(model, val);
+					property.SetValue(model, val);
 			}
+		}
+
+		/// <summary>
+		/// 获取数据对象属性对应的HTTP数据名称
+		/// 重写这个方法可以解决服务端属性和前端名称不一致问题，例如：可以增加对别名的支持。
+		/// </summary>
+		/// <param name="p"></param>
+		/// <returns></returns>
+		protected virtual string GetPropertyMapHttpName(PropertyInfo p)
+		{
+			return p.Name;
 		}
 
 		/// <summary>
@@ -94,15 +103,12 @@ namespace ClownFish.Web.Serializer
 			ModelDescription mm = (ModelDescription)s_modelTable[key];
 
 			if( mm == null ) {
-				List<DataMember> list = new List<DataMember>();
+				PropertyInfo[] array = (from p in type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+										where (p.GetMyAttribute<HttpValueIgnoreAttribute>(false) == null)
+										select p
+										).ToArray();
 
-				(from p in type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-				 select new PropertyMember(p)).ToList().ForEach(x => list.Add(x));
-
-				(from f in type.GetFields(BindingFlags.Instance | BindingFlags.Public)
-				 select new FieldMember(f)).ToList().ForEach(x => list.Add(x));
-
-				mm = new ModelDescription { Fields = list.ToArray() };
+				mm = new ModelDescription { Properties = array };
 				s_modelTable[key] = mm;
 			}
 			return mm;

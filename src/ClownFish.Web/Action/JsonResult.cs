@@ -64,18 +64,6 @@ namespace ClownFish.Web
 			}
 		}
 
-		///// <summary>
-		///// 将一个对象序列化为JSON字符串
-		///// </summary>
-		///// <param name="data"></param>
-		///// <returns></returns>
-		//public static string ObjectToJson(object data)
-		//{
-		//	if( data == null )
-		//		throw new ArgumentNullException("data");
-
-		//	return data.ToJson();
-		//}
 	}
 
 

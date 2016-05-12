@@ -4,12 +4,12 @@ namespace DEMO.Model
 {
 	public sealed class JsTreeNode
 	{
-		//public int id;
-		public string text;
-		public string state;
-		public string iconCls;
-		public List<JsTreeNode> children;
-		public JsTreeNodeCustAttr attributes;
+		//public int id { get; set; }
+		public string text { get; set; }
+		public string state { get; set; }
+		public string iconCls { get; set; }
+		public List<JsTreeNode> children { get; set; }
+		public JsTreeNodeCustAttr attributes { get; set; }
 	}
 
 
@@ -17,8 +17,8 @@ namespace DEMO.Model
 	{
 		public static readonly string InvalidFilePath = "###";
 
-		public string FilePath;
-		public string FileType;
+		public string FilePath { get; set; }
+		public string FileType { get; set; }
 
 		public JsTreeNodeCustAttr()
 		{

@@ -8,7 +8,7 @@ namespace DEMO.Model
 {
 	public class OrderSearchInfo : PagingInfo
 	{
-		public DateTime StartDate;
-		public DateTime EndDate;
+		public DateTime StartDate { get; set; }
+		public DateTime EndDate { get; set; }
 	}
 }

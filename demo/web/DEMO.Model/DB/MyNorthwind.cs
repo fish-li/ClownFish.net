@@ -4,10 +4,10 @@ namespace DEMO.Model
 {
 	public class MyNorthwind
 	{
-		public volatile List<Category> Categories;
-		public volatile List<Customer> Customers;
-		public volatile List<Product> Products;
-		public volatile List<Order> Orders;
+		public List<Category> Categories { get; set; }
+		public List<Customer> Customers { get; set; }
+		public List<Product> Products { get; set; }
+		public List<Order> Orders { get; set; }
 	}
 
 }

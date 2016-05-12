@@ -8,7 +8,7 @@ namespace DEMO.Model
 	{
 		public Customer Customer { get; set; }
 		public PagingInfo PagingInfo { get; set; }
-		public List<Customer> List;
+		public List<Customer> List { get; set; }
 
 		public string RequestUrlEncodeRawUrl { get; set; }
 

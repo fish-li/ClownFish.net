@@ -20,8 +20,8 @@ namespace Fish.BB
 {
 	public class AddInfo
 	{
-		public int A;
-		public int B;
+		public int A { get; set; }
+		public int B { get; set; }
 	}
 
 	public class TestService

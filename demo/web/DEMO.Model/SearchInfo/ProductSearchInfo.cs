@@ -9,7 +9,7 @@ namespace DEMO.Model
 {
 	public class ProductSearchInfo : PagingInfo
 	{
-		public string SearchWord;
-		public int CategoryId;
+		public string SearchWord { get; set; }
+		public int CategoryId { get; set; }
 	}
 }

@@ -7,8 +7,8 @@ namespace DEMO.Model
 {
 	public class OrderListModel
 	{
-		public OrderSearchInfo SearchInfo;
-		public List<Order> List;
+		public OrderSearchInfo SearchInfo { get; set; }
+		public List<Order> List { get; set; }
 	}
 
 

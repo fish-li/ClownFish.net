@@ -8,8 +8,8 @@ namespace DEMO.Controllers.Ajax
 {
 	public class Customer2
 	{
-		public string Name;
-		public string Tel;
+		public string Name { get; set; }
+		public string Tel { get; set; }
 	}
 	public class Salesman2
 	{

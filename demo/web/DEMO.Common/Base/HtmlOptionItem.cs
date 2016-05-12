@@ -11,15 +11,15 @@ namespace DEMO.Common
 		/// <summary>
 		/// Text
 		/// </summary>
-		public string Text;
+		public string Text { get; set; }
 		/// <summary>
 		/// Value
 		/// </summary>
-		public string Value;
+		public string Value { get; set; }
 		/// <summary>
 		/// Selected
 		/// </summary>
-		public bool Selected;
+		public bool Selected { get; set; }
 
 	}
 }

@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Security.Principal;
 using ClownFish.Web.Client;
 using ClownFish.Web;
+using System.Web.Security;
 
 namespace ClownFish.MockAspnetRuntime
 {
@@ -322,6 +323,23 @@ namespace ClownFish.MockAspnetRuntime
 			IPrincipal user = new GenericPrincipal(_identity, roles);
 			_context.User = user;
 		}
+
+
+		/// <summary>
+		/// 设置当前用户身份为FormsIdentity实例
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="userData"></param>
+		public void SetFormsUser(string username, string userData)
+		{
+			FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(2, 
+					username, DateTime.Now, DateTime.MaxValue, true, userData);
+
+			IIdentity _identity = new FormsIdentity(ticket);
+			IPrincipal user = new GenericPrincipal(_identity, null);
+			_context.User = user;
+		}
+
 
 
 		public void AddSession(string name, object value)

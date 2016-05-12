@@ -15,7 +15,7 @@
 </head>
 <body>
     <p>
-		当前用户名：<%= HttpContextHelper.UserIdentityName ?? "[未登录用户]" %>
+		当前用户名：<%= HttpContextHelper.UserIdentityName2 ?? "[未登录用户]" %>
     </p>
     <hr />
 

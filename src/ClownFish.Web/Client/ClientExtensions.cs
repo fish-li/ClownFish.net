@@ -148,6 +148,9 @@ namespace ClownFish.Web.Client
 			if( string.IsNullOrEmpty(option.UserAgent) == false )
 				request.UserAgent = option.UserAgent;
 
+			if( option.DisableAutoRedirect )
+				request.AllowAutoRedirect = false;
+
 		}
 
 	}

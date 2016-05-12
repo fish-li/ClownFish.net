@@ -74,8 +74,6 @@ namespace ClownFish.Web.Serializer
 			//if( root.ChildNodes.Count != action.Parameters.Length )
 			//    throw new ArgumentException("客户端提交的数据项与服务端的参数项的数量不匹配。");
 
-			string name = null;
-			object value = null;
 			object[] parameters = new object[action.Parameters.Length];
 			LazyObject<ModelBuilder> builder = new LazyObject<ModelBuilder>();
 
@@ -86,41 +84,33 @@ namespace ClownFish.Web.Serializer
 					// 当前参数需要从整体请求体中反序列化得到参数值
 					parameters[i] = GetObjectFromRequest(context, action);
 				}
-				else {					
-					value = null;
+				else {
+					string name = action.Parameters[i].Name;
+					XmlNode node = (from n in root.ChildNodes.Cast<XmlNode>()
+									where string.Compare(n.Name, name, StringComparison.OrdinalIgnoreCase) == 0
+									select n).FirstOrDefault();
 
-					if( TryGetSpecialParameter(context, action.Parameters[i], out value) ) {
-						parameters[i] = value;		// 特殊参数，直接赋值，不需要从XML中读取
+					if( node != null ) {
+						try {
+							object parameter = null;
+							Type destType = action.Parameters[i].ParameterType.GetRealType();
+
+							if( destType.IsSupportableType() ) {    // 如果是简单类型，就不需要反序列化
+								parameter = builder.Instance.StringToObject(node.InnerText, destType);
+							}
+							else
+								// 复杂类型的参数，就使用反序列化
+								parameter = XmlDeserialize(node.OuterXml, destType, request.ContentEncoding);
+
+							parameters[i] = parameter;
+						}
+						catch( Exception ex ) {
+							throw new InvalidCastException("数据转换失败，当前参数名：" + name, ex);
+						}
 					}
 					else {
-						name = action.Parameters[i].Name;
-						XmlNode node = (from n in root.ChildNodes.Cast<XmlNode>()
-										where string.Compare(n.Name, name, StringComparison.OrdinalIgnoreCase) == 0
-										select n).FirstOrDefault();
-
-						if( node != null ) {
-							try {
-								object parameter = null;
-								Type destType = action.Parameters[i].ParameterType.GetRealType();
-
-								if( destType.IsSupportableType() ) {	// 如果是简单类型，就不需要反序列化
-									parameter = builder.Instance.StringToObject(node.InnerText, destType);
-								}
-								else
-									// 复杂类型的参数，就使用反序列化
-									parameter = XmlDeserialize(node.OuterXml, destType, request.ContentEncoding);
-
-								parameters[i] = parameter;
-
-							}
-							catch( Exception ex ) {
-								throw new InvalidCastException("数据转换失败，当前参数名：" + name, ex);
-							}
-						}
-						else {
-							// 再次尝试从HTTP上下文中获取
-							parameters[i] = GetObjectFromHttp(context, action.Parameters[i]);
-						}
+						// 再次尝试从HTTP上下文中获取
+						parameters[i] = GetParameterFromHttp(context, action.Parameters[i]);
 					}
 				}
 			}

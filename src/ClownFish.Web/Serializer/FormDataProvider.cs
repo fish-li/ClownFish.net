@@ -34,19 +34,11 @@ namespace ClownFish.Web.Serializer
 			if( action == null )
 				throw new ArgumentNullException("action");
 
-			ParameterInfo p = null;
-			object value = null;
 			object[] parameters = new object[action.Parameters.Length];
 
-			for( int i = 0; i < action.Parameters.Length; i++ ) {
-				p = action.Parameters[i];
-				value = null;
-
-				if( TryGetSpecialParameter(context, p, out value) )
-					parameters[i] = value;
-				else
-					parameters[i] = GetObjectFromHttp(context, p);
-			}
+			for( int i = 0; i < action.Parameters.Length; i++ ) 
+				parameters[i] = GetParameterFromHttp(context, action.Parameters[i]);
+			
 
 			return parameters;
 		}

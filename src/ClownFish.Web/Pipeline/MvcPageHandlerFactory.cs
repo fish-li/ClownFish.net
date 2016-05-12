@@ -37,22 +37,10 @@ namespace ClownFish.Web
 			
 			// 如果没有找到合适的Action，并且请求的是一个ASPX页面，则按ASP.NET默认的方式来继续处理
 			if( vkInfo == null  ) {
-
-				if( requestPath.EndsWithIgnoreCase(".aspx") ) {
+				if( requestPath.EndsWithIgnoreCase(".aspx")
+					&& System.IO.File.Exists(context.Request.PhysicalPath) ) {
 					// 调用ASP.NET默认的Page处理器工厂来处理
-					try {
-						return _msPageHandlerFactory.GetHandler(context, requestType, requestPath, physicalPath);
-					}
-					catch(Exception ex) {
-						if( controllerResolver.DiagnoseResult != null ) {
-							controllerResolver.DiagnoseResult.ErrorMessages.Add("System.Web.UI.PageHandlerFactory不能根据指定的URL地址创建IHttpHandler实例。");
-							controllerResolver.DiagnoseResult.ErrorMessages.Add(ex.Message);
-
-							return Http404DebugModule.TryGetHttp404PageHandler(context);
-						}
-
-						throw;
-					}
+					return _msPageHandlerFactory.GetHandler(context, requestType, requestPath, physicalPath);
 				}
 				else
 					ExceptionHelper.Throw404Exception(context);

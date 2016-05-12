@@ -104,6 +104,11 @@ namespace ClownFish.Web.Client
 		public string UserAgent { get; set; }
 
 		/// <summary>
+		/// 禁止自动重定向
+		/// </summary>
+		public bool DisableAutoRedirect { get; set; }
+
+		/// <summary>
 		/// Cookie容器
 		/// </summary>
 		public CookieContainer Cookie { get; set; }

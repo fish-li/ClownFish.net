@@ -15,7 +15,10 @@ using ClownFish.Web.Reflection;
 
 namespace ClownFish.Web.Serializer
 {
-	internal class BaseDataProvider
+	/// <summary>
+	/// 所有Action参数提供者的基类，提供允许从HTTP请求中构造参数的功能
+	/// </summary>
+	public abstract class BaseDataProvider
 	{
 		static BaseDataProvider()
 		{
@@ -38,13 +41,30 @@ namespace ClownFish.Web.Serializer
 
 
 		/// <summary>
+		/// 根据指定的参数信息，从HTTP请求中构造参数
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="p"></param>
+		/// <returns></returns>
+		protected object GetParameterFromHttp(HttpContext context, ParameterInfo p)
+		{
+			object value = null;
+
+			if( TryGetSpecialParameter(context, p, out value) )
+				return value;
+			else
+				return GetObjectFromHttp(context, p);
+		}
+
+
+		/// <summary>
 		/// 根据指定的参数信息，尝试从HTTP上下文中获取参数值
 		/// </summary>
 		/// <param name="context">HttpContext实例</param>
 		/// <param name="p">ParameterInfo实例</param>
 		/// <param name="value">获取到的参数值（如何方法 return true;）</param>
 		/// <returns>如果解析成功（确实存在特殊参数），返回 true，否则返回 false。如果是false，子类需要继续解析参数值</returns>
-		protected bool TryGetSpecialParameter(HttpContext context, ParameterInfo p, out object value)
+		private bool TryGetSpecialParameter(HttpContext context, ParameterInfo p, out object value)
 		{
 			value = null;
 
@@ -82,7 +102,8 @@ namespace ClownFish.Web.Serializer
 		}
 
 
-		protected object EvalFromHttpContext(HttpContext context, ContextDataAttribute attr, ParameterInfo p)
+
+		private object EvalFromHttpContext(HttpContext context, ContextDataAttribute attr, ParameterInfo p)
 		{
 			// 直接从HttpRequest对象中获取数据，根据Attribute中指定的表达式求值。
 			string expression = attr.Expression;
@@ -112,8 +133,13 @@ namespace ClownFish.Web.Serializer
 		}
 
 
-
-		protected object GetObjectFromHttp(HttpContext context, ParameterInfo p)
+		/// <summary>
+		/// 根据指定的参数信息，从HTTP请求中构造【对象类型】参数
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="p"></param>
+		/// <returns></returns>
+		private object GetObjectFromHttp(HttpContext context, ParameterInfo p)
 		{
 			Type paramterType = p.ParameterType.GetRealType();
 			LazyObject<ModelBuilder> builder = new LazyObject<ModelBuilder>();
@@ -144,6 +170,8 @@ namespace ClownFish.Web.Serializer
 			// 注意：这里不支持嵌套类型的自定义类型。	
 			return builder.Instance.CreateObjectFromHttp(context, p);
 		}
+
+		
 
 
 	}

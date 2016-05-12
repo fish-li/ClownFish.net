@@ -61,10 +61,9 @@ namespace ClownFish.Web.Serializer
 									= Newtonsoft.Json.JsonSerializer.CreateDefault(settings);
 
 
-			object value = null;
 			object[] parameters = new object[action.Parameters.Length];
 
-			for( int i = 0; i < parameters.Length; i++ ) {				
+			for( int i = 0; i < parameters.Length; i++ ) {
 
 				FromBodyAttribute bodyAttr = action.Parameters[i].GetCustomAttribute<FromBodyAttribute>(false);
 				if( bodyAttr != null ) {
@@ -72,21 +71,15 @@ namespace ClownFish.Web.Serializer
 					parameters[i] = GetObjectFromString(input, action);
 				}
 				else {
-					value = null;
-
-					if( TryGetSpecialParameter(context, action.Parameters[i], out value) )
-						parameters[i] = value;		// 特殊参数，直接赋值，不需要从JSON中读取
+					//尝试从JSON中获取一个片段，用这个片段来构造参数值
+					JToken childObj = jsonObj.GetValue(action.Parameters[i].Name, StringComparison.OrdinalIgnoreCase);
+					if( childObj != null ) {
+						Type pType = action.Parameters[i].ParameterType;
+						parameters[i] = childObj.ToObject(pType, jsonSerializer);
+					}
 					else {
-						//尝试从JSON中获取一个片段，用这个片段来构造参数值
-						JToken childObj = jsonObj.GetValue(action.Parameters[i].Name, StringComparison.OrdinalIgnoreCase);
-						if( childObj != null ) {
-							Type pType = action.Parameters[i].ParameterType;
-							parameters[i] = childObj.ToObject(pType, jsonSerializer);
-						}
-						else {
-							// 再次尝试从HTTP上下文中获取
-							parameters[i] = GetObjectFromHttp(context, action.Parameters[i]);
-						}
+						// 再次尝试从HTTP上下文中获取
+						parameters[i] = GetParameterFromHttp(context, action.Parameters[i]);
 					}
 				}
 			}

@@ -42,10 +42,10 @@ namespace DEMO.Model
 
 	public sealed class OrderSubmitForm : MyDataItem
 	{
-		public DateTime OrderDate;
-		public int CustomerID;
-		public string OrderDetail;
-		public string Comment;
+		public DateTime OrderDate { get; set; }
+		public int CustomerID { get; set; }
+		public string OrderDetail { get; set; }
+		public string Comment { get; set; }
 
 
 		public override string IsValid()

@@ -29,6 +29,11 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 				factory.ReleaseHandler(handler);
 			}
 			Assert.IsNotNull(handler);
+
+			object vkInfo = handler.GetValue("InvokeInfo");
+			object instance = vkInfo.GetValue("Instance");
+
+			Assert.AreEqual(typeof(Controllers.AuthorizeTestController), instance.GetType());
 		}
 
 
@@ -46,29 +51,10 @@ GET http://www.fish-mvc-demo.com/Pages/abc.zzz HTTP/1.1
 				handler = factory.GetHandler(context.HttpContext, "GET", "/Pages/abc.zzz",
 							@"D:\ProjectFiles\my-github\ClownFish.net\demo\web\MvcDemoWebSite1\Pages\abc.zzz");
 			}
-			Assert.IsNull(handler);
+			//Assert.IsNull(handler);
 		}
 
 
-
-		[TestMethod]
-		public void Test3()
-		{
-			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/abc.aspx HTTP/1.1
-";
-			IHttpHandler handler = null;
-			Http404DebugModule debugModule = new Http404DebugModule();
-
-			using( WebContext context = WebContext.FromRawText(requestText) ) {
-				debugModule.app_BeginRequest(context.Application.Instance, null);
-
-				IHttpHandlerFactory factory = new MvcPageHandlerFactory();
-				handler = factory.GetHandler(context.HttpContext, "GET", "/Pages/abc.aspx",
-							@"D:\ProjectFiles\my-github\ClownFish.net\demo\web\MvcDemoWebSite1\Pages\abc.aspx");
-			}
-
-			Assert.IsInstanceOfType(handler, typeof(Http404PageHandler));
-		}
+		
 	}
 }

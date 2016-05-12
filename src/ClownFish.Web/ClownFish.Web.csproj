@@ -147,7 +147,6 @@
     <Compile Include="Proxy\ProxyTransferHandler.cs" />
     <Compile Include="Proxy\ReverseProxyModule.cs" />
     <Compile Include="Reflection\ControllerRecognizer.cs" />
-    <Compile Include="Reflection\DataMember.cs" />
     <Compile Include="Reflection\ReflectionHelper.cs" />
     <Compile Include="Serializer\BaseDataProvider.cs" />
     <Compile Include="Common\UiHelper.cs" />

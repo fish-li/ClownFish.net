@@ -4,7 +4,7 @@ namespace DEMO.Model
 {
 	public class CategoriesPageModel
 	{
-		public List<Category> List;
+		public List<Category> List { get; set; }
 	}
 
 

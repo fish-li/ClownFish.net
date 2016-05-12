@@ -9,8 +9,8 @@ namespace DEMO.Model
 {
 	public class ProductInfoModel
 	{
-		public List<HtmlOptionItem> Categories;
-		public Product Product;
+		public List<HtmlOptionItem> Categories { get; set; }
+		public Product Product { get; set; }
 
 		public ProductInfoModel() { }
 
