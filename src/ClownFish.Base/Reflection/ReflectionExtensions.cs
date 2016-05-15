@@ -144,6 +144,9 @@ namespace ClownFish.Base.Reflection
 
 			ICollection assemblies = RunTimeEnvironment.GetLoadAssemblies();
 			foreach( Assembly assembly in assemblies ) {
+				if( assembly.IsDynamic )	// 动态程序通常是不需要参考的
+					continue;
+
 				// 过滤以【System】开头的程序集，加快速度
 				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
 					continue;
