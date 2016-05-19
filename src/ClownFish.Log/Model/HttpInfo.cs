@@ -71,7 +71,7 @@ namespace ClownFish.Log.Model
 		/// 一个特定的字符串，指示在日志记录时，不记录请求体内容。
 		/// 如果不希望记录某个请求体的内容，可以设置 context.Items[IgnoreHttpsRequestBody] = "yes";
 		/// </summary>
-		public static readonly string IgnoreHttpsRequestBody = "MAP6-Log:IgnoreHttpsRequestBody";
+		public static readonly string IgnoreHttpsRequestBody = "ClownFish.Log:IgnoreHttpsRequestBody";
 
 
 		/// <summary>

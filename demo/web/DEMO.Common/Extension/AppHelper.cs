@@ -2,7 +2,7 @@
 using System.Web;
 using System.IO;
 using DEMO.Common.Extension;
-
+using ClownFish.Web;
 
 namespace DEMO.Common
 {
@@ -15,7 +15,7 @@ namespace DEMO.Common
 		public static void Init()
 		{
 			// 演示：注册自定义的类型转换委托
-			ClownFish.Web.FrameworkExt.RegisterHttpDataConvert<int[]>(TestDataTypeConvertor.GetIntArray);
+			HttpDataConvertFactory.Register<int[]>(new IntArrayConvertor());
 		}
 
 

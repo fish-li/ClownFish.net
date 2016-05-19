@@ -128,7 +128,6 @@
     <Compile Include="Debug404\Http404PageHandler.cs" />
     <Compile Include="Debug404\TestResult.cs" />
     <Compile Include="Common\HttpExtensions.cs" />
-    <Compile Include="Common\FrameworkExt.cs" />
     <Compile Include="Common\HttpValueCollection.cs" />
     <Compile Include="Debug404\Http404DebugModule.cs" />
     <Compile Include="Output\WebPageExtensions.cs" />
@@ -168,7 +167,9 @@
     <Compile Include="Common\VoidType.cs" />
     <Compile Include="Serializer\ActionParametersProviderFactory.cs" />
     <Compile Include="Serializer\FormDataProvider.cs" />
+    <Compile Include="Serializer\HttpDataConvertFactory.cs" />
     <Compile Include="Serializer\IActionParametersProvider.cs" />
+    <Compile Include="Serializer\IHttpDataConvert.cs" />
     <Compile Include="Serializer\JsonDataProvider.cs" />
     <Compile Include="Serializer\JsonnetDataProvider.cs" />
     <Compile Include="Serializer\ModelBuilder.cs" />

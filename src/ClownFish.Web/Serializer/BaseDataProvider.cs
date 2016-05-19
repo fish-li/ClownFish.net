@@ -20,25 +20,6 @@ namespace ClownFish.Web.Serializer
 	/// </summary>
 	public abstract class BaseDataProvider
 	{
-		static BaseDataProvider()
-		{
-			RegisterHttpDataConvert<HttpFile>(HttpFile.GetFromHttpRequest);
-			RegisterHttpDataConvert<HttpFile[]>(HttpFile.GetFilesFromHttpRequest);
-		}
-
-		private static readonly Hashtable s_convertTable = Hashtable.Synchronized(new Hashtable(256));
-
-
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		internal static void RegisterHttpDataConvert<T>(Func<HttpContext, ParameterInfo, T> func)
-		{
-			// 构造一个弱类型的委托，供后续使用。
-			Func<HttpContext, ParameterInfo, object> convert = (HttpContext context, ParameterInfo p) => (object)func(context, p);
-
-			// 采用覆盖的方式，如果类型注册多次，以最后一次为准
-			s_convertTable[typeof(T)] = convert;
-		}
-
 
 		/// <summary>
 		/// 根据指定的参数信息，从HTTP请求中构造参数
@@ -150,6 +131,10 @@ namespace ClownFish.Web.Serializer
 				if( val != null )
 					return val;
 				else {
+					// C#5 支持参数默认值。
+					if( p.HasDefaultValue )
+						return p.DefaultValue;
+
 					if( p.ParameterType.IsValueType && p.ParameterType.IsNullableType() == false )
 						throw new ArgumentException("未能找到指定的参数值：" + p.Name);
 					else
@@ -158,12 +143,11 @@ namespace ClownFish.Web.Serializer
 			}
 
 
-			// 检查是否存在自定义的类型转换委托
-			Func<HttpContext, ParameterInfo, object> func = s_convertTable[paramterType] as Func<HttpContext, ParameterInfo, object>;
-			if( func != null ) {
-				// 使用自定义的类型转换委托
-				return func(context, p);
-			}
+			// 检查是否存在自定义的类型转换器
+			IHttpDataConvert convert = HttpDataConvertFactory.GetConvert(paramterType);
+			if( convert != null ) 
+				return convert.Convert(context, p.Name);
+			
 
 
 			// 自定义的类型。首先创建实例，然后给所有成员赋值。

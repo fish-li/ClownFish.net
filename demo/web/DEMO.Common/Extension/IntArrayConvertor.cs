@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Reflection;
+using ClownFish.Web;
 
 namespace DEMO.Common.Extension
 {
-	public static class TestDataTypeConvertor
+	public class IntArrayConvertor : IHttpDataConvert
 	{
-		public static int[] GetIntArray(HttpContext conext, ParameterInfo p)
+		public object Convert(HttpContext context, string paraName)
 		{
-			string[] val = conext.Request.QueryString.GetValues(p.Name);
+			string[] val = context.Request.QueryString.GetValues(paraName);
 
 			if( val == null )
-				val = conext.Request.Form.GetValues(p.Name);
+				val = context.Request.Form.GetValues(paraName);
 
 			return (from s in val select int.Parse(s)).ToArray();
 		}

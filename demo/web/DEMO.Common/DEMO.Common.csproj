@@ -79,7 +79,7 @@
     <Compile Include="Extension\MyExtension.cs" />
     <Compile Include="Extension\MyUrlGenerator.cs" />
     <Compile Include="Extension\PagingExtension.cs" />
-    <Compile Include="Extension\TestDataTypeConvertor.cs" />
+    <Compile Include="Extension\IntArrayConvertor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

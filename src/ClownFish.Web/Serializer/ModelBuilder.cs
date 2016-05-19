@@ -152,6 +152,15 @@ namespace ClownFish.Web.Serializer
 			if( type == typeof(string[]) )
 				return val;
 
+
+			if( val == null ) {
+				// 检查是否存在自定义的类型转换器
+				IHttpDataConvert convert = HttpDataConvertFactory.GetConvert(type);
+				if( convert != null )
+					return convert.Convert(_context, name);
+			}
+
+
 			if( val == null || val.Length == 0 )
 				return null;
 

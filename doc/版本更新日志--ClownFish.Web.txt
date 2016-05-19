@@ -4,12 +4,15 @@
 ClownFish.Web 版本更新日志（以文件版本为准）
 ------------------------------------------
 
-3.16.512.1953
+3.16.519.1953
 ------------------------------------------
 1.调整：Action模型参数不再支持Field，只填充Property成员
 2.新增：BaseDataProvider公开为抽象类，允许快速实现自定义的Action数据模型绑定类型
 3.新增：FileDownloadResult，允许直接指定文件名下载
 4.整体重构，分离部分功能到ClownFish.Base项目
+5.删除：FrameworkExt类型（原先只有一个方法，现在改用HttpDataConvertFactory来代替）
+6.新增：HttpDataConvertFactory，用于维护自定义的HTTP数据转换器
+7.新增：支持Action参数默认值
 
 
 3.16.102.1953

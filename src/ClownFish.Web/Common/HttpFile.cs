@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Reflection;
 using System.IO;
+using ClownFish.Web.Serializer;
 
 namespace ClownFish.Web
 {
@@ -42,7 +43,7 @@ namespace ClownFish.Web
 			return result;
 		}
 
-		private static HttpFile CreateHttpFileFromHttpPostedFile(HttpPostedFile file)
+		internal static HttpFile CreateHttpFileFromHttpPostedFile(HttpPostedFile file)
 		{
 			HttpFile result = new HttpFile();
 			result.ContentLength = file.ContentLength;
@@ -59,26 +60,33 @@ namespace ClownFish.Web
 			
 			return result;
 		}
+	}
 
-		internal static HttpFile GetFromHttpRequest(HttpContext context, ParameterInfo p)
+
+	internal class HttpFileDataConvert : IHttpDataConvert
+	{
+		public object Convert(HttpContext context, string paraName)
 		{
-			HttpPostedFile file = context.Request.Files[p.Name];
+			HttpPostedFile file = context.Request.Files[paraName];
 
-			return CreateHttpFileFromHttpPostedFile(file);
+			return HttpFile.CreateHttpFileFromHttpPostedFile(file);
 		}
+	}
 
-		internal static HttpFile[] GetFilesFromHttpRequest(HttpContext context, ParameterInfo p)
+
+	internal class HttpFileArrayDataConvert : IHttpDataConvert
+	{
+		public object Convert(HttpContext context, string paraName)
 		{
 			HttpFile[] files = new HttpFile[context.Request.Files.Count];
 
 			for( int i = 0; i < context.Request.Files.Count; i++ ) {
 				HttpPostedFile file = context.Request.Files[i];
 
-				files[i] = CreateHttpFileFromHttpPostedFile(file);
+				files[i] = HttpFile.CreateHttpFileFromHttpPostedFile(file);
 			}
 
 			return files;
 		}
-
 	}
 }

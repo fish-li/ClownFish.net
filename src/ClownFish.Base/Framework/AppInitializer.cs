@@ -30,12 +30,12 @@ namespace ClownFish.Base.Framework
 				PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();
 
 				foreach( PreApplicationStartMethodAttribute attr in attrs ) {
-					Invoke(attr);
+					Invoke(attr, asm);
 				}
 			}
 		}
 
-		internal static void Invoke(PreApplicationStartMethodAttribute applicationStartMethodAttribute)
+		internal static void Invoke(PreApplicationStartMethodAttribute applicationStartMethodAttribute, Assembly asm)
 		{
 			MethodInfo method = applicationStartMethodAttribute.Type.GetMethod(applicationStartMethodAttribute.MethodName,
 						BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
@@ -57,7 +57,7 @@ namespace ClownFish.Base.Framework
 				if( ex.InnerException != null )
 
 					// 尽量将原始的错误信息暴露出来。
-					throw ex.InnerException;
+					throw new InvalidProgramException("程序集初始化异常，当前程序集：" + asm.FullName, ex.InnerException);
 				throw;
 			}
 		}
