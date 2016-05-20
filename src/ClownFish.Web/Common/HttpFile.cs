@@ -45,6 +45,9 @@ namespace ClownFish.Web
 
 		internal static HttpFile CreateHttpFileFromHttpPostedFile(HttpPostedFile file)
 		{
+			if( file == null )
+				return null;
+
 			HttpFile result = new HttpFile();
 			result.ContentLength = file.ContentLength;
 			result.ContentType = file.ContentType;
