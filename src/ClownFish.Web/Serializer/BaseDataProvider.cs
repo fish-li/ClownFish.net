@@ -151,7 +151,6 @@ namespace ClownFish.Web.Serializer
 
 
 			// 自定义的类型。首先创建实例，然后给所有成员赋值。
-			// 注意：这里不支持嵌套类型的自定义类型。	
 			return builder.Instance.CreateObjectFromHttp(context, p);
 		}
 

@@ -26,7 +26,7 @@ namespace ClownFish.Web.Serializer
 
 
 		/// <summary>
-		/// 从HTTP请求中构造参数对象
+		/// 从HTTP请求中构造复杂的参数对象（例如：自定义的数据类型）
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="parameterInfo"></param>
@@ -44,7 +44,8 @@ namespace ClownFish.Web.Serializer
 		}
 
 		/// <summary>
-		/// 根据参数反射信息创建一个对象（此时没有赋值）
+		/// 根据参数反射信息创建复杂的参数对象
+		/// 如果需要控制对象的创建过程，可以重写这个方法
 		/// </summary>
 		/// <param name="parameterInfo"></param>
 		/// <returns></returns>
@@ -72,7 +73,16 @@ namespace ClownFish.Web.Serializer
 				// 如果有这方面的需求，可以将这里改成递归的嵌套调用。
 
 				string httpname = GetPropertyMapHttpName(property);
-				val = GetValueByNameAndType(httpname, property.PropertyType.GetRealType(), paramName);
+				Type ptype = property.PropertyType.GetRealType();
+				val = GetValueFromHttpInternal(httpname, ptype, paramName);
+
+				if( val == null ) {
+					// 检查是否存在自定义的类型转换器
+					IHttpDataConvert convert = HttpDataConvertFactory.GetConvert(ptype);
+					if( convert != null )
+						val = convert.Convert(_context, httpname);
+				}
+
 				if( val != null )
 					property.SetValue(model, val);
 			}
@@ -116,7 +126,7 @@ namespace ClownFish.Web.Serializer
 
 
 		/// <summary>
-		/// 根据指定的名称及期望的数据类型，从HTTP上下文中加载数据
+		/// 根据指定的名称及期望的数据类型，从HTTP上下文中获取对应的数据
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="name"></param>
@@ -133,32 +143,25 @@ namespace ClownFish.Web.Serializer
 				throw new ArgumentNullException("name");
 
 			_context = context;
-			return GetValueByNameAndType(name, type, parentName);
+			return GetValueFromHttpInternal(name, type, parentName);
 		}
 
 
 		/// <summary>
-		/// 根据指定的名称及期望的数据类型，从HTTP上下文中加载数据
+		/// 根据指定的名称及期望的数据类型，从HTTP上下文中获取对应的数据，
+		/// GetValueFromHttp方法的内部实现（可重写）
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="type"></param>
 		/// <param name="parentName"></param>
 		/// <returns></returns>
-		protected virtual object GetValueByNameAndType(string name, Type type, string parentName)
+		protected virtual object GetValueFromHttpInternal(string name, Type type, string parentName)
 		{
-			string[] val = GetValue(name, parentName);
+			string[] val = GetHttpValues(name, parentName);
 
 			// 如果是字符串类型，就不用类型转换，直接返回。
 			if( type == typeof(string[]) )
 				return val;
-
-
-			if( val == null ) {
-				// 检查是否存在自定义的类型转换器
-				IHttpDataConvert convert = HttpDataConvertFactory.GetConvert(type);
-				if( convert != null )
-					return convert.Convert(_context, name);
-			}
 
 
 			if( val == null || val.Length == 0 )
@@ -181,12 +184,13 @@ namespace ClownFish.Web.Serializer
 		}
 
 		/// <summary>
-		/// 根据名字从HTTP上下文中获取数据
+		/// 根据名称读取相关的HTTP参数值
+		/// 如果名称对应的参数没有数据，则根据父级名称再拼接一个名称重试
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="parentName"></param>
 		/// <returns></returns>
-		protected virtual string[] GetValue(string name, string parentName)
+		protected virtual string[] GetHttpValues(string name, string parentName)
 		{
 			string[] val = GetHttpValues(name);
 			if( val == null ) {
