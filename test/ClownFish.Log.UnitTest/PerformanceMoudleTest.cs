@@ -32,7 +32,7 @@ namespace ClownFish.Log.UnitTest
 
 
 				System.Threading.Thread.Sleep(WriterFactory.Config.TimerPeriod + 1000);
-				// 暂停异常写入
+				// 暂停异步写入
 				SetAsyncWriteEnabled(false);
 
 				// 这个调用仅仅为了覆盖代码，没什么具体意义
@@ -64,7 +64,7 @@ namespace ClownFish.Log.UnitTest
 				PerformanceInfo performanceInfo = list[0];
 				Assert.AreEqual("http://www.bing.com/sfdjosfdj/slfjsfj/sdjfosf.aspx", performanceInfo.HttpInfo.Url);
 
-				// 启用异常写入
+				// 启用异步写入
 				SetAsyncWriteEnabled(true);
 
 				module.Dispose();
@@ -87,38 +87,45 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test2()
 		{
-			// 测试 SQL 执行超时场景
+			// 测试 HTTP 请求执行超时场景
+			using( WebContext context = HttpInfoTest.CreateWebContext() ) {
+				context.SetUserName("fish li");
+				// 测试 SQL 执行超时场景
 
-			PerformanceModule module = new PerformanceModule();
+				PerformanceModule module = new PerformanceModule();
 
-			System.Threading.Thread.Sleep(WriterFactory.Config.TimerPeriod + 1000);
-			// 暂停异常写入
-			SetAsyncWriteEnabled(false);
-
-
-			TimeSpan timeSpan = TimeSpan.FromSeconds(2d);
-			DbCommand command = SqlInfoTest.CreateDbCommand();
-
-			MethodInfo method = module.GetType().GetMethod("CheckExecuteTime", BindingFlags.Static | BindingFlags.NonPublic);
-			
-			// 第一次调用，第一个参数command = null
-			method.Invoke(null, new object[] { null, timeSpan });
-
-			// 第二次调用
-			method.Invoke(null, new object[] { command, timeSpan });
+				System.Threading.Thread.Sleep(WriterFactory.Config.TimerPeriod + 1000);
+				// 暂停异步写入
+				SetAsyncWriteEnabled(false);
 
 
+				TimeSpan timeSpan = TimeSpan.FromSeconds(2d);
+				DbCommand command = SqlInfoTest.CreateDbCommand();
 
-			// 获取调用 LogHelper.Write(info); 的数据
-			List<PerformanceInfo> list = GetQueueData();
+				// 第一次调用，第一个参数command = null
+				PerformanceModule.CheckDbExecuteTime(null, timeSpan);
 
-			Assert.AreEqual(1, list.Count);
+				// 第二次调用
+				PerformanceModule.CheckDbExecuteTime(command, timeSpan);
 
-			PerformanceInfo performanceInfo = list[0];
-			Assert.AreEqual(command.CommandText, performanceInfo.SqlInfo.SqlText.ToString());
 
-			// 启用异常写入
-			SetAsyncWriteEnabled(true);
+
+				// 获取调用 LogHelper.Write(info); 的数据
+				List<PerformanceInfo> list = GetQueueData();
+
+				Assert.AreEqual(1, list.Count);
+
+				PerformanceInfo performanceInfo = list[0];
+				Assert.AreEqual(command.CommandText, performanceInfo.SqlInfo.SqlText.ToString());
+
+				Assert.IsNotNull(performanceInfo.HttpInfo);
+				Assert.AreEqual(context.HttpContext.Request.Url.OriginalString, performanceInfo.HttpInfo.Url);
+				Console.WriteLine(performanceInfo.HttpInfo.Url);
+				Assert.AreEqual("fish li", performanceInfo.HttpInfo.UserName);
+
+				// 启用异步写入
+				SetAsyncWriteEnabled(true);
+			}
 		}
 	}
 }

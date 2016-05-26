@@ -59,10 +59,20 @@ namespace ClownFish.Log
 			}
 		}
 
-		internal static void CheckExecuteTime(DbCommand command, TimeSpan timeSpan)
+		/// <summary>
+		/// 判断数据库命令是否执行超时，如果超过性能阀值将会记录到日志中，
+		/// 如果需要做数据库的性能日志，请调用这个方法。
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="timeSpan"></param>
+		public static void CheckDbExecuteTime(DbCommand command, TimeSpan timeSpan)
 		{
 			if( command == null )
 				return;
+
+			// 确保配置文件已读取
+			WriterFactory.Init();
+
 
 			if( timeSpan.TotalMilliseconds >= WriterFactory.Config.Performance.DbExecuteTimeout ) {
 				PerformanceInfo info = PerformanceInfo.CreateBySql(

@@ -56,10 +56,16 @@ namespace ClownFish.Log.Model
 		/// <returns></returns>
 		public static HttpInfo Create(HttpContext context)
 		{
-			//HttpContext context = HttpContext.Current;
-			if( context == null || context.Request == null )
+			try {
+				//HttpContext context = HttpContext.Current;
+				if( context == null 
+					|| context.Request == null	// 当程序在初始化时，访问Request属性可能会出现异常
+					)
+					return null;
+			}
+			catch {
 				return null;
-
+			}
 
 			HttpInfo info = new HttpInfo();
 			info.SetHttpInfo(context);

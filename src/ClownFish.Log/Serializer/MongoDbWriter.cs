@@ -185,7 +185,10 @@ namespace ClownFish.Log.Serializer
 				throw new ArgumentNullException("func");
 
 			IMongoCollection<T> mongoCollection = this.GetCollection<T>();
-			return mongoCollection.AsQueryable().Where(func).OrderByDescending(m => m.Time).ToList();
+			return mongoCollection.AsQueryable()
+							.Where(func)
+							.OrderByDescending(m => m.Time)
+							.ToList();
 		}
 
 
@@ -209,7 +212,10 @@ namespace ClownFish.Log.Serializer
 
 			totalCount = mongoQueryable.Count();
 
-			return mongoQueryable.OrderByDescending(m => m.Time).Skip((pageIndex) * pageSize).Take(pageSize).ToList();
+			return mongoQueryable
+							.OrderByDescending(m => m.Time)
+							.Skip((pageIndex) * pageSize).Take(pageSize)
+							.ToList();
 
 		}
 

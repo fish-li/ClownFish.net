@@ -95,6 +95,9 @@ namespace ClownFish.Log.Model
 			info.FillBaseInfo();
 			info.SqlInfo = SqlInfo.Create(command);
 
+			// 尽量尝试记录本次HTTP请求相关信息
+			info.HttpInfo = HttpInfo.Create(HttpContext.Current);
+
 			info.PerformanceType = "SQL";
 			info.ExecuteTime = executeTime;
 			info.Message = message;

@@ -71,6 +71,7 @@ namespace ClownFish.Log.UnitTest
 			MongoDbWriter writer = new MongoDbWriter();
 			List<ExceptionInfo> list2 = writer.GetList<ExceptionInfo>(
 					x => x.InfoGuid == list[0].InfoGuid || x.InfoGuid == list[1].InfoGuid);
+			list2 = (from x in list2 orderby x.Time descending select x).ToList();
 
 
 			Assert.AreEqual(2, list2.Count);

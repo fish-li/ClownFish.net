@@ -51,7 +51,7 @@ namespace ClownFish.Log
 		public static event EventHandler<LogExceptionEventArgs> OnError;
 		
 		/// <summary>
-		/// 是否启用异常写入，默认就是启动，在测试时可以根据需要禁用。
+		/// 是否启用异步写入，默认就是启动，在测试时可以根据需要禁用。
 		/// </summary>
 		private static bool s_enableAsyncWrite = true;
 
