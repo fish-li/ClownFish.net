@@ -103,31 +103,42 @@ namespace ClownFish.Web.Proxy
 				}
 
 				// 发送请求，并等待返回
+				WebException lastException = null;
 				HttpWebResponse webResponse = null;
 				try {
 					webResponse = (HttpWebResponse)await webRequest.GetResponseAsync();
 				}
 				catch( WebException webException ) {
 					webResponse = (HttpWebResponse)webException.Response;
+					lastException = webException;
 				}
 
 
-				if( webResponse == null )
-					return;		// 有时候会莫名奇妙地进入这里，实在是没法解释，所以只能是不处理了。
+				if( webResponse == null ) {
+					if( lastException != null ) {
+						// 重写错误结果
+						context.Response.StatusCode = 500;
 
+						IActionResult result = new TextResult(lastException.ToString());
+						result.Ouput(context);
+					}
 
-				using( webResponse ) {
-					// 获取响应流，这里不考虑GZIP压缩的情况（因为不需要考虑）
-					using( Stream responseStream = webResponse.GetResponseStream() ) {
+					return;     // 有时候没有异常，却会莫名奇妙地进入这里，实在是没法解释，所以只能是不处理了。
+				}
+				else {
+					using( webResponse ) {
+						// 获取响应流，这里不考虑GZIP压缩的情况（因为不需要考虑）
+						using( Stream responseStream = webResponse.GetResponseStream() ) {
 
-						// 写响应头
-						CopyResponseHeaders(context, webResponse);
+							// 写响应头
+							CopyResponseHeaders(context, webResponse);
 
-						// 写响应流
-						//responseStream.CopyTo(context.Response.OutputStream);
-						// 如果是 Thunk 编码，responseStream.CopyTo不能得到正确的结果（上面的代码）。
-						// 所以，重新实现了流的复制版本，就是下面的方法。
-						CopyStream(responseStream, context.Response.OutputStream);
+							// 写响应流
+							//responseStream.CopyTo(context.Response.OutputStream);
+							// 如果是 Thunk 编码，responseStream.CopyTo不能得到正确的结果（上面的代码）。
+							// 所以，重新实现了流的复制版本，就是下面的方法。
+							CopyStream(responseStream, context.Response.OutputStream);
+						}
 					}
 				}
 			}

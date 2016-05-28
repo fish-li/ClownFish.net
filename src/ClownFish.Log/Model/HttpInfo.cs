@@ -33,6 +33,11 @@ namespace ClownFish.Log.Model
 		/// </summary>
 		public string Url { get; set; }
 
+		/// <summary>
+		/// 页面原始URL
+		/// </summary>
+		public string RawUrl { get; set; }
+
 
 		/// <summary>
 		/// 浏览器类型。注意：此信息可能不准确。
@@ -94,6 +99,7 @@ namespace ClownFish.Log.Model
 
 
 			this.Url = context.Request.Url.ToString();
+			this.RawUrl = context.Request.RawUrl;
 
 			if( context.Request.Browser != null )
 				this.Browser = context.Request.Browser.Browser + context.Request.Browser.MajorVersion;

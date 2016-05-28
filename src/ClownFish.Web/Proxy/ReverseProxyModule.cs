@@ -82,7 +82,7 @@ namespace ClownFish.Web.Proxy
 			if( (siteAddress.StartsWith("http://") == false) && (siteAddress.StartsWith("https://") == false) )
 				throw new ArgumentException("参数要求以 http:// 或者 https:// 开头的绝对地址URL格式。");
 
-			if( siteAddress.EndsWith("\\") )	// 因为要和 Request.RawUrl 拼接，所以需要去掉【反斜杠】字符
+			if( siteAddress.EndsWith("/") )	// 因为要和 Request.RawUrl 拼接，所以需要去掉【反斜杠】字符
 				siteAddress = siteAddress.Substring(0, siteAddress.Length - 1);
 
 			string value = Convert.ToBase64String(Encoding.UTF8.GetBytes(siteAddress));	// 编码，防止出现特殊字符影响
