@@ -31,18 +31,34 @@ namespace ClownFish.Web.Proxy
 		{
 			HttpApplication app = (HttpApplication)sender;
 
-			string proxyAddress = GetProxySiteAddress(app);
-			if( string.IsNullOrEmpty(proxyAddress) )
+			string destAddress = GetRequestUrl(app);
+			if( destAddress == null )
 				return;
 
 
-			string destAddress = proxyAddress + app.Request.RawUrl;
 			app.Context.Items[ProxyTransferHandler.TargetUrlKeyName] = destAddress;
 
 			IHttpHandler hander = new ProxyTransferHandler();
 			app.Context.RemapHandler(hander);
 
-			app.Context.Response.Headers.Add("x-ReverseProxyModule", destAddress);	// 用于调试诊断
+			app.Context.Response.Headers.Add("X-ReverseProxyModule", destAddress);	// 用于调试诊断
+		}
+
+		/// <summary>
+		/// 获取实际要转发的URL
+		/// </summary>
+		/// <param name="app"></param>
+		/// <returns></returns>
+		protected virtual string GetRequestUrl(HttpApplication app)
+		{
+			// 扩展点：如果需要排除特定的文件或者目录，可重写这个方法
+
+			string proxyAddress = GetProxySiteAddress(app);
+			if( string.IsNullOrEmpty(proxyAddress) )
+				return null;
+
+
+			return proxyAddress + app.Request.RawUrl;
 		}
 
 		/// <summary>
@@ -52,7 +68,7 @@ namespace ClownFish.Web.Proxy
 		/// <returns></returns>
 		protected virtual string GetProxySiteAddress(HttpApplication app)
 		{
-			// ReverseProxyModule 只管读Cookie中的目标站点，
+			// 扩展点：如果不用COOKIE标记转发目标网站，可重写这个方法
 
 			HttpCookie cookie = app.Request.Cookies[s_ProxySiteCookieName];
 			if( cookie != null ) {
@@ -67,7 +83,7 @@ namespace ClownFish.Web.Proxy
 			return null;
 		}
 
-
+		
 
 
 		/// <summary>

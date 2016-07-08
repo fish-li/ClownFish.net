@@ -8,12 +8,16 @@ using System.Web;
 using System.Xml.Serialization;
 using ClownFish.Base.Xml;
 using ClownFish.Log;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace ClownFish.Log.Model
 {
 	/// <summary>
 	/// 包含记录日志的HTTP相关信息
 	/// </summary>
+#if _MongoDB_
+	[BsonIgnoreExtraElements]
+#endif
 	public class HttpInfo
 	{
 		/// <summary>

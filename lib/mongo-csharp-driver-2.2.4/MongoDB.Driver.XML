@@ -952,7 +952,7 @@
             An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains distinct elements from <paramref name="source" />.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
             <summary>
             Returns the first element of a sequence.
             </summary>
@@ -963,7 +963,7 @@
             The first element in <paramref name="source" />.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Returns the first element of a sequence that satisfies a specified condition.
             </summary>
@@ -975,7 +975,7 @@
             The first element in <paramref name="source" /> that passes the test in <paramref name="predicate" />.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
             <summary>
             Returns the first element of a sequence, or a default value if the sequence contains no elements.
             </summary>
@@ -986,7 +986,7 @@
             default(<typeparamref name="TSource" />) if <paramref name="source" /> is empty; otherwise, the first element in <paramref name="source" />.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Returns the first element of a sequence that satisfies a specified condition or a default value if no such element is found.
             </summary>
@@ -1201,7 +1201,7 @@
             An <see cref="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1"/> whose elements are sorted in descending order according to a key.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.Sample``1(System.Linq.IQueryable{``0},System.Int64)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.Sample``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Int64)">
             <summary>
             Returns a sample of the elements in the <paramref name="source"/>.
             </summary>
@@ -1254,7 +1254,7 @@
             An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements are the result of invoking the one-to-many projection function <paramref name="collectionSelector" /> on each element of <paramref name="source" /> and then mapping each of those sequence elements and their corresponding <paramref name="source" /> element to a result element.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
             <summary>
             Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
             </summary>
@@ -1265,7 +1265,7 @@
             The single element of the input sequence.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Returns the only element of a sequence that satisfies a specified condition, and throws an exception if more than one such element exists.
             </summary>
@@ -1277,7 +1277,7 @@
             The single element of the input sequence that satisfies the condition in <paramref name="predicate" />.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
             <summary>
             Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.
             </summary>
@@ -1288,7 +1288,7 @@
             The single element of the input sequence, or default(<typeparamref name="TSource" />) if the sequence contains no elements.
             </returns>
         </member>
-        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+        <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
             <summary>
             Returns the only element of a sequence that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
             </summary>

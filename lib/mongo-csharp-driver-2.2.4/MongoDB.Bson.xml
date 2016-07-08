@@ -11431,6 +11431,9 @@
             The value serializer.
             </value>
         </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.DictionarySerializerBase`3.TryGetItemSerializationInfo(MongoDB.Bson.Serialization.BsonSerializationInfo@)">
+            <inheritdoc/>
+        </member>
         <member name="M:MongoDB.Bson.Serialization.Serializers.DictionarySerializerBase`3.TryGetMemberSerializationInfo(System.String,MongoDB.Bson.Serialization.BsonSerializationInfo@)">
             <inheritdoc/>
         </member>
@@ -12493,6 +12496,9 @@
             <param name="context">The serialization context.</param>
             <param name="args">The serialization args.</param>
             <param name="value">The object.</param>
+        </member>
+        <member name="M:MongoDB.Bson.Serialization.Serializers.KeyValuePairSerializer`2.TryGetMemberSerializationInfo(System.String,MongoDB.Bson.Serialization.BsonSerializationInfo@)">
+            <inheritdoc />
         </member>
         <member name="T:MongoDB.Bson.Serialization.Serializers.LazyBsonArraySerializer">
             <summary>

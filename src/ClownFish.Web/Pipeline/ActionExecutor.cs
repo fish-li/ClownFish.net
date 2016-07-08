@@ -263,7 +263,7 @@ namespace ClownFish.Web
 
 		private void ExecuteBeginRequest()
 		{
-			this.HttpContext.Response.AppendHeader("X-ClownFish.Web-Version", DllVersion);
+			this.HttpContext.Response.AppendHeader("X-ClownFish.Web", DllVersion);
 
 			EventHandler<ActionEventArgs> eventHandler = this.BeginRequest;
 			if( eventHandler != null )

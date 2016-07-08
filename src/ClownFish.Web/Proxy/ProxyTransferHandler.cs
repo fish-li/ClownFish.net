@@ -26,7 +26,7 @@ namespace ClownFish.Web.Proxy
 		/// <summary>
 		/// 用于【外部模块】给 ProxyTransferHandler 传递目标网址
 		/// </summary>
-		internal static readonly string TargetUrlKeyName = "x-target-url";
+		public static readonly string TargetUrlKeyName = "x-target-url";
 
 
 		static ProxyTransferHandler()

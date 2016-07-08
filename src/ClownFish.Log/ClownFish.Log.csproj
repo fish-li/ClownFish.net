@@ -45,17 +45,17 @@
     <AssemblyOriginatorKeyFile>../ClownFish.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Bson, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Bson, Version=0.0.5995.32014, Culture=neutral, PublicKeyToken=1b70f237d867e1bb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.4\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Driver, Version=0.0.5995.32015, Culture=neutral, PublicKeyToken=1b70f237d867e1bb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.4\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.2.0.262, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Driver.Core, Version=0.0.5995.32014, Culture=neutral, PublicKeyToken=1b70f237d867e1bb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\mongo-csharp-driver-2.2.3\MongoDB.Driver.Core.dll</HintPath>
+      <HintPath>..\..\lib\mongo-csharp-driver-2.2.4\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
