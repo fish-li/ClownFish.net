@@ -9,6 +9,7 @@ using System.Web;
 using DEMO.Model.PageData;
 using ClownFish.Web;
 using ClownFish.Web.Client;
+using ClownFish.Base;
 
 namespace DEMO.Controllers.TestTask
 {

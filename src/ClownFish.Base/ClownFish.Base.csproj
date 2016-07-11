@@ -58,7 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DataTimeExtensions.cs" />
     <Compile Include="Common\LazyObject.cs" />
+    <Compile Include="Common\NameValue.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TestHelper.cs" />
     <Compile Include="Files\CacheResult.cs" />
     <Compile Include="Files\FileDependencyManager.cs" />

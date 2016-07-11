@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClownFish.Web
+namespace ClownFish.Base
 {
 	/// <summary>
 	/// 表示一组用于HTTP传输的 【名称/值】 对。

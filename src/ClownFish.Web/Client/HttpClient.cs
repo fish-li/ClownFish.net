@@ -184,8 +184,6 @@ namespace ClownFish.Web.Client
 
 			Request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
 			Request.Method = "GET";
-			//Request.ContentType = "application/x-www-form-urlencoded";
-			//Request.UserAgent = "ClownFish.Web.HttpClient/" + ActionExecutor.DllVersion;
 			Request.ServicePoint.Expect100Continue = false;
 			
 			return Request;

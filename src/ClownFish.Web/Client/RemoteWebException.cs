@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 
 namespace ClownFish.Web.Client
 {

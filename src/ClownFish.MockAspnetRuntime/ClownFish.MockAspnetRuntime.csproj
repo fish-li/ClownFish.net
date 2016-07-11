@@ -63,6 +63,10 @@
     <Compile Include="WebHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
+      <Project>{34A299A8-A199-4176-BACB-BC1C80814C50}</Project>
+      <Name>ClownFish.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClownFish.Web\ClownFish.Web.csproj">
       <Project>{0151e882-2de2-44bf-bcf0-b7d10b60be62}</Project>
       <Name>ClownFish.Web</Name>

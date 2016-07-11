@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DEMO.Common;
 using ClownFish.Web;
-
+using ClownFish.Base;
 
 namespace DEMO.Model
 {

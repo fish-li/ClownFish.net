@@ -13,6 +13,7 @@ using System.Security.Principal;
 using ClownFish.Web.Client;
 using ClownFish.Web;
 using System.Web.Security;
+using ClownFish.Base;
 
 namespace ClownFish.MockAspnetRuntime
 {

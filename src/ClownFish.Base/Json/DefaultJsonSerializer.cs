@@ -32,7 +32,7 @@ namespace ClownFish.Base.Json
 	}
 
 	/// <summary>
-	/// Json序列化的默认封装，不能建议直接使用，提供这个类型主要是为了可以替换JSON序列化的实现。
+	/// Json序列化的默认封装，不建议直接使用，提供这个类型主要是为了可以替换JSON序列化的实现。
 	/// 推荐使用JsonExtensions提供的方法。
 	/// </summary>
 	public class DefaultJsonSerializer

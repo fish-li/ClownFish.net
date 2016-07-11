@@ -77,9 +77,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Routing">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
@@ -114,7 +111,6 @@
     <Compile Include="Cache\SetOutputCacheModule.cs" />
     <Compile Include="Client\FormDataCollection.cs" />
     <Compile Include="Common\WebRuntime.cs" />
-    <Compile Include="Common\NameValue.cs" />
     <Compile Include="Config\ActionSectionElement.cs" />
     <Compile Include="Config\PipelineSectionElement.cs" />
     <Compile Include="Config\RouteTableConfig.cs" />

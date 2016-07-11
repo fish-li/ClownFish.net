@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
+using ClownFish.Base;
 using ClownFish.Web.Debug404;
 using ClownFish.Web.Reflection;
 
