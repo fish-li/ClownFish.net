@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base.Http;
 using ClownFish.Web;
 
 namespace DEMO.Controllers.Ajax

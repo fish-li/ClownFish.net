@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -46,9 +47,11 @@ namespace ClownFish.Web
 			this.KeepTypeInfo = keepTypeInfo;
 		}
 
+
 		void IActionResult.Ouput(HttpContext context)
 		{
-			string jsonpCallbackParameterName = FrameworkConfig.Instance.Action.JsonpCallback;
+			string jsonpCallbackParameterName = ConfigurationManager.AppSettings["ClownFish.Web:JsonpCallback-ParameterName"]
+												?? FrameworkConfig.Instance.Action.JsonpCallback;
 
 			string jsonpCallback = context.TryGetJsonpCallback(jsonpCallbackParameterName);
 			if( jsonpCallback != null ) {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base.Common;
+using ClownFish.Base;
 using ClownFish.Log.Configuration;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;

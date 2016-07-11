@@ -5,10 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base;
+using ClownFish.Base.Http;
 using ClownFish.Base.Xml;
 
-namespace ClownFish.Web.Client
+namespace ClownFish.Base.WebClient
 {
 	internal class RequestWriter
 	{

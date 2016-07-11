@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ClownFish.Base.Common
+namespace ClownFish.Base
 {
 
 	/// <summary>

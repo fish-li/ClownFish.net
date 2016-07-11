@@ -7,11 +7,12 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using ClownFish.Base.Http;
 using ClownFish.Base.Reflection;
-using ClownFish.Web.Reflection;
 
 
-namespace ClownFish.Web.Client
+
+namespace ClownFish.Base.WebClient
 {
 	/// <summary>
 	/// 表示HTTP表单的数据集合（key=value ）

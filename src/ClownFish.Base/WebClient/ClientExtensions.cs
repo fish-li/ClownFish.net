@@ -4,10 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base;
 using ClownFish.Base.TypeExtend;
 
-namespace ClownFish.Web.Client
+namespace ClownFish.Base.WebClient
 {
 	/// <summary>
 	/// 定义HttpClient的扩展方法的工具类
@@ -54,17 +53,16 @@ namespace ClownFish.Web.Client
 			string requestUrl = option.Url;
 			if( option.Data != null && urlQuery ) {	//GET 请求，需要将参数合并到URL，形成查询字符串参数
 				if( option.Url.IndexOf('?') < 0 )
-					requestUrl = option.Url + "?" + HttpClient.GetQueryString(option.Data);
+					requestUrl = option.Url + "?" + GetQueryString(option.Data);
 				else
-					requestUrl = option.Url + "&" + HttpClient.GetQueryString(option.Data);
+					requestUrl = option.Url + "&" + GetQueryString(option.Data);
 			}
 				
 			HttpWebRequest request = client.CreateWebRequest(requestUrl);
 
 			SetWebRequest(request, option);
 
-			if( option.SetRequestAction != null )
-				option.SetRequestAction(request);
+			option.SetRequestAction?.Invoke(request);		// 调用委托
 
 
 			if( option.Data != null && urlQuery == false )	// POST提交数据
@@ -72,8 +70,7 @@ namespace ClownFish.Web.Client
 
 			using( HttpWebResponse response = client.GetResponse() ) {
 
-				if( option.ReadResponseAction != null )
-					option.ReadResponseAction(response);
+				option.ReadResponseAction?.Invoke(response);	// 调用委托
 
 				return client.GetResult<T>(response);
 			}
@@ -101,31 +98,46 @@ namespace ClownFish.Web.Client
 			string requestUrl = option.Url;
 			if( option.Data != null && urlQuery ) {	//GET 请求，需要将参数合并到URL，形成查询字符串参数
 				if( option.Url.IndexOf('?') < 0 )
-					requestUrl = option.Url + "?" + HttpClient.GetQueryString(option.Data);
+					requestUrl = option.Url + "?" + GetQueryString(option.Data);
 				else
-					requestUrl = option.Url + "&" + HttpClient.GetQueryString(option.Data);
+					requestUrl = option.Url + "&" + GetQueryString(option.Data);
 			}
 
 			HttpWebRequest request = client.CreateWebRequest(requestUrl);
 
 			SetWebRequest(request, option);
 
-			if( option.SetRequestAction != null )
-				option.SetRequestAction(request);
-
+			option.SetRequestAction?.Invoke(request);       // 调用委托
 
 			if( option.Data != null && urlQuery == false )	// POST提交数据
 				await client.SetRequestDataAsync(option.Data, option.Format);
 
 			using( HttpWebResponse response = await client.GetResponseAsync() ) {
 
-				if( option.ReadResponseAction != null )
-					option.ReadResponseAction(response);
+				option.ReadResponseAction?.Invoke(response);	// 调用委托
 
 				return client.GetResult<T>(response);
 			}
 		}
 
+
+		/// <summary>
+		/// 生成查询字符串参数
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		private static string GetQueryString(object data)
+		{
+			if( data == null )
+				return null;
+
+			if( data.GetType() == typeof(string) )
+				return (string)data;
+
+
+			FormDataCollection form = FormDataCollection.Create(data);
+			return form.ToString();
+		}
 
 		private static void SetWebRequest(HttpWebRequest request, HttpOption option)
 		{
@@ -153,6 +165,5 @@ namespace ClownFish.Web.Client
 				request.AllowAutoRedirect = false;
 
 		}
-
 	}
 }

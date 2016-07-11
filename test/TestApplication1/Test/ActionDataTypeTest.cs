@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Web.Client;
+using ClownFish.Base.WebClient;
 using ClownFish.TestApplication1.Common;
 
 namespace ClownFish.TestApplication1.Test

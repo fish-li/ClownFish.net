@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClownFish.Web
+namespace ClownFish.Base.Http
 {
 	/// <summary>
 	/// 指示Action结果的序列化方式

@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Web;
 using ClownFish.Web.Reflection;
-using ClownFish.Web.Client;
 
 namespace ClownFish.Web.Serializer
 {

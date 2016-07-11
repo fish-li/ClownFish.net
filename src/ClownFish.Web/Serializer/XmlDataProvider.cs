@@ -7,8 +7,7 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
-using ClownFish.Base.Common;
-using ClownFish.Base.TypeExtend;
+using ClownFish.Base;
 using ClownFish.Web.Reflection;
 
 namespace ClownFish.Web.Serializer

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Base.Xml;
+using ClownFish.Base.Http;
 
-namespace ClownFish.Web.Client
+
+namespace ClownFish.Base.WebClient
 {
 	/// <summary>
 	/// 表示一次HTTP请求的描述信息

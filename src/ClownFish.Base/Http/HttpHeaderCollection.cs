@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Web;
 
-namespace ClownFish.Web
+namespace ClownFish.Base.Http
 {
 	/// <summary>
 	/// HTTP头的存储集合

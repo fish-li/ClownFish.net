@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Base.Http;
 using ClownFish.Base.Reflection;
 using ClownFish.Base.TypeExtend;
+using ClownFish.Base.WebClient;
 using ClownFish.Web.Reflection;
 using ClownFish.Web.Serializer;
 
@@ -494,7 +496,7 @@ namespace ClownFish.Web
 				actionResult = new TextResult(result);
 
 			else if( format == SerializeFormat.Form ) {
-				string text = ClownFish.Web.Client.FormDataCollection.Create(result).ToString();
+				string text = FormDataCollection.Create(result).ToString();
 				actionResult = new TextResult(text);
 			}
 

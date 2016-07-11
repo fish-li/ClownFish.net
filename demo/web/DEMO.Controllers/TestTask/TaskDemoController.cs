@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using System.Web;
 using DEMO.Model.PageData;
 using ClownFish.Web;
-using ClownFish.Web.Client;
 using ClownFish.Base;
+using ClownFish.Base.WebClient;
 
 namespace DEMO.Controllers.TestTask
 {

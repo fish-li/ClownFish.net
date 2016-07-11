@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Base.Http;
 using ClownFish.Web;
 
 namespace DEMO.Controllers.Ajax

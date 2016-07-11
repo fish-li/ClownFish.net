@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ClownFish.Base;
 using ClownFish.Base.Framework;
+using ClownFish.Base.Http;
 using ClownFish.Web;
 using ClownFish.Web.Reflection;
 

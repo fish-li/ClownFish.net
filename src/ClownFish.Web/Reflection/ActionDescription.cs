@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using ClownFish.Base.Common;
+using ClownFish.Base;
 using ClownFish.Base.Reflection;
 
 namespace ClownFish.Web.Reflection

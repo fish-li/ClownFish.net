@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -31,7 +32,9 @@ namespace ClownFish.Web.Debug404
 		{
 			context.Response.StatusCode = 404;
 
-			string http404PagePath = FrameworkConfig.Instance.Pipeline.Http404PagePath;
+			string http404PagePath = ConfigurationManager.AppSettings["ClownFish.Web:http404TemplatePagePath"]
+									?? FrameworkConfig.Instance.Pipeline.Http404PagePath;
+
 			IActionResult result = new PageResult(http404PagePath, DiagnoseResult);
 			result.Ouput(context);
 		}

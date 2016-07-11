@@ -5,8 +5,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Base.TypeExtend;
+using ClownFish.Base.WebClient;
 using ClownFish.Web;
-using ClownFish.Web.Client;
+
 
 
 namespace ClownFish.TestApplication1.Common

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using ClownFish.Base.Common;
 using ClownFish.Base.Reflection;
 
 namespace ClownFish.Base.TypeExtend

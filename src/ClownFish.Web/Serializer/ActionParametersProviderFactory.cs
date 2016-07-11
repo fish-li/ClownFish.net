@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using ClownFish.Base;
-using ClownFish.Base.Common;
-using ClownFish.Web;
 
 namespace ClownFish.Web.Serializer
 {

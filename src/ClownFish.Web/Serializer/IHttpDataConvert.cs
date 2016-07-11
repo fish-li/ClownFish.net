@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ClownFish.Web
+namespace ClownFish.Web.Serializer
 {
 	/// <summary>
 	/// HTTP数据转换器接口，用于实现从HttpContext中加载特定的类型数据

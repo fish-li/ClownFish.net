@@ -10,10 +10,10 @@ using System.Web.Hosting;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Security.Principal;
-using ClownFish.Web.Client;
 using ClownFish.Web;
 using System.Web.Security;
 using ClownFish.Base;
+using ClownFish.Base.WebClient;
 
 namespace ClownFish.MockAspnetRuntime
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Reflection;
-using ClownFish.Web;
+using ClownFish.Web.Serializer;
 
 namespace DEMO.Common.Extension
 {

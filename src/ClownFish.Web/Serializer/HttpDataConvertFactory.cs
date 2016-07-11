@@ -6,9 +6,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Base.Http;
 using ClownFish.Base.Reflection;
 
-namespace ClownFish.Web
+namespace ClownFish.Web.Serializer
 {
 	/// <summary>
 	/// IHttpDataConvert接口与实现的管理工厂类

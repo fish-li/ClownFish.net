@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using ClownFish.Base;
+using ClownFish.Base.Http;
 using ClownFish.Base.Xml;
 using ClownFish.Web;
 using ClownFish.Web.UnitTest.Models;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Web.UnitTest.Common

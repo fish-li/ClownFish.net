@@ -8,9 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using ClownFish.Base.Common;
+using ClownFish.Base;
 using ClownFish.Base.Reflection;
-using ClownFish.Base.TypeExtend;
 using ClownFish.Web.Reflection;
 
 namespace ClownFish.Web.Serializer

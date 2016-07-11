@@ -5,9 +5,9 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using ClownFish.Base;
 
-namespace ClownFish.Web.Client
+
+namespace ClownFish.Base.WebClient
 {
 	/// <summary>
 	/// 在HTTP调用时发生的远程服务端异常。

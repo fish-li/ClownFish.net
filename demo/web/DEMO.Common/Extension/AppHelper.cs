@@ -3,6 +3,7 @@ using System.Web;
 using System.IO;
 using DEMO.Common.Extension;
 using ClownFish.Web;
+using ClownFish.Web.Serializer;
 
 namespace DEMO.Common
 {

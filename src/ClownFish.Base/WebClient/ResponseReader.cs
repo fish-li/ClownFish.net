@@ -7,12 +7,10 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Base.Json;
 using ClownFish.Base.Xml;
 
 
-namespace ClownFish.Web.Client
+namespace ClownFish.Base.WebClient
 {
 	internal class ResponseReader : IDisposable
 	{
@@ -67,7 +65,6 @@ namespace ClownFish.Web.Client
 				// 转换结果
 				return ConvertResult<T>(responseText);
 			}
-
 		}
 
 

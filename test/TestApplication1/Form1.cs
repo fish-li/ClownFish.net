@@ -13,7 +13,7 @@ using ClownFish.TestApplication1.Test;
 using System.Threading;
 using Newtonsoft.Json;
 using System.Net;
-using ClownFish.Web.Client;
+using ClownFish.Base.WebClient;
 
 namespace ClownFish.TestApplication1
 {

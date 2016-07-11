@@ -9,11 +9,10 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ClownFish.Web;
-using ClownFish.Web.Reflection;
+using ClownFish.Base.Http;
 using ClownFish.Base.TypeExtend;
 
-namespace ClownFish.Web.Client
+namespace ClownFish.Base.WebClient
 {
 	/// <summary>
 	/// 一个用于发送HTTP请求的客户端
@@ -130,13 +129,16 @@ namespace ClownFish.Web.Client
 		}
 
 
+		internal static readonly string DllVersion
+			= System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(HttpClient).Assembly.Location).FileVersion;
+
 		private void ExecuteBeforeSendRequestEvent()
 		{
 			if( string.IsNullOrEmpty(Request.ContentType) && Request.Headers["Content-Type"] == null )
 				Request.ContentType = "application/x-www-form-urlencoded";
 
 			if( string.IsNullOrEmpty(Request.UserAgent) && Request.Headers["User-Agent"] == null )
-				Request.UserAgent = "ClownFish.Web.HttpClient/" + ActionExecutor.DllVersion;
+				Request.UserAgent = "ClownFish.net.HttpClient/"	 + DllVersion;
 
 
 			// 发送请求前事件
@@ -150,23 +152,7 @@ namespace ClownFish.Web.Client
 
 		#endregion
 
-		/// <summary>
-		/// 生成查询字符串参数
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public static string GetQueryString(object data)
-		{
-			if( data == null )
-				return null;
-
-			if( data.GetType() == typeof(string))
-				return (string)data;
-
-
-			FormDataCollection form = FormDataCollection.Create(data);
-			return form.ToString();
-		}
+		
 
 		/// <summary>
 		/// 创建HttpWebRequest
@@ -278,7 +264,9 @@ namespace ClownFish.Web.Client
 		/// <param name="data">要提交的数据对象</param>
 		/// <param name="format">数据对象在传输过程中采用的序列化方式</param>
 		/// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
-		public static T Send<T>(string url, object data = null, SerializeFormat format = SerializeFormat.Form)
+		public static T Send<T>(string url, 
+								object data = null, 
+								SerializeFormat format = SerializeFormat.Form)
 		{
 			HttpClient client = ObjectFactory.New<HttpClient>();
 			client.CreateWebRequest(url);
@@ -298,7 +286,9 @@ namespace ClownFish.Web.Client
 		/// <param name="data">要提交的数据对象</param>
 		/// <param name="format">数据对象在传输过程中采用的序列化方式</param>
 		/// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
-		public async static Task<T> SendAsync<T>(string url, object data = null, SerializeFormat format = SerializeFormat.Form)
+		public async static Task<T> SendAsync<T>(string url, 
+												object data = null, 
+												SerializeFormat format = SerializeFormat.Form)
 		{
 			HttpClient client = ObjectFactory.New<HttpClient>();
 			client.CreateWebRequest(url);
@@ -308,8 +298,6 @@ namespace ClownFish.Web.Client
 				return client.GetResult<T>(response);
 			}
 		}
-		
-
 	}
 
 

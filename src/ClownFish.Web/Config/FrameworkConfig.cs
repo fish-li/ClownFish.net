@@ -36,11 +36,10 @@ namespace ClownFish.Web.Config
 		/// staticFileHandler相关的配置节
 		/// </summary>
 		[ConfigurationProperty("staticFileHandler", IsRequired = false)]
-		public StaticFileHandlerSectionElement StaticFileHandler
+		public StaticFileHandlerSectionElement StaticFileHandler 
 		{
 			get { return (StaticFileHandlerSectionElement)this["staticFileHandler"]; }
 		}
-		
 
 		private static FileDependencyManager<FrameworkConfig>
 					s_instance = new FileDependencyManager<FrameworkConfig>(		// 基于文件修改通知的缓存实例

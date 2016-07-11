@@ -13,8 +13,8 @@ using System.Web;
 using ClownFish.Web;
 using ClownFish.Base.Reflection;
 using ClownFish.Web.Reflection;
-using ClownFish.Web.Client;
 using ClownFish.Base;
+using ClownFish.Base.WebClient;
 
 namespace ClownFish.Web.Proxy
 {

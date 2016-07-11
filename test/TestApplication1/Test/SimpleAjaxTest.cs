@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Web;
-using ClownFish.Web.Client;
 using ClownFish.TestApplication1.Common;
+using ClownFish.Base.WebClient;
 
 namespace ClownFish.TestApplication1.Test
 {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ClownFish.Base.Reflection;
 using ClownFish.Base.TypeExtend;
 
-namespace ClownFish.Web.Pipeline
+namespace ClownFish.Web
 {
 	/// <summary>
 	/// Controller的构造接口

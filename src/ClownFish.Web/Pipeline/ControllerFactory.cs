@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClownFish.Web.Pipeline
+namespace ClownFish.Web
 {
 	/// <summary>
 	/// Controller的创建工厂

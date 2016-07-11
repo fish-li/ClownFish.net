@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Web.Config;
 using Microsoft.Win32;
 
 namespace ClownFish.Web
@@ -17,13 +18,16 @@ namespace ClownFish.Web
 	/// </summary>
 	public sealed class StaticFileHandler : IHttpHandler
 	{
+		private static readonly object s_lock = new object();
+		private static bool s_inited = false;
+
 		// 默认缓存时间：10分钟
 		private static readonly int s_DefaultDuration = 600;
 
 		// 统一的缓存时间，以及没有指定扩展名的缓存时间
-		private static readonly int s_CacheDuration;
+		private static int s_CacheDuration;
 		// 针对指定扩展名的过期时间
-		private static readonly Hashtable s_durationTable;
+		private static Hashtable s_durationTable;
 		// 每种扩展名对应诉Mime类型对照表
 		private static readonly Hashtable s_mineTable = Hashtable.Synchronized(new Hashtable(10, StringComparer.OrdinalIgnoreCase));
 		/// <summary>
@@ -63,9 +67,21 @@ namespace ClownFish.Web
 			}
 		}
 
-		static StaticFileHandler()
+		private static void Init()
 		{
-			string configValue = ConfigurationManager.AppSettings["StaticFileHandler-CacheDuration"];
+			if( s_inited == false ) {
+				lock( s_lock ) {
+					if( s_inited == false ) {
+						LoadConfig();
+					}
+				}
+			}
+		}
+
+		private static void LoadConfig()
+		{
+			string configValue = ConfigurationManager.AppSettings["ClownFish.Web:StaticFileHandler-CacheDuration"]
+								 ?? FrameworkConfig.Instance.StaticFileHandler.CacheDuration;
 
 			if( string.IsNullOrEmpty(configValue) == false ) {
 
@@ -89,12 +105,15 @@ namespace ClownFish.Web
 				s_CacheDuration = s_DefaultDuration;
 		}
 
+
 		/// <summary>
 		/// 处理请求，输出文件内容以及设置缓存响应头
 		/// </summary>
 		/// <param name="context"></param>
 		public void ProcessRequest(HttpContext context)
 		{
+			Init();
+
 			string filePath = context.Request.PhysicalPath;
 			bool isCssFile = filePath.EndsWith(".css", StringComparison.OrdinalIgnoreCase);
 

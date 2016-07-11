@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
-using System.Reflection;
-using System.IO;
-using ClownFish.Web.Serializer;
 
-namespace ClownFish.Web
+namespace ClownFish.Base.Http
 {
 	/// <summary>
 	/// 表示一个符合HTTP协议的上传文件
@@ -39,7 +38,7 @@ namespace ClownFish.Web
 			HttpFile result = new HttpFile();
 			result.FileName = file.FullName;
 			result.ContentLength = (int)file.Length;
-			result.FileBody = System.IO.File.ReadAllBytes(file.FullName);
+			result.FileBody = File.ReadAllBytes(file.FullName);
 			return result;
 		}
 
@@ -54,42 +53,14 @@ namespace ClownFish.Web
 			result.FileName = file.FileName;
 
 			if( file.ContentLength > 0 ) {
-				result.FileBody = new byte[file.ContentLength];		// 如果文件很大，可能会出问题！
+				result.FileBody = new byte[file.ContentLength];     // 如果文件很大，可能会出问题！
 				file.InputStream.Read(result.FileBody, 0, file.ContentLength);
 			}
 			else {
 				result.FileBody = new byte[0];
 			}
-			
+
 			return result;
-		}
-	}
-
-
-	internal class HttpFileDataConvert : IHttpDataConvert
-	{
-		public object Convert(HttpContext context, string paraName)
-		{
-			HttpPostedFile file = context.Request.Files[paraName];
-
-			return HttpFile.CreateHttpFileFromHttpPostedFile(file);
-		}
-	}
-
-
-	internal class HttpFileArrayDataConvert : IHttpDataConvert
-	{
-		public object Convert(HttpContext context, string paraName)
-		{
-			HttpFile[] files = new HttpFile[context.Request.Files.Count];
-
-			for( int i = 0; i < context.Request.Files.Count; i++ ) {
-				HttpPostedFile file = context.Request.Files[i];
-
-				files[i] = HttpFile.CreateHttpFileFromHttpPostedFile(file);
-			}
-
-			return files;
 		}
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Base.TypeExtend;
 
-namespace ClownFish.Base.Common
+namespace ClownFish.Base
 {
 	// 设计思路：
 	// 用一个轻量级的对象（当前类型的实例），去包装一个需要延迟创建的对象（通过Getter属性来延迟创建）

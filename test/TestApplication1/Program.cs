@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using ClownFish.Base.TypeExtend;
 using ClownFish.TestApplication1.Common;
 using ClownFish.TestApplication1.Test;
-using ClownFish.Web.Client;
 
 namespace ClownFish.TestApplication1
 {
