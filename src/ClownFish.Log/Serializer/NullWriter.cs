@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Log.Configuration;
 
 namespace ClownFish.Log.Serializer
 {
@@ -16,7 +17,8 @@ namespace ClownFish.Log.Serializer
 		/// <summary>
 		/// 
 		/// </summary>
-		public void Init()
+		/// <param name="config"></param>
+		public void Init(WriterSection config)
 		{
 		}
 

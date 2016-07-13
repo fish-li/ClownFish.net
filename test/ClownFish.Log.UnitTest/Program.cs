@@ -48,7 +48,7 @@ namespace ClownFish.Log.UnitTest
 			Console.WriteLine(e.Exception.ToString());
 		}
 
-		private static void Test(int a, int b)
+		private void Test(int a, int b)
 		{
 			try {
 				if( b < 0 )
@@ -61,10 +61,10 @@ namespace ClownFish.Log.UnitTest
 				LogHelper.Write(exInfo);
 			}
 
-			System.Threading.Thread.Sleep(8000);
+			System.Threading.Thread.Sleep(1000);
 		}
 
-		private static bool Init()
+		private bool Init()
 		{
 			CreaetFile();
 
@@ -81,52 +81,68 @@ namespace ClownFish.Log.UnitTest
 			}
 		}
 
-		private static void CreaetFile()
+
+		//[TestMethod]
+		public void CreaetFile()
 		{
 			string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
 
-			if( File.Exists(filePath) )
-				return;
-
+			
 			LogConfig config = new LogConfig();
 			config.Enable = true;
-			config.Writers = new WritersConfig();
-			config.TimerPeriod = 3000;
+			config.Writers = new WriterSection[5];
+			config.TimerPeriod = 100;
 
-			config.Writers.File = new FileWriterConfig();
-			config.Writers.File.RootDirectory = "Log";
-			config.Writers.File.WriteType = "ClownFish.Log.Serializer.FileWriter, ClownFish.Log";
+			WriterSection file = new WriterSection();
+			file.Name = "File";
+			file.Type = "ClownFish.Log.Serializer.FileWriter, ClownFish.Log";
+			file.Options = new WriterOption[1];
+			file.Options[0] = new WriterOption { Key = "RootDirectory", Value = "Log" };
+			config.Writers[0] = file;
 
-			config.Writers.Mail = new MailWriterConfig();
-			config.Writers.Mail.Receivers = "liqf01@mysoft.com.cn";
-			config.Writers.Mail.WriteType = "ClownFish.Log.Serializer.MailWriter, ClownFish.Log";
-
+			WriterSection mail = new WriterSection();
+			mail.Name = "Mail";
+			mail.Type = "ClownFish.Log.Serializer.MailWriter, ClownFish.Log";
+			mail.Options = new WriterOption[1];
+			mail.Options[0] = new WriterOption { Key = "Receivers", Value = "liqf01@mysoft.com.cn" };
+			config.Writers[1] = mail;
+			
 #if _MongoDB_
-			config.Writers.MongoDb = new MongoDbWriterConfig();
-			//config.Writers.MongoDb.ConnectionString = "server=10.5.106.100;database=Test;connectTimeout=5s;socketTimeout=5s";
-			config.Writers.MongoDb.ConnectionString = "mongodb://10.5.106.100/Test?connectTimeout=5s;socketTimeout=5s";
-			config.Writers.MongoDb.WriteType = "ClownFish.Log.Serializer.MongoDbWriter, ClownFish.Log";
+			WriterSection mongodb = new WriterSection();
+			mongodb.Name = "MongoDb";
+			mongodb.Type = "ClownFish.Log.Serializer.MongoDbWriter, ClownFish.Log";
+			mongodb.Options = new WriterOption[1];
+			mongodb.Options[0] = new WriterOption { Key = "ConnectionString", Value = "mongodb://10.5.106.100/Test?connectTimeout=5s;socketTimeout=5s" };
+			config.Writers[2] = mongodb;
 #endif
 
-			config.Writers.Msmq = new MsmqWriterConfig();
-			config.Writers.Msmq.RootPath = @".\private$\ClownFish-Log-test";
-			config.Writers.Msmq.WriteType = "ClownFish.Log.Serializer.MsmqWriter, ClownFish.Log";
+			WriterSection msmq = new WriterSection();
+			msmq.Name = "Msmq";
+			msmq.Type = "ClownFish.Log.Serializer.MsmqWriter, ClownFish.Log";
+			msmq.Options = new WriterOption[1];
+			msmq.Options[0] = new WriterOption { Key = "RootPath", Value = @".\private$\ClownFish-Log-test" };
+			config.Writers[3] = msmq;
 
-			config.Writers.WinLog = new WinLogWriterConfig();
-			config.Writers.WinLog.LogName = "ClownFish-Log";
-			config.Writers.WinLog.SourceName = "ClownFish-Log-Message";
-			config.Writers.WinLog.WriteType = "ClownFish.Log.Serializer.WinLogWriter, ClownFish.Log";
 
-			config.Types = new List<TypeItemConfig>();
+			WriterSection winlog = new WriterSection();
+			winlog.Name = "WinLog";
+			winlog.Type = "ClownFish.Log.Serializer.WinLogWriter, ClownFish.Log";
+			winlog.Options = new WriterOption[2];
+			winlog.Options[0] = new WriterOption { Key = "LogName", Value = "ClownFish-Log" };
+			winlog.Options[1] = new WriterOption { Key = "SourceName", Value = "ClownFish-Log-Message" };
+			config.Writers[4] = winlog;
+
+
+			config.Types = new TypeItemConfig[2];
 			TypeItemConfig t1 = new TypeItemConfig();
 			t1.DataType = "ClownFish.Log.Model.ExceptionInfo, ClownFish.Log";
 			t1.Writers = "MongoDb,File";
-			config.Types.Add(t1);
+			config.Types[0] = t1;
 
 			TypeItemConfig t2 = new TypeItemConfig();
 			t2.DataType = "ClownFish.Log.Model.PerformanceInfo, ClownFish.Log";
 			t2.Writers = "MongoDb";
-			config.Types.Add(t2);
+			config.Types[1] = t2;
 
 			config.Performance = new PerformanceConfig();
 			config.Performance.DbExecuteTimeout = 3;

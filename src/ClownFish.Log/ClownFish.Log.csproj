@@ -67,17 +67,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheQueue.cs" />
-    <Compile Include="Configuration\BaseWriterConfig.cs" />
-    <Compile Include="Configuration\FileWriterConfig.cs" />
+    <Compile Include="Configuration\ConfigLoader.cs" />
+    <Compile Include="Configuration\DataTypeCacheItem.cs" />
     <Compile Include="Configuration\LogConfigException.cs" />
-    <Compile Include="Configuration\MailWriterConfig.cs" />
     <Compile Include="Configuration\LogConfig.cs" />
-    <Compile Include="Configuration\MongoDbWriterConfig.cs" />
-    <Compile Include="Configuration\MsmqWriterConfig.cs" />
     <Compile Include="Configuration\PerformanceConfig.cs" />
     <Compile Include="Configuration\TypeItemConfig.cs" />
-    <Compile Include="Configuration\WinLogWriterConfig.cs" />
-    <Compile Include="Configuration\WritersConfig.cs" />
+    <Compile Include="Configuration\WriterSection.cs" />
     <Compile Include="LogFilter.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="Model\BaseInfo.cs" />

@@ -14,8 +14,6 @@ namespace ClownFish.Log.UnitTest
 		[AssemblyInitialize]
 		public static void InitRuntime(TestContext context)
 		{
-
-
 			CopyConfigFiles();
 		}
 

@@ -33,7 +33,7 @@ namespace ClownFish.Log.UnitTest
 			count = Test_Get_GetList(winLogWriter, count);	// + 2
 
 			NullWriter nullWriter = new NullWriter();
-			nullWriter.Init();
+			nullWriter.Init(null);
 			count = Test_Get_GetList(nullWriter, count);	// + 2
 
 			try {

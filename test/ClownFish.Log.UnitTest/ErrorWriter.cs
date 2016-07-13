@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Log.Configuration;
 using ClownFish.Log.Serializer;
 
 namespace ClownFish.Log.UnitTest
@@ -11,7 +12,7 @@ namespace ClownFish.Log.UnitTest
 	{
 		#region ILogWriter 成员
 
-		public void Init()
+		public void Init(WriterSection config)
 		{
 		}
 

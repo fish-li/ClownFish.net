@@ -22,15 +22,19 @@ namespace ClownFish.Log.Serializer
 		/// <summary>
 		/// 初始化
 		/// </summary>
+		/// <param name="config"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Init()
+		public void Init(WriterSection config)
 		{
+			string value = config.GetOptionValue("Receivers");
+			if( string.IsNullOrEmpty(value) )
+				throw new LogConfigException("日志配置文件中，没有为MailWriter指定Receivers属性。");
+
+
 			if( s_recipients != null )
 				return;
 
-			MailWriterConfig config = WriterFactory.Config.Writers.Mail;
-
-			s_recipients = config.Receivers.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+			s_recipients = value.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		/// <summary>

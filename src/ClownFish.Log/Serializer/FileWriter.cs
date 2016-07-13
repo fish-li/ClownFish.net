@@ -23,20 +23,24 @@ namespace ClownFish.Log.Serializer
 
 		#region ILogWriter 成员
 
-
 		/// <summary>
 		/// 初始化
 		/// </summary>
+		/// <param name="config"></param>
 		[MethodImpl( MethodImplOptions.Synchronized)]
-		public void Init()
+		public void Init(WriterSection config)
 		{
+			string value = config.GetOptionValue("RootDirectory");
+			if( string.IsNullOrEmpty(value) )
+				throw new LogConfigException("日志配置文件中，没有为FileWriter指定RootDirectory属性。");
+
+
 			if( s_rootDirectory != null )
 				return;
 
-			FileWriterConfig config = WriterFactory.Config.Writers.File;
 
 			// 支持绝对路径，和相对路径
-			string rootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, config.RootDirectory);
+			string rootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value);
 
 
 			// 检查日志根目录是否存在

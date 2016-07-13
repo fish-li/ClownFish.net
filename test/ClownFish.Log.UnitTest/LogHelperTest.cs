@@ -194,7 +194,7 @@ namespace ClownFish.Log.UnitTest
 									BindingFlags.GetField | BindingFlags.Static| BindingFlags.NonPublic, 
 									null, null, null) as Hashtable;
 
-			string key = typeof(WriterFactory).InvokeMember("s_ExceptionWriterKey",
+			string key = typeof(WriterFactory).InvokeMember("ExceptionWriterKey",
 									BindingFlags.GetField | BindingFlags.Static | BindingFlags.NonPublic,
 									null, null, null) as string;
 
@@ -231,7 +231,7 @@ namespace ClownFish.Log.UnitTest
 									BindingFlags.GetField | BindingFlags.Static | BindingFlags.NonPublic,
 									null, null, null) as Hashtable;
 
-			string key = typeof(WriterFactory).InvokeMember("s_ExceptionWriterKey",
+			string key = typeof(WriterFactory).InvokeMember("ExceptionWriterKey",
 									BindingFlags.GetField | BindingFlags.Static | BindingFlags.NonPublic,
 									null, null, null) as string;
 

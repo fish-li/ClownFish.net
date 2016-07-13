@@ -23,18 +23,22 @@ namespace ClownFish.Log.Serializer
 		/// <summary>
 		/// 初始化
 		/// </summary>
+		/// <param name="config"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Init()
+		public void Init(WriterSection config)
 		{
+			string value = config.GetOptionValue("RootPath");
+			if( string.IsNullOrEmpty(value) )
+				throw new LogConfigException("日志配置文件中，没有为MsmqWriter指定RootPath属性。");
+
+
 			if( s_rootPath != null )
 				return;
-
-			MsmqWriterConfig config = WriterFactory.Config.Writers.Msmq;
 
 
 			// 检查需要记录的各个数据类型的队列是否存在。
 			foreach( var item in WriterFactory.Config.Types ) {
-				string path = config.RootPath + "-" + item.Type.Name;
+				string path = value + "-" + item.Type.Name;
 
 				if( MessageQueue.Exists(path) == false )
 					using( MessageQueue messageQueue = MessageQueue.Create(path) ) {
@@ -42,7 +46,7 @@ namespace ClownFish.Log.Serializer
 					}
 			}
 
-			s_rootPath = config.RootPath + "-";
+			s_rootPath = value + "-";
 		}
 
 		/// <summary>

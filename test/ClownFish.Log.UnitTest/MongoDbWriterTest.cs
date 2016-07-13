@@ -94,7 +94,7 @@ namespace ClownFish.Log.UnitTest
 
 
 			// 主要测试这个方法
-			DateTime t1 = DateTime.Now.AddYears(-10);
+			DateTime t1 = DateTime.Now.AddDays(-1);
 			DateTime t2 = DateTime.Now;
 
 			MongoDbWriter writer = new MongoDbWriter();

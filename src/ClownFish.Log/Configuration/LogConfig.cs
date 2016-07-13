@@ -27,13 +27,14 @@ namespace ClownFish.Log.Configuration
 		/// <summary>
 		/// 所有Writer的配置集合
 		/// </summary>
-		public WritersConfig Writers { get; set; }
+		[XmlArrayItem("Writer")]
+		public WriterSection[] Writers { get; set; }
 
 		/// <summary>
 		/// 所有要写入的数据类型集合
 		/// </summary>
 		[XmlArrayItem("Type")]
-		public List<TypeItemConfig> Types { get; set; }
+		public TypeItemConfig[] Types { get; set; }
 
 		/// <summary>
 		/// 性能日志的配置信息

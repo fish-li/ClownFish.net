@@ -13,11 +13,11 @@ namespace ClownFish.Log.Serializer
 	/// </summary>
 	public interface ILogWriter
 	{
-		
 		/// <summary>
 		/// 第一次触发写日志时的初始化动作，例如：检查数据库连接是否已配置
 		/// </summary>
-		void Init();
+		/// <param name="config"></param>
+		void Init(WriterSection config);
 
 		/// <summary>
 		/// 写入单条日志信息

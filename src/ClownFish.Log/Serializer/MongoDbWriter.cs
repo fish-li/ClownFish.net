@@ -27,9 +27,6 @@ namespace ClownFish.Log.Serializer
 
 			internal static MongoDbSetting Create(string connectionString)
 			{
-				if( string.IsNullOrEmpty(connectionString) )
-					throw new ArgumentNullException("connectionString");
-
 				MongoUrlBuilder mongoUrlBuilder = new MongoUrlBuilder(connectionString);
 
 				MongoDbSetting setting = new MongoDbSetting();
@@ -64,11 +61,14 @@ namespace ClownFish.Log.Serializer
 		/// 从配置文件中初始化
 		/// 注意：仅供框架调用，不需要在代码中调用。
 		/// </summary>
-		public void Init()
+		/// <param name="config"></param>
+		public void Init(WriterSection config)
 		{
-			MongoDbWriterConfig config = WriterFactory.Config.Writers.MongoDb;
+			string value = config.GetOptionValue("ConnectionString");
+			if( string.IsNullOrEmpty(value) )
+				throw new LogConfigException("日志配置文件中，没有为MongoDbWriter指定ConnectionString属性。");
 
-			s_configSetting = MongoDbSetting.Create(config.ConnectionString);
+			s_configSetting = MongoDbSetting.Create(value);
 		}
 
 		/// <summary>

@@ -9,6 +9,7 @@ using ClownFish.Log.Configuration;
 using ClownFish.Log.Serializer;
 using ClownFish.Base.Xml;
 using ClownFish.Base;
+using System.Collections;
 
 namespace ClownFish.Log.UnitTest
 {
@@ -19,10 +20,6 @@ namespace ClownFish.Log.UnitTest
 		public void Test1()
 		{
 			// 没什么具体意义，只是为了覆盖代码
-			BaseWriterConfig config = new BaseWriterConfig();
-			config.Valid();
-
-
 			LogConfigException ex1 = new LogConfigException("aa");
 			LogConfigException ex2 = new LogConfigException("bb", new Exception("xx"));
 		}
@@ -32,9 +29,12 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test2()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			FileWriterConfig config = new FileWriterConfig();
-			config.Valid();
+			WriterSection file = new WriterSection();
+			file.Name = "File";
+			file.Type = "ClownFish.Log.Serializer.FileWriter, ClownFish.Log";
+			
+			FileWriter writer  = new FileWriter();
+			writer.Init(file);
 		}
 
 
@@ -42,9 +42,12 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test3()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			MailWriterConfig config = new MailWriterConfig();
-			config.Valid();
+			WriterSection mail = new WriterSection();
+			mail.Name = "Mail";
+			mail.Type = "ClownFish.Log.Serializer.MailWriter, ClownFish.Log";
+
+			MailWriter writer = new MailWriter();
+			writer.Init(mail);
 		}
 
 #if _MongoDB_
@@ -52,9 +55,12 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test4()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			MongoDbWriterConfig config = new MongoDbWriterConfig();
-			config.Valid();
+			WriterSection mongodb = new WriterSection();
+			mongodb.Name = "MongoDb";
+			mongodb.Type = "ClownFish.Log.Serializer.MongoDbWriter, ClownFish.Log";
+
+			MongoDbWriter writer = new MongoDbWriter();
+			writer.Init(mongodb);
 		}
 #endif
 
@@ -62,9 +68,12 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test5()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			MsmqWriterConfig config = new MsmqWriterConfig();
-			config.Valid();
+			WriterSection msmq = new WriterSection();
+			msmq.Name = "Msmq";
+			msmq.Type = "ClownFish.Log.Serializer.MsmqWriter, ClownFish.Log";
+
+			MsmqWriter writer = new MsmqWriter();
+			writer.Init(msmq);
 		}
 
 
@@ -72,19 +81,27 @@ namespace ClownFish.Log.UnitTest
 		[TestMethod]
 		public void Test6()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			WinLogWriterConfig config = new WinLogWriterConfig();
-			config.Valid();
+			WriterSection winlog = new WriterSection();
+			winlog.Name = "WinLog";
+			winlog.Type = "ClownFish.Log.Serializer.WinLogWriter, ClownFish.Log";
+
+			WinLogWriter writer = new WinLogWriter();
+			writer.Init(winlog);
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
 		[TestMethod]
 		public void Test7()
 		{
-			// 没什么具体意义，只是为了覆盖代码
-			WinLogWriterConfig config = new WinLogWriterConfig();
-			config.LogName = "1213";
-			config.Valid();
+			WriterSection winlog = new WriterSection();
+			winlog.Name = "WinLog";
+			winlog.Type = "ClownFish.Log.Serializer.WinLogWriter, ClownFish.Log";
+
+			winlog.Options = new WriterOption[1];
+			winlog.Options[0] = new WriterOption { Key = "LogName", Value = "ClownFish-Log" };
+
+			WinLogWriter writer = new WinLogWriter();
+			writer.Init(winlog);
 		}
 
 
@@ -103,9 +120,10 @@ namespace ClownFish.Log.UnitTest
 			// 检验 Types 不配置的场景
 
 			LogConfig config = GetCloneConfig();
-			config.Types = null;		// 会引发异常
+			config.Types = null;        // 会引发异常
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
@@ -115,9 +133,10 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Types = new List<TypeItemConfig>();		// 会引发异常
+			config.Types = new TypeItemConfig[0];       // 会引发异常
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
@@ -127,9 +146,10 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Writers = null;		// 会引发异常
+			config.Writers = null;      // 会引发异常
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
@@ -139,13 +159,14 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Types = new List<TypeItemConfig>();
+			config.Types = new TypeItemConfig[1];
 
 			TypeItemConfig tc = new TypeItemConfig();
-			tc.DataType = null;			// 会引发异常
-			config.Types.Add(tc);
+			tc.DataType = null;         // 会引发异常
+			config.Types[0] = tc;
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 
@@ -156,14 +177,15 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Types = new List<TypeItemConfig>();
+			config.Types = new TypeItemConfig[1];
 
 			TypeItemConfig tc = new TypeItemConfig();
 			tc.DataType = "ClownFish.Log.Model.ExceptionInfo, ClownFish.Log";
-			tc.Writers = null;			// 会引发异常
-			config.Types.Add(tc);
+			tc.Writers = null;          // 会引发异常
+			config.Types[0] = tc;
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
@@ -173,14 +195,15 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Types = new List<TypeItemConfig>();
+			config.Types = new TypeItemConfig[1];
 
 			TypeItemConfig tc = new TypeItemConfig();
 			tc.DataType = "ClownFish.Log.Model.ExceptionInfo, ClownFish.Log";
-			tc.Writers = ";";			// 会引发异常
-			config.Types.Add(tc);
+			tc.Writers = ";";           // 会引发异常
+			config.Types[0] = tc;
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 		[ExpectedException(typeof(LogConfigException))]
@@ -190,14 +213,15 @@ namespace ClownFish.Log.UnitTest
 			// 没什么具体意义，只是为了覆盖代码
 
 			LogConfig config = GetCloneConfig();
-			config.Types = new List<TypeItemConfig>();
+			config.Types = new TypeItemConfig[1];
 
 			TypeItemConfig tc = new TypeItemConfig();
 			tc.DataType = "ClownFish.Log.Model.ExceptionInfo, ClownFish.Log";
-			tc.Writers = "abc";			// 会引发异常
-			config.Types.Add(tc);
+			tc.Writers = "abc";         // 会引发异常
+			config.Types[0] = tc;
 
-			WriterFactory.CheckConfig(config);
+			ConfigLoader loader = new ConfigLoader();
+			loader.Load(config, new Hashtable());
 		}
 
 	}
