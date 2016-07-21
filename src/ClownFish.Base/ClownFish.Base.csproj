@@ -76,6 +76,7 @@
     <Compile Include="Json\DefaultJsonSerializer.cs" />
     <Compile Include="Json\XmlCdataJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\AttributeFactory.cs" />
     <Compile Include="Reflection\DynamicMethodEmit.cs" />
     <Compile Include="Reflection\MethodWrapper.cs" />
     <Compile Include="Reflection\PropertyWrapper.cs" />

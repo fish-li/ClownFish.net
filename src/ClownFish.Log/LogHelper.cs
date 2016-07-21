@@ -87,8 +87,6 @@ namespace ClownFish.Log
 		/// <param name="info"></param>
 		public static void SyncWrite<T>(T info) where T : BaseInfo
 		{
-			// 先不对外开放这个方法！
-
 			// 触发日志的配置检查
 			WriterFactory.Init();
 

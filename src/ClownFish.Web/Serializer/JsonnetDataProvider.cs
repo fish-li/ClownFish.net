@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using ClownFish.Base;
 using ClownFish.Base.Json;
+using ClownFish.Base.Reflection;
 using ClownFish.Web.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -65,7 +66,7 @@ namespace ClownFish.Web.Serializer
 
 			for( int i = 0; i < parameters.Length; i++ ) {
 
-				FromBodyAttribute bodyAttr = action.Parameters[i].GetCustomAttribute<FromBodyAttribute>(false);
+				FromBodyAttribute bodyAttr = action.Parameters[i].GetMyAttribute<FromBodyAttribute>(false);
 				if( bodyAttr != null ) {
 					// 当前参数需要从整体请求体中反序列化得到参数值
 					parameters[i] = GetObjectFromString(input, action);

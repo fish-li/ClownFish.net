@@ -8,6 +8,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 using ClownFish.Base;
+using ClownFish.Base.Reflection;
 using ClownFish.Web.Reflection;
 
 namespace ClownFish.Web.Serializer
@@ -78,7 +79,7 @@ namespace ClownFish.Web.Serializer
 
 			for( int i = 0; i < parameters.Length; i++ ) {				
 
-				FromBodyAttribute bodyAttr = action.Parameters[i].GetCustomAttribute<FromBodyAttribute>(false);
+				FromBodyAttribute bodyAttr = action.Parameters[i].GetMyAttribute<FromBodyAttribute>(false);
 				if( bodyAttr != null ) {
 					// 当前参数需要从整体请求体中反序列化得到参数值
 					parameters[i] = GetObjectFromRequest(context, action);

@@ -69,7 +69,7 @@ namespace ClownFish.Web.Serializer
 					value = context.Request.ServerVariables;
 			}
 			else {
-				ContextDataAttribute[] rdAttrs = (ContextDataAttribute[])p.GetCustomAttributes(typeof(ContextDataAttribute), false);
+				ContextDataAttribute[] rdAttrs = p.GetMyAttributes<ContextDataAttribute>(false);
 				if( rdAttrs.Length == 1 )
 					value = EvalFromHttpContext(context, rdAttrs[0], p);
 				else
