@@ -14,10 +14,6 @@ namespace ClownFish.Base.Framework
 		/// </summary>
 		public static readonly bool IsDebugMode;
 
-		/// <summary>
-		/// 是否在web.config的pages配置节点开启了validateRequest参数。
-		/// </summary>
-		public static readonly bool ValidateRequest;
 
 		static WebConfig()
 		{
@@ -27,11 +23,6 @@ namespace ClownFish.Base.Framework
 							ConfigurationManager.GetSection("system.web/compilation") as CompilationSection;
 				if( compilationSection != null )
 					IsDebugMode = compilationSection.Debug;
-
-				PagesSection pagesSection =
-							ConfigurationManager.GetSection("system.web/pages") as PagesSection;
-				if( pagesSection != null )
-					ValidateRequest = pagesSection.ValidateRequest;
 			}
 		}
 

@@ -80,7 +80,9 @@
     <Compile Include="Attributes\PageRegexUrlAttributeTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Cache\OutputCacheAttributeTest.cs" />
+    <Compile Include="Common\GzipHelperTest.cs" />
     <Compile Include="Common\NameValueTest.cs" />
+    <Compile Include="Common\StringExtensionsTest.cs" />
     <Compile Include="Ext\ExtenderManagerTest.cs" />
     <Compile Include="Ext\ObjectFactoryTest2.cs" />
     <Compile Include="Initializer.cs" />

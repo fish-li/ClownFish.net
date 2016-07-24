@@ -149,5 +149,22 @@ namespace ClownFish.Base
 				return text;
 		}
 
+		/// <summary>
+		/// 将字符串保留指定的长度，如果超过长度就截取并显示省略号
+		/// </summary>
+		/// <param name="text">要处理的字符串</param>
+		/// <param name="length">要保留的长度</param>
+		/// <returns></returns>
+		public static string KeepLength(this string text, int length)
+		{
+			if( string.IsNullOrEmpty(text) )
+				return text;
+
+			if( text.Length <= length )
+				return text;
+
+			return text.Substring(0, length) + "..." + text.Length.ToString();
+		}
+
 	}
 }

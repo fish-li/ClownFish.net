@@ -102,6 +102,7 @@
     <Compile Include="Attributes\NamespaceMapAttribute.cs" />
     <Compile Include="Cache\OutputCacheConfig.cs" />
     <Compile Include="Cache\SetOutputCacheModule.cs" />
+    <Compile Include="Common\WebConfig.cs" />
     <Compile Include="Common\WebRuntime.cs" />
     <Compile Include="Config\ActionSectionElement.cs" />
     <Compile Include="Config\PipelineSectionElement.cs" />

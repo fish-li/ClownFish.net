@@ -20,6 +20,12 @@ namespace ClownFish.Base.Framework
 
 
 		/// <summary>
+		/// 当前程序是否以DEBUG模式运行
+		/// </summary>
+		public static readonly bool IsDebugMode = WebConfig.IsDebugMode;
+
+
+		/// <summary>
 		/// 获取当前程序加载的所有程序集
 		/// </summary>
 		/// <returns></returns>

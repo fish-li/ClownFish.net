@@ -73,7 +73,7 @@ namespace ClownFish.Web
 		/// </summary>
 		public virtual bool IsDebugMode
 		{
-			get { return WebConfig.IsDebugMode; }
+			get { return RunTimeEnvironment.IsDebugMode; }
 		}
 
 		/// <summary>
