@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\FileDownloadResult.cs" />
+    <Compile Include="Attributes\CustomDataAttribute.cs" />
     <Compile Include="Attributes\FromBodyAttribute.cs" />
     <Compile Include="Attributes\PageRegexUrlAttribute.cs" />
     <Compile Include="Common\HttpFileConvert.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Serializer\HttpDataConvertFactory.cs" />
     <Compile Include="Serializer\IActionParametersProvider.cs" />
     <Compile Include="Serializer\IHttpDataConvert.cs" />
+    <Compile Include="Serializer\ILoadActionParameter.cs" />
     <Compile Include="Serializer\JsonDataProvider.cs" />
     <Compile Include="Serializer\JsonnetDataProvider.cs" />
     <Compile Include="Serializer\ModelBuilder.cs" />

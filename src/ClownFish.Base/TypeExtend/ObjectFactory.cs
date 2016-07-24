@@ -35,17 +35,7 @@ namespace ClownFish.Base.TypeExtend
 		/// <returns></returns>
 		public static T New<T>() where T : class, new()
 		{
-			Type objectType = typeof(T);
-
-			// 创建对象本身（有可能是T的继承类型）
-			T instance = (T)ObjectFactory.New(objectType);
-
-			// 尝试加载订阅者
-			BaseEventObject baseEventObject = instance as BaseEventObject;
-			if( baseEventObject  != null )
-				baseEventObject.BindSubscribes(objectType);
-
-			return instance;
+			return (T)ObjectFactory.New(typeof(T));
 		}
 
 
@@ -59,7 +49,14 @@ namespace ClownFish.Base.TypeExtend
 			if( objectType == null )
 				throw new ArgumentNullException("objectType");
 
-			return s_objectResolver.CreateObject(objectType);
+			object instance = s_objectResolver.CreateObject(objectType);
+
+			// 尝试加载订阅者
+			BaseEventObject baseEventObject = instance as BaseEventObject;
+			if( baseEventObject != null )
+				baseEventObject.BindSubscribes(objectType);
+
+			return instance;
 		}
 
 	}

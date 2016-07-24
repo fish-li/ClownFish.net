@@ -51,7 +51,8 @@ namespace ClownFish.Web.Serializer
 		/// <returns></returns>
 		protected virtual object CreateObject(ParameterInfo parameterInfo)
 		{
-			object item = ObjectFactory.New(parameterInfo.ParameterType);
+			// 参数不太可能包含行为，不太可能需要扩展性，就不使用ObjectFactory.New来创建
+			object item = parameterInfo.ParameterType.FastNew();
 			FillModel(item, parameterInfo.Name);
 			return item;
 		}
@@ -75,14 +76,6 @@ namespace ClownFish.Web.Serializer
 				string httpname = GetPropertyMapHttpName(property);
 				Type ptype = property.PropertyType.GetRealType();
 				val = GetValueFromHttpInternal(httpname, ptype, paramName);
-
-				if( val == null ) {
-					// 检查是否存在自定义的类型转换器
-					IHttpDataConvert convert = HttpDataConvertFactory.GetConvert(ptype);
-					if( convert != null )
-						val = convert.Convert(_context, httpname);
-				}
-
 				if( val != null )
 					property.SetValue(model, val);
 			}
