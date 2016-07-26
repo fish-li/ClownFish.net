@@ -24,9 +24,10 @@ namespace ClownFish.Web.Serializer
 		/// </summary>
 		protected HttpContext _context;
 
+		#region 入口方法
 
 		/// <summary>
-		/// 从HTTP请求中构造复杂的参数对象（例如：自定义的数据类型）
+		/// 从HTTP请求中构造复杂的参数对象，并给属性赋值（例如：自定义的数据类型）
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="parameterInfo"></param>
@@ -44,6 +45,48 @@ namespace ClownFish.Web.Serializer
 		}
 
 		/// <summary>
+		/// 从HTTP请求中读取数据并给实体属性赋值
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="model"></param>
+		/// <param name="parameterInfo"></param>
+		public virtual void FillModelFromHttp(HttpContext context, object model, ParameterInfo parameterInfo)
+		{
+			if( context == null )
+				throw new ArgumentNullException("context");
+			if( model == null )
+				throw new ArgumentNullException("model");
+
+			_context = context;
+			FillModel(model, parameterInfo.Name);
+		}
+
+
+		/// <summary>
+		/// 根据指定的名称及期望的数据类型，从HTTP上下文中获取对应的数据
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		/// <param name="parentName"></param>
+		/// <returns></returns>
+		public virtual object GetValueFromHttp(HttpContext context, string name, Type type, string parentName)
+		{
+			if( context == null )
+				throw new ArgumentNullException("context");
+			if( type == null )
+				throw new ArgumentNullException("type");
+			if( string.IsNullOrEmpty(name) )
+				throw new ArgumentNullException("name");
+
+			_context = context;
+			return GetValueFromHttpInternal(name, type, parentName);
+		}
+
+		
+		#endregion
+
+		/// <summary>
 		/// 根据参数反射信息创建复杂的参数对象
 		/// 如果需要控制对象的创建过程，可以重写这个方法
 		/// </summary>
@@ -52,9 +95,9 @@ namespace ClownFish.Web.Serializer
 		protected virtual object CreateObject(ParameterInfo parameterInfo)
 		{
 			// 参数不太可能包含行为，不太可能需要扩展性，就不使用ObjectFactory.New来创建
-			object item = parameterInfo.ParameterType.FastNew();
-			FillModel(item, parameterInfo.Name);
-			return item;
+			object model = parameterInfo.ParameterType.FastNew();
+			FillModel(model, parameterInfo.Name);
+			return model;
 		}
 		
 
@@ -89,6 +132,7 @@ namespace ClownFish.Web.Serializer
 		/// <returns></returns>
 		protected virtual string GetPropertyMapHttpName(PropertyInfo p)
 		{
+			// ERP在使用，此方法必须保留
 			return p.Name;
 		}
 
@@ -116,29 +160,7 @@ namespace ClownFish.Web.Serializer
 			}
 			return mm;
 		}
-
-
-		/// <summary>
-		/// 根据指定的名称及期望的数据类型，从HTTP上下文中获取对应的数据
-		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="name"></param>
-		/// <param name="type"></param>
-		/// <param name="parentName"></param>
-		/// <returns></returns>
-		public virtual object GetValueFromHttp(HttpContext context, string name, Type type, string parentName)
-		{
-			if( context == null )
-				throw new ArgumentNullException("context");
-			if( type == null )
-				throw new ArgumentNullException("type");
-			if( string.IsNullOrEmpty(name))
-				throw new ArgumentNullException("name");
-
-			_context = context;
-			return GetValueFromHttpInternal(name, type, parentName);
-		}
-
+		
 
 		/// <summary>
 		/// 根据指定的名称及期望的数据类型，从HTTP上下文中获取对应的数据，
