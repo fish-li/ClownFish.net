@@ -21,7 +21,7 @@ namespace ClownFish.Base.Framework
 		/// <exception cref="Exception">反射调用配置的启动方法，启动方法内部的异常</exception>
 		public static void Start()
 		{
-			var assemblies = RunTimeEnvironment.GetLoadAssemblies();
+			var assemblies = RunTimeEnvironment.GetLoadAssemblies(true);
 			foreach( Assembly asm in assemblies ) {
 
 				PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();

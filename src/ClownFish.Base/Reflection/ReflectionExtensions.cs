@@ -196,7 +196,7 @@ namespace ClownFish.Base.Reflection
 		{
 			List<Assembly> list = new List<Assembly>(128);
 
-			ICollection assemblies = RunTimeEnvironment.GetLoadAssemblies();
+			ICollection assemblies = RunTimeEnvironment.GetLoadAssemblies(true);
 			foreach( Assembly assembly in assemblies ) {
 				
 				if( assembly.GetAttributes<T>().Length == 0 )

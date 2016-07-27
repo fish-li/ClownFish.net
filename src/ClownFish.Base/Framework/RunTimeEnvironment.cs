@@ -25,20 +25,26 @@ namespace ClownFish.Base.Framework
 		public static readonly bool IsDebugMode = WebConfig.IsDebugMode;
 
 
+		private static Assembly[] GetLoadAssemblies()
+		{
+			if( IsAspnetApp ) {
+				System.Collections.ICollection collection = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
+				return (from a in collection.Cast<Assembly>() select a).ToArray();
+			}
+			else
+				return System.AppDomain.CurrentDomain.GetAssemblies();
+		}
+
 		/// <summary>
 		/// 获取当前程序加载的所有程序集
 		/// </summary>
 		/// <returns></returns>
-		public static Assembly[] GetLoadAssemblies()
+		public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
 		{
-			Assembly[] assemblies = null;
-
-			if( IsAspnetApp ) {
-				System.Collections.ICollection collection = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
-				assemblies = (from a in collection.Cast<Assembly>() select a).ToArray();
-			}
-			else
-				assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+			Assembly[] assemblies = GetLoadAssemblies();
+			if( ignoreSystemAssembly == false )
+				return assemblies;
+			
 
 
 			// 过滤一些反射中几乎用不到的程序集
