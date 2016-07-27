@@ -23,9 +23,6 @@ namespace ClownFish.Base.Framework
 		{
 			var assemblies = RunTimeEnvironment.GetLoadAssemblies();
 			foreach( Assembly asm in assemblies ) {
-				// 过滤以【System】开头的程序集，加快速度
-				if( asm.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
-					continue;
 
 				PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();
 

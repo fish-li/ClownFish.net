@@ -31,12 +31,30 @@ namespace ClownFish.Base.Framework
 		/// <returns></returns>
 		public static Assembly[] GetLoadAssemblies()
 		{
+			Assembly[] assemblies = null;
+
 			if( IsAspnetApp ) {
-				System.Collections.ICollection assemblies = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
-				return (from a in assemblies.Cast<Assembly>() select a).ToArray();
+				System.Collections.ICollection collection = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
+				assemblies = (from a in collection.Cast<Assembly>() select a).ToArray();
 			}
 			else
-				return System.AppDomain.CurrentDomain.GetAssemblies();
+				assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+
+
+			// 过滤一些反射中几乎用不到的程序集
+			List<Assembly> list = new List<Assembly>(128);
+
+			foreach( Assembly assembly in assemblies ) {
+				if( assembly.IsDynamic )    // 动态程序通常是不需要参考的
+					continue;
+
+				// 过滤以【System】开头的程序集，加快速度
+				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
+					continue;
+
+				list.Add(assembly);
+			}
+			return list.ToArray();
 		}
 	}
 }
