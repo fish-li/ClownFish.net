@@ -25,18 +25,43 @@ namespace ClownFish.Base.Framework
 		public static readonly bool IsDebugMode = WebConfig.IsDebugMode;
 
 
-		/// <summary>
-		/// 获取当前程序加载的所有程序集
-		/// </summary>
-		/// <returns></returns>
-		public static Assembly[] GetLoadAssemblies()
+		private static Assembly[] GetLoadAssemblies()
 		{
 			if( IsAspnetApp ) {
-				System.Collections.ICollection assemblies = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
-				return (from a in assemblies.Cast<Assembly>() select a).ToArray();
+				System.Collections.ICollection collection = System.Web.Compilation.BuildManager.GetReferencedAssemblies();
+				return (from a in collection.Cast<Assembly>() select a).ToArray();
 			}
 			else
 				return System.AppDomain.CurrentDomain.GetAssemblies();
+		}
+
+		/// <summary>
+		/// 获取当前程序加载的所有程序集
+		/// </summary>
+		/// <param name="ignoreSystemAssembly">是否忽略以System开头和动态程序集，通常用于反射时不搜索它们。</param>
+		/// <returns></returns>
+		public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
+		{
+			Assembly[] assemblies = GetLoadAssemblies();
+			if( ignoreSystemAssembly == false )
+				return assemblies;
+			
+
+
+			// 过滤一些反射中几乎用不到的程序集
+			List<Assembly> list = new List<Assembly>(128);
+
+			foreach( Assembly assembly in assemblies ) {
+				if( assembly.IsDynamic )    // 动态程序通常是不需要参考的
+					continue;
+
+				// 过滤以【System】开头的程序集，加快速度
+				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
+					continue;
+
+				list.Add(assembly);
+			}
+			return list.ToArray();
 		}
 	}
 }
