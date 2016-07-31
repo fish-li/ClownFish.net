@@ -1,8 +1,7 @@
 ﻿
 ##ClownFish.net 是什么
 
-ClownFish.net是一个基于 .net framework 的开发框架，主要包含 **ClownFish.Web** 和 **ClownFish.Log** 二大部分。  
-未来还将包含 **ClownFish.Data**（数据访问层）。
+ClownFish.net是一个基于 .net framework 的开发框架，主要包含 **ClownFish.Base** ，**ClownFish.Web** ，**ClownFish.Data** 和 **ClownFish.Log** 四大部分。  
 
 
 ##ClownFish.Web
@@ -46,3 +45,20 @@ ClownFish.Web也有一些独有设计，可以简化开发任务，甚至实现�
 留给大家的是一个简单，易学习，功能强大的WEB开发框架。
 
 
+##ClownFish.Data
+ClownFish.Data 是一个通用的数据访问层，前身是ClownFish项目，  
+<http://www.cnblogs.com/fish-li/archive/2012/07/17/ClownFish.html>  
+现在，这个项目经过重写，拥有更清晰，更易于使用的API接口，要以点击下面的链接浏览简要使用说明：  
+<http://note.youdao.com/yws/public/redirect/share?id=84f8d3d0062170ba552a7406c99050de&type=false>
+
+
+##ClownFish.Log
+ClownFish.Log 是一个通用的日志组件，专为大型项目而设计：
+ - 提供同步和异常写入API
+ - 内置5种日志写入器（MongoDb,File,Msmq,WinLog,Mail），并允许自行扩展
+ - 允许为每个数据结构指定一个或者多个写入器
+ - 允许自行扩展写入器的过滤器
+ - 允许在组件发生异常时指定重试机制或者订阅事件
+ - 内置完整的HTTP请求记录功能
+ - 内置完整的DbCommand记录功能
+ - 内置性能日志模块

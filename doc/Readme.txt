@@ -1,39 +1,39 @@
-ClownFish.net �İ�Ȩ����
+﻿ClownFish.net 的版权问题
 ====================================
-ClownFish.net ��һ����ѵ��������������κ���Ŀ��û���κΰ�Ȩ���ơ�
-���� ClownFish.net ��BUG��ɵ��κβ�Ʒ���⣬Ҳ�����ге���
+ClownFish.net 是一款免费的软件，可用于任何项目，没有任何版权限制。
+由于 ClownFish.net 的BUG造成的任何产品问题，也请自行承担。
 
 
 
-�����IIS������ʾ��
+如何在IIS中运行示例
 ====================================
-��ο���ַ��
+请参考网址：
 http://www.cnblogs.com/fish-li/archive/2012/02/26/2368989.html
-���߲ο��������� MyMVC ��ʾ����.docx��
+或者参考：《配置 MyMVC 演示程序.docx》
 
 
 
-DEMO��SQLSERVER��֧��
+DEMO对SQLSERVER的支持
 ====================================
 
-MvcDemoWebSite1 ��վ���ڿ�ʹ���������ݷ��ʷ�ʽ��
-1. ���ڵ�XML�ļ�����дȫ��һ���ļ�����
-2. �ô洢���̵ķ�ʽ����SQLSERVER��
-3. ��XmlCommand�ķ�ʽ����SQLSERVER��
+MvcDemoWebSite1 网站现在可使用三种数据访问方式：
+1. 早期的XML文件（读写全是一个文件）。
+2. 用存储过程的方式访问SQLSERVER。
+3. 用XmlCommand的方式访问SQLSERVER。
 
 
-�л���ʽ��
-��MvcDemoWebSite1\web.config,�ҵ�appSettings���ýڣ��ο������ע�͡�
+切换方式：
+打开MvcDemoWebSite1\web.config,找到appSettings配置节，参考里面的注释。
 
 
 
-SQLSERVER���ݿ��ļ���
-ʾ�������MyNorthwind���ݿ��ļ������ص�ַ��http://files.cnblogs.com/fish-li/MyNorthwind.7z
-�������ݿ�����ÿɲο���http://www.cnblogs.com/fish-li/archive/2012/02/26/2368989.html
+SQLSERVER数据库文件：
+示例所需的MyNorthwind数据库文件的下载地址：http://files.cnblogs.com/fish-li/MyNorthwind.7z
+关于数据库的配置可参考：http://www.cnblogs.com/fish-li/archive/2012/02/26/2368989.html
 
 
-˵����
-����������ݷ��ʷ�ʽ������ClownFish������һ��ͨ�õ����ݷ��ʲ㣬��֧�ֶ������ݿ⣬
-�����ClownFish���ܿɲο���http://www.cnblogs.com/fish-li/archive/2012/07/17/ClownFish.html
+说明：
+后面二种数据访问方式采用了ClownFish，它是一个通用的数据访问层，可支持多种数据库，
+更多的ClownFish介绍可参考：http://www.cnblogs.com/fish-li/archive/2012/07/17/ClownFish.html
 
 

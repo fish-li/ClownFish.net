@@ -1,0 +1,12 @@
+﻿
+
+ClownFish.Data 版本更新日志（以文件版本为准）
+------------------------------------------
+
+
+
+3.16.731.2238 （初始版本）
+------------------------------------------
+ClownFish.Data API  简要使用说明
+http://note.youdao.com/yws/public/redirect/share?id=84f8d3d0062170ba552a7406c99050de&type=false
+

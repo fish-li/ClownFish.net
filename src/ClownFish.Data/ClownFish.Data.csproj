@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BC50D47F-B55C-4D9D-B0D4-D7A63163E3FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClownFish.Data</RootNamespace>
+    <AssemblyName>ClownFish.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>bin\ClownFish.Data.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\ClownFish.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\EntityAssemblyAttribute.cs" />
+    <Compile Include="Attributes\EntityAdditionAttribute.cs" />
+    <Compile Include="Attributes\EntityProxyAssemblyAttribute.cs" />
+    <Compile Include="CodeDom\EntityCompileResult.cs" />
+    <Compile Include="CodeDom\ProxyBuilder.cs" />
+    <Compile Include="CodeDom\CompileException.cs" />
+    <Compile Include="CodeDom\CompilerHelper.cs" />
+    <Compile Include="Context\SomeExtensions.cs" />
+    <Compile Include="Entity\BaseDataLoader.cs" />
+    <Compile Include="Entity\ColumnInfo.cs" />
+    <Compile Include="CodeDom\EntityGenerator.cs" />
+    <Compile Include="Entity\EntityDescription.cs" />
+    <Compile Include="Entity\EntityHttpLoader.cs" />
+    <Compile Include="Initializer.cs" />
+    <Compile Include="Utils\DataLoaderHelper.cs" />
+    <Compile Include="Utils\EntityHelper.cs" />
+    <Compile Include="Entity\EntityMethodFactory.cs" />
+    <Compile Include="Entity\EntityTable.cs" />
+    <Compile Include="Entity\IEntityProxy.cs" />
+    <Compile Include="Linq\EntityLinqProvider.cs" />
+    <Compile Include="Linq\EntityQuery.cs" />
+    <Compile Include="Linq\LinqParser.cs" />
+    <Compile Include="Linq\WhereParase.cs" />
+    <Compile Include="Utils\ConvertExtensions.cs" />
+    <Compile Include="Command\BaseCommand.cs" />
+    <Compile Include="Context\ConnectionManager.cs" />
+    <Compile Include="Context\ConnectionInfo.cs" />
+    <Compile Include="Command\CPQueryFactory.cs" />
+    <Compile Include="Entity\DefaultDataLoader.cs" />
+    <Compile Include="Entity\DataLoaderFactory.cs" />
+    <Compile Include="Entity\EntityProxyFactory.cs" />
+    <Compile Include="Command\EventManager.cs" />
+    <Compile Include="Entity\IDataLoader.cs" />
+    <Compile Include="Command\ParaNameBuilder.cs" />
+    <Compile Include="Command\ParaNameBuilderFactory.cs" />
+    <Compile Include="Utils\DataExtensions.cs" />
+    <Compile Include="Utils\ProviderFactoryHelper.cs" />
+    <Compile Include="Command\SqlFragment.cs" />
+    <Compile Include="Command\StoreProcedureFactory.cs" />
+    <Compile Include="Entity\TableExtensions.cs" />
+    <Compile Include="Command\XmlCommandFactory.cs" />
+    <Compile Include="Attributes\DbEntityAttribute.cs" />
+    <Compile Include="Entity\Entity.cs" />
+    <Compile Include="Context\ConnectionScope.cs" />
+    <Compile Include="Command\CPQuery.cs" />
+    <Compile Include="Attributes\DbColumnAttribute.cs" />
+    <Compile Include="Context\DbContext.cs" />
+    <Compile Include="Utils\DefaultSettings.cs" />
+    <Compile Include="PagingInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\DictionaryExtensions.cs" />
+    <Compile Include="Command\StoreProcedure.cs" />
+    <Compile Include="SqlClient\SqlserverExtensions.cs" />
+    <Compile Include="Utils\ReflectionExtensions.cs" />
+    <Compile Include="Utils\TypeList.cs" />
+    <Compile Include="Xml\XmlCmdParameter.cs" />
+    <Compile Include="Xml\XmlCommandItem.cs" />
+    <Compile Include="Xml\XmlCommandManager.cs" />
+    <Compile Include="Command\XmlCommand.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
+      <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
+      <Name>ClownFish.Base</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

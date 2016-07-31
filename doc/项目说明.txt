@@ -1,48 +1,56 @@
-
+﻿
 ClownFish.Base
 ---------------------------------------------------
-����һЩ��������
+包含整个ClownFish解决方案的最基础功能
 
 
 ClownFish.Web
----------------------------------------------------
-���ڹ���WEB��Ŀ�Ŀ��ʵ�֣����磺MVC�� SERVICE
-
-
-ClownFish.MockAspnetRuntime
----------------------------------------------------
-ģ��һЩASP.NET���Ķ��󣬷���ClownFish.Web�Ĵ�������Ԫ���ԡ�
-
-
-TestApplication1
----------------------------------------------------
-һ��WinForm�Ĳ��Գ���2����;��
-1�����Զ������Է�ʽ����֤���ع�ClownFish.Webʱ�����ȶ���
-2����ʾ��ClownFish.Web��Ϊ������ʱ���ͻ�����ε��ã�ͬ�� / �첽��
-
-
 ClownFish.Web.UnitTest
 ---------------------------------------------------
-ClownFish.Base��ClownFish.Web��Ŀ�ĵ�Ԫ��������
+用于构建WEB项目的框架实现，例如：MVC， API SERVICE
 
 
 
 ClownFish.Log
 ClownFish.Log.UnitTest
 ---------------------------------------------------
-��־�������Ԫ����
+日志组件及单元测试
+
+
+
+ClownFish.Data
+ClownFish.Data.ProxyGen
+ClownFish.Data.UnitTest
+ClownFish.Data.PerformanceTest
+---------------------------------------------------
+数据访问层框架，辅助编译工具，单元测试，性能测试项目
+
+
+
+
+ClownFish.MockAspnetRuntime
+---------------------------------------------------
+模拟一些ASP.NET核心对象，方便ClownFish.Web的代码做单元测试。
+
+
+
+TestApplication1
+---------------------------------------------------
+一个WinForm的测试程序，2个用途：
+1、用自动化测试方式，保证在重构ClownFish.Web时功能稳定。
+2、演示当ClownFish.Web做为服务框架时，客户端如何调用（同步 / 异步）
 
 
 
 CorsClientWebSite1
 ---------------------------------------------------
-��ʾ��3�ֿ���ʵ�ַ���
+演示了3种跨域实现方法
 
 
 
 ReverseProxyWebSite
 ---------------------------------------------------
-��ʾ�˻���ClownFish.Web�ķ������
+演示了基于ClownFish.Web的反向代理
 
 
 
@@ -52,7 +60,7 @@ DEMO.BLL
 DEMO.Model
 DEMO.Common
 ---------------------------------------------------
-��ʾ�˻�����ClownFish.Webʹ�÷����������������չʹ�÷�������
-������ϸ������ο��ҵĲ��ͣ�
+演示了基本的ClownFish.Web使用方法（不包含框架扩展使用方法）。
+更多详细介绍请参考我的博客：
 http://www.cnblogs.com/fish-li/archive/2012/02/12/2348395.html
 http://www.cnblogs.com/fish-li/archive/2012/02/21/2361982.html
