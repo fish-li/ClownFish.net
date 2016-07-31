@@ -38,6 +38,7 @@ namespace ClownFish.Base.Framework
 		/// <summary>
 		/// 获取当前程序加载的所有程序集
 		/// </summary>
+		/// <param name="ignoreSystemAssembly">是否忽略以System开头和动态程序集，通常用于反射时不搜索它们。</param>
 		/// <returns></returns>
 		public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
 		{
