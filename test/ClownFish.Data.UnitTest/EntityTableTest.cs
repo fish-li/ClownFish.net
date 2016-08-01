@@ -1,14 +1,11 @@
-﻿using ClownFish.Data.Test;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ClownFish.Data.Test;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Data.UnitTest
 {
-    [TestClass]
+	[TestClass]
     public class EntityTableTest : BaseTestWithConnectionScope
     {
         [TestMethod]

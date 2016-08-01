@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.Base.TypeExtend;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Data.UnitTest
 {

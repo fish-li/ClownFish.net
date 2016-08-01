@@ -13,6 +13,7 @@ namespace ClownFish.Data
 	/// </summary>
 	public sealed class ConnectionScope : IDisposable
 	{
+		private int _refCount;
 
 		#region 构造函数
 		internal ConnectionScope(DbContext context)
@@ -20,6 +21,7 @@ namespace ClownFish.Data
 			if( context == null )
 				throw new ArgumentNullException("context");
 
+			_refCount++;
 			Context = context;
 			SetCurrent();
 		}
@@ -32,6 +34,23 @@ namespace ClownFish.Data
 		{
 			DbContext context = DbContext.Create();
 			return new ConnectionScope(context);
+		}
+
+
+		/// <summary>
+		/// 尝试从当前上下文中获取已存在的ConnectionScope，
+		/// 如果没有已存在的实例，就用默认的连接字符串创建一个ConnectionScope实例
+		/// </summary>
+		/// <returns></returns>
+		public static ConnectionScope GetExistOrCreate()
+		{
+			ConnectionScope current = s_current;
+			if( current != null ) {
+				current._refCount++;        // 增加引用计数
+				return current;
+			}
+
+			return Create();
 		}
 
 		/// <summary>
@@ -99,8 +118,17 @@ namespace ClownFish.Data
 		/// </summary>
 		public void Dispose()
 		{
-			// 恢复之前的【当前】实例
-			s_current = _lastInstance;
+			_refCount--;
+
+			if( _refCount == 0 ) {
+				// 恢复之前的【当前】实例
+				s_current = _lastInstance;
+
+				if( this.Context != null ) {
+					this.Context.Dispose();
+					this.Context = null;
+				}
+			}
 		}
 
 		#endregion

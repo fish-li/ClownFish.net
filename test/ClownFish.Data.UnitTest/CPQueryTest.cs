@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
 using ClownFish.Data.UnitTest.Models;
 using ClownFish.Data.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

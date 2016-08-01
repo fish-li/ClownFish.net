@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
+using System.Data.SqlClient;
+using System.Reflection;
+using ClownFish.Base.TypeExtend;
 using ClownFish.Data.UnitTest.Models;
-using ClownFish.Data.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Data.UnitTest
@@ -59,5 +56,129 @@ namespace ClownFish.Data.UnitTest
 			}
 		}
 
+
+		[TestMethod]
+		public void Test_重用ConnectionScope实例()
+		{
+			SqlConnection connection = null;
+
+			using( ConnectionScope scope = ConnectionScope.Create() ) {
+				connection = scope.Context.Connection as SqlConnection;
+
+				var name1 = CPQuery.Create("select @@SERVERNAME").ExecuteScalar<string>();
+
+
+				//------------------------------------------------------------
+				using(ConnectionScope s2 = ConnectionScope.GetExistOrCreate() ) {
+					Assert.IsTrue(object.ReferenceEquals(scope, s2));
+
+
+					//------------------------------------------------------------
+					using( ConnectionScope s3 = ConnectionScope.GetExistOrCreate() ) {
+						Assert.IsTrue(object.ReferenceEquals(s3, s2));
+
+						int refCount3 = (int)s3.GetType().InvokeMember("_refCount",
+											BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
+											null, s3, null);
+						Assert.AreEqual(3, refCount3);
+					}
+
+					// 确信连接没有被释放
+					Assert.IsTrue(connection.ClientConnectionId != Guid.Empty);
+
+					// 检验连接存在
+					var name2 = CPQuery.Create("select @@SERVERNAME").ExecuteScalar<string>();
+					Assert.AreEqual(name1, name2);
+
+
+					int refCount2 = (int)s2.GetType().InvokeMember("_refCount",
+											BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
+											null, s2, null);
+					Assert.AreEqual(2, refCount2);
+				}
+
+				// 确信连接没有被释放
+				Assert.IsTrue(connection.ClientConnectionId != Guid.Empty);
+
+				// 检验连接存在
+				var name3 = CPQuery.Create("select @@SERVERNAME").ExecuteScalar<string>();
+				Assert.AreEqual(name1, name3);
+
+
+				int refCount1 = (int)scope.GetType().InvokeMember("_refCount",
+											BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
+											null, scope, null);
+				Assert.AreEqual(1, refCount1);
+			}
+
+
+			// 确信连接已被释放
+			Assert.IsTrue(connection.ClientConnectionId == Guid.Empty);
+		}
+
+
+		[TestMethod]
+		public void Test_ConnectionScope多次启用分段事务()
+		{
+			ExtenderManager.RegisterSubscriber(typeof(EventManagerExt1));
+
+			using( ConnectionScope scope = ConnectionScope.GetExistOrCreate() ) {
+				ExecuteAndAssert(false);
+
+
+				// ------------------------------------------------------
+				// 开启事务
+				scope.BeginTransaction();
+				ExecuteAndAssert(true);
+				scope.Commit();
+				// ------------------------------------------------------
+
+
+				//........................................
+				// 没有事务
+				ExecuteAndAssert(false);
+				//........................................
+
+
+
+				// ------------------------------------------------------
+				// 开启事务
+				scope.BeginTransaction();
+				ExecuteAndAssert(true);
+				scope.Commit();
+				// ------------------------------------------------------
+
+				//........................................
+				// 没有事务
+				ExecuteAndAssert(false);
+				//........................................
+			}
+
+			ExtenderManager.RemoveSubscriber(typeof(EventManagerExt1));
+		}
+
+
+		private void ExecuteAndAssert(bool expected)
+		{
+			var time = CPQuery.Create("select getdate()").ExecuteScalar<DateTime>();
+			Assert.AreEqual(expected, EventManagerExt1.LastInTransaction);
+		}
+
+	}
+
+
+	public class EventManagerExt1 : EventSubscriber<EventManager>
+	{
+		public static bool LastInTransaction { get; private set; }
+
+		public override void SubscribeEvent(EventManager instance)
+		{
+			instance.BeforeExecute += Instance_BeforeExecute;
+		}
+
+		private void Instance_BeforeExecute(object sender, CommandEventArgs e)
+		{
+			LastInTransaction = e.Command.Command.Transaction != null;
+		}
 	}
 }

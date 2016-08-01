@@ -1,10 +1,6 @@
-﻿using ClownFish.Data.Test;
+﻿using System;
+using ClownFish.Data.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClownFish.Data.UnitTest
 {

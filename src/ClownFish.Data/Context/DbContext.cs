@@ -161,73 +161,7 @@ namespace ClownFish.Data
 
 
 		#region 基础操作
-
-		/// <summary>
-		/// 为打开的连接更改当前数据库。
-		/// </summary>
-		/// <param name="databaseName"></param>
-		public void ChangeDatabase(string databaseName)
-		{
-			// 如果连接还没有创建，就用变量来保存要切换的数据库，等待连接创建后再切换
-			if( this._connection == null )
-				_changeDatabase = databaseName;
-			else
-				// 连接存在就直接切换
-				this._connection.ChangeDatabase(databaseName);
-		}
-
-		/// <summary>
-		/// 开启数据库事务
-		/// </summary>
-		public void BeginTransaction()
-		{
-			_useTransaction = true;
-			_isolationLevel = null;
-		}
-
-		/// <summary>
-		/// 开启数据库事务，并指定事务的隔离级别
-		/// </summary>
-		/// <param name="isolationLevel"></param>
-		public void BeginTransaction(IsolationLevel isolationLevel)
-		{
-			_useTransaction = true;
-			_isolationLevel = isolationLevel;
-		}
-		
-		/// <summary>
-		/// 用于连接创建后的初始化
-		/// </summary>
-		private void InitConnection()
-		{
-			if( this._connection == null )		// 确信连接已创建
-				throw new InvalidProgramException();
-
-			// 开启事务
-			if( _useTransaction ) {
-				if( _isolationLevel.HasValue )
-					this.Transaction = this._connection.BeginTransaction(_isolationLevel.Value);
-				else
-					this.Transaction = this._connection.BeginTransaction();
-			}
-
-			// 切换数据库
-			if( string.IsNullOrEmpty(_changeDatabase) == false )
-				this._connection.ChangeDatabase(_changeDatabase);
-		}
-
-		/// <summary>
-		/// 提交数据库事务
-		/// </summary>
-		public void Commit()
-		{
-			if( this.Transaction != null ) {
-				this.Transaction.Commit();
-				EventManager.FireOnCommit(this.Connection);
-			}
-			else
-				throw new InvalidOperationException("没有开启事务不能执行Commit操作。");
-		}
+				
 
 		/// <summary>
 		/// 同步方式打开数据库连接
@@ -257,6 +191,113 @@ namespace ClownFish.Data
 
 			InitConnection();
 		}
+
+		/// <summary>
+		/// 用于连接创建后的初始化
+		/// </summary>
+		private void InitConnection()
+		{
+			if( this._connection == null )      // 确信连接已创建
+				throw new InvalidProgramException();
+
+			// 开启事务
+			if( _useTransaction ) {
+				_useTransaction = false;    // 清除变量
+
+				if( _isolationLevel.HasValue )
+					this.Transaction = this._connection.BeginTransaction(_isolationLevel.Value);
+				else
+					this.Transaction = this._connection.BeginTransaction();
+			}
+
+			// 切换数据库
+			if( string.IsNullOrEmpty(_changeDatabase) == false ) {
+				this._connection.ChangeDatabase(_changeDatabase);
+				_changeDatabase = null; // 清除变量
+			}
+		}
+
+		/// <summary>
+		/// 为打开的连接更改当前数据库。
+		/// </summary>
+		/// <param name="databaseName"></param>
+		public void ChangeDatabase(string databaseName)
+		{
+			// 如果连接还没有创建，就用变量来保存要切换的数据库，等待连接创建后再切换
+			if( this._connection == null )
+				_changeDatabase = databaseName;
+			else
+				// 连接存在就直接切换
+				this._connection.ChangeDatabase(databaseName);
+		}
+
+		/// <summary>
+		/// 开启数据库事务
+		/// </summary>
+		public void BeginTransaction()
+		{
+			if( this._connection == null ) {
+				_useTransaction = true;
+				_isolationLevel = null;
+			}
+			else {
+				if( this.Transaction != null )
+					throw new InvalidOperationException("当前上下文中已存在打开的事务，请不要重复开启事务。");
+
+				this.Transaction = this._connection.BeginTransaction();
+			}
+		}
+
+		/// <summary>
+		/// 开启数据库事务，并指定事务的隔离级别
+		/// </summary>
+		/// <param name="isolationLevel"></param>
+		public void BeginTransaction(IsolationLevel isolationLevel)
+		{
+			if( this._connection == null ) {
+				_useTransaction = true;
+				_isolationLevel = isolationLevel;
+			}
+			else {
+				if( this.Transaction != null )
+					throw new InvalidOperationException("当前上下文中已存在打开的事务，请不要重复开启事务。");
+
+				this.Transaction = this._connection.BeginTransaction(_isolationLevel.Value);
+			}
+		}
+
+
+
+		/// <summary>
+		/// 提交数据库事务
+		/// </summary>
+		public void Commit()
+		{
+			if( this.Transaction != null ) {
+				this.Transaction.Commit();
+				this.Transaction = null;
+
+				EventManager.FireOnCommit(this.Connection);
+			}
+			else
+				throw new InvalidOperationException("没有开启事务不能执行Commit操作。");
+		}
+
+
+		///// <summary>
+		///// 回滚事务
+		///// </summary>
+		//public void Rollback()
+		//{
+		//	if( this.Transaction != null ) {
+		//		this.Transaction.Rollback();
+		//		this.Transaction = null;
+
+		//		EventManager.FireOnRollback(this.Connection);
+		//	}
+		//	else
+		//		throw new InvalidOperationException("没有开启事务不能执行Rollback操作。");
+		//}
 
 		/// <summary>
 		/// 创建一个常用的命令参数

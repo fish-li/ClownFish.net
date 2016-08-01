@@ -1,17 +1,13 @@
-﻿using ClownFish.Data.CodeDom;
-using ClownFish.Data.Test;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ClownFish.Data.CodeDom;
 using ClownFish.Data.UnitTest.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Data.UnitTest
 {
-    [TestClass]
+	[TestClass]
     public class EntityGeneratorTest
     {
         [TestMethod]

@@ -126,8 +126,8 @@ where  RowIndex > (@PageSize * @PageIndex) and RowIndex <= (@PageSize * (@PageIn
 
 			CreatePagedQuery(command, pageInfo, out query1, out query2);
 
-			// 执行二次数据库操作（在一个连接中）
-			using( ConnectionScope scope = ConnectionScope.Create() ) {
+			// 确保在一个连接中执行二次数据库操作
+			using( ConnectionScope scope = ConnectionScope.GetExistOrCreate() ) {
 				List<T> list = query1.ToList<T>();
 				pageInfo.TotalRows = query2.ExecuteScalar<int>();
 
@@ -149,8 +149,8 @@ where  RowIndex > (@PageSize * @PageIndex) and RowIndex <= (@PageSize * (@PageIn
 
 			CreatePagedQuery(command, pageInfo, out query1, out query2);
 
-			// 执行二次数据库操作（在一个连接中）
-			using( ConnectionScope scope = ConnectionScope.Create() ) {
+			// 确保在一个连接中执行二次数据库操作
+			using( ConnectionScope scope = ConnectionScope.GetExistOrCreate() ) {
 				System.Data.DataTable table = query1.ToDataTable();
 				pageInfo.TotalRows = query2.ExecuteScalar<int>();
 
