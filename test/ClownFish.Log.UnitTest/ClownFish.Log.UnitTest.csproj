@@ -91,7 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="bin_bak\ClownFish.Log.config" />
+    <None Include="ClownFish.Log.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">

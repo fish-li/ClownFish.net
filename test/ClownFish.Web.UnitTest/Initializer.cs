@@ -25,31 +25,7 @@ namespace ClownFish.Web.UnitTest
 
 			MockHttpRuntime.AppDomainAppPath = AppDomain.CurrentDomain.BaseDirectory;
 			MockHttpRuntime.AppDomainAppVirtualPath = "/";
-
-			CopyConfigFiles();
 		}
 
-
-		private static void CopyConfigFiles()
-		{
-			string bakPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\bin_bak") + "\\";
-			string binPath = AppDomain.CurrentDomain.BaseDirectory + "\\";
-
-			
-			if( Directory.Exists(binPath + "Page") == false )
-				Directory.CreateDirectory(binPath + "Page");
-
-			CopyFile(bakPath, binPath, "ClownFish.Web.config");
-			CopyFile(bakPath, binPath, "ClownFish.Web.OutputCache.config");
-			CopyFile(bakPath, binPath, "ClownFish.Web.RouteTable.config");
-			CopyFile(bakPath, binPath, "Page\\404DiagnoseResult.aspx");
-		}
-
-
-		private static void CopyFile(string bakPath, string binPath, string filename)
-		{
-			if( File.Exists(binPath + filename) == false )
-				File.Copy(bakPath + filename, binPath + filename);
-		}
 	}
 }
