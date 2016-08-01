@@ -64,6 +64,14 @@ namespace ClownFish.Data
 
 		#region Execute 方法
 
+
+		/// <summary>
+		/// 开始执行数据库操作前要处理的额外操作
+		/// </summary>
+		protected virtual void BeforeExecute()
+		{
+		}
+
 		private T Execute<T>(Func<DbCommand, T> func)
 		{
 			// 打开数据库连接
@@ -79,6 +87,8 @@ namespace ClownFish.Data
 
 			// 触发执行 前 事件
 			_context.EventManager.FireBeforeExecute(this);
+
+			this.BeforeExecute();
 
 			try {
 				// 执行数据库操作

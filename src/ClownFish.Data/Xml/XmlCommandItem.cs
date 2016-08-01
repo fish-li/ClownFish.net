@@ -48,6 +48,14 @@ namespace ClownFish.Data.Xml
 		[DefaultValue(30)]
 		[XmlAttribute]
 		public int Timeout = 30;
+
+
+		/// <summary>
+		/// 指示CommandText中的语句相对于哪个数据库。【可以为空】，
+		/// 如果指定这个设置，将在执行语句前切换数据库。
+		/// </summary>
+		[XmlAttribute]
+		public string Database { get; set; }
 	}
 
 	

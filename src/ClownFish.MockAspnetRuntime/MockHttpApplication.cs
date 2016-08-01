@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ClownFish.MockAspnetRuntime
 {
-	[SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
+	[SuppressMessage("Microsoft.Design", "CA1001")]
 	public class MockHttpApplication 
 	{
 		private HttpApplication _application;

@@ -9,7 +9,7 @@ using ClownFish.Data;
 namespace ClownFish.Data.PerformanceTest
 {
 	[TestMethod("ADO.NET-DataTable")]
-	public class Test_Adonet_LoadDataTable : IPerformanceTest
+	public sealed class Test_Adonet_LoadDataTable : IPerformanceTest
 	{
 		public Test_Adonet_LoadDataTable(int pagesize) { }
 		public void Dispose() { }
@@ -57,7 +57,7 @@ namespace ClownFish.Data.PerformanceTest
 
 
 	[TestMethod("ClownFish-DataTable")]
-	public class Test_ClownFish_LoadDataTable : IPerformanceTest
+	public sealed class Test_ClownFish_LoadDataTable : IPerformanceTest
 	{
 		public Test_ClownFish_LoadDataTable(int pagesize) { }
 		public void Dispose() { }

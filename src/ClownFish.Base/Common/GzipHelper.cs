@@ -48,6 +48,7 @@ namespace ClownFish.Base
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
 		public static byte[] Compress(byte[] input)
 		{
 			if( input == null )
@@ -80,6 +81,7 @@ namespace ClownFish.Base
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
 		public static byte[] Decompress(byte[] input)
 		{
 			if( input == null )

@@ -44,7 +44,7 @@ namespace ClownFish.Data
 		{
 			EntityDescription description = EntityDescriptionCache.Get(typeof(T));
 
-			List<T> list = new List<T>(DefaultSettings.ListSize);
+			List<T> list = new List<T>(Initializer.Instance.DefaultEntityListLen);
 
 			foreach( DataRow row in table.Rows ) {
 				T instance = GetSingle(row, description, table);
@@ -96,7 +96,7 @@ namespace ClownFish.Data
 
 		private List<T> ToList(DbDataReader reader, EntityDescription description) 
 		{
-			List<T> list = new List<T>(DefaultSettings.ListSize);
+			List<T> list = new List<T>(Initializer.Instance.DefaultEntityListLen);
 			string[] names = DataExtensions.GetColumnNames(reader);
 
 			while( reader.Read() ) {

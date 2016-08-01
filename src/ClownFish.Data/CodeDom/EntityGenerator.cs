@@ -164,14 +164,14 @@ using ClownFish.Data;
 				_code.AppendLine("[Serializable]");
 
 			_code
-				.AppendFormat("public class {0} : {1}, IEntityProxy\r\n", ProxyClassName, _entityType.FullName)
+				.AppendFormat("public sealed class {0} : {1}, IEntityProxy\r\n", ProxyClassName, _entityType.FullName)
 				.Append("{\r\n");
 		}
 
 		private void WriteLoaderHeader()
 		{
 			_code.AppendFormat("[EntityAddition(ProxyType=typeof({0}))]\r\n", ProxyClassName)
-				.AppendFormat("public class {0} : BaseDataLoader<{1}>, IDataLoader<{1}>\r\n", DataLoaderClassName, _entityType.FullName)
+				.AppendFormat("public sealed class {0} : BaseDataLoader<{1}>, IDataLoader<{1}>\r\n", DataLoaderClassName, _entityType.FullName)
 				.Append("{\r\n");
 		}
 

@@ -26,6 +26,7 @@ namespace ClownFish.Data
 		/// <param name="spName">存储过程名称</param>
 		/// <param name="parameters">DbParameter参数数组</param>
 		/// <returns>StoreProcedure实例</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		internal void Init(string spName, DbParameter[] parameters)
 		{
 			if( string.IsNullOrEmpty(spName) )

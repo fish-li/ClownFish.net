@@ -96,7 +96,6 @@
     <Compile Include="Command\CPQuery.cs" />
     <Compile Include="Attributes\DbColumnAttribute.cs" />
     <Compile Include="Context\DbContext.cs" />
-    <Compile Include="Utils\DefaultSettings.cs" />
     <Compile Include="PagingInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />

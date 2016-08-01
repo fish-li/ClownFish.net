@@ -60,6 +60,7 @@ namespace ClownFish.Data.PerformanceTest
 		}
 
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
 		private static void RunTest(Type t, Action<TimeSpan> action)
 		{
 			int pagesize = 50; 
@@ -75,6 +76,7 @@ namespace ClownFish.Data.PerformanceTest
 
 				for( int k = 0; k < count2; k++ ) {
 					var result = instance.Run();
+					instance.Dispose();
 				}
 
 				watch.Stop();

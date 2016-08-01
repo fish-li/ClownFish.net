@@ -19,14 +19,14 @@ using ClownFish.Data;
 //[assembly: System.Reflection.AssemblyTrademark("")]
 //[assembly: System.Reflection.AssemblyCulture("")]
 //[assembly: System.Runtime.InteropServices.ComVisible(false)]
-//[assembly: System.Runtime.InteropServices.Guid("bf90e507-2265-49e6-8539-a221e3f9832c")]
+//[assembly: System.Runtime.InteropServices.Guid("de091c36-e534-48dd-bde5-bde3a9885029")]
 //[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
-//[assembly: System.Reflection.AssemblyFileVersion("1.2016.731.1121")]
+//[assembly: System.Reflection.AssemblyFileVersion("1.2016.801.1503")]
 
 namespace ClownFish.Data.GeneratorCode
 {
 	[Serializable]
-	public class Product_22504B0AA59DC41CEDC8925382100BEA_Proxy : ClownFish.Data.UnitTest.Models.Product, IEntityProxy
+	public sealed class Product_22504B0AA59DC41CEDC8925382100BEA_Proxy : ClownFish.Data.UnitTest.Models.Product, IEntityProxy
 	{
 
 		private bool[] _x_changeFlags = new bool[7];
@@ -35,8 +35,7 @@ namespace ClownFish.Data.GeneratorCode
 		Entity IEntityProxy.RealEntity { get { return _x_realEntity; } }
 		private ClownFish.Data.UnitTest.Models.Product _X__Entity {
 			get {
-				if( _x_realEntity == null )
-					_x_realEntity = new ClownFish.Data.UnitTest.Models.Product();
+				if( _x_realEntity == null ) _x_realEntity = new ClownFish.Data.UnitTest.Models.Product();
 				return _x_realEntity;
 			}
 		}
@@ -86,39 +85,25 @@ namespace ClownFish.Data.GeneratorCode
 		string[] IEntityProxy.GetChangeNames()
 		{
 			List<string> list = new List<string>(7);
-			if( _x_changeFlags[0] )
-				list.Add("ProductID");
-			if( _x_changeFlags[1] )
-				list.Add("ProductName");
-			if( _x_changeFlags[2] )
-				list.Add("CategoryID");
-			if( _x_changeFlags[3] )
-				list.Add("Unit");
-			if( _x_changeFlags[4] )
-				list.Add("UnitPrice");
-			if( _x_changeFlags[5] )
-				list.Add("Remark");
-			if( _x_changeFlags[6] )
-				list.Add("Quantity");
+			if( _x_changeFlags[0] ) list.Add("ProductID");
+			if( _x_changeFlags[1] ) list.Add("ProductName");
+			if( _x_changeFlags[2] ) list.Add("CategoryID");
+			if( _x_changeFlags[3] ) list.Add("Unit");
+			if( _x_changeFlags[4] ) list.Add("UnitPrice");
+			if( _x_changeFlags[5] ) list.Add("Remark");
+			if( _x_changeFlags[6] ) list.Add("Quantity");
 			return list.ToArray();
 		}
 		object[] IEntityProxy.GetChangeValues()
 		{
 			List<object> list = new List<object>(7);
-			if( _x_changeFlags[0] )
-				list.Add(this.ProductID);
-			if( _x_changeFlags[1] )
-				list.Add(this.ProductName);
-			if( _x_changeFlags[2] )
-				list.Add(this.CategoryID);
-			if( _x_changeFlags[3] )
-				list.Add(this.Unit);
-			if( _x_changeFlags[4] )
-				list.Add(this.UnitPrice);
-			if( _x_changeFlags[5] )
-				list.Add(this.Remark);
-			if( _x_changeFlags[6] )
-				list.Add(this.Quantity);
+			if( _x_changeFlags[0] ) list.Add(this.ProductID);
+			if( _x_changeFlags[1] ) list.Add(this.ProductName);
+			if( _x_changeFlags[2] ) list.Add(this.CategoryID);
+			if( _x_changeFlags[3] ) list.Add(this.Unit);
+			if( _x_changeFlags[4] ) list.Add(this.UnitPrice);
+			if( _x_changeFlags[5] ) list.Add(this.Remark);
+			if( _x_changeFlags[6] ) list.Add(this.Quantity);
 			return list.ToArray();
 		}
 		Tuple<string, object> IEntityProxy.GetRowKey()
@@ -130,7 +115,7 @@ namespace ClownFish.Data.GeneratorCode
 		public bool[] XEntityDataChangeFlags { get { return _x_changeFlags; } set { _x_changeFlags = value; } }
 	}
 	[EntityAddition(ProxyType = typeof(Product_22504B0AA59DC41CEDC8925382100BEA_Proxy))]
-	public class Product_22504B0AA59DC41CEDC8925382100BEA_Loader : BaseDataLoader<ClownFish.Data.UnitTest.Models.Product>, IDataLoader<ClownFish.Data.UnitTest.Models.Product>
+	public sealed class Product_22504B0AA59DC41CEDC8925382100BEA_Loader : BaseDataLoader<ClownFish.Data.UnitTest.Models.Product>, IDataLoader<ClownFish.Data.UnitTest.Models.Product>
 	{
 
 		public override int[] CreateIndex(object dataSource)

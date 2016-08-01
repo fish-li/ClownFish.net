@@ -16,7 +16,7 @@ namespace ClownFish.Base.WebClient
 	/// 2、Response属性的页面编码不一致（ASP.NET 采用UTF-8，IIS采用GB2312），导致获取异常页面时乱码问题。
 	/// </summary>
 	[Serializable]
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240")]
 	public sealed class RemoteWebException : System.Exception
 	{
 		private string _message;

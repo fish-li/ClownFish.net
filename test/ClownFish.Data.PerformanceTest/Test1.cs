@@ -10,7 +10,7 @@ using ClownFish.Data;
 namespace ClownFish.Data.PerformanceTest
 {
 	[TestMethod("ADO.NET-SQLSERVER")]
-	public class Test_Adonet_ShareConnection : IPerformanceTest
+	public sealed class Test_Adonet_ShareConnection : IPerformanceTest
 	{
 		private int _pagesize;
 		private SqlConnection _conn;
@@ -75,7 +75,7 @@ namespace ClownFish.Data.PerformanceTest
 
 
 	[TestMethod("ClownFish-SQLSERVER")]
-	public class Test_ClownFish_ShareConnection : IPerformanceTest
+	public sealed class Test_ClownFish_ShareConnection : IPerformanceTest
 	{
 		private int _pagesize;
 		private DbContext _db;

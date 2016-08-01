@@ -34,6 +34,7 @@ namespace ClownFish.Data
 		/// 获取当前CPQuery内部的DbCommand对象，
 		/// 当前重写属性会更新CommandText属性
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		public override DbCommand Command
 		{
 			get

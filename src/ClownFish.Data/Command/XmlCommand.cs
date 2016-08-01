@@ -149,6 +149,7 @@ namespace ClownFish.Data
 									"传入的参数对象中，属性 {0} 没有在MXL定义对应的参数名。", name));
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		private void SetReplaceParameter(string placeholder, string text)
 		{
 			// ###################  注意  ###########################
@@ -161,8 +162,9 @@ namespace ClownFish.Data
 			_command.CommandText = _command.CommandText.Replace(placeholder, text);
 		}
 
-		
 
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		private void SetInArrayParameter(string placeholder, ICollection collection)
 		{
 			StringBuilder sb = new StringBuilder(128);
@@ -194,6 +196,7 @@ namespace ClownFish.Data
 			_command.CommandText = _command.CommandText.Replace(placeholder, sb.ToString());
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		private void SetQueryParameter(string placeholder, CPQuery query)
 		{
 			// 替换占位符
@@ -204,6 +207,7 @@ namespace ClownFish.Data
 		}
 
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
 		private void SetCommand(string name)
 		{
 			if( string.IsNullOrEmpty(name) )
@@ -249,10 +253,18 @@ namespace ClownFish.Data
 		}
 
 
+		/// <summary>
+		/// 开始执行数据库操作前要处理的额外操作
+		/// </summary>
+		protected override void BeforeExecute()
+		{
+			if( string.IsNullOrEmpty(_item.Database) == false )
+				_context.ChangeDatabase(_item.Database);
+
+		}
 
 
 
-       
 
 	}
 }
