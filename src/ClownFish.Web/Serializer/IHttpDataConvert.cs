@@ -12,6 +12,11 @@ namespace ClownFish.Web.Serializer
 	/// </summary>
 	public interface IHttpDataConvert
 	{
+		// 目前有2个调用点：
+		// 1、BaseDataProvider，用于获取 Action 参数值
+		// 2、ModelBuilder，由于 IHttpDataConvert 不接收ParameterInfo，所以还允许在ModelBuilder中使用
+
+
 		/// <summary>
 		/// 执行转换过程，并返回已加载的对象
 		/// </summary>

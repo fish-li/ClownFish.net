@@ -28,7 +28,7 @@ namespace ClownFish.Data
 						if( s_builderType == null )
 							throw new InvalidOperationException("Type ClownFish.Web.Serializer.ModelBuilder NOT FOUND!");
 
-						s_method = s_builderType.GetMethod("FillModelFromHttp",
+						s_method = s_builderType.GetMethod("FillObjectFromHttp",
 							 BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy,
 							 null, new Type[] { typeof(HttpContext), typeof(object), typeof(ParameterInfo) }, null);
 
@@ -40,6 +40,8 @@ namespace ClownFish.Data
 				}
 			}
 		}
+
+
 		public static Entity LoadFromHttp(HttpContext context, ParameterInfo p)
 		{
 			// 这个方法原本就是给 ClownFish.Web 调用的，

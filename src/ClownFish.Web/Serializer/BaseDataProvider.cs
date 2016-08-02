@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using ClownFish.Base;
+using ClownFish.Base.Http;
 using ClownFish.Base.Reflection;
 using ClownFish.Base.TypeExtend;
 using ClownFish.Web.Reflection;
@@ -35,10 +36,8 @@ namespace ClownFish.Web.Serializer
 				return null;        // 忽略用于方法重载识别的【空参数】
 
 
-			object result = GetAspnetOjbect(context, p)
-							?? GetByContextDataAttribute(context, p)
+			object result = GetAspnetObject(context, p)
 							?? GetByCustomDataAttribute(context, p)
-							?? GetByILoadActionParameter(context, p)
 							?? GetByLoadFromHttpMethod(context, p)
 							?? GetByIHttpDataConvert(context, p)
 							?? GetSupportableValue(context, p)
@@ -58,7 +57,7 @@ namespace ClownFish.Web.Serializer
 		/// <param name="context">HttpContext实例</param>
 		/// <param name="p">ParameterInfo实例</param>
 		/// <returns></returns>
-		private object GetAspnetOjbect(HttpContext context, ParameterInfo p)
+		private object GetAspnetObject(HttpContext context, ParameterInfo p)
 		{
 			if( p.ParameterType == typeof(HttpContext) ) 
 				return context;
@@ -82,48 +81,14 @@ namespace ClownFish.Web.Serializer
 		}
 
 
-
-		private object GetByContextDataAttribute(HttpContext context, ParameterInfo p)
-		{
-			ContextDataAttribute attr = p.GetMyAttribute<ContextDataAttribute>(false);
-			if( attr == null )
-				return null;
-
-			// 直接从HttpRequest对象中获取数据，根据Attribute中指定的表达式求值。
-			string expression = attr.Expression;
-			object requestData = null;
-
-			if( expression.StartsWith("Request.") )
-				requestData = System.Web.UI.DataBinder.Eval(context.Request, expression.Substring(8));
-
-			else if( expression.StartsWith("HttpRuntime.") ) {
-				PropertyInfo property = typeof(HttpRuntime).GetProperty(expression.Substring(12), BindingFlags.Static | BindingFlags.Public);
-				if( property == null )
-					throw new ArgumentException(string.Format("参数 {0} 对应的ContextDataAttribute计算表达式 {1} 无效：", p.Name, expression));
-				requestData = property.FastGetValue(null);
-			}
-			else
-				requestData = System.Web.UI.DataBinder.Eval(context, expression);
-
-
-			if( requestData == null )
-				return null;
-			else {
-				if( requestData.GetType().IsCompatible(p.ParameterType) )
-					return requestData;
-				else
-					throw new ArgumentException(string.Format("参数 {0} 的申明的类型与HttpRequest对应属性的类型不一致。", p.Name));
-			}
-		}
-
-
+		
 		private object GetByCustomDataAttribute(HttpContext context, ParameterInfo p)
 		{
 			CustomDataAttribute attr = p.GetMyAttribute<CustomDataAttribute>(false);
 			if( attr == null )
 				return null;
 
-			return attr.GetParameterValue(context, p);
+			return attr.GetHttpValue(context, p);
 		}
 
 
@@ -135,34 +100,24 @@ namespace ClownFish.Web.Serializer
 
 			return convert.Convert(context, p.Name);
 		}
-
-
-		private object GetByILoadActionParameter(HttpContext context, ParameterInfo p)
-		{
-			if( typeof(ILoadActionParameter).IsAssignableFrom(p.ParameterType) ) {
-				ILoadActionParameter obj = p.ParameterType.FastNew() as ILoadActionParameter;
-				obj.GetParameterValue(context, p);
-				return obj;
-			}
-
-			return null;
-		}
+		
 
 		private object GetByLoadFromHttpMethod(HttpContext context, ParameterInfo p)
 		{
+			// 如果参数类型实现了下面这样一个工厂方法：
+			// public static object LoadFromHttp(HttpContext context, ParameterInfo p)
+			// 这里就调用它来创建参数对象
+
+			// 这里只判断方法名称和参数个数及参数类型，不检查返回值类型
+
 			MethodInfo m = p.ParameterType.GetMethod("LoadFromHttp",
-				BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
-				null, new Type[] { typeof(HttpContext), typeof(ParameterInfo) }, null);
+							BindingFlags.Public | BindingFlags.Static |  BindingFlags.FlattenHierarchy,
+							null, new Type[] { typeof(HttpContext), typeof(ParameterInfo) }, null);
 
 			if( m == null )
 				return null;
 
-			if( m.IsStatic )
-				return m.FastInvoke(null, new object[] { context, p });
-			else {
-				object obj = p.ParameterType.FastNew();
-				return m.FastInvoke(obj, new object[] { context, p });
-			}
+			return m.FastInvoke(null, new object[] { context, p });
 		}
 
 		private object GetSupportableValue(HttpContext context, ParameterInfo p)
@@ -172,7 +127,7 @@ namespace ClownFish.Web.Serializer
 			// 如果参数是可支持的类型，则直接从HttpRequest中读取并赋值
 			if( paramterType.IsSupportableType() ) {
 				ModelBuilder builder = ObjectFactory.New<ModelBuilder>();
-				object val = builder.GetValueFromHttp(context, p.Name, paramterType, null);
+				object val = builder.GetValueFromHttp(context, p.Name, paramterType);
 				if( val != null )
 					return val;
 

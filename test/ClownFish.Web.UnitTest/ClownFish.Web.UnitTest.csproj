@@ -51,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -70,6 +71,9 @@
     <Compile Include="..\..\demo\web\DEMO.Controllers\CheckRightAttribute.cs">
       <Link>Controllers\CheckRightAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\ClownFish.Data.UnitTest\ClownFishDataEventSubscriber.cs">
+      <Link>ClownFishDataEventSubscriber.cs</Link>
+    </Compile>
     <Compile Include="Action\Http304ResultTest.cs" />
     <Compile Include="Action\Http404ResultTest.cs" />
     <Compile Include="Action\HttpCacheResultTest.cs" />
@@ -83,6 +87,7 @@
     <Compile Include="Common\GzipHelperTest.cs" />
     <Compile Include="Common\NameValueTest.cs" />
     <Compile Include="Common\StringExtensionsTest.cs" />
+    <Compile Include="Controllers\EntityService.cs" />
     <Compile Include="Ext\ExtenderManagerTest.cs" />
     <Compile Include="Ext\ObjectFactoryTest2.cs" />
     <Compile Include="Initializer.cs" />
@@ -121,6 +126,7 @@
     <Compile Include="WebTest\AdvancedDataTest.cs" />
     <Compile Include="WebTest\AuthorizeTest.cs" />
     <Compile Include="WebTest\AutoFindActionTest.cs" />
+    <Compile Include="WebTest\EntityServiceTest.cs" />
     <Compile Include="WebTest\NoramlDataTypeTest.cs" />
     <Compile Include="WebTest\AsyncServiceTest.cs" />
     <Compile Include="WebTest\AttributeTest.cs" />
@@ -145,6 +151,10 @@
       <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
       <Name>ClownFish.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\ClownFish.Data\ClownFish.Data.csproj">
+      <Project>{bc50d47f-b55c-4d9d-b0d4-d7a63163e3fc}</Project>
+      <Name>ClownFish.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\ClownFish.MockAspnetRuntime\ClownFish.MockAspnetRuntime.csproj">
       <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
       <Name>ClownFish.MockAspnetRuntime</Name>
@@ -162,6 +172,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ClownFish.Web.RouteTable.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Connections.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

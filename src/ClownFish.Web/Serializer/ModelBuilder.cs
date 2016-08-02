@@ -50,7 +50,7 @@ namespace ClownFish.Web.Serializer
 		/// <param name="context"></param>
 		/// <param name="model"></param>
 		/// <param name="parameterInfo"></param>
-		public virtual void FillModelFromHttp(HttpContext context, object model, ParameterInfo parameterInfo)
+		public virtual void FillObjectFromHttp(HttpContext context, object model, ParameterInfo parameterInfo)
 		{
 			if( context == null )
 				throw new ArgumentNullException("context");
@@ -68,9 +68,8 @@ namespace ClownFish.Web.Serializer
 		/// <param name="context"></param>
 		/// <param name="name"></param>
 		/// <param name="type"></param>
-		/// <param name="parentName"></param>
 		/// <returns></returns>
-		public virtual object GetValueFromHttp(HttpContext context, string name, Type type, string parentName)
+		public virtual object GetValueFromHttp(HttpContext context, string name, Type type)
 		{
 			if( context == null )
 				throw new ArgumentNullException("context");
@@ -80,7 +79,7 @@ namespace ClownFish.Web.Serializer
 				throw new ArgumentNullException("name");
 
 			_context = context;
-			return GetValueFromHttpInternal(name, type, parentName);
+			return GetValueFromHttpInternal(name, type, null);
 		}
 
 		
@@ -119,6 +118,7 @@ namespace ClownFish.Web.Serializer
 				string httpname = GetPropertyMapHttpName(property);
 				Type ptype = property.PropertyType.GetRealType();
 				val = GetValueFromHttpInternal(httpname, ptype, paramName);
+
 				if( val != null )
 					property.SetValue(model, val);
 			}

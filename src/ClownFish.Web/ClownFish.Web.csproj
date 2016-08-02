@@ -159,7 +159,6 @@
     <Compile Include="Serializer\HttpDataConvertFactory.cs" />
     <Compile Include="Serializer\IActionParametersProvider.cs" />
     <Compile Include="Serializer\IHttpDataConvert.cs" />
-    <Compile Include="Serializer\ILoadActionParameter.cs" />
     <Compile Include="Serializer\JsonDataProvider.cs" />
     <Compile Include="Serializer\JsonnetDataProvider.cs" />
     <Compile Include="Serializer\ModelBuilder.cs" />

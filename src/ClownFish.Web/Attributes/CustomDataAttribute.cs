@@ -21,6 +21,6 @@ namespace ClownFish.Web
 		/// <param name="context"></param>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public abstract object GetParameterValue(HttpContext context, ParameterInfo p);
+		public abstract object GetHttpValue(HttpContext context, ParameterInfo p);
 	}
 }

@@ -17,6 +17,10 @@ namespace ClownFish.Web.UnitTest.Attributes
 		{
 			Type1Attribute a = typeof(AttributeClass1).GetMyAttribute<Type1Attribute>();
 			Assert.AreEqual("20e00d57-fc17-4e90-8b93-8b0d1a51ed3f", a.Flag);
+
+
+			SerializableAttribute sa = typeof(AttributeClass1).GetMyAttribute<SerializableAttribute>();
+			Assert.IsNull(sa);
 		}
 
 		[TestMethod]
