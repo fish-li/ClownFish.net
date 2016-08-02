@@ -307,19 +307,7 @@ namespace ClownFish.Data
 
 		#endregion
 
-
-		/// <summary>
-		/// 供ClownFish.Web调用的方法，用于从HTTP请求中加载实体对象到ACTION参数中，
-		/// 注意：请不要直接调用这个方法！
-		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="p"></param>
-		/// <returns></returns>
-		public static Entity LoadFromHttp(HttpContext context, ParameterInfo p)
-		{
-			return EntityHttpLoader.LoadFromHttp(context, p);
-		}
-
+		
 	}
 
 

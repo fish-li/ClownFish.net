@@ -70,6 +70,7 @@
     <Compile Include="Framework\PreApplicationStartMethodAttribute.cs" />
     <Compile Include="Framework\RunTimeEnvironment.cs" />
     <Compile Include="Common\HttpExtensions.cs" />
+    <Compile Include="Http\CustomDataAttribute.cs" />
     <Compile Include="Http\HttpFile.cs" />
     <Compile Include="Http\HttpHeaderCollection.cs" />
     <Compile Include="Http\SerializeFormat.cs" />

@@ -38,7 +38,6 @@ namespace ClownFish.Web.Serializer
 
 			object result = GetAspnetObject(context, p)
 							?? GetByCustomDataAttribute(context, p)
-							?? GetByLoadFromHttpMethod(context, p)
 							?? GetByIHttpDataConvert(context, p)
 							?? GetSupportableValue(context, p)
 							?? GetObjectFromHttp(context, p);
@@ -101,24 +100,6 @@ namespace ClownFish.Web.Serializer
 			return convert.Convert(context, p.Name);
 		}
 		
-
-		private object GetByLoadFromHttpMethod(HttpContext context, ParameterInfo p)
-		{
-			// 如果参数类型实现了下面这样一个工厂方法：
-			// public static object LoadFromHttp(HttpContext context, ParameterInfo p)
-			// 这里就调用它来创建参数对象
-
-			// 这里只判断方法名称和参数个数及参数类型，不检查返回值类型
-
-			MethodInfo m = p.ParameterType.GetMethod("LoadFromHttp",
-							BindingFlags.Public | BindingFlags.Static |  BindingFlags.FlattenHierarchy,
-							null, new Type[] { typeof(HttpContext), typeof(ParameterInfo) }, null);
-
-			if( m == null )
-				return null;
-
-			return m.FastInvoke(null, new object[] { context, p });
-		}
 
 		private object GetSupportableValue(HttpContext context, ParameterInfo p)
 		{

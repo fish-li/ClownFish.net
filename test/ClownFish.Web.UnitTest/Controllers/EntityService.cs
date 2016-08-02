@@ -25,7 +25,7 @@ namespace ClownFish.Web.UnitTest.Controllers
 
 	public class EntityService : BaseController
 	{
-		public string Action1(ProductX p)
+		public string Action1([EntityProxy]ProductX p)
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.AppendLine();

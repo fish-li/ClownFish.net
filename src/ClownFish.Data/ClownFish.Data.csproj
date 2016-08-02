@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Attributes\EntityAssemblyAttribute.cs" />
     <Compile Include="Attributes\EntityAdditionAttribute.cs" />
+    <Compile Include="Attributes\EntityProxyAttribute.cs" />
     <Compile Include="Attributes\EntityProxyAssemblyAttribute.cs" />
     <Compile Include="CodeDom\EntityCompileResult.cs" />
     <Compile Include="CodeDom\ProxyBuilder.cs" />
