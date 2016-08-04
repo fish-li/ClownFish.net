@@ -57,6 +57,7 @@
     <Compile Include="CodeDom\ProxyBuilder.cs" />
     <Compile Include="CodeDom\CompileException.cs" />
     <Compile Include="CodeDom\CompilerHelper.cs" />
+    <Compile Include="Command\DbExceuteException.cs" />
     <Compile Include="Context\SomeExtensions.cs" />
     <Compile Include="Entity\BaseDataLoader.cs" />
     <Compile Include="Entity\ColumnInfo.cs" />

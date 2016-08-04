@@ -103,8 +103,8 @@ namespace ClownFish.Data
 				// 触发 异常 事件
 				_context.EventManager.FireOnException(this, ex);
 
-				// 不管理异常事件如何处理，异常都会重新抛出
-				throw;
+				// 重新抛出一个特定的异常，方便异常日志中记录command信息。
+				throw new DbExceuteException(ex, command);
 			}
 			finally {
 				// 让命令与连接，事务断开，避免这些资源外泄。

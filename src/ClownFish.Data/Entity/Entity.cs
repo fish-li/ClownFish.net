@@ -195,13 +195,17 @@ namespace ClownFish.Data
 				keyIndex = Array.IndexOf(names, rowKey.Item1);
 			
 			if( names.Length == 1 && keyIndex == 0)
-				return null;		// 如果仅仅只设置了主键字段，这样的更新是无意义的
+				return null;        // 如果仅仅只设置了主键字段，这样的更新是无意义的
 
+			int forcount = values.Length;
+
+			if( keyIndex == forcount - 1 )		// 主键出现在最后面
+				forcount--;
 
 			CPQuery query = this.DbContext.CreateCPQuery()
 							+ "UPDATE " + GetTableName() + " SET ";
 
-			for( int i = 0; i < values.Length; i++ ) {
+			for( int i = 0; i < forcount; i++ ) {
 				if( i == keyIndex )		// 忽略主键字段
 					continue;
 
@@ -213,8 +217,8 @@ namespace ClownFish.Data
 				else
 					query = query + " " + name + "=" + new QueryParameter(value);
 
-				if( i < values.Length - 1 )
-					query.AppendSql(",");
+				if( i < forcount - 1 )
+					query.AppendSql(",");		// 注意，这个逗号的拼接，有可能主键出现在所有字段的最后。
 			}
 
 			return query;
