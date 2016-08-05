@@ -14,6 +14,8 @@ namespace ClownFish.Data.Linq
 	{
 		internal DbContext Context { get; set; }
 
+		internal bool WithNoLock { get; set; }
+
 		/// <summary>
 		/// 构造一个 System.Linq.IQueryable 对象，该对象可计算指定表达式目录树所表示的查询。
 		/// </summary>
@@ -56,7 +58,9 @@ namespace ClownFish.Data.Linq
 		public TResult Execute<TResult>(Expression expression)
 		{
 			LinqParser sqlParser = new LinqParser();
+			sqlParser.WithNoLock = this.WithNoLock;
 			sqlParser.Context = this.Context;
+
 			object result = sqlParser.Translator(expression);
 
 			return (TResult)(object)result;

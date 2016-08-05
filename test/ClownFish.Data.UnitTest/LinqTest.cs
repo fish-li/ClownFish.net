@@ -278,5 +278,25 @@ ORDER BY ProductID,ProductName DESC,UnitPrice DESC,Quantity
 @p3: (Int32), 5
 ");
 		}
+
+
+		[TestMethod]
+		public void Test_LINQ_WithNoLock()
+		{
+			var query = from t in Entity.Query<Product>(true)
+						where t.ProductID == P5 || t.CategoryID < P3
+						select t;
+
+			List<Product> list = query.ToList();
+
+			AssertLastExecuteSQL(@"
+SELECT *
+FROM Products WITH(NOLOCK)
+WHERE ((ProductID = @p1) OR (CategoryID < @p2))
+@p1: (Int32), 5
+@p2: (Int32), 3
+");
+		}
+
 	}
 }

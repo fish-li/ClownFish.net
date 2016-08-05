@@ -14,6 +14,7 @@ namespace ClownFish.Data.Linq
 		#region 字段定义
 
 		internal DbContext Context { get; set; }
+		internal bool WithNoLock { get; set; }
 
 		private Expression _expression;
 
@@ -197,7 +198,7 @@ namespace ClownFish.Data.Linq
 			if( _entityType == null ) 
 				throw new InvalidOperationException("不能从表达式中解析到实体对应的数据表。");			
 			else 
-				_tableName = _entityType.GetDbTableName();
+				_tableName = _entityType.GetDbTableName() + (this.WithNoLock ? " WITH(NOLOCK)" : string.Empty);
 		}
 
 		private void SetCommnad(string name)

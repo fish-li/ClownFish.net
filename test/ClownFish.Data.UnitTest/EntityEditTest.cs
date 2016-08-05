@@ -14,7 +14,7 @@ namespace ClownFish.Data.UnitTest
 			Entity.From<ModelX>().Where(m => m.IntField = 1978).Delete();
 
 			// 插入一条记录，只给2个字段赋值
-			ModelX obj = Entity.BeginEdit(new ModelX());
+			ModelX obj = Entity.BeginEdit<ModelX>();
 			obj.IntField = 1978;
 			obj.StringField = "abc";
 			obj.Insert();

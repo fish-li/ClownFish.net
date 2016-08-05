@@ -85,24 +85,30 @@ namespace ClownFish.Data
 		/// 开始LINQ查询
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
+		/// <param name="withNoLock">是否在表名后面添加 with(nolock) 提示</param>
 		/// <returns></returns>
-		public static EntityQuery<T> Query<T>() where T : Entity, new()
+		public static EntityQuery<T> Query<T>(bool withNoLock = false) where T : Entity, new()
 		{
-			return new EntityQuery<T>(new EntityLinqProvider());
+			EntityLinqProvider provider = new EntityLinqProvider() { WithNoLock = withNoLock };
+			return new EntityQuery<T>(provider);
 		}
 
 
 		/// <summary>
 		/// 创建与实体相关的代理对象，并指示实体进入编辑状态，
-		/// 请基本此方法的返回值来修改实体的属性，而不要直接修改原实体对象。
+		/// 请基于此方法的返回值来修改实体的属性，而不要直接修改原实体对象。
 		/// 例如：var product = Entity.BeginEdit(product);
 		/// 注意：Insert/Delete/Update操作必须基本此方法的返回值对象才能调用。
+		/// 如果不指定entity参数，就创建一个新的实体对象（可用于新增）来封装代理对象。
 		/// </summary>
+		/// <typeparam name="T">实体的类型参数</typeparam>
+		/// <param name="entity">需要封装成代理的实体对象</param>
 		/// <returns>与实体相关的代理对象</returns>
-		public static T BeginEdit<T>(T entity) where T : Entity, new()
+		public static T BeginEdit<T>(T entity = null) where T : Entity, new()
 		{
-			if (entity == null)
-				throw new ArgumentNullException(nameof(entity));
+			if( entity == null )
+				//throw new ArgumentNullException(nameof(entity));
+				entity = new T();
 
 			if (entity is IEntityProxy)
 				throw new ArgumentException("BeginEdit方法只接收实体对象，不允许操作代理对象。");

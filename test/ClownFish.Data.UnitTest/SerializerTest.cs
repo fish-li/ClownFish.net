@@ -38,7 +38,7 @@ namespace ClownFish.Data.UnitTest
 		[TestMethod]
 		public void Test_代理对象序列化_XML()
 		{
-			Product p = Entity.BeginEdit(new Product());
+			Product p = Entity.BeginEdit<Product>();
 			p.ProductID = 2;
 			p.CategoryID = 3;
 			p.ProductName = "汉字";
@@ -71,7 +71,7 @@ namespace ClownFish.Data.UnitTest
 		[TestMethod]
 		public void Test_代理对象序列化_JSON()
 		{
-			Product p = Entity.BeginEdit(new Product());
+			Product p = Entity.BeginEdit<Product>();
 			p.ProductID = 2;
 			p.CategoryID = 3;
 			p.ProductName = "汉字";

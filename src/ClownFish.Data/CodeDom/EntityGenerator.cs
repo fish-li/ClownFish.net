@@ -86,7 +86,7 @@ using ClownFish.Data;
 
 		private string GetMd5(string input)
 		{
-			byte[] bb = (new MD5CryptoServiceProvider()).ComputeHash(Encoding.Default.GetBytes(input));
+			byte[] bb = (new MD5CryptoServiceProvider()).ComputeHash(Encoding.UTF8.GetBytes(input));
 			return BitConverter.ToString(bb).Replace("-", "");
 		}
 
