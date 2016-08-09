@@ -16,7 +16,6 @@ namespace ClownFish.Base.WebClient
 	/// 2、Response属性的页面编码不一致（ASP.NET 采用UTF-8，IIS采用GB2312），导致获取异常页面时乱码问题。
 	/// </summary>
 	[Serializable]
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240")]
 	public sealed class RemoteWebException : System.Exception
 	{
 		private string _message;
@@ -25,6 +24,15 @@ namespace ClownFish.Base.WebClient
 		/// 服务端返回的响应内容（可能为空）
 		/// </summary>
 		public string ResponseText { get; private set; }
+
+		/// <summary>
+		/// 异常的简单描述
+		/// </summary>
+		public override string Message {
+			get {
+				return _message ?? base.Message;
+			}
+		}
 
 		/// <summary>
 		/// 构造函数
@@ -90,26 +98,28 @@ namespace ClownFish.Base.WebClient
 
 
 		/// <summary>
-		/// 异常的简单描述
-		/// </summary>
-		public override string Message
-		{
-			get
-			{
-				return  _message ?? base.Message;
-			}
-		}
-
-
-		/// <summary>
-		/// 构造函数
+		/// 用序列化数据初始化 RemoteWebException 类的新实例
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="context"></param>
 		private RemoteWebException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
         {
-        }
+			this._message = info.GetString("_message");
+			this.ResponseText = info.GetString("ResponseText");
+		}
+
+		/// <summary>
+		/// 重写方法，用关于异常的信息设置
+		/// </summary>
+		/// <param name="info"></param>
+		/// <param name="context"></param>
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData(info, context);
+			info.AddValue("_message", this._message, typeof(string));
+			info.AddValue("ResponseText", this.ResponseText, typeof(string));
+		}
 
 	}
 }

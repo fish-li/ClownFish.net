@@ -12,7 +12,7 @@ namespace ClownFish.Data.SqlClient
 	/// <summary>
 	/// SQLSERVER相关的扩展工具类
 	/// </summary>
-	public static class SqlserverExtensions
+	public static class SqlServerExtensions
 	{
 		// 匹配字符串：") as RowIndex,"
 		private static Regex s_pagingRegex = new Regex(@"\)\s*as\s*rowindex\s*,", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Multiline);

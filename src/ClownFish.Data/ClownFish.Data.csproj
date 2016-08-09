@@ -65,6 +65,7 @@
     <Compile Include="Entity\EntityDescription.cs" />
     <Compile Include="Entity\EntityHttpLoader.cs" />
     <Compile Include="Initializer.cs" />
+    <Compile Include="SqlClient\EntityExtensions.cs" />
     <Compile Include="Utils\DataLoaderHelper.cs" />
     <Compile Include="Utils\EntityHelper.cs" />
     <Compile Include="Entity\EntityMethodFactory.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Command\StoreProcedure.cs" />
-    <Compile Include="SqlClient\SqlserverExtensions.cs" />
+    <Compile Include="SqlClient\SqlServerExtensions.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
     <Compile Include="Utils\TypeList.cs" />
     <Compile Include="Xml\XmlCmdParameter.cs" />

@@ -23,13 +23,20 @@ namespace ClownFish.Base.Http
 		/// </summary>
 		public string ContentType { get; private set; }
 		/// <summary>
-		/// 获取客户端上的文件的完全限定名称。
+		/// 获取客户端上的文件的完全限定名称，
+		/// 上传时需要指定。
 		/// </summary>
 		public string FileName { get; set; }
 		/// <summary>
-		/// 获取上传文件的内容
+		/// 获取上传文件的内容，
+		/// 上传时需要指定。
 		/// </summary>
 		public byte[] FileBody { get; set; }
+
+		/// <summary>
+		/// 表单中的name，对应服务端HttpFileCollection.AllKeys中的值
+		/// </summary>
+		public string Key { get; set; }
 
 
 

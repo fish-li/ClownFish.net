@@ -17,7 +17,11 @@ namespace ClownFish.Web
 		{
 			HttpPostedFile file = context.Request.Files[paraName];
 
-			return HttpFile.CreateHttpFileFromHttpPostedFile(file);
+			HttpFile httpFile = HttpFile.CreateHttpFileFromHttpPostedFile(file);
+			if( httpFile != null )
+				httpFile.Key = paraName;
+
+			return httpFile;
 		}
 	}
 
@@ -32,6 +36,9 @@ namespace ClownFish.Web
 				HttpPostedFile file = context.Request.Files[i];
 
 				files[i] = HttpFile.CreateHttpFileFromHttpPostedFile(file);
+				if( files[i] != null ) {
+					files[i].Key = context.Request.Files.GetKey(i);
+				}
 			}
 
 			return files;
