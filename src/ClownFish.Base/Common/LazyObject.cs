@@ -15,7 +15,7 @@ namespace ClownFish.Base
 	/// 表示需要延迟创建的对象包装类
 	/// </summary>
 	/// <typeparam name="T">需要延迟创建的对象类型</typeparam>
-	public class LazyObject<T> where T : class, new()
+	public sealed class LazyObject<T> where T : class, new()
 	{
 		/// <summary>
 		/// 是否需要线程安全

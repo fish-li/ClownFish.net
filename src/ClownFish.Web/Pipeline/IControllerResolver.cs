@@ -24,12 +24,14 @@ namespace ClownFish.Web
 
 	internal class DefaultControllerResolver : IControllerResolver
 	{
+		private DefaultObjectResolver _defaultObjectResolver = new DefaultObjectResolver();
 
 		#region IControllerResolver 成员
 
 		public object GetController(Type controllerType)
 		{
-			return ObjectFactory.New(controllerType);
+			// 调用 ClownFish.Base 中的默认实现
+			return _defaultObjectResolver.CreateObject(controllerType);
 		}
 
 		#endregion

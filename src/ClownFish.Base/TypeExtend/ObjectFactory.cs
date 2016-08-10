@@ -35,7 +35,7 @@ namespace ClownFish.Base.TypeExtend
 		/// <returns></returns>
 		public static T New<T>() where T : class, new()
 		{
-			return (T)ObjectFactory.New(typeof(T));
+			return (T)New(typeof(T));
 		}
 
 
@@ -49,14 +49,7 @@ namespace ClownFish.Base.TypeExtend
 			if( objectType == null )
 				throw new ArgumentNullException("objectType");
 
-			object instance = s_objectResolver.CreateObject(objectType);
-
-			// 尝试加载订阅者
-			BaseEventObject baseEventObject = instance as BaseEventObject;
-			if( baseEventObject != null )
-				baseEventObject.BindSubscribes(objectType);
-
-			return instance;
+			return s_objectResolver.CreateObject(objectType);
 		}
 
 	}
