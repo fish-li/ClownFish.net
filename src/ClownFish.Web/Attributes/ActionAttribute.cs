@@ -46,7 +46,10 @@ namespace ClownFish.Web
 				if( _verbArray == null )
 					_verbArray = Verb.SplitTrim(StringExtensions.CommaSeparatorArray);
 
-				return _verbArray.Contains(httpMethod, StringComparer.OrdinalIgnoreCase);
+				if( _verbArray.Length == 1 )
+					return _verbArray[0].EqualsIgnoreCase(httpMethod);
+				else
+					return _verbArray.Contains(httpMethod, StringComparer.OrdinalIgnoreCase);
 			}
 		}
 
