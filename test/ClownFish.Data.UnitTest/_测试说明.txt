@@ -1,0 +1,3 @@
+﻿
+测试所需要的数据库在 \test\MyNorthwind.mdf.7z 压缩包中。
+然后，需要修改 \test\ClownFish.Data.UnitTest\Connections.config 中的数据库连接字符串

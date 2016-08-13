@@ -98,7 +98,6 @@
     <None Include="Connections.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestTable1.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">
@@ -110,7 +109,9 @@
       <Name>ClownFish.Data</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="_测试说明.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -109,6 +109,9 @@
       <Name>ClownFish.MockAspnetRuntime</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="_测试说明.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
