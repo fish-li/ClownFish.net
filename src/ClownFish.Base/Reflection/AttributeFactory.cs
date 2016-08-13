@@ -29,9 +29,6 @@ namespace ClownFish.Base.Reflection
 				else if( obj is ParameterInfo )
 					result = (obj as ParameterInfo).GetCustomAttribute<T>(inherit);
 
-				else if( obj is Type )
-					result = (obj as Type).GetCustomAttribute<T>(inherit);
-
 				else
 					throw new NotSupportedException();
 
