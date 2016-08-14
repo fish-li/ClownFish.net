@@ -85,6 +85,7 @@
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\ReflectionOptimizeExtensions.cs" />
     <Compile Include="TypeExtend\BaseEventObject.cs" />
+    <Compile Include="TypeExtend\ExtendAssemblyAttribute.cs" />
     <Compile Include="TypeExtend\ExtenderManager.cs" />
     <Compile Include="TypeExtend\IObjectResolver.cs" />
     <Compile Include="TypeExtend\ObjectFactory.cs" />

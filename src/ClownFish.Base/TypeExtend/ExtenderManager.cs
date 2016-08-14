@@ -68,24 +68,6 @@ namespace ClownFish.Base.TypeExtend
 		}
 
 
-		/// <summary>
-		/// 批量注册一个程序集中所有的扩展类型
-		/// </summary>
-		/// <param name="asm">包含扩展类型的程序集</param>
-		/// <param name="extendTypeChecker">用于判断是不是扩展类型的检查委托</param>
-		public static void RegisterExtendTypes(Assembly asm, Func<Type, bool> extendTypeChecker)
-		{
-			if( asm == null )
-				throw new ArgumentNullException("asm");
-			if( extendTypeChecker == null )
-				throw new ArgumentNullException("extendTypeChecker");
-
-			foreach( Type t in asm.GetPublicTypes() ) {
-				if( extendTypeChecker(t) )
-					RegisterExtendType(t);
-			}
-		}
-	
 
 		#endregion
 
@@ -205,25 +187,36 @@ namespace ClownFish.Base.TypeExtend
 			RegisterSubscriber(subscriberType, argumentType, false);
 		}
 
-		/// <summary>
-		/// 批量注册一个程序集中所有的事件订阅者
-		/// </summary>
-		/// <param name="asm"></param>
-		public static void RegisterSubscribers(Assembly asm)
-		{
-			if( asm == null )
-				throw new ArgumentNullException("asm");
-
-			foreach( Type t in asm.GetPublicTypes() ) {
-				Type argumentType = t.BaseType.GetArgumentType(typeof(EventSubscriber<>));
-				if( argumentType != null)
-					RegisterSubscriber(t, argumentType, true);
-			}
-		}
 
 
 		#endregion
 
 
+		/// <summary>
+		/// 批量自动加载所有的扩展类型（继承类型，或者事件订阅类型），
+		/// 注意：类型必须用[ExtendType]标记，程序集必须用[ExtendAssembly]标记
+		/// </summary>
+		public static void LoadAllExtenders()
+		{
+			// 程序集用 ExtendAssemblyAttribute 来过滤
+			List<Assembly> assemblies = ReflectionExtensions.GetAssemblyList<ExtendAssemblyAttribute>();
+
+			foreach( var asm in assemblies ) {
+				foreach( Type t in asm.GetPublicTypes() ) {
+
+					// 类型用 ExtendTypeAttribute 来过滤
+					if( t.GetCustomAttribute<ExtendTypeAttribute>() == null )
+						continue;
+
+					// 如果标记了 ExtendTypeAttribute，那么不是事件订阅者就是继承类
+					// 其实事件订阅者不用标记也能识别，这里只是为了统一（规范代码而已）
+					Type argumentType = t.BaseType.GetArgumentType(typeof(EventSubscriber<>));
+					if( argumentType != null )
+						RegisterSubscriber(t, argumentType, true);
+					else
+						RegisterExtendType(t);
+				}
+			}
+		}
 	}
 }
