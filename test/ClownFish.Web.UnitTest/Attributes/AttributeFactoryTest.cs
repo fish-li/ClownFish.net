@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.Base.Reflection;
 using System.Reflection;
+using System.Web;
 
 namespace ClownFish.Web.UnitTest.Attributes
 {
@@ -46,6 +47,41 @@ namespace ClownFish.Web.UnitTest.Attributes
 			ParameterInfo p = m.GetParameters()[1];
 			Parameter1Attribute a = p.GetMyAttribute<Parameter1Attribute>();
 			Assert.AreEqual("bfa101f5-85db-40d9-8260-6727f2fafe55", a.Flag);
+		}
+
+
+		[TestMethod]
+		public void Test_Register_One()
+		{
+			string flag = "11111111111111111111111";
+			Type1Attribute a1 = new Type1Attribute { Flag = flag };
+
+			// 模拟 HttpContext 标记了 Type1Attribute
+			AttributeCache.Register(typeof(HttpContext), a1);
+
+			// 获取 Type1Attribute
+			Type1Attribute a2 = typeof(HttpContext).GetMyAttribute<Type1Attribute>();
+			Assert.AreEqual(flag, a2.Flag);
+		}
+
+
+		[TestMethod]
+		public void Test_Register_Array()
+		{
+			string flag2 = "22222222222222222222";
+			string flag3 = "3333333333333333333333";
+			Method1Attribute a2 = new Method1Attribute { Flag = flag2 };
+			Method1Attribute a3 = new Method1Attribute { Flag = flag3 };
+
+			// 模拟 ActionExecutor 标记了 Type1Attribute
+			MethodInfo method = typeof(HttpResponse).GetMethod("Redirect", new Type[] { typeof(string) });
+			AttributeCache.Register(method, new Method1Attribute[] { a2, a3 });
+
+			// 获取 Type1Attribute
+			Method1Attribute[] aa = method.GetMyAttributes<Method1Attribute>();
+			Assert.AreEqual(2, aa.Length);
+			Assert.AreEqual(flag2, aa[0].Flag);
+			Assert.AreEqual(flag3, aa[1].Flag);
 		}
 	}
 }

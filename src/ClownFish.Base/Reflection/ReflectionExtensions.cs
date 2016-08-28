@@ -27,7 +27,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T GetMyAttribute<T>(this MemberInfo m, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttribute<T>(m, inherit);
+			return AttributeCache.GetOne<T>(m, inherit);
 		}
 
 
@@ -41,7 +41,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T[] GetMyAttributes<T>(this MemberInfo m, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttributes<T>(m, inherit);
+			return AttributeCache.GetArray<T>(m, inherit);
 		}
 
 
@@ -54,7 +54,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T GetMyAttribute<T>(this ParameterInfo p, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttribute<T>(p, inherit);
+			return AttributeCache.GetOne<T>(p, inherit);
 		}
 
 
@@ -68,7 +68,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T[] GetMyAttributes<T>(this ParameterInfo p, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttributes<T>(p, inherit);
+			return AttributeCache.GetArray<T>(p, inherit);
 		}
 
 
@@ -81,7 +81,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T GetMyAttribute<T>(this Type t, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttribute<T>(t, inherit);
+			return AttributeCache.GetOne<T>(t, inherit);
 		}
 
 
@@ -95,7 +95,7 @@ namespace ClownFish.Base.Reflection
 		/// <returns></returns>
 		public static T[] GetMyAttributes<T>(this Type t, bool inherit = false) where T : Attribute
 		{
-			return AttributeFactory.GetMyAttributes<T>(t, inherit);
+			return AttributeCache.GetArray<T>(t, inherit);
 		}
 
 
