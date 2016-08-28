@@ -36,9 +36,9 @@ namespace ClownFish.Web
 
 
 		/// <summary>
-		/// 获取 MvcRuntime 实例的引用
+		/// 获取 WebRuntime 实例的引用
 		/// </summary>
-		public WebRuntime MvcRuntime
+		public WebRuntime WebRuntime 
 		{
 			get { return WebRuntime.Instance; }
 		}
@@ -70,7 +70,7 @@ namespace ClownFish.Web
 		/// <param name="value">响应头的值</param>
 		public void WriteHeader(string headerName, string value)
 		{
-			MvcRuntime.WriteResponseHeader(this.HttpContext.Response, headerName, value);
+			this.WebRuntime.WriteResponseHeader(this.HttpContext.Response, headerName, value);
 		}
 
 

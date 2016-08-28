@@ -111,7 +111,7 @@
     <Compile Include="Ext\ActionExecutorEventTest.cs" />
     <Compile Include="Ext\ActionExecutorExt.cs" />
     <Compile Include="Ext\EventClass.cs" />
-    <Compile Include="Ext\MvcRuntimeExt.cs" />
+    <Compile Include="Ext\WebRuntimeExt.cs" />
     <Compile Include="Ext\ObjectFactoryTest.cs" />
     <Compile Include="Ext\TypeHookClass.cs" />
     <Compile Include="TestCase\MvcPageHandlerFactoryTest.cs" />

@@ -9,7 +9,7 @@ using ClownFish.Base.TypeExtend;
 
 namespace ClownFish.Web.UnitTest.Ext
 {
-	public class MvcRuntimeExt : WebRuntime
+	public class WebRuntimeExt : WebRuntime
 	{
 		public Hashtable CallMessage = new Hashtable();
 

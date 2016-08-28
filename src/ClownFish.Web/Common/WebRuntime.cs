@@ -21,7 +21,7 @@ namespace ClownFish.Web
 		private static readonly LazyObject<WebRuntime> s_instance = new LazyObject<WebRuntime>(true);
 
 		/// <summary>
-		/// MvcRuntime的实例
+		/// WebRuntime的实例
 		/// </summary>
 		public static WebRuntime Instance
 		{

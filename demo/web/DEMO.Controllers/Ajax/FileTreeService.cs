@@ -36,7 +36,7 @@ namespace DEMO.Controllers.Ajax
 			string rootPath = null;
 
 			if( string.IsNullOrEmpty(root) == false ) {
-				string configFile = this.MvcRuntime.GetPhysicalPath("CodeExplorer.config");
+				string configFile = this.WebRuntime.GetPhysicalPath("CodeExplorer.config");
 				if( File.Exists(configFile) ) {
 					Dictionary<string, string> settings
 						= (from line in File.ReadAllLines(configFile)
@@ -55,7 +55,7 @@ namespace DEMO.Controllers.Ajax
 
 			if( string.IsNullOrEmpty(rootPath) ) 
 				// 显示整个解决方案下的所有文件。
-				rootPath = this.MvcRuntime.GetWebSitePath() + "..\\";
+				rootPath = this.WebRuntime.GetWebSitePath() + "..\\";
 			
 
 			JsTreeNode rootNode = new JsTreeNode();

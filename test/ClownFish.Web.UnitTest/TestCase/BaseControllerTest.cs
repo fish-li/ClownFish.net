@@ -23,7 +23,7 @@ header1: ClownFish.net
 ";
 			// 上面URL指定了一个ServiceHandlerFactory不能接受的格式，会引发404错误
 
-			Hashtable table = (MvcRuntimeExt.Instance as MvcRuntimeExt).CallMessage;
+			Hashtable table = (WebRuntimeExt.Instance as WebRuntimeExt).CallMessage;
 			table.Clear();
 
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

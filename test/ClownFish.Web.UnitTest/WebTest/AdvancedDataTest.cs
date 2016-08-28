@@ -23,7 +23,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/TestContextDataAttribute.aspx HTTP/1.1
 ";
 
-			Hashtable table = (MvcRuntimeExt.Instance as MvcRuntimeExt).CallMessage;
+			Hashtable table = (WebRuntimeExt.Instance as WebRuntimeExt).CallMessage;
 			table.Clear();
 
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

@@ -23,7 +23,7 @@ Origin: http://www.abc.com
 
 a=3&b=5
 ";
-			Hashtable table = (MvcRuntimeExt.Instance as MvcRuntimeExt).CallMessage;
+			Hashtable table = (WebRuntimeExt.Instance as WebRuntimeExt).CallMessage;
 			table.Clear();
 
 			string result = ExecuteService(requestText);

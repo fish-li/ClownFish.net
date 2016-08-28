@@ -24,7 +24,7 @@ namespace DEMO.Controllers.BigPipe
 			// 先输出页框架
 			ResponseWriter.WritePage(null /* pageVirtualPath */, null /* model */, true /* flush */);
 
-			string appRootPath = this.MvcRuntime.GetWebSitePath();
+			string appRootPath = this.WebRuntime.GetWebSitePath();
 
 			BlogBLL bll = new BlogBLL();
 

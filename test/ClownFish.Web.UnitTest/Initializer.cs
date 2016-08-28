@@ -21,7 +21,7 @@ namespace ClownFish.Web.UnitTest
 		[AssemblyInitialize]
 		public static void InitRuntime(TestContext context)
 		{
-			ExtenderManager.RegisterExtendType(typeof(MvcRuntimeExt));
+			ExtenderManager.RegisterExtendType(typeof(WebRuntimeExt));
 
 			MockHttpRuntime.AppDomainAppPath = AppDomain.CurrentDomain.BaseDirectory;
 			MockHttpRuntime.AppDomainAppVirtualPath = "/";
