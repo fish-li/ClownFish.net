@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using ClownFish.Web.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ClownFish.MockAspnetRuntime;
+using ClownFish.AspnetMock;
 
 namespace ClownFish.Web.UnitTest.Pipeline
 {

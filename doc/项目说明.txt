@@ -28,7 +28,7 @@ ClownFish.Data.PerformanceTest
 
 
 
-ClownFish.MockAspnetRuntime
+ClownFish.AspnetMock
 ---------------------------------------------------
 模拟一些ASP.NET核心对象，方便ClownFish.Web的代码做单元测试。
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
-using ClownFish.MockAspnetRuntime;
+using ClownFish.AspnetMock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Web.UnitTest.Cache

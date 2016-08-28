@@ -96,6 +96,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ClownFish.AspnetMock\ClownFish.AspnetMock.csproj">
+      <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
+      <Name>ClownFish.AspnetMock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">
       <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
       <Name>ClownFish.Base</Name>
@@ -103,10 +107,6 @@
     <ProjectReference Include="..\..\src\ClownFish.Log\ClownFish.Log.csproj">
       <Project>{24b601a9-2b97-4b9b-86b0-9046f262523e}</Project>
       <Name>ClownFish.Log</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ClownFish.MockAspnetRuntime\ClownFish.MockAspnetRuntime.csproj">
-      <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
-      <Name>ClownFish.MockAspnetRuntime</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

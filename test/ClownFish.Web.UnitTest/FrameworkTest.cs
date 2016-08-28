@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using ClownFish.MockAspnetRuntime;
+using ClownFish.AspnetMock;
 using ClownFish.Web;
 using ClownFish.Web.UnitTest.Ext;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,7 +16,7 @@ namespace ClownFish.Web.UnitTest
 	{
 		
 
-		[Description("整体测试--ClownFish.MockAspnetRuntime")]
+		[Description("整体测试--ClownFish.AspnetMock")]
 		[TestMethod]
 		public void TestMethod1()
 		{

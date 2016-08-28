@@ -79,24 +79,14 @@
     <Compile Include="Action\HttpCacheResultTest.cs" />
     <Compile Include="Action\JsonResultTest.cs" />
     <Compile Include="Action\StreamResultTest.cs" />
-    <Compile Include="Attributes\AttributeClass1.cs" />
-    <Compile Include="Attributes\AttributeFactoryTest.cs" />
     <Compile Include="Attributes\PageRegexUrlAttributeTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Cache\OutputCacheAttributeTest.cs" />
-    <Compile Include="Common\GzipHelperTest.cs" />
-    <Compile Include="Common\NameValueTest.cs" />
-    <Compile Include="Common\StringExtensionsTest.cs" />
     <Compile Include="Controllers\EntityService.cs" />
-    <Compile Include="Ext\ExtenderManagerTest.cs" />
-    <Compile Include="Ext\ObjectFactoryTest2.cs" />
     <Compile Include="Initializer.cs" />
-    <Compile Include="Models\CDATAModel.cs" />
     <Compile Include="Models\TM.cs" />
     <Compile Include="Pipeline\ActionHandlerTest.cs" />
-    <Compile Include="Serializer\XmlCdataTest.cs" />
     <Compile Include="TestCase\ArgumentNullExceptionTest.cs" />
-    <Compile Include="Cache\FileDependencyManagerTest.cs" />
     <Compile Include="Common\FrameworkConfigTest.cs" />
     <Compile Include="Controllers\ActionAutoFindService.cs" />
     <Compile Include="Controllers\AttributeService.cs" />
@@ -110,18 +100,13 @@
     <Compile Include="Controllers\TaskService.cs" />
     <Compile Include="Ext\ActionExecutorEventTest.cs" />
     <Compile Include="Ext\ActionExecutorExt.cs" />
-    <Compile Include="Ext\EventClass.cs" />
     <Compile Include="Ext\WebRuntimeExt.cs" />
-    <Compile Include="Ext\ObjectFactoryTest.cs" />
-    <Compile Include="Ext\TypeHookClass.cs" />
     <Compile Include="TestCase\MvcPageHandlerFactoryTest.cs" />
     <Compile Include="TestCase\AuthorizeAttributeTest.cs" />
     <Compile Include="TestCase\BaseActionHandlerFactoryTest.cs" />
     <Compile Include="TestCase\BaseControllerTest.cs" />
     <Compile Include="TestCase\Http404DebugModuleTest.cs" />
-    <Compile Include="Common\HttpHeaderCollectionTest.cs" />
     <Compile Include="Common\HttpValueCollectionTest.cs" />
-    <Compile Include="TestCase\SerializerTest.cs" />
     <Compile Include="View\ViewTest.cs" />
     <Compile Include="WebTest\AdvancedDataTest.cs" />
     <Compile Include="WebTest\AuthorizeTest.cs" />
@@ -147,6 +132,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ClownFish.AspnetMock\ClownFish.AspnetMock.csproj">
+      <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
+      <Name>ClownFish.AspnetMock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\ClownFish.Base\ClownFish.Base.csproj">
       <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
       <Name>ClownFish.Base</Name>
@@ -154,10 +143,6 @@
     <ProjectReference Include="..\..\src\ClownFish.Data\ClownFish.Data.csproj">
       <Project>{bc50d47f-b55c-4d9d-b0d4-d7a63163e3fc}</Project>
       <Name>ClownFish.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ClownFish.MockAspnetRuntime\ClownFish.MockAspnetRuntime.csproj">
-      <Project>{491ff2b8-9b73-4589-9012-fd4b2cfcdad7}</Project>
-      <Name>ClownFish.MockAspnetRuntime</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\ClownFish.Web\ClownFish.Web.csproj">
       <Project>{0151e882-2de2-44bf-bcf0-b7d10b60be62}</Project>

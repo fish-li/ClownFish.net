@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using ClownFish.MockAspnetRuntime;
+using ClownFish.AspnetMock;
 
 namespace ClownFish.Web.UnitTest
 {

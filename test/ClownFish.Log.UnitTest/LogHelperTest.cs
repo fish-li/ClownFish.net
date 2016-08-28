@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using ClownFish.MockAspnetRuntime;
+using ClownFish.AspnetMock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;

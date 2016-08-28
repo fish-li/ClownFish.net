@@ -5,10 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using ClownFish.Base.TypeExtend;
-using ClownFish.MockAspnetRuntime;
-using ClownFish.Web;
-using ClownFish.Web.UnitTest.Ext;
+using ClownFish.AspnetMock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
