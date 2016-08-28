@@ -33,7 +33,14 @@ namespace ClownFish.Web.UnitTest
 
 		public string ReadHeader(string name)
 		{
+			// 读【请求】头
 			return Request.Headers[name];
+		}
+
+		public void WriteHeader(string name, string value)
+		{
+			// 写【响应】头
+			Response.AppendHeader(name, value);
 		}
 
 		public object ReadSession(string name)
@@ -67,6 +74,13 @@ namespace ClownFish.Web.UnitTest
 			return cookie.Value;
 		}
 
+		public void WriteCookie(string name, string value)
+		{
+			HttpCookie cookie = new HttpCookie(name, value);
+			cookie.Expires = new DateTime(2016, 1, 2);
+			Response.Cookies.Add(cookie);
+		}
+
 		public string GetAppDomainPath()
 		{
 			return HttpRuntime.AppDomainAppPath;
@@ -78,17 +92,17 @@ namespace ClownFish.Web.UnitTest
 		}
 
 
-		public string GetMappingPath1(string path)
+		public string GetServerMappingPath(string path)
 		{
 			return Server.GetMappingPath(path);
 		}
 
-		public string GetMappingPath2(string path)
+		public string GetRequestMappingPath(string path)
 		{
 			return Request.GetMappingPath(path);
 		}
 
-		public void WriteResponse(string text)
+		public void WriteToResponse(string text)
 		{
 			Response.Write(text);
 		}

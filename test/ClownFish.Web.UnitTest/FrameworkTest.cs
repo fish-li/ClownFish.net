@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using ClownFish.MockAspnetRuntime;
 using ClownFish.Web;
+using ClownFish.Web.UnitTest.Ext;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.Web.UnitTest
@@ -52,15 +54,16 @@ a=1&b=2&c=3
 
 
 				// 开始测试
-				Assert.AreEqual(currentPath + @"\test.dat", page.GetMappingPath1("/test.dat"));
-				Assert.AreEqual(currentPath + @"\test.dat", page.GetMappingPath1("~/test.dat"));
-				Assert.AreEqual(currentPath + @"\pages\test.dat", page.GetMappingPath1("test.dat"));
-				Assert.AreEqual(currentPath + @"\pages\dd\test.dat", page.GetMappingPath1("dd/test.dat"));
+				Assert.AreEqual(currentPath, page.GetAppDomainPath());
+				Assert.AreEqual(currentPath + @"\test.dat", page.GetServerMappingPath("/test.dat"));
+				Assert.AreEqual(currentPath + @"\test.dat", page.GetServerMappingPath("~/test.dat"));
+				Assert.AreEqual(currentPath + @"\pages\test.dat", page.GetServerMappingPath("test.dat"));
+				Assert.AreEqual(currentPath + @"\pages\dd\test.dat", page.GetServerMappingPath("dd/test.dat"));
 
-				Assert.AreEqual(currentPath + @"\test.dat", page.GetMappingPath2("/test.dat"));
-				Assert.AreEqual(currentPath + @"\test.dat", page.GetMappingPath2("~/test.dat"));
-				Assert.AreEqual(currentPath + @"\pages\test.dat", page.GetMappingPath2("test.dat"));
-				Assert.AreEqual(currentPath + @"\pages\dd\test.dat", page.GetMappingPath2("dd/test.dat"));
+				Assert.AreEqual(currentPath + @"\test.dat", page.GetRequestMappingPath("/test.dat"));
+				Assert.AreEqual(currentPath + @"\test.dat", page.GetRequestMappingPath("~/test.dat"));
+				Assert.AreEqual(currentPath + @"\pages\test.dat", page.GetRequestMappingPath("test.dat"));
+				Assert.AreEqual(currentPath + @"\pages\dd\test.dat", page.GetRequestMappingPath("dd/test.dat"));
 
 				Assert.AreEqual("fish-li", HttpContext.Current.User.Identity.Name);
 				Assert.AreEqual(true, HttpContext.Current.Request.IsAuthenticated);
@@ -97,8 +100,7 @@ a=1&b=2&c=3
 				Assert.AreEqual("111111111", page.ReadHeader("h1"));
 				Assert.AreEqual("22222222", page.ReadHeader("h2"));
 
-				Assert.AreEqual(currentPath, page.GetAppDomainPath());
-
+				
 
 				Guid sessionData = Guid.NewGuid();
 				page.WriteSession("s1", sessionData);
@@ -115,12 +117,26 @@ a=1&b=2&c=3
 
 
 				string writeText = "SQL语法分析和SQL解释实现. SQL语法分析/解释。为设计/实现SQL语法分析器提供参考";
-				page.WriteResponse(writeText);
+				page.WriteToResponse(writeText);
 				Assert.AreEqual(writeText, context.Response.GetText());
-
-
+				
 				context.Request.SetInputStream(writeText);
 				Assert.AreEqual(writeText, page.GetInputStreamString());
+
+
+				string cookieData = Guid.NewGuid().ToString();
+				page.WriteCookie("test-write-cookie1", cookieData);
+				Assert.AreEqual(cookieData, page.ReadCookie("test-write-cookie1"));
+
+
+				string headerData = Guid.NewGuid().ToString();
+				page.WriteHeader("test-write-header", headerData);
+
+				ArrayList customHeaders = context.Response.Response.GetValue("_customHeaders") as ArrayList;
+				object header = customHeaders[0];
+				Assert.AreEqual("test-write-header", (string)header.GetValue("Name"));
+				Assert.AreEqual(headerData, (string)header.GetValue("Value"));
+
 			}
 		}
 

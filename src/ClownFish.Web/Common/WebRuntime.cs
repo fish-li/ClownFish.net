@@ -64,7 +64,15 @@ namespace ClownFish.Web
 		/// <param name="headerValue">响应头的内容</param>
 		public virtual void WriteResponseHeader(HttpResponse response, string headerName, string headerValue)
 		{
-			response.Headers.Add(headerName, headerValue);
+			if( HttpRuntime.UsingIntegratedPipeline )
+				// 这是 .net framework 3.5 sp1 中增加的方法，减少代码的执行路径，性能会更好，所以优先使用。
+				response.Headers.Add(headerName, headerValue);
+			else
+				// 早期版本做法（或者在经典模式下）
+				response.AppendHeader(headerName, headerValue);
+
+			// 说明：响应头可能会写到多个地方：Headers, _cacheHaaders, _customHeaders
+			// 这里封装一个方法，便于验证【写入操作】，可参考 WebRuntimeExt
 		}
 
 

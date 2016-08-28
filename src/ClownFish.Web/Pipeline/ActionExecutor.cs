@@ -352,7 +352,7 @@ namespace ClownFish.Web
 			}
 
 
-			// // 为了支持单元测试，所以没有调用：this.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+			// 为了支持单元测试，所以没有调用：this.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", origin);
 			WebRuntime.Instance.WriteResponseHeader(this.HttpContext.Response, "Access-Control-Allow-Origin", origin);
 			WebRuntime.Instance.WriteResponseHeader(this.HttpContext.Response, "Access-Control-Allow-Headers", "*");
 			WebRuntime.Instance.WriteResponseHeader(this.HttpContext.Response, "Access-Control-Allow-Credentials", "true");

@@ -17,10 +17,6 @@ namespace ClownFish.Web.Debug404
 	{
 		private static readonly string DiagnoseResultKey = "ClownFish.Web-DiagnoseResult-HttpContext-Item-Key";
 
-		private static readonly bool s_IntegratedPipeline = (bool)typeof(HttpRuntime).InvokeMember("UseIntegratedPipeline",
-				BindingFlags.GetProperty | BindingFlags.Static | BindingFlags.NonPublic,
-				null, null, null);
-
 		
 		/// <summary>
 		/// Init
@@ -109,7 +105,7 @@ namespace ClownFish.Web.Debug404
 
 		private void ShowDebugInfo(HttpContext context, IHttpHandler handler)
 		{
-			if( s_IntegratedPipeline == false ) {
+			if( HttpRuntime.UsingIntegratedPipeline == false ) {
 				handler.ProcessRequest(context);
 			}
 			else {

@@ -24,7 +24,7 @@ namespace ClownFish.Web
 			if( context == null )
 				throw new ArgumentNullException("context");
 
-			// 正式的发布模式，将不执行实现调用
+			// 正式的发布模式，将不执行实际调用
 			if( WebRuntime.Instance.IsDebugMode == false )
 				return;
 
