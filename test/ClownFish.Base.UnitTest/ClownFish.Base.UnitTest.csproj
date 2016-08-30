@@ -81,6 +81,7 @@
     <Compile Include="TypeExtend\ObjectFactoryTest.cs" />
     <Compile Include="TypeExtend\ObjectFactoryTest2.cs" />
     <Compile Include="TypeExtend\TestClass.cs" />
+    <Compile Include="WebClient\FormDataCollectionTest.cs" />
     <Compile Include="Xml\XmlCdataTest.cs" />
     <Compile Include="Xml\XmlExtensionsTest.cs" />
   </ItemGroup>
@@ -94,9 +95,7 @@
       <Name>ClownFish.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WebClient\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
