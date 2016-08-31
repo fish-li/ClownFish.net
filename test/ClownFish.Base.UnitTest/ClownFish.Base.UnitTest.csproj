@@ -82,6 +82,7 @@
     <Compile Include="TypeExtend\ObjectFactoryTest2.cs" />
     <Compile Include="TypeExtend\TestClass.cs" />
     <Compile Include="WebClient\FormDataCollectionTest.cs" />
+    <Compile Include="WebClient\RequestWriterTest.cs" />
     <Compile Include="Xml\XmlCdataTest.cs" />
     <Compile Include="Xml\XmlExtensionsTest.cs" />
   </ItemGroup>

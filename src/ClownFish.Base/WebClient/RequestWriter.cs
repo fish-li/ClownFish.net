@@ -49,7 +49,7 @@ namespace ClownFish.Base.WebClient
 				byte[] bb = s_defaultEncoding.GetBytes(text);
 
 				if( bb != null && bb.Length > 0 ) {
-					using( BinaryWriter bw = new BinaryWriter(stream) ) {
+					using( BinaryWriter bw = new BinaryWriter(stream, s_defaultEncoding, true) ) {
 						bw.Write(bb);
 					}
 				}

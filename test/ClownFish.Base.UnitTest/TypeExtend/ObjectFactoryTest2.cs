@@ -27,7 +27,7 @@ namespace ClownFish.Base.UnitTest.TypeExtend
 
 
 		[TestMethod]
-		public void Execute()
+		public void Test_ObjectFactory_Ext_And_EventSubscriber()
 		{
 			// BaseObject 有继承类，还有事件订阅者
 

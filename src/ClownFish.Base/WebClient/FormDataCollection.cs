@@ -160,9 +160,12 @@ namespace ClownFish.Base.WebClient
 				byte[] postData = encoding.GetBytes(text);
 
 				// 写输出流
-				using( BinaryWriter bw = new BinaryWriter(stream) ) {
+				using( BinaryWriter bw = new BinaryWriter(stream, 
+					encoding /* 指定的编码其实不起作用！ .net API 设计不合理！ */,
+					true /* 保持流打开状态，由方法外面关闭 */ ) ) {
+
 					bw.Write(postData);
-				}
+				}				
 			}
 		}
 

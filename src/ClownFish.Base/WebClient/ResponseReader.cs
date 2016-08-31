@@ -282,7 +282,9 @@ namespace ClownFish.Base.WebClient
 		public void Dispose()
 		{
 			if( object.ReferenceEquals(_responseStream, _textStream) ) {
-				_responseStream.Dispose();
+				if( _responseStream != null )	// 异常日志居然记录这里会有NULL引用！
+					_responseStream.Dispose();
+
 				_responseStream = null;
 				_textStream = null;
 			}
