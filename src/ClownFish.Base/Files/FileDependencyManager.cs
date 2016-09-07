@@ -23,7 +23,8 @@ namespace ClownFish.Base.Files
 {
 
 	/// <summary>
-	/// 文件缓存依赖的管理类
+	/// 文件缓存依赖的管理类。
+	/// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
 	/// </summary>
 	/// <typeparam name="T">缓存的数据类型</typeparam>
 	public sealed class FileDependencyManager<T>
@@ -41,9 +42,10 @@ namespace ClownFish.Base.Files
 		{
 			get { return _cacheResult.Result; }
 		}
-		
+
 		/// <summary>
-		/// 构造方法
+		/// 构造方法。
+		/// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
 		/// </summary>
 		/// <param name="func"></param>
 		/// <param name="files"></param>
