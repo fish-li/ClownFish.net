@@ -130,7 +130,7 @@ namespace ClownFish.Base.UnitTest.WebClient
 			}
 
 			Assert.IsTrue(form.HasFile);
-			Assert.AreEqual("53a0def47334025920c9485b1e73af25", md5);
+			Assert.AreEqual("fbf3628c4d1415ace6e56084d3edcc18", md5);
 		}
 
 	}

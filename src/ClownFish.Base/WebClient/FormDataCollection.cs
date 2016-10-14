@@ -217,7 +217,7 @@ namespace ClownFish.Base.WebClient
 					string description = string.Format(
 							"Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n" +
 							"Content-Type: application/octet-stream\r\n\r\n",
-							kvp.Key, file.FileName);
+							kvp.Key, Path.GetFileName(file.FileName));
 
 					// 注意：这里如果不使用UTF-8，对于汉字会有乱码。
 					byte[] header = Encoding.UTF8.GetBytes(description);
