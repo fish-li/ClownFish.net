@@ -54,7 +54,7 @@ ClownFish.Data 是一个通用的数据访问层，前身是ClownFish项目，
 
 ##ClownFish.Log
 ClownFish.Log 是一个通用的日志组件，专为大型项目而设计：
- - 提供同步和异常写入API
+ - 提供同步和异步写入API
  - 内置5种日志写入器（MongoDb,File,Msmq,WinLog,Mail），并允许自行扩展
  - 允许为每个数据结构指定一个或者多个写入器
  - 允许自行扩展写入器的过滤器
