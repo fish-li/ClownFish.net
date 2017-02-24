@@ -13,6 +13,83 @@ namespace ClownFish.Base.WebClient
 	/// </summary>
 	public static class ClientExtensions
 	{
+		#region Send 方法遇到 WebException 异常封装
+
+		/// <summary>
+		/// 封装HttpOption的Send扩展方法发送HTTP请求，
+		/// 如果遇到WebException异常，就转换成RemoteWebException异常
+		/// </summary>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public static string GetResult(this HttpOption option)
+		{
+			try {
+				return option.Send();
+			}
+			catch(WebException ex ) {
+				// 返回一个容易获取异常消息的异常类型
+				throw new RemoteWebException(ex);
+			}
+		}
+
+		/// <summary>
+		/// 封装HttpOption的SendAsync扩展方法发送HTTP请求，
+		/// 如果遇到WebException异常，就转换成RemoteWebException异常
+		/// </summary>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public async static Task<string> GetResultAsync(this HttpOption option)
+		{
+			try {
+				return await option.SendAsync();
+			}
+			catch( WebException ex ) {
+				// 返回一个容易获取异常消息的异常类型
+				throw new RemoteWebException(ex);
+			}
+		}
+
+		/// <summary>
+		/// 封装HttpOption的Send扩展方法发送HTTP请求，
+		/// 如果遇到WebException异常，就转换成RemoteWebException异常
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public static T GetResult<T>(this HttpOption option)
+		{
+			try {
+				return option.Send<T>();
+			}
+			catch( WebException ex ) {
+				// 返回一个容易获取异常消息的异常类型
+				throw new RemoteWebException(ex);
+			}
+		}
+
+
+		/// <summary>
+		/// 封装HttpOption的SendAsync扩展方法发送HTTP请求，
+		/// 如果遇到WebException异常，就转换成RemoteWebException异常
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public async static Task<T> GetResultAsync<T>(this HttpOption option)
+		{
+			try {
+				return await option.SendAsync<T>();
+			}
+			catch( WebException ex ) {
+				// 返回一个容易获取异常消息的异常类型
+				throw new RemoteWebException(ex);
+			}
+		}
+
+		#endregion
+
+		#region 发送请求
+
 		/// <summary>
 		/// 根据指定的HttpOption参数，用【同步】方式发起一次HTTP请求
 		/// </summary>
@@ -120,6 +197,9 @@ namespace ClownFish.Base.WebClient
 			}
 		}
 
+		#endregion
+
+		#region 内部方法
 
 		/// <summary>
 		/// 生成查询字符串参数
@@ -165,5 +245,8 @@ namespace ClownFish.Base.WebClient
 				request.AllowAutoRedirect = false;
 
 		}
+
+		#endregion
+
 	}
 }

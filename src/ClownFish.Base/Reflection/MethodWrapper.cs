@@ -88,7 +88,7 @@ namespace ClownFish.Base.Reflection
 
 						Type reflectMethodBase = typeof(ReflectMethodBase<>).GetGenericTypeDefinition();
 
-						s_genericTypeDefinitions = (from t in typeof(MethodInvokerFactory).Assembly.GetTypes()
+						s_genericTypeDefinitions = (from t in typeof(MethodInvokerFactory).Assembly.GetAllTypes()
 													where t.BaseType != null
 													&& t.BaseType.IsGenericType
 													&& t.BaseType.GetGenericTypeDefinition() == reflectMethodBase

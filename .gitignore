@@ -45,6 +45,7 @@ obj
 TestResults
 Log111
 bin
+dll_release
 
 .apdisk
 *.pdb

@@ -182,10 +182,47 @@ namespace ClownFish.Base.Reflection
 				throw new InvalidOperationException(
 							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
 			}
+			catch( ReflectionTypeLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
 		}
 
-		
-		
+
+
+		/// <summary>
+		/// 等同于调用 Assembly实例的GetTypes()，只是在缺少依赖程序集时能指出当前程序集的名称。
+		/// </summary>
+		/// <param name="assembly"></param>
+		/// <returns></returns>
+		public static Type[] GetAllTypes(this Assembly assembly)
+		{
+			if( assembly == null )
+				throw new ArgumentNullException("assembly");
+
+			try {
+				return assembly.GetTypes();
+			}
+			catch( FileNotFoundException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( FileLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( TypeLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+			catch( ReflectionTypeLoadException ex ) {
+				throw new InvalidOperationException(
+							"反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
+			}
+		}
+
+
+
 
 		/// <summary>
 		/// 获取带个指定修饰属性的程序集列表
