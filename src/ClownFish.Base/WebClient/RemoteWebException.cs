@@ -90,7 +90,7 @@ namespace ClownFish.Base.WebClient
 
 			if( p2 > p1 && p1 > 0 ) {
 				p1 += "<title>".Length;
-				return text.Substring(p1, p2 - p1);
+				return "服务器错误：" +  text.Substring(p1, p2 - p1);
 			}
 
 			return null;

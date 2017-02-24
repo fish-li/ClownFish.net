@@ -49,7 +49,7 @@ namespace ClownFish.Log.Serializer
 		/// <summary>
 		/// 可用于当前实例的连接设置
 		/// </summary>
-		private MongoDbSetting CrrentSetting
+		private MongoDbSetting CurrentSetting
 		{
 			get { return _currentSetting ?? s_configSetting; }
 		}
@@ -84,9 +84,9 @@ namespace ClownFish.Log.Serializer
 
 		private IMongoDatabase GetMongoDatabase()
 		{
-			MongoClient mongoClient = new MongoClient(CrrentSetting.ConnectionString);
+			MongoClient mongoClient = new MongoClient(CurrentSetting.ConnectionString);
 
-			return mongoClient.GetDatabase(CrrentSetting.Database);
+			return mongoClient.GetDatabase(CurrentSetting.Database);
 		}
 
 
