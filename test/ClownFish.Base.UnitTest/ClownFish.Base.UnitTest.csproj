@@ -60,12 +60,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ByteTestHelper.cs" />
+    <Compile Include="Common\Base64ExtensionsTest.cs" />
+    <Compile Include="Common\CryptoHelperTest.cs" />
     <Compile Include="Common\DataTimeExtensionsTest.cs" />
     <Compile Include="Common\GzipHelperTest.cs" />
+    <Compile Include="Common\HashHelperTest.cs" />
     <Compile Include="Common\HttpExtensionsTest.cs" />
     <Compile Include="Common\NameValueTest.cs" />
+    <Compile Include="Common\RsaHelperTest.cs" />
     <Compile Include="Common\StringExtensionsTest.cs" />
     <Compile Include="Common\TestHelperTest.cs" />
+    <Compile Include="ExceptionHelper.cs" />
     <Compile Include="Files\FileDependencyManagerTest.cs" />
     <Compile Include="Http\HttpHeaderCollectionTest.cs" />
     <Compile Include="Json\JsonExtensionsTest.cs" />
@@ -85,6 +91,7 @@
     <Compile Include="WebClient\RequestWriterTest.cs" />
     <Compile Include="Xml\XmlCdataTest.cs" />
     <Compile Include="Xml\XmlExtensionsTest.cs" />
+    <Compile Include="Xml\XmlHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClownFish.AspnetMock\ClownFish.AspnetMock.csproj">
@@ -96,7 +103,12 @@
       <Name>ClownFish.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="cert\Myosft-NewDogSign.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cert\readme.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

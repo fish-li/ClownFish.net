@@ -166,5 +166,15 @@ namespace ClownFish.Base
 			return text.Substring(0, length) + "..." + text.Length.ToString();
 		}
 
+		/// <summary>
+		/// 将字符串转成byte[]，等效于：Encoding.UTF8.GetBytes(text);
+		/// </summary>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		public static byte[] GetBytes(this string text)
+		{
+			return Encoding.UTF8.GetBytes(text);
+		}
+
 	}
 }

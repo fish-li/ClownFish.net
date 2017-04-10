@@ -16,6 +16,41 @@ namespace ClownFish.Base.Xml
 	/// </summary>
 	public static class XmlHelper
 	{
+		/// <summary>
+		/// 将一个对象序列化为XML字符串。这个方法将不生成XML文档声明头。
+		/// </summary>
+		/// <param name="o">要序列化的对象</param>
+		/// <returns>序列化产生的XML字符串</returns>
+		public static string XmlSerializerObject(object o)
+		{
+			if( o == null )
+				throw new ArgumentNullException("o");
+
+			Encoding encoding = Encoding.UTF8;
+			XmlSerializer serializer = new XmlSerializer(o.GetType());
+			using( MemoryStream stream = new MemoryStream() ) {
+				XmlWriterSettings settings = new XmlWriterSettings();
+				settings.Indent = true;
+				settings.NewLineChars = "\r\n";
+				settings.Encoding = encoding;
+				settings.OmitXmlDeclaration = true;
+				settings.IndentChars = "    ";
+
+				XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+				ns.Add("", "");
+
+				using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
+					serializer.Serialize(writer, o, ns);
+					writer.Close();
+				}
+				//return Encoding.UTF8.GetString(stream.ToArray());
+
+				stream.Position = 0;
+				using( StreamReader reader = new StreamReader(stream, encoding) ) {
+					return reader.ReadToEnd();
+				}
+			}
+		}
 
 		private static void XmlSerializeInternal(Stream stream, object o, Encoding encoding)
 		{
