@@ -53,7 +53,8 @@ namespace ClownFish.Web.Serializer
 			string contentType = context.Request.ContentType;
 
 			if( string.IsNullOrEmpty(contentType)
-				|| contentType.IndexOfIgnoreCase("application/x-www-form-urlencoded") >= 0 )
+				|| contentType.IndexOfIgnoreCase("application/x-www-form-urlencoded") >= 0
+                || contentType.IndexOfIgnoreCase("multipart/form-data") >= 0 )
 				return CreateFormProvider(context);
 
 			if( contentType.IndexOfIgnoreCase("application/json") >= 0 ) 
@@ -69,8 +70,7 @@ namespace ClownFish.Web.Serializer
 				return provider;
 
 
-			// 默认还是表单的 key = vlaue格式。
-			// "multipart/form-data", "text/plain" 也会到这里
+			// 其它未能识别的格式，都会按默认方式处理
 			return CreateDefaultProvider(context);
 		}
 

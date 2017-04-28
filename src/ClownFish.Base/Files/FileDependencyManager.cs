@@ -10,7 +10,7 @@ using System.Web.Caching;
 /*  使用方法
 		private static FileDependencyManager<List<User>>
 					s_cacheItem = new FileDependencyManager<List<User>>(
-							files => XmlHelper.XmlDeserializeFromFile<List<User>>(files[0], Encoding.UTF8),
+							files => XmlHelper.XmlDeserializeFromFile<List<User>>(files[0]),
 							Path.Combine(HttpRuntime.AppDomainAppPath, @"App_Data\Users.config"));
 
 		public static List<User> Users

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>目录列表</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Consolas, 'Courier New', '微软雅黑', '宋体';
+            font-size: 12px;
+            color: #808080;
+        }
+        body{
+            padding: 10px;
+        }
+        h3{
+            font-size: 16px;
+            font-weight: bold;
+            padding-bottom: 20px;
+        }
+        a{
+            text-decoration:none;
+        }
+        table{
+            width: 95%;
+            border-collapse: collapse;
+            border: none;
+        }
+        tr{
+            border-bottom: dotted 1px #808080;
+        }
+        tr.head {
+            border-top: dotted 1px #808080;
+            background-color: gainsboro;
+            font-weight: bold;
+        }
+        tr:hover{
+            background-color: aliceblue;
+        }
+        td{
+            padding: 5px;
+        }
+        td.filesize{
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h3><i>当前目录：</i>&nbsp;&nbsp;\<!--{current-path}--></h3>
+
+    <table style="width: 95%;">
+        <tr class="head"><td style="width: 50px;">#</td>
+        <td style="width: auto">文件名</td>
+        <td class="filesize" style="width: 130px;">文件大小（B）</td></tr>
+        <!--<tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>
+        <tr><td>11</td><td>1111111111</td><td class="filesize">1024</td></tr>-->
+        <!--{data-row}-->
+    </table>
+</body>
+</html>

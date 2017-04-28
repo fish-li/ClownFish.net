@@ -95,11 +95,13 @@
     <Compile Include="Serializer\WinLogWriter.cs" />
     <Compile Include="Serializer\WriterFactory.cs" />
     <Compile Include="SomeExtenstions.cs" />
+    <Compile Include="Web\LogFileViewHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configuration\_Readme.txt" />
     <Content Include="Model\_Readme.txt" />
     <Content Include="Serializer\_Readme.txt" />
+    <EmbeddedResource Include="Web\FileListTemplate.html" />
     <Content Include="_Readme.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +110,7 @@
       <Name>ClownFish.Base</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

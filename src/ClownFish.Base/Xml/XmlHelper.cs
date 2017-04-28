@@ -93,13 +93,23 @@ namespace ClownFish.Base.Xml
 		}
 
 
-		/// <summary>
-		/// 将一个对象按XML序列化的方式写入到一个文件
+        /// <summary>
+		/// 将一个对象按XML序列化的方式写入到一个文件（采用UTF8编码）
 		/// </summary>
 		/// <param name="o">要序列化的对象</param>
 		/// <param name="path">保存文件路径</param>
-		/// <param name="encoding">编码方式</param>
-		public static void XmlSerializeToFile(object o, string path, Encoding encoding)
+		public static void XmlSerializeToFile(object o, string path)
+        {
+            XmlSerializeToFile(o, path, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 将一个对象按XML序列化的方式写入到一个文件
+        /// </summary>
+        /// <param name="o">要序列化的对象</param>
+        /// <param name="path">保存文件路径</param>
+        /// <param name="encoding">编码方式</param>
+        public static void XmlSerializeToFile(object o, string path, Encoding encoding)
 		{
 			if( string.IsNullOrEmpty(path) )
 				throw new ArgumentNullException("path");

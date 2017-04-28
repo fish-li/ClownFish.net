@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ClownFish.Base
 {
@@ -11,15 +12,17 @@ namespace ClownFish.Base
 	/// </summary>
 	public sealed class NameValue
 	{
-		/// <summary>
-		/// 键名
-		/// </summary>
-		public string Name { get; set; }
+        /// <summary>
+        /// 键名
+        /// </summary>
+        [XmlAttribute]
+        public string Name { get; set; }
 
-		/// <summary>
-		/// 键值
-		/// </summary>
-		public string Value { get; set; }
+        /// <summary>
+        /// 键值
+        /// </summary>
+        [XmlAttribute]
+        public string Value { get; set; }
 
 		/// <summary>
 		/// ToString
