@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 using ClownFish.Log;
 

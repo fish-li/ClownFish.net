@@ -176,5 +176,22 @@ namespace ClownFish.Base
 			return Encoding.UTF8.GetBytes(text);
 		}
 
-	}
+
+        /// <summary>
+        /// 截取一个字符串，只保留部分长度
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="keepLength"></param>
+        /// <returns></returns>
+        public static string SubstringN(this string text, int keepLength)
+        {
+            if( string.IsNullOrEmpty(text) )
+                return text;
+
+            if( text.Length <= keepLength )
+                return text;
+
+            return text.Substring(0, keepLength) + "..." + text.Length.ToString();
+        }
+    }
 }

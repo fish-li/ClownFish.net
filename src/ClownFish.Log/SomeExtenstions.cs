@@ -24,17 +24,5 @@ namespace ClownFish.Log
 		}
 
 
-
-
-		public static string SubstringN(this string text, int keepLength)
-		{
-			if( string.IsNullOrEmpty(text) )
-				return text;
-
-			if( text.Length <= keepLength )
-				return text;
-
-			return text.Substring(0, keepLength) + "..." + text.Length.ToString();
-		}
 	}
 }

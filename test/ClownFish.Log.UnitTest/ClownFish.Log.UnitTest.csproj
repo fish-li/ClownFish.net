@@ -81,7 +81,6 @@
     <Compile Include="MongoDbWriterTest.cs" />
     <Compile Include="PerformanceMoudleTest.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="SomeExtenstionsTest.cs" />
     <Compile Include="SqlInfoTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

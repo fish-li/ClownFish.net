@@ -5,6 +5,7 @@ using System.Messaging;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 using ClownFish.Log;
 using ClownFish.Log.Configuration;
