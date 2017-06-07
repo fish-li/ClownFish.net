@@ -129,7 +129,7 @@ namespace ClownFish.Base
 	/// </summary>
 	public static class TripleDESHelper
 	{
-		private static TripleDESCryptoServiceProvider GetTripleDESCryptoServiceProvider(string password)
+		private static TripleDESCryptoServiceProvider GetProvider(string password)
 		{
 			TripleDESCryptoServiceProvider sa = new TripleDESCryptoServiceProvider();
 			CryptoHelper.SetKeyIV(sa, password);
@@ -144,7 +144,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static string Encrypt(string text, string password)
 		{
-			return CryptoHelper.Encrypt(text, GetTripleDESCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Encrypt(text, sa);
+            }
 		}
 		/// <summary>
 		/// 使用TripleDES加密字节数组
@@ -154,7 +156,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static byte[] Encrypt(byte[] input, string password)
 		{
-			return CryptoHelper.Encrypt(input, GetTripleDESCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Encrypt(input, sa);
+            }
 		}
 		/// <summary>
 		/// 使用TripleDES解密一个以Base64编码的加密字符串
@@ -164,7 +168,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static string Decrypt(string base64, string password)
 		{
-			return CryptoHelper.Decrypt(base64, GetTripleDESCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Decrypt(base64, sa);
+            }
 		}
 		/// <summary>
 		/// 使用TripleDES解密字节数组
@@ -174,7 +180,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static byte[] Decrypt(byte[] input, string password)
 		{
-			return CryptoHelper.Decrypt(input, GetTripleDESCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Decrypt(input, sa);
+            }
 		}
 
 	}
@@ -186,7 +194,7 @@ namespace ClownFish.Base
 	/// </summary>
 	public static class AesHelper
 	{
-		private static AesCryptoServiceProvider GetAesCryptoServiceProvider(string password)
+		private static AesCryptoServiceProvider GetProvider(string password)
 		{
 			AesCryptoServiceProvider sa = new AesCryptoServiceProvider();
 			CryptoHelper.SetKeyIV(sa, password);
@@ -201,7 +209,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static string Encrypt(string text, string password)
 		{
-			return CryptoHelper.Encrypt(text, GetAesCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Encrypt(text, sa);
+            }
 		}
 		/// <summary>
 		/// 使用AES算法加密字节数组
@@ -211,7 +221,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static byte[] Encrypt(byte[] input, string password)
 		{
-			return CryptoHelper.Encrypt(input, GetAesCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Encrypt(input, sa);
+            }
 		}
 
 		/// <summary>
@@ -222,7 +234,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static string Decrypt(string base64, string password)
 		{
-			return CryptoHelper.Decrypt(base64, GetAesCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Decrypt(base64, sa);
+            }
 		}
 
 		/// <summary>
@@ -233,7 +247,9 @@ namespace ClownFish.Base
 		/// <returns></returns>
 		public static byte[] Decrypt(byte[] input, string password)
 		{
-			return CryptoHelper.Decrypt(input, GetAesCryptoServiceProvider(password));
+            using( SymmetricAlgorithm sa = GetProvider(password) ) {
+                return CryptoHelper.Decrypt(input, sa);
+            }
 		}
 	}
 }

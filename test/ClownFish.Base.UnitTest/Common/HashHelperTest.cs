@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,15 @@ namespace ClownFish.Base.UnitTest.Common
 	[TestClass]
 	public class HashHelperTest
 	{
+        private static readonly string s_filename = "Test_HashHelper.txt";
+
+        [ClassInitialize]
+        public static void Init(TestContext context)
+        {
+            File.WriteAllText(s_filename, "禁止使用 ViewState，Session", Encoding.UTF8);
+        }
+
+
 		[TestMethod]
 		public void Test_Sha1()
 		{
@@ -21,6 +31,9 @@ namespace ClownFish.Base.UnitTest.Common
 
 			Assert.AreEqual("3E5C799844C4366172D633004997D18F39C6487A",
 				HashHelper.Sha1("如对本管理制度有任何疑问"));
+
+            Assert.AreEqual("3A65DC6A22A9B53E1D79940BEAFB84629C3EE1F9",
+                HashHelper.FileSha1(s_filename));
 		}
 
 
@@ -35,6 +48,9 @@ namespace ClownFish.Base.UnitTest.Common
 
 			Assert.AreEqual("ABCC7373EDFBF009D688B65AC2DBC1CD",
 				HashHelper.Md5("如对本管理制度有任何疑问"));
+
+            Assert.AreEqual("DBB688630998654022EEC8C216CD96B0",
+                HashHelper.FileMD5(s_filename));
 		}
 	}
 }
