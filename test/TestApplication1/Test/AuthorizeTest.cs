@@ -15,7 +15,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestAllUser()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Pages/Demo/TestAuthorize/AllUser.aspx",
+				Url = "http://www.fish-web-demo.com/Pages/TestAuthorize/AllUser.aspx",
 				Method = "GET"
 			};
 
@@ -31,7 +31,7 @@ namespace ClownFish.TestApplication1.Test
 			HttpClientEventSubscriber.ShareCookie = new CookieContainer();
 
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Pages/Demo/TestAuthorize/LoginUser.aspx",
+				Url = "http://www.fish-web-demo.com/Pages/TestAuthorize/LoginUser.aspx",
 				Method = "GET"
 			};
 
@@ -61,7 +61,7 @@ namespace ClownFish.TestApplication1.Test
 			HttpClientEventSubscriber.ShareCookie = new CookieContainer();
 
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Pages/Demo/TestAuthorize/Fish.aspx",
+				Url = "http://www.fish-web-demo.com/Pages/TestAuthorize/Fish.aspx",
 				Method = "GET"
 			};
 
@@ -95,7 +95,7 @@ namespace ClownFish.TestApplication1.Test
 		private async Task Login(string username, string rightNo = null)
 		{
 			HttpOption option2 = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/user/Login.aspx",
+				Url = "http://www.fish-web-demo.com/user/Login.aspx",
 				Method = "POST",
 				Data = new { username = username, rightNo = rightNo }
 			};
@@ -106,7 +106,7 @@ namespace ClownFish.TestApplication1.Test
 		private async Task Logout()
 		{
 			HttpOption option9 = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/user/Logout.aspx",
+				Url = "http://www.fish-web-demo.com/user/Logout.aspx",
 				Method = "POST",
 				Data = new { Logout = "注销" }
 			};
@@ -123,7 +123,7 @@ namespace ClownFish.TestApplication1.Test
 			HttpClientEventSubscriber.ShareCookie = new CookieContainer();
 
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Pages/Demo/TestAuthorize/RightNo23.aspx",
+				Url = "http://www.fish-web-demo.com/Pages/TestAuthorize/RightNo23.aspx",
 				Method = "GET"
 			};
 

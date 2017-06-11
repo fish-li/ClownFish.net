@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="Test1.cs" />
     <Compile Include="Test2.cs" />
-    <Compile Include="TestMethod.cs" />
+    <Compile Include="TestCase.cs" />
     <Compile Include="OrderInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

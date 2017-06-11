@@ -15,10 +15,10 @@ namespace ClownFish.Web.UnitTest.Action
 	public class JsonResultTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_JsonResult_ResponseAndContentType()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
 				TM tm = new TM { intVal = 2, StrVal = "abc" };
@@ -40,7 +40,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Test_Jonsp()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish&callback=testjsonp HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish&callback=testjsonp HTTP/1.1
 Referer: http://www.fish-test-demo.com/xxx.html
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

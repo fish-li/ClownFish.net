@@ -4,6 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// ##################################################################
+//
+// ClownFish.Data 性能测试结果解读
+//
+// http://note.youdao.com/noteshare?id=f45ab5306f6ebdfa6b142322a50f9b32
+//
+// ##################################################################
+
+
 namespace ClownFish.Data.PerformanceTest
 {
 	public class OrderInfo : Entity

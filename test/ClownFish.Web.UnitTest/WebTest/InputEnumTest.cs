@@ -19,7 +19,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_Enum()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
 
 day=Friday";
 
@@ -32,7 +32,7 @@ day=Friday";
 		public void Input_Enum2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
 
 day=5";
 
@@ -46,7 +46,7 @@ day=5";
 		public void Input_Enum3()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_Enum.aspx HTTP/1.1
 
 a=3
 ";

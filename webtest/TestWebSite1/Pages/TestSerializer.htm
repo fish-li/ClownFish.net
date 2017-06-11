@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TestSerializer</title>
+    <script type="text/javascript" src="/static/js/jquery/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="/static/js/common.js"></script>
+    <style type="text/css">
+		*{ font-size: 9pt;}
+    </style>
+</head>
+<body>
+
+<form id="form1" action="/api/ns/TestSerializer/submit.aspx" method="post">
+	<table border="0">
+		<tr><td>StringVal:</td><td><input type="text" name="stringVal" style="width: 300px" /></td></tr>
+		<tr><td>IntVal:</td><td><input type="text" name="intVal" style="width: 300px" /></td></tr>
+		<tr><td>DtValue:</td><td><input type="text" name="dtValue" style="width: 300px" /></td></tr>
+		<tr><td>Money:</td><td><input type="text" name="money" style="width: 300px" /></td></tr>
+		<tr><td>Guid:</td><td><input type="text" name="guid" style="width: 300px" /></td></tr>
+	</table>
+	<div>
+		<input type="submit" name="Test1" value="调用 Test1" />&nbsp;&nbsp;
+		<input type="submit" name="Test2" value="调用 Test2" />
+	</div>
+</form>
+
+
+<hr />
+
+<div>Server Result: <input type="button" id="btnClear" value="Clear" /></div>
+<textarea id="txtOuput" style="width: 98%; height: 25px" cols="50" rows="20"></textarea>
+
+
+<script type="text/javascript">
+
+$(function() {
+	$.ajaxSetup({
+			type: "POST",
+			dataType: "text",
+			beforeSend: function(xhr) { xhr.setRequestHeader("X-Gzip-Respond", "1"); }
+		});
+		
+	$.ajax({
+		url: "/api/ns/TestSerializer/GetJson.aspx", type: "GET", dataType: "json",
+		success: function(data) {
+			$("input[name=stringVal]").val(data.StringVal);
+			$("input[name=intVal]").val(data.IntVal);
+			$("input[name=dtValue]").val(data.DtValue.JsonDateToString());
+			$("input[name=money]").val(data.Money);
+			$("input[name=guid]").val(data.Guid);
+		}
+	});
+	
+	$("#form1").ajaxForm(function(result) {
+		$("#txtOuput").val(result);
+	});	
+	
+	$("#btnClear").click(function() {
+		$("#txtOuput").val(""); 
+	});
+});	
+</script>
+
+
+
+<hr />
+
+<div>Input:</div>
+<textarea id="txtInput" style="width: 98%; height: 100px" cols="50" rows="50"></textarea>
+
+<form id="form2" action="/api/ns/TestSerializer/submit.aspx" method="post">
+<p>
+	第一组测试：<input type="submit" name="GetXml" value="Get  Xml" />&nbsp;&nbsp;
+	<input type="button" id="btnTest1Xml" value="Test1, XML" />&nbsp;&nbsp;&nbsp;
+	<input type="button" id="btnTest2Xml" value="Test2, XML" />&nbsp;&nbsp;
+</p>
+<p>
+	第二组测试：<input type="submit" name="GetJson" value="Get Json" />&nbsp;&nbsp;
+	<input type="button" id="btnTest1Json" value="Test1, Json" />&nbsp;&nbsp;
+	<input type="button" id="btnTest2Json" value="Test2, Json" />
+</p>
+<p>
+	第三组测试：<input type="submit" name="GetXml2" value="Get  Xml" />&nbsp;&nbsp;
+	<input type="button" id="btnTest3Xml" value="Test3, XML" />&nbsp;&nbsp;&nbsp;
+	<input type="button" id="btnTest4Xml" value="Test4, XML" />&nbsp;&nbsp;
+</p>
+<p>
+	第四组测试：<input type="submit" name="GetJson2" value="Get Json" />&nbsp;&nbsp;
+	<input type="button" id="btnTest3Json" value="Test3, Json" />&nbsp;&nbsp;
+	<input type="button" id="btnTest4Json" value="Test4, Json" />
+</p>
+<p>
+	第五组测试：<input type="button" id="btnAutoTest" value="AutoTest" />
+</p>
+</form>
+
+<script type="text/javascript">
+$(function() {
+	$("#form2").ajaxForm( function(result) { 
+		$("#txtInput").val(result); $("#txtOuput").val(""); 
+	});
+	
+	function AjaxCall_XmlOrJson(url, contentType){
+		$.ajax({
+			url: url,
+			contentType: contentType,
+			data: $("#txtInput").val(),
+			success: function(result) { $("#txtOuput").val(result); }
+		});
+	}
+
+	$("#btnTest1Xml").click(function() {AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test1.aspx", "application/xml"); });
+		
+	$("#btnTest2Xml").click(function() {AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test2.aspx", "application/xml"); });
+		
+	$("#btnTest1Json").click(function() {AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test1.aspx", "application/json"); });
+		
+	$("#btnTest2Json").click(function() {AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test2.aspx", "application/json"); });
+	
+	
+	
+	$("#btnTest3Xml").click(function () { AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test3.aspx", "application/xml"); });
+		
+	$("#btnTest4Xml").click(function () { AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test4.aspx", "application/xml"); });
+		
+	$("#btnTest3Json").click(function () { AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test3.aspx", "application/json"); });
+		
+	$("#btnTest4Json").click(function () { AjaxCall_XmlOrJson("/api/ns/TestSerializer/Test4.aspx", "application/json"); });
+
+
+	function SyncCallServer(url, contentType, data){
+		var responseText;
+		$.ajax({
+			url: url, 
+			async: false,
+			contentType: contentType,
+			data: data,
+			success: function(result) { responseText = result; }
+		});
+		return responseText;
+	}
+	
+	$("#btnAutoTest").click(function(){
+		var testResult = "";
+		
+		var xml1 = SyncCallServer("/api/ns/TestSerializer/GetXml.aspx", null, {});
+		
+		var r1 = SyncCallServer("/api/ns/TestSerializer/Test1_AutoCheck.aspx", "application/xml", xml1);
+		if( r1 != "1" ) testResult += "Test1_AutoCheck - XML 测试失败。\r\n";
+		
+		var r2 = SyncCallServer("/api/ns/TestSerializer/Test2_AutoCheck.aspx", "application/xml", xml1);
+		if( r2 != "1" )  testResult += "Test2_AutoCheck - XML 测试失败。\r\n"; 
+		
+		
+		var json1 = SyncCallServer("/api/ns/TestSerializer/GetJson.aspx", null, {});
+		
+		var r3 = SyncCallServer("/api/ns/TestSerializer/Test1_AutoCheck.aspx", "application/json", json1);
+		if( r3 != "1" ) testResult += "Test1_AutoCheck - JSON 测试失败。\r\n";
+		
+		var r4 = SyncCallServer("/api/ns/TestSerializer/Test2_AutoCheck.aspx", "application/json", json1);
+		if( r4 != "1" ) testResult += "Test2_AutoCheck - JSON 测试失败。\r\n";
+		
+		
+		
+		
+		var xml2 = SyncCallServer("/api/ns/TestSerializer/GetXml2.aspx", null, {});
+		
+		var r5 = SyncCallServer("/api/ns/TestSerializer/Test3_AutoCheck.aspx", "application/xml", xml2);
+		if( r5 != "1" ) testResult += "Test3_AutoCheck - XML 测试失败。\r\n";
+		
+		var r6 = SyncCallServer("/api/ns/TestSerializer/Test4_AutoCheck.aspx", "application/xml", xml2);
+		if( r6 != "1" ) testResult += "Test4_AutoCheck - XML 测试失败。\r\n";
+		
+		
+		var json2 = SyncCallServer("/api/ns/TestSerializer/GetJson2.aspx", null, {});
+		
+		var r7 = SyncCallServer("/api/ns/TestSerializer/Test3_AutoCheck.aspx", "application/json", json2);
+		if( r7 != "1" ) testResult += "Test3_AutoCheck - JSON 测试失败。\r\n";
+		
+		var r8 = SyncCallServer("/api/ns/TestSerializer/Test4_AutoCheck.aspx", "application/json", json2);
+		if( r8 != "1" ) testResult += "Test4_AutoCheck - JSON 测试失败。\r\n";
+		
+		
+		
+		
+		
+		var xml5 = SyncCallServer("/api/ns/TestSerializer/GetXml5.aspx", null, {});
+		
+		var r9 = SyncCallServer("/api/ns/TestSerializer/Test5.aspx", "application/xml", xml5);
+		if( r9 != "1" ) testResult += "Test5 - XML 测试失败。\r\n";
+		
+		var r10 = SyncCallServer("/api/ns/TestSerializer/Test6.aspx", "application/xml", xml5);
+		if( r10 != "1" ) testResult += "Test6 - XML 测试失败。\r\n";
+		
+		
+		var json5 = SyncCallServer("/api/ns/TestSerializer/GetJson5.aspx", null, {});
+		
+		var r11 = SyncCallServer("/api/ns/TestSerializer/Test5.aspx", "application/json", json5);
+		if( r11 != "1" ) testResult += "Test5 - JSON 测试失败。\r\n";
+		
+		var r12 = SyncCallServer("/api/ns/TestSerializer/Test6.caspx", "application/json", json5);
+		if( r12 != "1" ) testResult += "Test6 - JSON 测试失败。\r\n";
+		
+		
+		
+		
+		
+		if( testResult.length > 0 )
+			alert(testResult);
+		else		
+			alert("测试成功。");
+		
+		
+	});
+
+
+});	
+</script>
+
+
+
+
+
+
+</body>
+</html>

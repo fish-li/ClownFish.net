@@ -13,10 +13,10 @@ namespace ClownFish.Web.UnitTest.WebTest
 	{
 
 		[TestMethod]
-		public async Task Async_Task_Add()
+		public async Task Test_TaskService_Async()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/TaskService/Add.aspx?a=3&b=2 HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/TaskService/Add.aspx?a=3&b=2 HTTP/1.1
 ";
 			SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 

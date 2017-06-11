@@ -14,7 +14,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Result_Format_Xml()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: XML
 
 Count=2&Price=3.1&Total=100.23
@@ -34,7 +34,7 @@ Count=2&Price=3.1&Total=100.23
 		public void Result_Format_JSON()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: JSON
 
 Count=2&Price=3.1&Total=100.23
@@ -53,7 +53,7 @@ Count=2&Price=3.1&Total=100.23
 		public void Result_Format_JSON2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: JSON2
 
 Count=2&Price=3.1&Total=100.23
@@ -70,7 +70,7 @@ Count=2&Price=3.1&Total=100.23
 		public void Result_Format_FORM()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: FORM
 
 Count=2&Price=3.1&Total=100.23
@@ -88,7 +88,7 @@ Count=2&Price=3.1&Total=100.23
 		public void Result_Format_TEXT()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: TEXT
 
 Count=2&Price=3.1&Total=100.23

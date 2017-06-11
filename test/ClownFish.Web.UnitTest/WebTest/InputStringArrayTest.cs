@@ -14,7 +14,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_string_array()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx HTTP/1.1
 
 array=aa&array=bb&array=cc
 ";
@@ -27,7 +27,7 @@ array=aa&array=bb&array=cc
 		public void Input_string_array2()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx?array=aa&array=bb&array=cc HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx?array=aa&array=bb&array=cc HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("aa-bb-cc", result);
@@ -38,7 +38,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx?
 		public void Input_string_array3()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx?array=aa HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx?array=aa HTTP/1.1
 
 array=bb&array=cc
 ";
@@ -53,7 +53,7 @@ array=bb&array=cc
 		public void Input_string_array4()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_array.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("NULL", result);

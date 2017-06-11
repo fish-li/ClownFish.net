@@ -14,7 +14,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestSubmitName()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/Demo/TestEnum.aspx?submit=submit",
+				Url = "http://www.fish-web-demo.com/api/ns/Demo1/TestEnum.aspx?submit=submit",
 				Data = new { week = "Thursday" },
 				Method = "GET"
 			};
@@ -30,7 +30,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestSubmitNumber()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/Demo/TestEnum.aspx?submit=submit",
+				Url = "http://www.fish-web-demo.com/api/ns/Demo1/TestEnum.aspx?submit=submit",
 				Data = new { week = "2" },
 				Method = "GET"
 			};

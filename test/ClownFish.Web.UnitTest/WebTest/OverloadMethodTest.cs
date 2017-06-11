@@ -12,10 +12,10 @@ namespace ClownFish.Web.UnitTest.WebTest
 	{
 
 		[TestMethod]
-		public void Add_get()
+		public void Test_Action_OverloadMethod_GET()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/OverloadMethod/Add.aspx?a=2&b=3 HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/OverloadMethod/Add.aspx?a=2&b=3 HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("5", result);
@@ -24,10 +24,10 @@ GET http://www.fish-mvc-demo.com/Ajax/test/OverloadMethod/Add.aspx?a=2&b=3 HTTP/
 
 
 		[TestMethod]
-		public void Add_post()
+		public void Test_Action_OverloadMethod_POST()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/OverloadMethod/Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/OverloadMethod/Add.aspx HTTP/1.1
 
 a=2&b=3
 ";

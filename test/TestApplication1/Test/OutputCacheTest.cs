@@ -14,7 +14,7 @@
 //		public async Task TestSubmitName()
 //		{
 //			HttpOption option = new HttpOption {
-//				Url = "http://www.fish-mvc-demo.com/Pages/Demo/TestOutputCache.aspx",
+//				Url = "http://www.fish-web-demo.com/Pages/Demo/TestOutputCache.aspx",
 //				Method = "GET"
 //			};
 

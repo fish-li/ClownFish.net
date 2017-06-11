@@ -16,7 +16,7 @@ namespace ClownFish.TestApplication1.Test.AjaxPK
 		public async Task Test1()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/ajax/pk/DemoPk/Add.cspx",
+				Url = "http://www.fish-web-demo.com/ajax/pk/DemoPk/Add.cspx",
 				Method = "GET",
 				Data = new { a = 1, b = 2 }
 			};
@@ -31,7 +31,7 @@ namespace ClownFish.TestApplication1.Test.AjaxPK
 		public async Task Test2()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/ajax/pk/DemoPk/Add.cspx",
+				Url = "http://www.fish-web-demo.com/ajax/pk/DemoPk/Add.cspx",
 				Method = "POST",
 				Data = new { a = 1, b = 2 }
 			};
@@ -46,7 +46,7 @@ namespace ClownFish.TestApplication1.Test.AjaxPK
 		public async Task Test3()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/ajax/pk/DemoPk/AddCustomer.cspx",
+				Url = "http://www.fish-web-demo.com/ajax/pk/DemoPk/AddCustomer.cspx",
 				Method = "POST",
 				Data = new { Address = "武汉", Age = 20, Email = "test@163.com", Name = "abc", Tel = "12345678" }
 			};
@@ -66,14 +66,14 @@ namespace ClownFish.TestApplication1.Test.AjaxPK
 		[TestMethod("AJAX PK：批量输入控件的提交, -1")]
 		public async Task Test4()
 		{
-			await Test4Internal("http://www.fish-mvc-demo.com/ajax/pk/DemoPk/BatchAddCustomer.cspx");
+			await Test4Internal("http://www.fish-web-demo.com/ajax/pk/DemoPk/BatchAddCustomer.cspx");
 		}
 
 
 		[TestMethod("AJAX PK：批量输入控件的提交, -2")]
 		public async Task Test4b()
 		{
-			await Test4Internal("http://www.fish-mvc-demo.com/ajax/pk/DemoPk/BatchAddCustomer2.cspx");
+			await Test4Internal("http://www.fish-web-demo.com/ajax/pk/DemoPk/BatchAddCustomer2.cspx");
 		}
 
 

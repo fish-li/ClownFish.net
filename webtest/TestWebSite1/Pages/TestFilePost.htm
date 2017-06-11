@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测试Action接收文件上传</title>
+    <style type="text/css">
+        * {
+            font-family: Consolas, '微软雅黑', '宋体';
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>测试上传单一文件</h2>
+<form action="/api/ns/TestFile/Test1.aspx" method="post" enctype="multipart/form-data" target="outFrame">
+    <p><input type="text" name="abc" value="Test File" /></p>
+    <p><input type="file" name="file1" /></p>
+    <p><input type="submit" value="提交" /></p>
+
+</form>
+
+<p>&nbsp;</p><hr /><p>&nbsp;</p>
+
+
+
+<h2>测试上传多个文件</h2>
+<form action="/api/ns/TestFile/Test2.aspx" method="post" enctype="multipart/form-data" target="outFrame">
+    <p><input type="text" name="abc" value="Test File" /></p>
+    <p><input type="file" name="file1" /></p>
+    <p><input type="file" name="file1" /></p>
+    <p><input type="file" name="file1" /></p>
+    <p><input type="submit" value="提交" /></p>
+
+</form>
+
+
+<p><br /><br /><br /></p>
+<iframe name="outFrame" style="width: 99%; height: 200px"></iframe>
+
+
+
+</body>
+</html>

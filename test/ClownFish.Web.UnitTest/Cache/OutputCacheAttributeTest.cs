@@ -13,7 +13,7 @@ namespace ClownFish.Web.UnitTest.Cache
 	public class OutputCacheAttributeTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_OutputCacheAttribute()
 		{
 			OutputCacheAttribute a = new OutputCacheAttribute();
 			a.CacheProfile = "_CacheProfile";
@@ -32,7 +32,7 @@ namespace ClownFish.Web.UnitTest.Cache
 
 
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 ";
 
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

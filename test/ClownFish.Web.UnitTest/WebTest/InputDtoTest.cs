@@ -32,7 +32,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_Product()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
 X-Result-Format: JSON
 
 " + s_ProductFormData;
@@ -61,7 +61,7 @@ X-Result-Format: JSON
 		public void Input_Product2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
 X-Result-Format: XML
 
 " + s_ProductFormData;
@@ -79,7 +79,7 @@ X-Result-Format: XML
 		public void Input_Product3()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
 X-Result-Format: TEXT
 
 " + s_ProductFormData;
@@ -98,7 +98,7 @@ X-Result-Format: TEXT
 		public void Input_Product4()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
 X-Result-Format: JSON
 Content-Type: application/json
 
@@ -117,7 +117,7 @@ Content-Type: application/json
 		public void Input_Product5()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_Product.aspx HTTP/1.1
 X-Result-Format: JSON
 Content-Type: application/xml
 
@@ -140,7 +140,7 @@ Content-Type: application/xml
 			string productFormData2 = "p2.productID=22&p2.productName=kkkp123&p2.CategoryID=25&p2.Unit=xx&p2.UnitPrice=32.5&p2.Quantity=13&p2.Remark=zzzz111";
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_2_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_2_Product.aspx HTTP/1.1
 
 " + productFormData1 + "&" + productFormData2;
 
@@ -163,7 +163,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_2_Product.aspx
 		public void Input_int_Product()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_int_Product.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_int_Product.aspx HTTP/1.1
 
 " + s_ProductFormData + "&a=10";
 
@@ -181,7 +181,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_int_Product.as
 		public void Input_JSON()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_JSON.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_JSON.aspx HTTP/1.1
 Content-Type: application/json
 
 " + s_ProductJson;
@@ -197,7 +197,7 @@ Content-Type: application/json
 		public void Input_XML()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_XML.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_XML.aspx HTTP/1.1
 Content-Type: application/xml
 
 " + s_ProductXml;
@@ -213,7 +213,7 @@ Content-Type: application/xml
 		public void Input_XmlDocument()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ComplexDataType/Input_XmlDocument.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ComplexDataType/Input_XmlDocument.aspx HTTP/1.1
 Content-Type: application/xml
 
 " + s_ProductXml;

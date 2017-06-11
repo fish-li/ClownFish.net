@@ -20,7 +20,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Test1()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/TestContextDataAttribute.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/AdvancedData/TestContextDataAttribute.aspx HTTP/1.1
 ";
 
 			Hashtable table = (WebRuntimeExt.Instance as WebRuntimeExt).CallMessage;
@@ -45,7 +45,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/TestContextDataAttribut
 			string base64 = Convert.ToBase64String(bb);
 
 			StringBuilder sb = new StringBuilder();
-			sb.AppendLine("POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/InputByteArray.aspx HTTP/1.1");
+			sb.AppendLine("POST http://www.fish-web-demo.com/Ajax/test/AdvancedData/InputByteArray.aspx HTTP/1.1");
 			sb.AppendLine("Content-Type: application/x-www-form-urlencoded; charset=UTF-8");
 			sb.AppendLine();
 			sb.Append("bb=").Append(base64);
@@ -64,7 +64,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/TestContextDataAttribut
 			ByteArrayItem item = new ByteArrayItem { StrValue = "123", ByteArray = bb };
 
 			StringBuilder sb = new StringBuilder();
-			sb.AppendLine("POST http://www.fish-mvc-demo.com/Ajax/test/AdvancedData/InputByteArrayItem.aspx HTTP/1.1");
+			sb.AppendLine("POST http://www.fish-web-demo.com/Ajax/test/AdvancedData/InputByteArrayItem.aspx HTTP/1.1");
 			sb.AppendLine("Content-Type: application/x-www-form-urlencoded; charset=UTF-8");
 			sb.AppendLine();
 			sb.Append("strvalue=123&bytearray=").Append(base64);

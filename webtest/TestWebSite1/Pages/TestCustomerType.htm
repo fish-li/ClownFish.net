@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ajax DEMO - ClownFish.Web - http://www.cnblogs.com/fish-li</title>
+    <style type="text/css">
+    	*{ font-size: 10pt; }
+		span { display: block; float: left; width: 80px;}
+    </style>
+</head>
+<body>
+
+    <form action="/api/ns/Demo2/TestCustomerType.aspx" method="post" target="outFrame">
+        <p><span>客户名称:</span> <input type="text" name="customer.Name" value="name----1" style="width: 300px" /></p>
+        <p><span>客户电话:</span> <input type="text" name="customer.Tel" value="tel----1" style="width: 300px" /></p>
+        <p><span>销售员名称:</span> <input type="text" name="salesman.Name" value="name----2" style="width: 300px" /></p>
+        <p><span>销售员电话:</span> <input type="text" name="salesman.Tel" value="tel----2" style="width: 300px" /></p>
+        <p><input type="submit" value="提交" /></p>
+    </form>
+
+    <p><br /><br /><br /></p>
+    <iframe name="outFrame" style="width: 99%; height: 200px"></iframe>
+
+</body>
+</html>

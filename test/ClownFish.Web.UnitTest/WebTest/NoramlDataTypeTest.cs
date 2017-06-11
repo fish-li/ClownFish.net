@@ -15,7 +15,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_string_ToUpper()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("FISH", result);
@@ -26,7 +26,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Input_string_ToUpper2()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input= HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input= HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual(string.Empty, result);
@@ -36,7 +36,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Input_string_ToUpper3()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("input is empty.".ToUpper(), result);
@@ -47,7 +47,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Input_int_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 
 a=3&b=5
 ";
@@ -61,7 +61,7 @@ a=3&b=5
 		public void Input_int_Add2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 
 a=3
 ";
@@ -75,7 +75,7 @@ a=3
 		public void Input_decimal_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_decimal_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_decimal_Add.aspx HTTP/1.1
 
 a=3.1&b=5.2
 ";
@@ -88,7 +88,7 @@ a=3.1&b=5.2
 		public void Input_number_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_number_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_number_Add.aspx HTTP/1.1
 
 a=2&b=3&c=3.5&d=4.7
 ";
@@ -103,7 +103,7 @@ a=2&b=3&c=3.5&d=4.7
 		public void Input_DateTime()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_DateTime.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_DateTime.aspx HTTP/1.1
 
 dt=2015-05-03
 ";
@@ -120,7 +120,7 @@ dt=2015-05-03
 		public void Input_bool()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
 
 b=true";
 
@@ -133,7 +133,7 @@ b=true";
 		public void Input_bool2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
 
 b=false";
 
@@ -147,7 +147,7 @@ b=false";
 		public void Input_bool3()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_bool.aspx HTTP/1.1
 
 b=1";
 

@@ -15,7 +15,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Test_HttpValueIgnoreAttribute()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Attribute/GetTotal.aspx HTTP/1.1
 X-Result-Format: FORM
 
 Count=2&Price=3.1&Total=100.23

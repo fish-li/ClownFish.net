@@ -173,15 +173,15 @@ namespace ClownFish.Base.WebClient
 		public static HttpOption FromRawText(string text)
 		{
 			// 示例数据：
-			//POST http://www.fish-mvc-demo.com/Ajax/ns/TestAutoAction/submit.aspx HTTP/1.1
-			//Host: www.fish-mvc-demo.com
+			//POST http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
+			//Host: www.fish-web-demo.com
 			//User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
 			//Accept: */*
 			//Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
 			//Accept-Encoding: gzip, deflate
 			//Content-Type: application/x-www-form-urlencoded; charset=UTF-8
 			//X-Requested-With: XMLHttpRequest
-			//Referer: http://www.fish-mvc-demo.com/Pages/Demo/TestAutoFindAction.htm
+			//Referer: http://www.fish-web-demo.com/Pages/Demo/TestAutoFindAction.htm
 			//Content-Length: 72
 			//Cookie: hasplmlang=_int_; LoginBy=productKey; PageStyle=Style2;
 			//Connection: keep-alive

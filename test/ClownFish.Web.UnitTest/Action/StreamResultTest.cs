@@ -28,7 +28,7 @@ namespace ClownFish.Web.UnitTest.Action
 		public void Test2()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36 OPR/31.0.1889.174
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

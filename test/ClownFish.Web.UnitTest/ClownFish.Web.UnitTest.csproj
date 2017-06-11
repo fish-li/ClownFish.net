@@ -68,7 +68,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\..\demo\web\DEMO.Controllers\CheckRightAttribute.cs">
+    <Compile Include="..\..\webtest\DEMO.Controllers\CheckRightAttribute.cs">
       <Link>Controllers\CheckRightAttribute.cs</Link>
     </Compile>
     <Compile Include="..\ClownFish.Data.UnitTest\ClownFishDataEventSubscriber.cs">

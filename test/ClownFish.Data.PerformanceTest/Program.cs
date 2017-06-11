@@ -8,6 +8,15 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+// ##################################################################
+//
+// ClownFish.Data 性能测试结果解读
+//
+// http://note.youdao.com/noteshare?id=f45ab5306f6ebdfa6b142322a50f9b32
+//
+// ##################################################################
+
+
 namespace ClownFish.Data.PerformanceTest
 {
 	class Program
@@ -35,7 +44,7 @@ namespace ClownFish.Data.PerformanceTest
 
 
 			Type[] testTypes = (from t in typeof(Program).Assembly.GetTypes()
-								where t.GetCustomAttribute<TestMethodAttribute>() != null
+								where t.GetCustomAttribute<TestCaseAttribute>() != null
 								select t).ToArray();
 			ShowMenu(testTypes);
 
@@ -75,15 +84,16 @@ namespace ClownFish.Data.PerformanceTest
 				Stopwatch watch = Stopwatch.StartNew();
 
 				for( int k = 0; k < count2; k++ ) {
-					var result = instance.Run();
-					instance.Dispose();
+					var result = instance.Run();					
 				}
-
+								
 				watch.Stop();
 
 				sumTicks += watch.Elapsed.Ticks;
 				action(watch.Elapsed);
 			}
+
+			instance.Dispose();
 
 			TimeSpan ts = new TimeSpan(sumTicks / count1);
 			action(ts);
@@ -108,7 +118,7 @@ namespace ClownFish.Data.PerformanceTest
 			GroupData data = new GroupData();
 			data.List = new List<TimeSpan>();
 
-			TestMethodAttribute a = t.GetCustomAttribute<TestMethodAttribute>();
+			TestCaseAttribute a = t.GetCustomAttribute<TestCaseAttribute>();
 			data.Group = a.Description;
 
 			RunTest(t, x => data.List.Add(x));
@@ -132,7 +142,7 @@ namespace ClownFish.Data.PerformanceTest
 
 			int i = 1;
 			foreach(Type t in testTypes ) {
-				TestMethodAttribute a = t.GetCustomAttribute<TestMethodAttribute>();
+				TestCaseAttribute a = t.GetCustomAttribute<TestCaseAttribute>();
 
 				string text = string.Format("{0}---{1}", i++, a.Description);
 				Console.WriteLine(text);				

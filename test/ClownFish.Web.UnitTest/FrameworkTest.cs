@@ -23,14 +23,14 @@ namespace ClownFish.Web.UnitTest
 			TestPage page = new TestPage();
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/pages/abc.aspx?id=2&name=aa HTTP/1.1
-Host: www.fish-mvc-demo.com
+POST http://www.fish-web-demo.com/pages/abc.aspx?id=2&name=aa HTTP/1.1
+Host: www.fish-web-demo.com
 User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)
 Accept: */*
 Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
 Accept-Encoding: gzip, deflate
 Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-Referer: http://www.fish-mvc-demo.com/a2.aspx?cc=5
+Referer: http://www.fish-web-demo.com/a2.aspx?cc=5
 Cookie: PageStyle=Style2; cookie1=cccccccccc
 h1: 111111111
 h2: 22222222
@@ -79,7 +79,7 @@ a=1&b=2&c=3
 				Assert.AreEqual("application/x-www-form-urlencoded", HttpContext.Current.Request.ContentType);
 				Assert.AreEqual("/pages/abc.aspx?id=2&name=aa", HttpContext.Current.Request.RawUrl);
 				Assert.AreEqual("POST", HttpContext.Current.Request.RequestType);
-				Assert.AreEqual("http://www.fish-mvc-demo.com/pages/abc.aspx", HttpContext.Current.Request.Url.AbsoluteUri);
+				Assert.AreEqual("http://www.fish-web-demo.com/pages/abc.aspx", HttpContext.Current.Request.Url.AbsoluteUri);
 
 				Assert.AreEqual(contentEncoding.GetByteCount(formData), HttpContext.Current.Request.ContentLength);
 

@@ -17,7 +17,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		{
 			// 访问一个没有权限检查的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 ";
 			string responseText = null;
 
@@ -36,7 +36,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 		{
 			// 访问一个必须是【已登录】用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
 ";
 			string responseText = null;
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
@@ -50,7 +50,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
 		{
 			// 访问一个必须是【已登录】用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
 ";
 			string responseText = null;
 
@@ -69,7 +69,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/LoginUser.aspx HTTP/1.1
 		{
 			// 访问一个必须是【fish】用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
 ";
 			string responseText = null;
 
@@ -92,7 +92,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
 		{
 			// 访问一个必须是【fish】用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
 ";
 			string responseText = null;
 
@@ -111,7 +111,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Fish.aspx HTTP/1.1
 		{
 			// 访问一个必须是【权限号=23】的用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
 ";
 			string responseText = null;
 
@@ -129,7 +129,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
 		{
 			// 访问一个必须是【权限号=23】的用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
 Cookie: rightNo_demo=23
 ";
 			// 注意：上面的请求头中已经指定的权限Cookie
@@ -150,7 +150,7 @@ Cookie: rightNo_demo=23
 		{
 			// 访问一个必须是【权限号=23】的用户才能访问的地址
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/RightNo23.aspx HTTP/1.1
 Cookie: rightNo_demo=22
 ";
 			// 注意：上面的请求头中已经指定的权限Cookie，但是权限号不对

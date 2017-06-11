@@ -20,7 +20,7 @@ namespace ClownFish.Web.UnitTest.TestCase
 			Assert.AreEqual("fish, abc", a.Users);
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 ";
 			bool result = false;
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
@@ -46,7 +46,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP
 			a.Users = "fish, abc";
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 ";
 			bool result = false;
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
@@ -66,7 +66,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP
 			Assert.AreEqual("2,3,4", a.Roles);
 			
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 ";
 			bool result = false;
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
@@ -91,7 +91,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP
 			a.Roles = "2,3,4";
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 ";
 			bool result = false;
 			using( WebContext context = WebContext.FromRawText(requestText) ) {

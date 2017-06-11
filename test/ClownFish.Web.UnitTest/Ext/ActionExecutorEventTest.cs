@@ -18,7 +18,7 @@ namespace ClownFish.Web.UnitTest.Ext
 		public void Test1()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 Origin: http://www.abc.com
 
 a=3&b=5

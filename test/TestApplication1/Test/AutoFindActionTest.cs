@@ -14,7 +14,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestAutoFindAction1()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/TestAutoAction/submit.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx",
 				Method = "POST",
 				Data = new { Base64 = "yes", input = "Fish Li" }
 			};
@@ -29,7 +29,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestAutoFindAction2()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/TestAutoAction/submit.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx",
 				Method = "POST",
 				Data = new { Md5 = "yes", input = "Fish Li" }
 			};
@@ -44,7 +44,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestAutoFindAction3()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/TestAutoAction/submit.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx",
 				Method = "POST",
 				Data = new { Sha1 = "yes", input = "Fish Li" }
 			};

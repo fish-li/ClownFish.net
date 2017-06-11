@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TestAutoFindAction - http://www.cnblogs.com/fish-li</title>
+    <script type="text/javascript" src="/static/js/jquery/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery/jquery.form.js"></script>
+    
+    <style type="text/css">
+    span{ 
+    	display: block;
+    	float: left;
+        width: 70px
+     }
+    </style>
+    
+</head>
+<body>
+
+<form id="form1" action="/api/ns/TestAutoAction/submit.aspx" method="post">
+	<p><span>Input:</span>
+		<input type="text" name="input" style="width: 300px" value="Fish Li" /></p>
+	<p><span>Output:</span>
+		<input type="text" id="output" style="width: 300px" readonly="readonly" /></p>
+	<input type="submit" name="Base64" value="转换成Base64编码" />&nbsp;&nbsp;
+	<input type="submit" name="Md5" value="计算md5" />&nbsp;&nbsp;
+	<input type="submit" name="Sha1" value="计算sha1" />
+</form>
+
+<script type="text/javascript">
+	$("#form1").ajaxForm(function(result) {
+		$("#output").val(result);
+	});
+</script>
+
+
+</body>
+</html>

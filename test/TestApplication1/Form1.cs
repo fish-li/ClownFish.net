@@ -72,7 +72,7 @@ namespace ClownFish.TestApplication1
 			btnRun.Enabled = false;
 
 			if(    CheckWebsiteIsRunning("http://www.fish-ajax-cors.com/") == false			// CrosClientWebSite1
-				|| CheckWebsiteIsRunning("http://www.fish-mvc-demo.com/") == false ) {	// DemoWebSite1
+				|| CheckWebsiteIsRunning("http://www.fish-web-demo.com/") == false ) {  // TestWebSite1
 
 				btnRun.Enabled = true;
 				return;
@@ -161,7 +161,7 @@ namespace ClownFish.TestApplication1
 可以在 C:\Windows\System32\drivers\etc\hosts 中指定：
 
 127.0.0.1       www.fish-ajax-cors.com
-127.0.0.1       www.fish-mvc-demo.com
+127.0.0.1       www.fish-web-demo.com
 ";
 
 			MessageBox.Show(message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);

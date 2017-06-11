@@ -54,11 +54,9 @@ ReverseProxyWebSite
 
 
 
-MvcDemoWebSite1 (ClownFish.Web-DEMO)
+TestWebSite1 (ClownFish.Web-DEMO)
 DEMO.Controllers
-DEMO.BLL
-DEMO.Model
-DEMO.Common
+DEMO.Models
 ---------------------------------------------------
 演示了基本的ClownFish.Web使用方法（不包含框架扩展使用方法）。
 更多详细介绍请参考我的博客：

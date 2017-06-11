@@ -17,7 +17,7 @@ namespace ClownFish.Web.UnitTest.TestCase
 		public void Test1()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Some/TestCookieAndHeader.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Some/TestCookieAndHeader.aspx HTTP/1.1
 Cookie: cookie1=fish
 header1: ClownFish.net
 ";

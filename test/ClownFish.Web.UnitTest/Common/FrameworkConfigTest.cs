@@ -12,7 +12,7 @@ namespace ClownFish.Web.UnitTest.Config
 	public class FrameworkConfigTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_FrameworkConfig()
 		{
 			// 简单测试
 			// 预期值直接写在配置文件中。

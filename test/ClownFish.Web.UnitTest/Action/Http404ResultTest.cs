@@ -12,10 +12,10 @@ namespace ClownFish.Web.UnitTest.Action
 	public class Http404ResultTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_Http404Result()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
 				Http404Result result = new Http404Result();

@@ -14,7 +14,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task Test1()
 		{
 			HttpOption option = HttpOption.FromRawText(@"
-POST http://www.fish-mvc-demo.com/Ajax/ns/Demo/TestGuid2.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/api/ns/Demo1/TestGuid2.aspx HTTP/1.1
 
 a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
@@ -25,7 +25,7 @@ a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
 
 			option = HttpOption.FromRawText(@"
-PUT http://www.fish-mvc-demo.com/Ajax/ns/Demo/TestGuid2.aspx HTTP/1.1
+PUT http://www.fish-web-demo.com/api/ns/Demo1/TestGuid2.aspx HTTP/1.1
 
 a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
@@ -36,7 +36,7 @@ a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
 
 			option = HttpOption.FromRawText(@"
-POST http://www.fish-mvc-demo.com/Ajax/ns/Demo/TestContextDataAttribute.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/api/ns/Demo1/TestContextDataAttribute.aspx HTTP/1.1
 User-Agent: Hello-Fish
 
 a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
@@ -56,7 +56,7 @@ a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
 			HttpOption option = new HttpOption {
 				Method = "POST",
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/UploadFile/Test1.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/UploadFile/Test1.aspx",
 				Data = new {
 					a = file1,
 					b = file2,
@@ -87,7 +87,7 @@ a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 
 			HttpOption option2 = new HttpOption {
 				Method = "POST",
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/UploadFile/Test2.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/UploadFile/Test2.aspx",
 				Data = new {
 					a = file1,
 					b = file2,
@@ -106,7 +106,7 @@ a=8679b2c7-75e5-47b7-86db-aa60addc10ab");
 		public async Task Test3()
 		{
 			HttpOption option = HttpOption.FromRawText(@"
-POST http://www.fish-mvc-demo.com/Ajax/ns/TestFile/Sum.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/api/ns/TestFile/Sum.aspx HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 numbers=1&numbers=2&numbers=3&numbers=4&numbers=5");

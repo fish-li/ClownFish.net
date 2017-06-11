@@ -85,7 +85,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_NullArgument()
+		public void Test_4Writers_NullArgument()
 		{
 			// 测试参数值为空的场景，其实没什么具体意义，只是为了代码覆盖率
 

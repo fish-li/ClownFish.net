@@ -36,7 +36,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Test_Action参数接收数据实体代理()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/Entity/Action1.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/Entity/Action1.aspx HTTP/1.1
 
 productID=2222&productName=abc&categoryID=3
 ";

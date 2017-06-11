@@ -171,7 +171,7 @@ namespace ClownFish.Web.Reflection
 
 				if( method == null ) {
 					// 如果Action的名字是submit并且是POST提交，则需要自动寻找Action
-					// 例如：多个提交都采用一样的方式：POST /ajax/ns/Product/submit
+					// 例如：多个提交都采用一样的方式：POST /api/ns/Product/submit
 					if( action.EqualsIgnoreCase("submit") && _context.Request.HttpMethod.EqualsIgnoreCase("POST") ) {
 						// 自动寻找Action
 						method = FindSubmitAction(controller);

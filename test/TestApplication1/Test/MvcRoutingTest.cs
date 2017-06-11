@@ -14,7 +14,7 @@ namespace ClownFish.TestApplication1.Test
 		public void Test1()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/mvc-routing/ns/TestAutoAction/Base64",
+				Url = "http://www.fish-web-demo.com/mvc-routing/ns/TestAutoAction/Base64",
 				Data = new { input = "Fish Li" }
 
 			};
@@ -29,7 +29,7 @@ namespace ClownFish.TestApplication1.Test
 		public void Test2()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/mvc-routing/ns/TestAutoAction/Md5",
+				Url = "http://www.fish-web-demo.com/mvc-routing/ns/TestAutoAction/Md5",
 				Data = new { input = "Fish Li" }
 			};
 
@@ -43,7 +43,7 @@ namespace ClownFish.TestApplication1.Test
 		public void Test3()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/mvc-routing/ns/TestAutoAction/Sha1",
+				Url = "http://www.fish-web-demo.com/mvc-routing/ns/TestAutoAction/Sha1",
 				Data = new { input = "Fish Li" }
 			};
 

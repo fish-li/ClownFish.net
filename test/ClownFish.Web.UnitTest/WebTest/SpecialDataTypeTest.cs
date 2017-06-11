@@ -15,7 +15,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_string_ToUpper()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_HttpContext.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/SpecialDataType/Input_HttpContext.aspx HTTP/1.1
 ";
 
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
@@ -32,7 +32,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_HttpContext.asp
 		public void Input_querystring()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_querystring.aspx?a=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/SpecialDataType/Input_querystring.aspx?a=fish HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("fish", result);
@@ -42,7 +42,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_querystring.asp
 		public void Input_form()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_form.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/SpecialDataType/Input_form.aspx HTTP/1.1
 
 a=fish
 ";
@@ -56,7 +56,7 @@ a=fish
 		public void Input_headers()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/SpecialDataType/Input_headers.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/SpecialDataType/Input_headers.aspx HTTP/1.1
 a: fish
 ";
 			string result = ExecuteService(requestText);

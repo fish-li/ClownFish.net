@@ -17,7 +17,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void ActionAutoFind_Base64()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
 
 input=fish&Base64=OK
 ";
@@ -30,7 +30,7 @@ input=fish&Base64=OK
 		public void ActionAutoFind_Md5()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
 
 input=fish&Md5=OK
 ";
@@ -43,7 +43,7 @@ input=fish&Md5=OK
 		public void ActionAutoFind_Sha1()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/ActionAutoFind/submit.aspx HTTP/1.1
 
 input=fish&Sha1=OK
 ";

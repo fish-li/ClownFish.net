@@ -11,7 +11,7 @@ namespace ClownFish.Web.UnitTest.Common
 	public class HttpValueCollectionTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_HttpValueCollection()
 		{
 			HttpValueCollection collection = new HttpValueCollection();
 

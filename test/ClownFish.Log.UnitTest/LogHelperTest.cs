@@ -89,7 +89,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_SyncLog()
+		public void Test_LogHelper_SyncWrite()
 		{
 			Exception ex = CreateException();
 			ExceptionInfo exInfo = ExceptionInfo.Create(ex);
@@ -101,13 +101,13 @@ namespace ClownFish.Log.UnitTest
 
 		[ExpectedException(typeof(ArgumentNullException))]
 		[TestMethod]
-		public void Test_Write()
+		public void Test_ExceptionInfo_Create_Argument_null()
 		{
 			ExceptionInfo info = ExceptionInfo.Create(null, null, null);
 		}
 
 		[TestMethod]
-		public void Test_Write3()
+		public void Test_LogHelper_Write_DbCommand()
 		{
 			using( WebContext context = HttpInfoTest.CreateWebContext() ) {
 				context.SetUserName("Fish Li");
@@ -133,7 +133,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_AsyncLog()
+		public void Test_LogHelper_AsyncWrite()
 		{
 			Exception ex = CreateException(Guid.NewGuid().ToString());
 			ExceptionInfo exInfo = ExceptionInfo.Create(ex);
@@ -164,7 +164,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_Event()
+		public void Test_LogHelper_RaiseErrorEvent()
 		{
 			string message = Guid.NewGuid().ToString();
 			Exception ex1 = new Exception(message);
@@ -176,7 +176,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_RetryLog()
+		public void Test_LogHelper_RetryLog()
 		{
 			List<Exception> list = new List<Exception>();
 			list.Add(new NotImplementedException());
@@ -188,7 +188,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_RetryLog2()
+		public void Test_LogHelper_RetryLog2()
 		{
 			Hashtable hashTable = typeof(WriterFactory).InvokeMember("s_writerTable", 
 									BindingFlags.GetField | BindingFlags.Static| BindingFlags.NonPublic, 
@@ -225,7 +225,7 @@ namespace ClownFish.Log.UnitTest
 
 
 		[TestMethod]
-		public void Test_RetryLog3()
+		public void Test_LogHelper_RetryLog3()
 		{
 			Hashtable hashTable = typeof(WriterFactory).InvokeMember("s_writerTable",
 									BindingFlags.GetField | BindingFlags.Static | BindingFlags.NonPublic,
@@ -263,7 +263,7 @@ namespace ClownFish.Log.UnitTest
 
 		[ExpectedException(typeof(NotSupportedException))]
 		[TestMethod]
-		public void Test_NotSupportedException()
+		public void Test_LogHelper_NotSupportedException()
 		{
 			TestData d = new TestData();
 

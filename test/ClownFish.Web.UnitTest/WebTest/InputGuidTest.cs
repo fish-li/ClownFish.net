@@ -19,7 +19,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 			Guid g = Guid.NewGuid();
 
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_Guid.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_Guid.aspx HTTP/1.1
 
 guid=" + g.ToString();
 			string result = ExecuteService(requestText);
@@ -31,7 +31,7 @@ guid=" + g.ToString();
 		public void Input_Guid_nullable()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_Guid_nullable.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_Guid_nullable.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual(Guid.Empty.ToString("N"), result);

@@ -34,7 +34,7 @@ Cookie: SRCHUSR=AUTOREDIR=0&GEOVAR=&DOB=20141216; _EDGE_V=1; SRCHUID=V=2&GUID=72
 
 
 		[TestMethod]
-		public void Test()
+		public void Test_ExceptionInfo_Addition()
 		{
 			// 测试普通情况
 
@@ -97,7 +97,7 @@ Cookie: SRCHUSR=AUTOREDIR=0&GEOVAR=&DOB=20141216; _EDGE_V=1; SRCHUID=V=2&GUID=72
 
 
 		[TestMethod]
-		public void Test_Null()
+		public void Test_HttpInfo_Create_Argument_null()
 		{
 			var result = HttpInfo.Create(null);
 			Assert.IsNull(result);

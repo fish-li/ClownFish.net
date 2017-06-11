@@ -14,12 +14,12 @@ namespace ClownFish.Web.UnitTest.Action
 	public class HttpCacheResultTest : BaseTest
 	{
 		[TestMethod]
-		public void Test()
+		public void Test_HttpCacheResult_正常场景测试()
 		{
 			// 正常场景测试
 
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
 
@@ -60,7 +60,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Test_ArgumentNullException()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
 
@@ -76,7 +76,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.asp
 		public void Test_InvalidOperationException()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_string_ToUpper.aspx?input=fish HTTP/1.1
 ";
 			using( WebContext context = WebContext.FromRawText(requestText) ) {
 

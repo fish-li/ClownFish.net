@@ -16,7 +16,7 @@ namespace ClownFish.Web.UnitTest.TestCase
 		public void Test1()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP/1.1
 ";
 			IHttpHandler handler = null;
 
@@ -36,7 +36,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_Add.aspx HTTP
 		public void Test2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/xxxxxxxxxxx.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/xxxxxxxxxxx.aspx HTTP/1.1
 ";
 			// 上面URL指定了一个不存在的Action名称，会引发404错误
 
@@ -54,7 +54,7 @@ POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/xxxxxxxxxxx.aspx HTTP/1
 		public void Test3()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/DataTypeTest/xxxxxxxxxxx HTTP/1.1
+POST http://www.fish-web-demo.com/DataTypeTest/xxxxxxxxxxx HTTP/1.1
 ";
 			// 上面URL指定了一个ServiceHandlerFactory不能接受的格式，会引发404错误
 

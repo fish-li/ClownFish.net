@@ -15,7 +15,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestMd5()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/Demo/GetMd5.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/Demo1/GetMd5.aspx",
 				Data = new { input = "Fish Li" },
 				Method = "GET"
 			};
@@ -31,7 +31,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestNamespace_1()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/Fish.AA.Test/Add.aspx",
+				Url = "http://www.fish-web-demo.com/Ajax/Fish.AA.Test/Add.aspx",
 				Data = new { a = 2, b= 3 },
 				Method = "GET"
 			};
@@ -46,7 +46,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestNamespace_2()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/Fish.BB.Test/Add.aspx",
+				Url = "http://www.fish-web-demo.com/Ajax/Fish.BB.Test/Add.aspx",
 				Data = new { a = 2, b = 3 },
 				Method = "GET"
 			};
@@ -61,7 +61,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestNamespace_3()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/DEMO.Controllers.TestTask.TaskDemoService/Add.aspx",
+				Url = "http://www.fish-web-demo.com/Ajax/DEMO.Controllers.TestTask.TaskDemoService/Add.aspx",
 				Data = new { a = 2, b = 3 },
 				Method = "GET"
 			};
@@ -77,7 +77,7 @@ namespace ClownFish.TestApplication1.Test
 		public async Task TestCustomerType()
 		{
 			HttpOption option = new HttpOption {
-				Url = "http://www.fish-mvc-demo.com/Ajax/ns/Demo2/TestCustomerType.aspx",
+				Url = "http://www.fish-web-demo.com/api/ns/Demo2/TestCustomerType.aspx",
 				Data = new FormDataCollection()
 							.AddString("customer.Name", "name----1")
 							.AddString("customer.Tel", "tel----1")

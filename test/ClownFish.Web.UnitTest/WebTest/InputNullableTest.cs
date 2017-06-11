@@ -18,7 +18,7 @@ namespace ClownFish.Web.UnitTest.WebTest
 		public void Input_int_nullable_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
 
 a=3
 ";
@@ -31,7 +31,7 @@ a=3
 		public void Input_int_nullable_Add2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
 
 b=5
 ";
@@ -44,7 +44,7 @@ b=5
 		public void Input_int_nullable_Add3()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("0", result);
@@ -56,7 +56,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_int_nullable_Add.a
 		public void Input_decimal_nullable_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
 
 a=3.1
 ";
@@ -69,7 +69,7 @@ a=3.1
 		public void Input_decimal_nullable_Add2()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
 
 b=5.2
 ";
@@ -82,7 +82,7 @@ b=5.2
 		public void Input_decimal_nullable_Add3()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_Add.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("0", result);
@@ -93,7 +93,7 @@ GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_decimal_nullable_A
 		public void Input_number_nullable_Add()
 		{
 			string requestText = @"
-POST http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_number_nullable_Add.aspx?b=3 HTTP/1.1
+POST http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_number_nullable_Add.aspx?b=3 HTTP/1.1
 
 d=3.5
 ";
@@ -106,7 +106,7 @@ d=3.5
 		public void Input_DateTime_nullable()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Ajax/test/DataTypeTest/Input_DateTime_nullable.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Ajax/test/DataTypeTest/Input_DateTime_nullable.aspx HTTP/1.1
 ";
 			string result = ExecuteService(requestText);
 			Assert.AreEqual("00010101", result);

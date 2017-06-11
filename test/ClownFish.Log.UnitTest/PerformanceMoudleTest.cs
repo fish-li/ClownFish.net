@@ -23,7 +23,7 @@ namespace ClownFish.Log.UnitTest
 		}
 
 		[TestMethod]
-		public void Test()
+		public void Test_PerformanceMoudle_测试HTTP请求执行超时场景()
 		{
 			// 测试 HTTP 请求执行超时场景
 			using( WebContext context = HttpInfoTest.CreateWebContext() ) {

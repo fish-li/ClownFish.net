@@ -17,7 +17,7 @@ namespace ClownFish.Web.UnitTest.TestCase
 		public void Test1()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 ";
 			IHttpHandler handler = null;
 
@@ -42,7 +42,7 @@ GET http://www.fish-mvc-demo.com/Pages/Demo/Authorize/Everyone.aspx HTTP/1.1
 		public void Test2()
 		{
 			string requestText = @"
-GET http://www.fish-mvc-demo.com/Pages/abc.zzz HTTP/1.1
+GET http://www.fish-web-demo.com/Pages/abc.zzz HTTP/1.1
 ";
 			IHttpHandler handler = null;
 
