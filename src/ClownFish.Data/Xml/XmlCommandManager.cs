@@ -47,7 +47,7 @@ namespace ClownFish.Data.Xml
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static void LoadFromDirectory(string directoryPath)
 		{
-			if( s_dict != null && RunTimeEnvironment.IsAspnetApp ) // 不要删除这个判断检查，因为后面会监视这个目录。
+			if( s_dict != null ) // 不要删除这个判断检查，因为后面会监视这个目录。
 				throw new InvalidOperationException("不允许重复调用这个方法。");
 
 			if( Directory.Exists(directoryPath) == false )
@@ -65,7 +65,7 @@ namespace ClownFish.Data.Xml
 		}
 
 
-		
+
 		private static Dictionary<string, XmlCommandItem> LoadFromDirectoryInternal(string directoryPath, out Exception exception)
 		{
 			exception = null;
@@ -87,17 +87,15 @@ namespace ClownFish.Data.Xml
 				dict = null;
 			}
 
-			if( RunTimeEnvironment.IsAspnetApp ) {
-				// 如果程序运行在ASP.NET环境中，
-				// 注册缓存移除通知，以便在用户修改了配置文件后自动重新加载。
 
-				// 参考：细说 ASP.NET Cache 及其高级用法
-				//	      http://www.cnblogs.com/fish-li/archive/2011/12/27/2304063.html
-				CacheDependency dep = new CacheDependency(directoryPath);
-				HttpRuntime.Cache.Insert(s_CacheKey, directoryPath, dep,
-					System.Web.Caching.Cache.NoAbsoluteExpiration, System.Web.Caching.Cache.NoSlidingExpiration,
-					CacheItemPriority.NotRemovable, CacheRemovedCallback);
-			}
+			// 注册缓存移除通知，以便在用户修改了配置文件后自动重新加载。
+			// 参考：细说 ASP.NET Cache 及其高级用法
+			//	      http://www.cnblogs.com/fish-li/archive/2011/12/27/2304063.html
+			CacheDependency dep = new CacheDependency(directoryPath);
+			HttpRuntime.Cache.Insert(s_CacheKey, directoryPath, dep,
+				System.Web.Caching.Cache.NoAbsoluteExpiration, System.Web.Caching.Cache.NoSlidingExpiration,
+				CacheItemPriority.NotRemovable, CacheRemovedCallback);
+
 			return dict;
 		}
 
