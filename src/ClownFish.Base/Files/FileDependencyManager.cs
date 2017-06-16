@@ -30,9 +30,10 @@ namespace ClownFish.Base.Files
 	public sealed class FileDependencyManager<T>
 	{
 		private string[] _files;
-		private Func<string[], T> _func;
+		private Func<string[], T> _loadFileCallback;
+        private Action<string[], CacheItemRemovedReason> _afterRemoveCallback;
 
-		private readonly string CacheKey = Guid.NewGuid().ToString();
+        private readonly string CacheKey = Guid.NewGuid().ToString();
 
 		private CacheResult<T> _cacheResult;
 		/// <summary>
@@ -43,21 +44,37 @@ namespace ClownFish.Base.Files
 			get { return _cacheResult.Result; }
 		}
 
-		/// <summary>
-		/// 构造方法。
-		/// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
-		/// </summary>
-		/// <param name="func"></param>
-		/// <param name="files"></param>
-		public FileDependencyManager(Func<string[], T> func, params string[] files)
+        /// <summary>
+        /// 构造方法。
+        /// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
+        /// </summary>
+        /// <param name="loadFileCallback">当需要加载文件时的回调委托</param>
+        /// <param name="files">要读取的文件，读取后会做修改监控</param>
+        public FileDependencyManager(Func<string[], T> loadFileCallback,  params string[] files)
+            : this(loadFileCallback,  null, files)
+        {
+        }
+
+        /// <summary>
+        /// 构造方法。
+        /// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
+        /// </summary>
+        /// <param name="loadFileCallback">当需要加载文件时的回调委托</param>
+        /// <param name="afterRemoveCallback">缓存移除后触发的回调委托</param>
+        /// <param name="files">要读取的文件，读取后会做修改监控</param>
+        public FileDependencyManager(Func<string[], T> loadFileCallback, 
+                                    Action<string[], CacheItemRemovedReason> afterRemoveCallback, 
+                                    params string[] files)
 		{
-			if( func == null )
-				throw new ArgumentNullException("func");
+			if( loadFileCallback == null )
+				throw new ArgumentNullException("loadFileCallback");
 
 			if( files == null || files.Length == 0 )
 				throw new ArgumentNullException("files");
 
-			_func = func;
+
+			_loadFileCallback = loadFileCallback;
+            _afterRemoveCallback = afterRemoveCallback;
 			_files = files;
 
 			this.GetObject();
@@ -69,7 +86,7 @@ namespace ClownFish.Base.Files
 			T result = default(T);
 
 			try {
-				result = _func(_files);
+				result = _loadFileCallback(_files);
 			}
 			catch( Exception e ) {
 				ex = e;
@@ -98,9 +115,15 @@ namespace ClownFish.Base.Files
 
 		private void RemovedCallback(string key, object value, CacheItemRemovedReason reason)
 		{
+            // 参数中的 key, value 在这里是没有意义的，所以忽略这二个参数。
+
 			System.Threading.Thread.Sleep(s_WaitFileCloseTimeout);		// 等待文件关闭
 
+            // 只要是缓存项被移除，就重新加载，不管是什么原因
 			this.GetObject();
+
+            // 缓存移除后调用回调委托，可以实现一些诸如：文件同步之类的操作
+            _afterRemoveCallback?.Invoke(_files, reason);
 		}
 	}
 }

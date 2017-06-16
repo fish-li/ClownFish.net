@@ -118,10 +118,16 @@ namespace ClownFish.Web.Reflection
 			foreach( Assembly assembly in actionAssemblyList ) {
 
 				foreach( Type t in assembly.GetPublicTypes() ) {
-					if( t.IsClass == false || (t.IsAbstract && t.IsSealed ==false ) /* 抽象类不能实例化 */ )
-						continue;
+                    //if( t.IsClass == false || (t.IsAbstract && t.IsSealed ==false ) /* 抽象类不能实例化 */ )
+                    //	continue;
 
-					if( recognizer.IsPageController(t) )
+                    // ERP中有些URL是映射到接口类型上的，所以和上面被注释有冲突
+                    // 之前是为了避免出现：根据URL映射到的类型不能实例化，
+                    // 现在（2017-06-16）取消这个判断，
+                    // 如果真要将URL映射到接口类型或者抽象类，就自行保证是可以实例化，否则将会出现异常
+                    // 如果要调整默认的实例化过程，可以重新实现 IControllerResolver 接口，然后调用 ControllerFactory.SetResolver
+
+                    if( recognizer.IsPageController(t) )
 						pageControllerList.Add(new ControllerDescription(t));
 
 					else if( recognizer.IsServiceController(t) )

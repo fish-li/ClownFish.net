@@ -84,7 +84,7 @@ namespace ClownFish.Web.UnitTest.Cache
 		{
 			FileDependencyManager<string> cacheItem = new FileDependencyManager<string>(
 					files => SafeReadFile(files[0]),
-					null);
+					(string[])null);
 		}
 
 
