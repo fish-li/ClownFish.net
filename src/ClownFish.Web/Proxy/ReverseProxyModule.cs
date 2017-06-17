@@ -17,7 +17,13 @@ namespace ClownFish.Web.Proxy
 		/// </summary>
 		private static readonly string s_ProxySiteCookieName = "fmps12";// 随便取个特殊的名字，只要不被其他人使用就好
 
-		
+		/// <summary>
+		/// 默认的反向代理目标站点，可用于将所有请求转发到内网地址
+		/// </summary>
+		private static readonly string s_DefaultProxySite
+			= System.Configuration.ConfigurationManager.AppSettings["ClownFish.Web:ReverseProxyModule:TargetSite"];
+
+
 		/// <summary>
 		/// 实现 IHttpModule.Init 方法
 		/// </summary>
@@ -69,6 +75,11 @@ namespace ClownFish.Web.Proxy
 		protected virtual string GetProxySiteAddress(HttpApplication app)
 		{
 			// 扩展点：如果不用COOKIE标记转发目标网站，可重写这个方法
+
+			// 优先使用已指定的目标转发网址
+			if( string.IsNullOrEmpty(s_DefaultProxySite) == false )
+				return s_DefaultProxySite;
+
 
 			HttpCookie cookie = app.Request.Cookies[s_ProxySiteCookieName];
 			if( cookie != null ) {
