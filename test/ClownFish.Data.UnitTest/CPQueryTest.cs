@@ -191,5 +191,14 @@ namespace ClownFish.Data.UnitTest
 			Assert.AreEqual(2, query3.Command.Parameters.Count);
 		}
 
-	}
+
+        [TestMethod]
+        public void Test_CPQuery设置命令超时时间()
+        {
+            CPQuery query1 = CPQuery.Create("select * from t1").SetCommand(x => x.CommandTimeout = 2);
+            Assert.AreEqual(2, query1.Command.CommandTimeout);
+        }
+
+
+    }
 }

@@ -66,6 +66,7 @@
     <Compile Include="Entity\EntityHttpLoader.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="SqlClient\EntityExtensions.cs" />
+    <Compile Include="Utils\CommandExtensions.cs" />
     <Compile Include="Utils\DataLoaderHelper.cs" />
     <Compile Include="Utils\EntityHelper.cs" />
     <Compile Include="Entity\EntityMethodFactory.cs" />
