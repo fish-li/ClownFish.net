@@ -104,7 +104,7 @@ namespace ClownFish.Log.Web
             }
 
             int index = 1;
-            string rowFormat = "<tr><td>{0}</td><td><a href=\"{1}\" target=\"_blank\">{2}</a></td><td class=\"filesize\">{3}</td></tr>";
+            string rowFormat = "<tr><td>{0}</td><td><a href=\"{1}\" target=\"_blank\">{2}</a></td><td>{3}</td><td class=\"filesize\">{4}</td></tr>";
             StringBuilder html = new StringBuilder();
             DirectoryInfo dir = new DirectoryInfo(path);
 
@@ -112,14 +112,16 @@ namespace ClownFish.Log.Web
             foreach(var d in dir.GetDirectories() ) {
                 string relativePath = subPath + "\\" + d.Name;
                 string link = GetUrl(relativePath, "dir");
-                html.AppendFormat(rowFormat, index++, link, d.Name, "[文件夹]");
+				string time = string.Empty;
+				html.AppendFormat(rowFormat, index++, link, d.Name, time, "[文件夹]");
             }
 
             // 遍历目录下的文件
             foreach(var f in dir.GetFiles() ) {
                 string relativePath = subPath + "\\" + f.Name;
                 string link = GetUrl(relativePath, "file");
-                html.AppendFormat(rowFormat, index++, link, f.Name, f.Length.ToString());
+				string time = f.LastWriteTime.ToTimeString();
+				html.AppendFormat(rowFormat, index++, link, f.Name, time, f.Length.ToString());
             }
 
             string template = null;
