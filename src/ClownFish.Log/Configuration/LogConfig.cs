@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ClownFish.Base.Xml;
+using ClownFish.Log.Serializer;
 
 namespace ClownFish.Log.Configuration
 {
@@ -59,6 +60,15 @@ namespace ClownFish.Log.Configuration
 				throw new FileNotFoundException("配置文件不存在：" + configFile);
 
 			return XmlHelper.XmlDeserializeFromFile<LogConfig>(configFile);
+		}
+
+		/// <summary>
+		/// 获取当前正在使用的配置对象
+		/// </summary>
+		/// <returns></returns>
+		public static LogConfig GetCurrent()
+		{
+			return WriterFactory.Config;
 		}
 
 	}

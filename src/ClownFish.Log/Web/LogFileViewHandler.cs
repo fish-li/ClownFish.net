@@ -138,17 +138,41 @@ namespace ClownFish.Log.Web
             _context.Response.Write(template);
         }
 
+		/// <summary>
+		/// 获取目录下的文件清单，
+		/// 重写这个方法可以实现文件过滤效果
+		/// </summary>
+		/// <param name="dir"></param>
+		/// <returns></returns>
+		public virtual IEnumerable<FileInfo> GetFiles(DirectoryInfo dir)
+		{
+			return dir.GetFiles();
+		}
+
+		/// <summary>
+		/// 获取目录下的子目录清单，
+		/// 重写这个方法可以实现文件过滤效果
+		/// </summary>
+		/// <param name="dir"></param>
+		/// <returns></returns>
+		public virtual IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo dir)
+		{
+			return dir.GetDirectories();
+		}
 
 
-
-        private string GetUrl(string relativePath, string paramName)
+		private string GetUrl(string relativePath, string paramName)
         {
             string text = relativePath.Trim('\\').ToBase64();
             return _context.Request.FilePath + $"?{paramName}=" + HttpUtility.UrlEncode(text);
         }
 
-
-        private string GetLogRootDirectory()
+		/// <summary>
+		/// 获取要显示的日志根目录，
+		/// 重写这个方法可修改默认的根目录（FileWriter指定的目录）。
+		/// </summary>
+		/// <returns></returns>
+		public virtual string GetLogRootDirectory()
         {
             WriterFactory.Init();
 
