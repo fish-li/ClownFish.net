@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClownFish.Base.UnitTest
 {
+	[Serializable]
 	public class Product
 	{
 		public int ProductID { get; set; }

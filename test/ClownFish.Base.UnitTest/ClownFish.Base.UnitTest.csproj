@@ -60,10 +60,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ByteTestHelper.cs" />
     <Compile Include="Common\Base64ExtensionsTest.cs" />
+    <Compile Include="Common\BinSerializerHelperTest.cs" />
+    <Compile Include="Common\ByteExtensionsTest.cs" />
     <Compile Include="Common\CryptoHelperTest.cs" />
     <Compile Include="Common\DataTimeExtensionsTest.cs" />
+    <Compile Include="Common\DictionaryExtensionsTest.cs" />
     <Compile Include="Common\GzipHelperTest.cs" />
     <Compile Include="Common\HashHelperTest.cs" />
     <Compile Include="Common\HttpExtensionsTest.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Common\RsaHelperTest.cs" />
     <Compile Include="Common\StringExtensionsTest.cs" />
     <Compile Include="Common\TestHelperTest.cs" />
+    <Compile Include="Common\TypeExtensionsTest.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="Files\FileDependencyManagerTest.cs" />
     <Compile Include="Http\HttpHeaderCollectionTest.cs" />

@@ -59,8 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Base64Extensions.cs" />
+    <Compile Include="Common\BinSerializerHelper.cs" />
+    <Compile Include="Common\ByteExtensions.cs" />
     <Compile Include="Common\CryptoHelper.cs" />
     <Compile Include="Common\DataTimeExtensions.cs" />
+    <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\GzipHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
     <Compile Include="Common\LazyObject.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Common\RsaHelper.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TestHelper.cs" />
+    <Compile Include="Common\TypeExtensions.cs" />
     <Compile Include="Files\CacheResult.cs" />
     <Compile Include="Files\FileDependencyManager.cs" />
     <Compile Include="Framework\AppInitializer.cs" />

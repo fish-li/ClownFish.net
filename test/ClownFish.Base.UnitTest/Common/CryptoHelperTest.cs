@@ -26,7 +26,7 @@ namespace ClownFish.Base.UnitTest.Common
 			byte[] b1 = s_input.GetBytes();
 			byte[] b2 = TripleDESHelper.Encrypt(b1, s_key);
 			byte[] b3 = TripleDESHelper.Decrypt(b2, s_key);
-			Assert.IsTrue(ByteTestHelper.AreEqual(b1, b3));
+			Assert.IsTrue(b1.IsEqual(b3));
 		}
 
 
@@ -41,7 +41,7 @@ namespace ClownFish.Base.UnitTest.Common
 			byte[] b1 = s_input.GetBytes();
 			byte[] b2 = AesHelper.Encrypt(b1, s_key);
 			byte[] b3 = AesHelper.Decrypt(b2, s_key);
-			Assert.IsTrue(ByteTestHelper.AreEqual(b1, b3));
+			Assert.IsTrue(b1.IsEqual(b3));
 		}
 	}
 }

@@ -94,7 +94,7 @@ namespace ClownFish.Base.UnitTest.Common
 			string s = "为进一步规范ERP发版工作，加强研发质量管控，在2017年初，我们对ERP产品发版管理制度V1.1进行了优化，详细调整点如下：";
 			byte[] b1 = Encoding.UTF8.GetBytes(s);
 			byte[] b2 = s.GetBytes();
-			Assert.IsTrue(ByteTestHelper.AreEqual(b1, b2));
+			Assert.IsTrue(b1.IsEqual(b2));
 		}
 
 

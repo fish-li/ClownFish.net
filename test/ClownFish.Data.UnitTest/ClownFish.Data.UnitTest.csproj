@@ -69,7 +69,6 @@
     <Compile Include="AutoCode1.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="BaseTestWithConnectionScope.cs" />
-    <Compile Include="BinSerializerHelper.cs" />
     <Compile Include="ClownFishDataEventSubscriber.cs" />
     <Compile Include="ConnectionScopeTest.cs" />
     <Compile Include="CPQueryTest.cs" />
@@ -133,7 +132,7 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)src\ClownFish.Data.ProxyGen\bin\ClownFish.Data.ProxyGen.exe" "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>if exist "$(SolutionDir)src\ClownFish.Data.ProxyGen\bin\ClownFish.Data.ProxyGen.exe"  "$(SolutionDir)src\ClownFish.Data.ProxyGen\bin\ClownFish.Data.ProxyGen.exe" "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

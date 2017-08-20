@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClownFish.Base.UnitTest
+namespace ClownFish.Base
 {
-	internal static class ByteTestHelper
+	/// <summary>
+	/// 二进制数据操作的工具类
+	/// </summary>
+	public static class ByteExtensions
 	{
 		/// <summary>
 		/// 比较二个字节数组是不是相等
@@ -14,7 +17,7 @@ namespace ClownFish.Base.UnitTest
 		/// <param name="b1"></param>
 		/// <param name="b2"></param>
 		/// <returns></returns>
-		public static bool AreEqual(byte[] b1 , byte[] b2)
+		public static bool IsEqual(this byte[] b1, byte[] b2)
 		{
 			if( b1 == null && b2 == null )
 				return true;
@@ -25,12 +28,15 @@ namespace ClownFish.Base.UnitTest
 			if( b1.Length != b2.Length )
 				return false;
 
-			for(int i= 0;i<b1.Length;i++ ) {
+			for( int i = 0; i < b1.Length; i++ ) {
 				if( b1[i] != b2[i] )
 					return false;
 			}
 
 			return true;
 		}
+
+
+
 	}
 }

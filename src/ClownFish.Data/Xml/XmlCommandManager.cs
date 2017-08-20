@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
+using ClownFish.Base;
 using ClownFish.Base.Framework;
 using ClownFish.Base.Xml;
 
