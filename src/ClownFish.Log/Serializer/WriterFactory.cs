@@ -54,18 +54,23 @@ namespace ClownFish.Log.Serializer
 				lock( s_lock ) {
 					if( s_inited == false ) {
 
-						Config = config;    // 注意：这里不克隆参数对应，直接引用它
-
-						ConfigLoader loader = new ConfigLoader();
-						loader.Load(config, s_writerTable);
-						
-
-						// 标记初始化已成功
-						s_inited = true;
+                        InternalInit(config);
+                        
+                        // 标记初始化已成功
+                        s_inited = true;
 					}
 				}
 			}
 		}
+
+
+        private static void InternalInit(LogConfig config)
+        {
+            Config = config;    // 注意：这里不克隆参数对应，直接引用它
+
+            ConfigLoader loader = new ConfigLoader();
+            loader.Load(config, s_writerTable);
+        }
 
 
 
