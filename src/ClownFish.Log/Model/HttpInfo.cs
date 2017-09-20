@@ -93,93 +93,102 @@ namespace ClownFish.Log.Model
 		/// 设置请求信息
 		/// </summary>
 		private void SetHttpInfo(HttpContext context)
-		{
-			if( context == null )
-				return;
+        {
+            if( context == null )
+                return;
 
 
-			if( context.Request.IsAuthenticated )
-				this.UserName = context.User.Identity.Name;
+            if( context.Request.IsAuthenticated )
+                this.UserName = context.User.Identity.Name;
 
 
-			this.Url = context.Request.Url.ToString();
-			this.RawUrl = context.Request.RawUrl;
+            this.Url = context.Request.Url.ToString();
+            this.RawUrl = context.Request.RawUrl;
 
-			if( context.Request.Browser != null )
-				this.Browser = context.Request.Browser.Browser + context.Request.Browser.MajorVersion;
-
-
-			string postData = null;
-
-			// 这里可能会有一个安全漏洞，应该可能会记录一些敏感信息
-			if( context.Items[IgnoreHttpsRequestBody] == null ) {
-				if( context.Request.RequestType == "POST" ) {
-					if( context.Request.Files.Count == 0 ) {
-						postData = context.Request.ReadInputStream();
-						context.Request.InputStream.Position = 0;
-					}
-					else {
-						StringBuilder sb = new StringBuilder();
-						foreach( string name in context.Request.Form.AllKeys ) {
-							string[] values = context.Request.Form.GetValues(name);
-							if( values != null ) {
-								foreach( string value in values )
-									sb.AppendFormat("&{0}={1}", HttpUtility.UrlEncode(name), HttpUtility.UrlEncode(value));
-							}
-						}
-
-						if( sb.Length > 0 ) {
-							sb.Remove(0, 1);
-							postData = sb.ToString();
-						}
-					}
-				}
-			}
-			
-
-			if( context.Request.Headers.Count > 0 ) {
-				StringBuilder sb = new StringBuilder();
-				sb.AppendLine()
-					.Append(context.Request.RequestType)
-					.Append(" ")
-					.Append(context.Request.Url.ToString())
-					.AppendLine(" HTTP/1.1");
-
-				foreach( string key in context.Request.Headers.AllKeys ) {
-					string value = context.Request.Headers[key];
-					sb.Append(key).Append(": ").Append(value).AppendLine();
-				}
-
-				if( postData != null )
-					sb.AppendLine().AppendLine(postData);
-
-				this.RequestText = sb.ToString();
-			}
+            if( context.Request.Browser != null )
+                this.Browser = context.Request.Browser.Browser + context.Request.Browser.MajorVersion;
 
 
-			
-
-			
-
-
-			if( context.Session != null ) {
-				StringBuilder sb = new StringBuilder();
-				sb.AppendLine();
-
-				foreach( string sessionKey in context.Session.Keys ) {
-					object sessionValue = context.Session[sessionKey];
-					if( sessionValue == null )
-						sb.AppendFormat("{0}: NULL\r\n", sessionKey);
-					else
-						sb.AppendFormat("{0}: ({1}) {2}\r\n", sessionKey, sessionValue.GetType().Name, sessionValue);
-				}
-				this.Session = sb.ToString();
-			}
-		}
+            GetRequestText(context);
+            GetSession(context);
+        }
 
 
+        private void GetRequestText(HttpContext context)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine()
+                .Append(context.Request.RequestType)
+                .Append(" ")
+                .Append(context.Request.Url.ToString())
+                .AppendLine(" HTTP/1.1");
 
-		
+            if( context.Request.Headers.Count > 0 ) {
+                foreach( string key in context.Request.Headers.AllKeys ) {
+                    string value = context.Request.Headers[key];
+                    sb.Append(key).Append(": ").Append(value).AppendLine();
+                }
+            }
 
-	}
+
+            string postData = GetPostText(context);
+            if( postData != null )
+                sb.AppendLine().AppendLine(postData);
+
+            this.RequestText = sb.ToString();
+        }
+
+        private string GetPostText(HttpContext context)
+        {
+            string postData = null;
+
+            // 这里可能会有一个安全漏洞，应该可能会记录一些敏感信息
+            if( context.Items[IgnoreHttpsRequestBody] == null ) {
+                if( context.Request.RequestType == "POST" ) {
+                    if( context.Request.Files.Count == 0 ) {
+                        postData = context.Request.ReadInputStream();
+                        context.Request.InputStream.Position = 0;
+                    }
+                    else {
+                        StringBuilder sb = new StringBuilder();
+                        foreach( string name in context.Request.Form.AllKeys ) {
+                            string[] values = context.Request.Form.GetValues(name);
+                            if( values != null ) {
+                                foreach( string value in values )
+                                    sb.AppendFormat("&{0}={1}", HttpUtility.UrlEncode(name), HttpUtility.UrlEncode(value));
+                            }
+                        }
+
+                        if( sb.Length > 0 ) {
+                            sb.Remove(0, 1);
+                            postData = sb.ToString();
+                        }
+                    }
+                }
+            }
+
+            return postData;
+        }
+
+
+        private void GetSession(HttpContext context)
+        {
+            if( context.Session != null ) {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine();
+
+                foreach( string sessionKey in context.Session.Keys ) {
+                    object sessionValue = context.Session[sessionKey];
+                    if( sessionValue == null )
+                        sb.AppendFormat("{0}: NULL\r\n", sessionKey);
+                    else
+                        sb.AppendFormat("{0}: ({1}) {2}\r\n", sessionKey, sessionValue.GetType().Name, sessionValue);
+                }
+                this.Session = sb.ToString();
+            }
+        }
+
+
+
+    }
 }

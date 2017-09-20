@@ -20,7 +20,27 @@ namespace ClownFish.Base.UnitTest.Common
         }
 
 
-		[TestMethod]
+        [TestMethod]
+        public void Test_FastHash()
+        {
+            string md5 = null;
+            md5 = HashHelper.FastHash(@"ClownFish.Base.dll");
+            Console.WriteLine(md5);
+
+            md5 = HashHelper.FastHash(@"ClownFish.Base.pdb");
+            Console.WriteLine(md5);
+
+            md5 = HashHelper.FastHash(@"ClownFish.Base.UnitTest.dll");
+            Console.WriteLine(md5);
+
+            md5 = HashHelper.FastHash(@"ClownFish.Base.xml");
+            Console.WriteLine(md5);
+
+            // 这个方法没法断言
+        }
+
+
+        [TestMethod]
 		public void Test_Sha1()
 		{
 			Assert.AreEqual("A6DCC78B685D0CEA701CA90A948B9295F3685FDF", 
