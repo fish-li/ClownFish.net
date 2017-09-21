@@ -8,10 +8,10 @@ using ClownFish.Base.TypeExtend;
 
 namespace ClownFish.Web
 {
-	/// <summary>
-	/// 包含流的Action执行结果，通常用于实现文件下载。
-	/// </summary>
-	public sealed class StreamResult : IActionResult
+    /// <summary>
+    /// 表示一个二进制的Action执行结果，可用于实现文件下载。
+    /// </summary>
+    public sealed class StreamResult : IActionResult
 	{
 		private byte[] _buffer;
 		private string _contentType;

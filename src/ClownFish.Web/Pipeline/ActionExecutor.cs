@@ -465,7 +465,11 @@ namespace ClownFish.Web
 		/// <returns></returns>
 		private IActionResult ObjectToResult(object result, ActionAttribute actionAttr)
 		{
-			IActionResult actionResult = null;
+            // 如果返回值是byte[]就直接按BinaryResult方式封装结果
+            //if( result != null && result.GetType() == typeof(byte[]) )
+            //    return new ClownFish.Web.Action.BinaryResult((byte[])result);
+
+            IActionResult actionResult = null;
 			SerializeFormat format = actionAttr.OutFormat;
 
 			// 先判断是不是由客户端指定的自动模式，如果是就解析客户端需要的序列化格式

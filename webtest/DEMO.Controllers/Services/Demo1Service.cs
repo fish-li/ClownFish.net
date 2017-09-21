@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using ClownFish.Web;
 using System.Collections.Specialized;
 using System.Web;
+using ClownFish.Web.Action;
 
 
 // ClownFish.Web的用法可参考：http://www.cnblogs.com/fish-li/archive/2012/02/12/2348395.html
@@ -115,6 +116,14 @@ namespace DEMO.Controllers.Services
 		}
 
 
+        public BinaryResult TestBinaryResult(string s)
+        {
+            if( string.IsNullOrEmpty(s) )
+                s = "123";
+
+            byte[] buffer = Encoding.UTF8.GetBytes(s);
+            return new BinaryResult(buffer);
+        }
 
 		
 	}

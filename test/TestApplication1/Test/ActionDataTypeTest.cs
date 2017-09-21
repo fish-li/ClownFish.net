@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Base.WebClient;
 using ClownFish.TestApplication1.Common;
+using ClownFish.Base;
 
 namespace ClownFish.TestApplication1.Test
 {
@@ -117,5 +118,23 @@ numbers=1&numbers=2&numbers=3&numbers=4&numbers=5");
 			Assert.AreEqual(expected, actual);
 		}
 
-	}
+
+        [TestMethod("测试返回二进制数据")]
+        public async Task Test_BinaryResult()
+        {
+            string text = "复制可执行的SQL";
+
+            HttpOption option = HttpOption.FromRawText(@"
+POST http://www.fish-web-demo.com/api/ns/Demo1/TestBinaryResult.aspx HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+s=" + System.Web.HttpUtility.UrlEncode(text));
+
+
+            byte[] actual = await option.GetResultAsync<byte[]>();
+            byte[] expected = Encoding.UTF8.GetBytes(text);
+            actual.IsEqual(expected);
+        }
+
+    }
 }
