@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ClownFish.Web.Action
+namespace ClownFish.Web
 {
     /// <summary>
     /// 表示一个二进制的Action执行结果
