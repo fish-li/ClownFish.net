@@ -103,6 +103,8 @@
     <Content Include="Model\_Readme.txt" />
     <Content Include="Serializer\_Readme.txt" />
     <EmbeddedResource Include="Web\FileListTemplate.html" />
+    <None Include="Web\LogViewer.ashx" />
+    <None Include="Web\_Readme.txt" />
     <Content Include="_Readme.txt" />
   </ItemGroup>
   <ItemGroup>
