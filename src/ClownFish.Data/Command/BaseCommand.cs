@@ -49,13 +49,20 @@ namespace ClownFish.Data
 			DbParameter[] parameters2 = new DbParameter[_command.Parameters.Count];
 
 			int i = 0;
-			foreach( DbParameter src in _command.Parameters ) { 
-				DbParameter newParam = _command.CreateParameter();
-				newParam.ParameterName = src.ParameterName;
-				newParam.DbType = src.DbType;
-				newParam.Size = src.Size;
-				newParam.Value = src.Value;
-				newParam.Direction = src.Direction;
+			foreach( DbParameter src in _command.Parameters ) {
+                DbParameter newParam = null;
+                ICloneable x = src as ICloneable;
+                if( x != null ) {
+                    newParam = (DbParameter)x.Clone();
+                }
+                else {
+                    newParam = _command.CreateParameter();
+                    newParam.ParameterName = src.ParameterName;
+                    newParam.DbType = src.DbType;
+                    newParam.Size = src.Size;
+                    newParam.Value = src.Value;
+                    newParam.Direction = src.Direction;
+                }
 				parameters2[i++] = newParam;
 			}
 			return parameters2;
