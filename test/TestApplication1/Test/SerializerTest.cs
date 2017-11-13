@@ -134,9 +134,22 @@ test: 5
 
 
 
+            // 测试场景：提交数据是字符串，通过 Format 指定数据类型
+            option = new HttpOption {
+                Method = "POST",
+                Url = "http://www.fish-web-demo.com/api/ns/TestSerializer/Test1_AutoCheck.aspx",
+                Format = Base.Http.SerializeFormat.Json,
+                Data = jsonResult
+            };
+            actual = option.Send<string>();
+            expected = "1";
+            Assert.AreEqual(expected, actual);
 
 
-			option = HttpOption.FromRawText(@"
+
+
+
+            option = HttpOption.FromRawText(@"
 POST http://www.fish-web-demo.com/api/ns/TestSerializer/Test2_AutoCheck.aspx HTTP/1.1
 Host: www.fish-ClownFish.Web-demo.com
 User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0

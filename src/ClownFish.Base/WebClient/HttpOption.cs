@@ -158,8 +158,8 @@ namespace ClownFish.Base.WebClient
 			if( string.IsNullOrEmpty(this.Url) )
 				throw new ArgumentNullException("Url");
 
-			if( (Method == "GET" || Method == "HEAD") && Format != SerializeFormat.Form )
-				throw new InvalidOperationException("GET, HEAD 请求只能采用 FORM 序列化方式。");
+			//if( (Method == "GET" || Method == "HEAD") && Format != SerializeFormat.Form )
+			//	throw new InvalidOperationException("GET, HEAD 请求只能采用 FORM 序列化方式。");
 		}
 
 
@@ -208,6 +208,9 @@ namespace ClownFish.Base.WebClient
 
 
 				option.Method = firstLine.Substring(0, p1);
+
+                // 放弃构造方法中的默认值格式，因为请求头中可能会指定
+                option.Format = SerializeFormat.None;
 
 				// 不使用HTTP协议版本，只做校验。
 				string httpVersion = firstLine.Substring(p2 + 1);
