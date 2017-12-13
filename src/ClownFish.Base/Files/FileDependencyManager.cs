@@ -45,6 +45,17 @@ namespace ClownFish.Base.Files
 		}
 
         /// <summary>
+        /// 直接获取结果，不判断有没有异常，如果有异常则返回类型的默认值。
+        /// </summary>
+        /// <returns></returns>
+        public T TryGetResult()
+        {
+            return _cacheResult.TryGetResult();
+        }
+
+
+
+        /// <summary>
         /// 构造方法。
         /// 注意：请将些类型的实例用【静态字段】来引用，否则会产生内存泄露。
         /// </summary>

@@ -84,6 +84,7 @@
     <Compile Include="Model\NameValue.cs" />
     <Compile Include="Model\PerformanceInfo.cs" />
     <Compile Include="Model\SqlInfo.cs" />
+    <Compile Include="Modules\ExceptionLogModule.cs" />
     <Compile Include="PerformanceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializer\FileWriter.cs" />

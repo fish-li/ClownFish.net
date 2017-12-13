@@ -34,5 +34,15 @@ namespace ClownFish.Base.Files
 				return _result;
 			}
 		}
+
+        /// <summary>
+        /// 直接获取结果，不判断有没有异常，如果有异常则返回类型的默认值。
+        /// </summary>
+        /// <returns></returns>
+        public T TryGetResult()
+        {
+            return _result;
+        }
+
 	}
 }
