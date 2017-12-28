@@ -30,35 +30,15 @@ namespace ClownFish.Log.Serializer
 		{
 			string value = config.GetOptionValue("RootDirectory");
 			if( string.IsNullOrEmpty(value) )
-				throw new LogConfigException("日志配置文件中，没有为FileWriter指定RootDirectory属性。");
+				throw new LogConfigException("日志配置文件中，没有为JsonWriter指定RootDirectory属性。");
 
 
 			if( s_rootDirectory != null )
 				return;
 
 
-			// 支持绝对路径，和相对路径
-			string rootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value);
-
-
-			// 检查日志根目录是否存在
-			if( Directory.Exists(rootDirectory) == false )
-				Directory.CreateDirectory(rootDirectory);
-
-
-			if( rootDirectory.EndsWith("\\") == false )
-				rootDirectory = rootDirectory + "\\";
-
-
-			// 检查需要记录的各个数据类型的子目录是否存在。
-			foreach( var item in LogConfig.GetCurrent().Types ) {
-				string path = rootDirectory + item.Type.Name;
-				if( Directory.Exists(path) == false )
-					Directory.CreateDirectory(path);
-			}
-
-			s_rootDirectory = rootDirectory;
-		}
+            s_rootDirectory = DirectoryHelper.InitDirectory(value);
+        }
 
 
 
