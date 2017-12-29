@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -27,6 +29,9 @@ namespace ClownFish.Log.Modules
         public void Init(HttpApplication app)
         {
             app.Error += App_Error;
+
+            // 注意：这里只记录异常，不解决异常
+            // 所以异常会继续抛出，会被其它地方处理。
         }
 
         /// <summary>
@@ -38,8 +43,17 @@ namespace ClownFish.Log.Modules
         {
             HttpApplication app = (HttpApplication)sender;
             Exception ex = app.Server.GetLastError();
+
             if( ex != null ) {
-                ExceptionInfo exceptionInfo = ExceptionInfo.Create(ex);
+
+                DbCommand dbCommand = null;
+                Type t = ex.GetType();
+                if( t.Namespace == "ClownFish.Data" && t.Name == "DbExceuteException" ) {
+                    PropertyInfo p = t.GetProperty("Command");
+                    dbCommand = (DbCommand)p.GetValue(ex);
+                }
+
+                ExceptionInfo exceptionInfo = ExceptionInfo.Create(ex, app.Context, dbCommand);
                 ClownFish.Log.LogHelper.Write(exceptionInfo);
             }
         }
