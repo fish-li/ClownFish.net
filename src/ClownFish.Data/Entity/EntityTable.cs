@@ -81,6 +81,14 @@ namespace ClownFish.Data
 			return this;
 		}
 
+		private CPQuery GetInsertQuery()
+		{
+			if( _setProxy == null )
+				throw new InvalidOperationException("请先调用Set方法。");
+
+			CPQuery query = _setProxy.GetInsertQuery();
+			return query;
+		}
 
 		/// <summary>
 		/// 根据指定的实体属性，生成INSERT语句，并执行数据库插入操作
@@ -88,29 +96,67 @@ namespace ClownFish.Data
 		/// <returns></returns>
 		public int Insert()
         {
-            if (_setProxy == null)
-                throw new InvalidOperationException("请先调用Set方法。");
-
-            CPQuery query = _setProxy.GetInsertQuery();
+            CPQuery query = GetInsertQuery();
             return query.ExecuteNonQuery();
         }
 
-        /// <summary>
-        /// 根据指定的实体属性，生成DELETE查询条件，并执行数据库插入操作
-        /// </summary>
-        /// <returns></returns>
-        public int Delete()
-        {
-            if (_whereProxy == null)
-                throw new InvalidOperationException("请先调用Where方法。");
+		/// <summary>
+		/// 根据指定的实体属性，生成INSERT语句，并执行数据库插入操作
+		/// </summary>
+		/// <returns></returns>
+		public async Task<int> InsertAsync()
+		{
+			CPQuery query = GetInsertQuery();
+			return await query.ExecuteNonQueryAsync();
+		}
 
-            CPQuery where = _whereProxy.GetWhereQuery();
+		private CPQuery GetDeleteQuery()
+		{
+			if( _whereProxy == null )
+				throw new InvalidOperationException("请先调用Where方法。");
 
-			CPQuery delete = this.Context.CreateCPQuery()
+			CPQuery where = _whereProxy.GetWhereQuery();
+
+			CPQuery query = this.Context.CreateCPQuery()
 							+ "DELETE FROM  " + _whereProxy.GetTableName()
 							+ where;
-            return delete.ExecuteNonQuery();
+			return query;
+		}
+
+		/// <summary>
+		/// 根据指定的实体属性，生成DELETE查询条件，并执行数据库插入操作
+		/// </summary>
+		/// <returns></returns>
+		public int Delete()
+        {
+			CPQuery query = GetDeleteQuery();
+			return query.ExecuteNonQuery();
         }
+
+		/// <summary>
+		/// 根据指定的实体属性，生成DELETE查询条件，并执行数据库插入操作
+		/// </summary>
+		/// <returns></returns>
+		public async Task<int> DeleteAsync()
+		{
+			CPQuery query = GetDeleteQuery();
+			return await query.ExecuteNonQueryAsync();
+		}
+
+
+		private CPQuery GeUpdateQuery()
+		{
+			if( _setProxy == null )
+				throw new InvalidOperationException("请先调用Set方法。");
+			if( _whereProxy == null )
+				throw new InvalidOperationException("请先调用Where方法。");
+
+			CPQuery update = _setProxy.GetUpdateQuery(null);
+			CPQuery where = _whereProxy.GetWhereQuery();
+
+			CPQuery query = update + where;
+			return query;
+		}
 
 		/// <summary>
 		/// 根据指定的实体属性，生成UPDATE的语句，并执行数据库插入操作
@@ -118,27 +164,41 @@ namespace ClownFish.Data
 		/// <returns></returns>
 		public int Update()
         {
-            if (_setProxy == null)
-                throw new InvalidOperationException("请先调用Set方法。");
-            if (_whereProxy == null)
-                throw new InvalidOperationException("请先调用Where方法。");
-
-            CPQuery update = _setProxy.GetUpdateQuery(null);
-            CPQuery where = _whereProxy.GetWhereQuery();
-
-			CPQuery query = update + where;
+			CPQuery query = GeUpdateQuery();
             return query.ExecuteNonQuery();
         }
 
-        /// <summary>
-        /// 根据Where调用产生的查询条件获取单个实体对象
-        /// </summary>
-        /// <returns></returns>
-        public T ToSingle()
+
+		/// <summary>
+		/// 根据指定的实体属性，生成UPDATE的语句，并执行数据库插入操作
+		/// </summary>
+		/// <returns></returns>
+		public async Task<int> UpdateAsync()
+		{
+			CPQuery query = GeUpdateQuery();
+			return await query.ExecuteNonQueryAsync();
+		}
+
+
+		/// <summary>
+		/// 根据Where调用产生的查询条件获取单个实体对象
+		/// </summary>
+		/// <returns></returns>
+		public T ToSingle()
         {
 			CPQuery query = GetSelectQuery();
             return query.ToSingle<T>();
         }
+
+		/// <summary>
+		/// 根据Where调用产生的查询条件获取单个实体对象
+		/// </summary>
+		/// <returns></returns>
+		public async Task<T> ToSingleAsync()
+		{
+			CPQuery query = GetSelectQuery();
+			return await query.ToSingleAsync<T>();
+		}
 
 		/// <summary>
 		/// 根据Where调用产生的查询条件获取实体对象列表
@@ -148,6 +208,17 @@ namespace ClownFish.Data
 		{
 			CPQuery query = GetSelectQuery();
 			return query.ToList<T>();
+		}
+
+
+		/// <summary>
+		/// 根据Where调用产生的查询条件获取实体对象列表
+		/// </summary>
+		/// <returns></returns>
+		public async Task<List<T>> ToListAsync()
+		{
+			CPQuery query = GetSelectQuery();
+			return await query.ToListAsync<T>();
 		}
 
 		private CPQuery GetSelectQuery()

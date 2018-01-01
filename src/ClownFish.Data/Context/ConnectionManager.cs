@@ -104,7 +104,7 @@ namespace ClownFish.Data
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public static ConnectionInfo GetConnection(string name)
+		public static ConnectionInfo GetConnection(string name = null)
 		{
 			if( name == null ) {	// 获取默认连接
 				ConnectionStringSettings setting = GetDefaultConnection();

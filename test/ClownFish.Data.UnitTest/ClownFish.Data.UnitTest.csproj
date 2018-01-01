@@ -50,6 +50,7 @@
       <HintPath>..\..\lib\Newtonsoft.Json.8.0.2\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -70,20 +71,27 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="BaseTestWithConnectionScope.cs" />
     <Compile Include="ClownFishDataEventSubscriber.cs" />
+    <Compile Include="ConnectionManagerTest.cs" />
     <Compile Include="ConnectionScopeTest.cs" />
+    <Compile Include="ConvertExtensionsTest.cs" />
     <Compile Include="CPQueryTest.cs" />
     <Compile Include="CreateIndexTest.cs" />
+    <Compile Include="DataLoaderFactoryTest.cs" />
+    <Compile Include="DefaultDataLoaderTest.cs" />
     <Compile Include="EntityEditTest.cs" />
     <Compile Include="EntityGeneratorTest.cs" />
     <Compile Include="EntityTableTest.cs" />
     <Compile Include="Initializer.cs" />
+    <Compile Include="LinqAsyncTest.cs" />
     <Compile Include="LinqSelectTest.cs" />
     <Compile Include="LinqTest.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionExtensionsTest.cs" />
     <Compile Include="SerializerTest.cs" />
     <Compile Include="StoreProcedureTest.cs" />
+    <Compile Include="TableExtensionsTest.cs" />
     <Compile Include="XmlCommnadTest.cs" />
     <Compile Include="_SampleCode.cs" />
   </ItemGroup>

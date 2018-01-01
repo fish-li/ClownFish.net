@@ -58,6 +58,23 @@ namespace ClownFish.Data.Linq
 			return ExecuteCommand();	// 执行数据库操作
 		}
 
+		public async Task<object> TranslatorAsync(Expression expression)
+		{
+			if( expression == null )
+				throw new ArgumentNullException("expression");
+
+			_expression = expression;
+
+			// 分析表达式
+			DecomposeExpression(expression);
+
+
+			ObtainTableName();          // 从拆分的结果中获得要访问的数据库表名
+			return await ExecuteCommandAsync();    // 执行数据库操作
+		}
+
+
+
 		private void DecomposeExpression(Expression expression)
 		{
 			MethodCallExpression current = expression as MethodCallExpression;
@@ -65,9 +82,15 @@ namespace ClownFish.Data.Linq
 				throw new NotSupportedException("不支持的表达式，没有指定操作方法。");
 
 
-			// 只支持部分由 .net framework 定义的标准查询操作符
-			if( current.Method.DeclaringType != typeof(System.Linq.Queryable) )
+			if( current.Method.DeclaringType == typeof(System.Linq.Queryable) 
+				|| current.Method.DeclaringType == typeof(AsyncQueryExtensions) ) {
+				// 只支持部分由 .net framework 定义的标准查询操作符
+				// 以及框架内部定义的异步方法
+			}
+			else {
 				throw new NotSupportedException("不支持的表达式，操作方法不是标准操作符：" + current.Method.Name);
+			}
+			
 
 
 			while( current != null ) {
@@ -75,6 +98,11 @@ namespace ClownFish.Data.Linq
 				if( current.Method.Name == "FirstOrDefault"         // 获取单个数据实体
 					|| current.Method.Name == "Any"                 // 判断是否存在匹配的数据库记录
 					|| current.Method.Name == "Count"               // 获取匹配的数据库记录条数
+
+					|| current.Method.Name == "FirstOrDefaultAsync"      // 获取单个数据实体
+					|| current.Method.Name == "AnyAsync"                 // 判断是否存在匹配的数据库记录
+					|| current.Method.Name == "CountAsync"               // 获取匹配的数据库记录条数
+					|| current.Method.Name == "ToListAsync"               // 获取匹配的数据库记录条数
 					) {
 					SetCommnad(current.Method.Name);
 				}
@@ -206,7 +234,7 @@ namespace ClownFish.Data.Linq
 			if( _commandName == null )
 				_commandName = name;
 			else
-				throw new NotSupportedException("不支持的表达式，包含了多个操作动词。");
+				throw new NotSupportedException("不支持的表达式，因为包含了多个执行动词。");
 		}
 
 		private void AppendOrderExpression(string method, Expression exp)
@@ -272,7 +300,28 @@ namespace ClownFish.Data.Linq
 			}
 		}
 
-		private object FirstOrDefault()
+
+		private async Task<object> ExecuteCommandAsync()
+		{
+			switch( _commandName ) {
+				case "ToListAsync":
+					return await ToListAsync();
+
+				case "FirstOrDefaultAsync":
+					return await FirstOrDefaultAsync();
+
+				case "AnyAsync":
+					return await AnyAsync();
+
+				case "CountAsync":
+					return await CountAsync();
+
+				default:
+					throw new NotSupportedException("不支持的表达式，操作方法不支持：" + _commandName);
+			}
+		}
+
+		private CPQuery GetFirstOrDefaultQuery()
 		{
 			CPQuery query = this.Context.CreateCPQuery()
 							+ "SELECT " + ParseFields() + Environment.NewLine
@@ -281,6 +330,12 @@ namespace ClownFish.Data.Linq
 			if( _query != null )
 				query = query + Environment.NewLine + "WHERE " + _query;
 
+			return query;
+		}
+		private object FirstOrDefault()
+		{
+			CPQuery query = GetFirstOrDefaultQuery();
+
 
 			// 由于泛型结束，只能反射调用了
 			MethodInfo method = query.GetType().GetMethod("ToSingle", BindingFlags.Instance | BindingFlags.Public);
@@ -288,7 +343,25 @@ namespace ClownFish.Data.Linq
 			return method.FastInvoke(query, null);
 		}
 
-		private bool Any()
+		private async Task<object> FirstOrDefaultAsync()
+		{
+			CPQuery query = GetFirstOrDefaultQuery();
+
+
+			// 由于泛型约束的限制，只能反射调用了
+			MethodInfo method = query.GetType().GetMethod("ToSingleAsync", BindingFlags.Instance | BindingFlags.Public);
+			method = method.MakeGenericMethod(_entityType);
+
+			//return (Task<object>)method.FastInvoke(query, null);
+			// 上面代码不能正常运行，会出现异常：不能将 Task<XXX> 转换成  Task<object>
+
+			Task task = (Task)method.FastInvoke(query, null);
+			await task;
+			return task.GetType().GetProperty("Result").GetValue(task);
+		}
+
+
+		private CPQuery GetAnyQuery()
 		{
 			CPQuery query = this.Context.CreateCPQuery()
 							+ "SELECT 1 WHERE EXISTS ( SELECT 1" + Environment.NewLine
@@ -298,11 +371,24 @@ namespace ClownFish.Data.Linq
 				query = query + Environment.NewLine + "WHERE " + _query;
 
 			query = query + ")";
+			return query;
+		}
+
+		private bool Any()
+		{
+			CPQuery query = GetAnyQuery();
 			
 			return query.ExecuteScalar<int>() == 1;
 		}
 
-		private int Count()
+		private async Task<bool> AnyAsync()
+		{
+			CPQuery query = GetAnyQuery();
+
+			return await query.ExecuteScalarAsync<int>() == 1;
+		}
+
+		private CPQuery GetCountQuery()
 		{
 			CPQuery query = this.Context.CreateCPQuery()
 							+ "SELECT count(*)" + Environment.NewLine
@@ -311,10 +397,24 @@ namespace ClownFish.Data.Linq
 			if( _query != null )
 				query = query + Environment.NewLine + "WHERE " + _query;
 
+			return query;
+		}
+		private int Count()
+		{
+			CPQuery query = GetCountQuery();
+
 			return query.ExecuteScalar<int>();
 		}
 
-		private object ToList()
+		private async Task<int> CountAsync()
+		{
+			CPQuery query = GetCountQuery();
+
+			return await query.ExecuteScalarAsync<int>();
+		}
+
+
+		private CPQuery GetToListQuery()
 		{
 			CPQuery query = this.Context.CreateCPQuery()
 							+ "SELECT " + ParseFields() + Environment.NewLine
@@ -326,6 +426,13 @@ namespace ClownFish.Data.Linq
 			if( _orders != null )
 				query = query + Environment.NewLine + "ORDER BY " + _orders.ToString();
 
+			return query;
+		}
+
+		private object ToList()
+		{
+			CPQuery query = GetToListQuery();
+
 
 			// 由于泛型结束，只能反射调用了
 			MethodInfo method = query.GetType().GetMethod("ToList", BindingFlags.Instance | BindingFlags.Public);
@@ -333,7 +440,20 @@ namespace ClownFish.Data.Linq
 			return method.FastInvoke(query, null);
 		}
 
+		private async Task<object> ToListAsync()
+		{
+			CPQuery query = GetToListQuery();
 
+
+			// 由于泛型结束，只能反射调用了
+			MethodInfo method = query.GetType().GetMethod("ToListAsync", BindingFlags.Instance | BindingFlags.Public);
+			method = method.MakeGenericMethod(_entityType);
+
+
+			Task task = (Task)method.FastInvoke(query, null);
+			await task;
+			return task.GetType().GetProperty("Result").GetValue(task);
+		}
 
 		#endregion
 

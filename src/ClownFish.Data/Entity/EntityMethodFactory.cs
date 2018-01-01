@@ -31,9 +31,11 @@ namespace ClownFish.Data
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public EntityQuery<T> Query<T>() where T : Entity, new()
+		public EntityQuery<T> Query<T>(bool withNoLock = false) where T : Entity, new()
 		{
-			EntityLinqProvider provider = new EntityLinqProvider() { Context = this.Context };
+			EntityLinqProvider provider = new EntityLinqProvider() {
+						Context = this.Context,
+						WithNoLock = withNoLock };
 			return new EntityQuery<T>(provider);
 		}
 
@@ -45,15 +47,18 @@ namespace ClownFish.Data
 		/// 注意：Insert/Delete/Update操作必须基本此方法的返回值对象才能调用。
 		/// </summary>
 		/// <returns>与实体相关的代理对象</returns>
-		public T BeginEdit<T>(T entity) where T : Entity, new()
+		public T BeginEdit<T>(T entity = null) where T : Entity, new()
 		{
 			if( entity == null )
-				throw new ArgumentNullException(nameof(entity));
+				//throw new ArgumentNullException(nameof(entity));
+				entity = new T();
 
 			if( entity is IEntityProxy )
 				throw new ArgumentException("BeginEdit方法只接收实体对象，不允许操作代理对象。");
 
 			return (T)entity.GetProxy(this.Context);
 		}
+
+
 	}
 }

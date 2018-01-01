@@ -40,7 +40,7 @@ namespace ClownFish.Data.UnitTest
 
 				Customer customer2 = StoreProcedure.Create("GetCustomerById", queryArgument).ToSingle<Customer>();
 
-				string sql = CPQueryTest.GetSql("GetCustomerById");
+				string sql = GetSql("GetCustomerById");
 				Customer customer3 = CPQuery.Create(sql, queryArgument).ToSingle<Customer>();
 
 				Assert.AreEqual(customer1.CustomerID, customer2.CustomerID);
@@ -162,6 +162,39 @@ namespace ClownFish.Data.UnitTest
 		{
 			var time = CPQuery.Create("select getdate()").ExecuteScalar<DateTime>();
 			Assert.AreEqual(expected, EventManagerExt1.LastInTransaction);
+		}
+
+
+		[TestMethod]
+		public void Test_DbContext_ChangeDatabase()
+		{
+			// 去掉默认连接中的数据库名称
+			ConnectionInfo info = ConnectionManager.GetConnection();
+			SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(info.ConnectionString);
+
+			string databaseName = builder.InitialCatalog;
+			builder.InitialCatalog = "";
+			string connectionString = builder.ToString();
+
+			using(DbContext db = DbContext.Create(connectionString, info.ProviderName) ) {
+				string name = db.CPQuery.Create("SELECT DB_NAME() AS DataBaseName").ExecuteScalar<string>();
+				Assert.AreEqual("master", name);
+
+				db.ChangeDatabase(databaseName);
+				name = db.CPQuery.Create("SELECT DB_NAME() AS DataBaseName").ExecuteScalar<string>();
+				Assert.AreEqual(databaseName, name);
+			}
+
+			using( DbContext db = DbContext.Create(connectionString, info.ProviderName) ) {
+				db.ChangeDatabase(databaseName);
+				string name = db.CPQuery.Create("SELECT DB_NAME() AS DataBaseName").ExecuteScalar<string>();
+				Assert.AreEqual(databaseName, name);
+
+				Assert.IsNull(db.Transaction);
+
+				db.BeginTransaction(IsolationLevel.ReadCommitted);
+				Assert.IsNotNull(db.Transaction);
+			}
 		}
 
 	}

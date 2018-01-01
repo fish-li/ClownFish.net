@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace ClownFish.Data
 		/// <param name="parameterizedSQL"></param>
 		/// <param name="dictionary"></param>
 		/// <returns></returns>
-		public CPQuery Create(string parameterizedSQL, Dictionary<string, object> dictionary)
+		public CPQuery Create(string parameterizedSQL, IDictionary dictionary)
 		{
 			CPQuery query = new CPQuery(this.Context);
 			query.Init(parameterizedSQL, dictionary);

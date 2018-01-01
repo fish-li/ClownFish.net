@@ -40,11 +40,12 @@ namespace ClownFish.Data
 
 		private IEntityProxy CreateProxy()
 		{
-			Type entity = this.GetType();
-			Type proxyType = EntityProxyFactory.GetProxy(entity);
+			Type entityType = this.GetType();
+			Type proxyType = EntityProxyFactory.GetProxy(entityType);
+
 			if( proxyType == null )
 				throw new NotImplementedException(
-					string.Format("实体类型 {0} 并没有注册匹配的代理类型。", entity.FullName)
+					string.Format("实体类型 {0} 并没有注册匹配的代理类型。", entityType.FullName)
 					);
 			else
 				return proxyType.FastNew() as IEntityProxy;
@@ -56,7 +57,7 @@ namespace ClownFish.Data
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns>与实体相关的代理对象</returns>
-		public Entity GetProxy(DbContext context)
+		internal Entity GetProxy(DbContext context)
 		{
 			// context ，允许参数为 null
 
@@ -92,6 +93,7 @@ namespace ClownFish.Data
 			EntityLinqProvider provider = new EntityLinqProvider() { WithNoLock = withNoLock };
 			return new EntityQuery<T>(provider);
 		}
+
 
 
 		/// <summary>
@@ -246,6 +248,21 @@ namespace ClownFish.Data
 			return query;
 		}
 
+		private CPQuery GetInsertQueryCommand()
+		{
+			IEntityProxy proxy = this as IEntityProxy;
+			if( proxy == null )
+				throw new InvalidOperationException("请在调用BeginEdit()的返回值对象上调用Insert方法。");
+
+
+			CPQuery insert = GetInsertQuery();
+			if( insert == null )
+				return null;
+
+			proxy.ClearChangeFlags();  // 清除修改标记，防止多次调用
+
+			return insert;
+		}
 
 		/// <summary>
 		/// 根据已修改的实体属性，生成INSERT语句，并执行数据库插入操作，
@@ -254,26 +271,32 @@ namespace ClownFish.Data
 		/// <returns>数据库操作过程中影响的行数</returns>
 		public int Insert()
         {
-			IEntityProxy proxy = this as IEntityProxy;
-			if( proxy == null )
-				throw new InvalidOperationException("请在调用BeginEdit()的返回值对象上调用Insert方法。");
-
-
-			CPQuery insert = GetInsertQuery();
-			if( insert == null )
+			CPQuery query = GetInsertQueryCommand();
+			if( query == null )
 				return -1;
 
-			proxy.ClearChangeFlags();  // 清除修改标记，防止多次调用
-			return insert.ExecuteNonQuery();
+			return query.ExecuteNonQuery();
 		}
 
-        /// <summary>
-        /// 根据已修改的实体属性，生成DELETE查询条件，并执行数据库插入操作，
-        /// 注意：此方法只能在实体的代理对象上调用。
-        /// </summary>
-        /// <returns>数据库操作过程中影响的行数</returns>
-        public int Delete()
-        {
+
+		/// <summary>
+		/// 根据已修改的实体属性，生成INSERT语句，并执行数据库插入操作，
+		/// 注意：此方法只能在实体的代理对象上调用。
+		/// </summary>
+		/// <returns>数据库操作过程中影响的行数</returns>
+		public async Task<int> InsertAsync()
+		{
+			CPQuery query = GetInsertQueryCommand();
+			if( query == null )
+				return -1;
+
+			return await query.ExecuteNonQueryAsync();
+		}
+
+
+
+		private CPQuery GetDeleteQueryCommand()
+		{
 			IEntityProxy proxy = this as IEntityProxy;
 			if( proxy == null )
 				throw new InvalidOperationException("请在调用BeginEdit()的返回值对象上调用Delete方法。");
@@ -281,22 +304,47 @@ namespace ClownFish.Data
 
 			CPQuery where = GetWhereQuery();
 			if( where == null )
-				return -1;		// 不允许没有WHERE条件的删除，如果确实需要，请手工写SQL
+				return null;      // 不允许没有WHERE条件的删除，如果确实需要，请手工写SQL
 
 			CPQuery query = this.DbContext.CreateCPQuery()
 							+ "DELETE FROM " + GetTableName() + where;
 
 			proxy.ClearChangeFlags();  // 清除修改标记，防止多次调用
+
+			return query;
+		}
+
+		/// <summary>
+		/// 根据已修改的实体属性，生成DELETE查询条件，并执行数据库插入操作，
+		/// 注意：此方法只能在实体的代理对象上调用。
+		/// </summary>
+		/// <returns>数据库操作过程中影响的行数</returns>
+		public int Delete()
+        {
+			CPQuery query = GetDeleteQueryCommand();
+			if( query == null )
+				return -1;
+
 			return query.ExecuteNonQuery();
 		}
 
-        /// <summary>
-        /// 根据已修改的实体属性，生成UPDATE操作语句（WHERE条件由主键生成[DbColumn(PrimaryKey=true)]），并执行数据库插入操作，
-        /// 注意：此方法只能在实体的代理对象上调用。
-        /// </summary>
-        /// <returns>数据库操作过程中影响的行数</returns>
-        public int Update()
-        {
+		/// <summary>
+		/// 根据已修改的实体属性，生成DELETE查询条件，并执行数据库插入操作，
+		/// 注意：此方法只能在实体的代理对象上调用。
+		/// </summary>
+		/// <returns>数据库操作过程中影响的行数</returns>
+		public async Task<int> DeleteAsync()
+		{
+			CPQuery query = GetDeleteQueryCommand();
+			if( query == null )
+				return -1;
+
+			return await query.ExecuteNonQueryAsync();
+		}
+
+
+		private CPQuery GetUpdateQueryCommand()
+		{
 			IEntityProxy proxy = this as IEntityProxy;
 			if( proxy == null )
 				throw new InvalidOperationException("请在调用BeginEdit()的返回值对象上调用Update方法。");
@@ -306,18 +354,51 @@ namespace ClownFish.Data
 
 			CPQuery update = GetUpdateQuery(rowKey);
 			if( update == null )
-				return -1;
+				return null;
 
 			CPQuery query = update
 							+ " WHERE " + rowKey.Item1 + " = " + new QueryParameter(rowKey.Item2);
 
 			proxy.ClearChangeFlags();  // 清除修改标记，防止多次调用
+
+			return query;
+		}
+
+
+
+
+		/// <summary>
+		/// 根据已修改的实体属性，生成UPDATE操作语句（WHERE条件由主键生成[DbColumn(PrimaryKey=true)]），并执行数据库插入操作，
+		/// 注意：此方法只能在实体的代理对象上调用。
+		/// </summary>
+		/// <returns>数据库操作过程中影响的行数</returns>
+		public int Update()
+        {
+			CPQuery query = GetUpdateQueryCommand();
+			if( query == null )
+				return -1;
+
 			return query.ExecuteNonQuery();
+		}
+
+
+		/// <summary>
+		/// 根据已修改的实体属性，生成UPDATE操作语句（WHERE条件由主键生成[DbColumn(PrimaryKey=true)]），并执行数据库插入操作，
+		/// 注意：此方法只能在实体的代理对象上调用。
+		/// </summary>
+		/// <returns>数据库操作过程中影响的行数</returns>
+		public async Task<int> UpdateAsync()
+		{
+			CPQuery query = GetUpdateQueryCommand();
+			if( query == null )
+				return -1;
+
+			return await query.ExecuteNonQueryAsync();
 		}
 
 		#endregion
 
-		
+
 	}
 
 

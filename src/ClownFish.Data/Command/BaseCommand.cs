@@ -124,6 +124,50 @@ namespace ClownFish.Data
 		}
 
 
+		private async Task<T> ExecuteAsync<T>(Func<DbCommand, Task<T>> func)
+		{
+			// 打开数据库连接
+			await _context.OpenConnectionAsync();
+
+
+			// 设置命令的连接以及事务对象
+			DbCommand command = this.Command;
+			command.Connection = _context.Connection;
+
+			if( _context.Transaction != null )
+				command.Transaction = _context.Transaction;
+
+			// 触发执行 前 事件
+			_context.EventManager.FireBeforeExecute(this);
+
+			this.BeforeExecute();
+
+			try {
+				// 执行数据库操作
+				T result = await func(command);
+
+				// 触发执行 后 事件
+				_context.EventManager.FireAfterExecute(this);
+
+				return result;
+			}
+			catch( System.Exception ex ) {
+				// 触发 异常 事件
+				_context.EventManager.FireOnException(this, ex);
+
+				// 重新抛出一个特定的异常，方便异常日志中记录command信息。
+				throw new DbExceuteException(ex, command);
+			}
+			finally {
+				// 让命令与连接，事务断开，避免这些资源外泄。
+				command.Connection = null;
+				command.Transaction = null;
+
+				if( _context.AutoDisposable )
+					_context.Dispose();
+			}
+		}
+
 
 
 		/// <summary>
@@ -136,6 +180,19 @@ namespace ClownFish.Data
 					cmd => cmd.ExecuteNonQuery()
 					);
 		}
+
+
+		/// <summary>
+		/// 执行命令，并返回影响函数
+		/// </summary>
+		/// <returns>影响行数</returns>
+		public async Task<int> ExecuteNonQueryAsync()
+		{
+			return await ExecuteAsync<int>(
+					async cmd => await cmd.ExecuteNonQueryAsync()
+					);
+		}
+
 
 
 		/// <summary>
@@ -155,6 +212,31 @@ namespace ClownFish.Data
 
 				});
 		}
+
+
+		/// <summary>
+		/// 执行查询，以DataTable形式返回结果
+		/// </summary>
+		/// <returns>数据集</returns>
+		public async Task<DataTable> ToDataTableAsync()
+		{
+			return await ExecuteAsync<DataTable>(
+				async cmd => {
+					DataSet ds = new DataSet();
+					ds.EnforceConstraints = false;  // 禁用约束检查
+
+					DataTable table = new DataTable("_tb");
+					ds.Tables.Add(table);
+
+					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+						table.Load(reader);
+					}
+
+					return table;
+
+				});
+		}
+
 
 
 		/// <summary>
@@ -179,6 +261,43 @@ namespace ClownFish.Data
 				);
 		}
 
+
+		/// <summary>
+		/// 执行查询，以DataSet形式返回结果
+		/// </summary>
+		/// <returns>数据集</returns>
+		public async Task<DataSet> ToDataSetAsync()
+		{
+			return await ExecuteAsync<DataSet>(
+				async cmd => {
+					DataSet ds = new DataSet();
+					ds.EnforceConstraints = false;  // 禁用约束检查
+
+					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+
+						int index = 0;
+						while( true ) {
+							DataTable table = new DataTable("_tb" + (index++).ToString());
+							ds.Tables.Add(table);
+							table.Load(reader);
+
+							// 上面代码中隐含着一个调用: reader.NextResult()，遗憾的是，它是个同步调用！
+							// 所以，就不需要像下面这样再调用了，否则还会出现异常
+
+							//if( await reader.NextResultAsync() == false )
+							//	break;
+
+							if( reader.IsClosed )
+								break;
+						}
+					}
+
+					return ds;
+				}
+				);
+		}
+
+
 		/// <summary>
 		/// 执行命令，返回DbDataReader对象实例
 		/// </summary>
@@ -187,6 +306,18 @@ namespace ClownFish.Data
 		{
 			return Execute<DbDataReader>(
 				cmd => cmd.ExecuteReader()
+				);
+		}
+
+
+		/// <summary>
+		/// 执行命令，返回DbDataReader对象实例
+		/// </summary>
+		/// <returns>DbDataReader实例</returns>
+		public async Task<DbDataReader> ExecuteReaderAsync()
+		{
+			return await ExecuteAsync<DbDataReader>(
+				async cmd => await cmd.ExecuteReaderAsync()
 				);
 		}
 
@@ -200,6 +331,15 @@ namespace ClownFish.Data
 				return (T)obj;
 
 			Type targetType = typeof(T);
+
+
+			// 有时候获取结果时，虽然字段的数据类型不是 string，但是就是希望以 string 形式返回
+			// 例如以下使用场景，
+			// sql = "select RowGuid from table1 where aa=2"
+			// List<string> list = CPQuery.Create(sql).ToScalarList<string>();
+
+			if( targetType == TypeList._string )
+				return (T)(object)obj.ToString();
 
 			//单测走不到
 			//if( targetType == typeof(object) ) 
@@ -222,6 +362,20 @@ namespace ClownFish.Data
 				);
 		}
 
+
+		/// <summary>
+		/// 执行命令，返回第一行第一列的值
+		/// </summary>
+		/// <typeparam name="T">返回值类型</typeparam>
+		/// <returns>结果集的第一行,第一列</returns>
+		public async Task<T> ExecuteScalarAsync<T>()
+		{
+			return await ExecuteAsync<T>(
+				async cmd => ToScalar<T>(await cmd.ExecuteScalarAsync())
+				);
+		}
+
+
 		/// <summary>
 		/// 执行命令，并返回第一列的值列表
 		/// </summary>
@@ -242,7 +396,28 @@ namespace ClownFish.Data
 				);
 		}
 
-		
+
+		/// <summary>
+		/// 执行命令，并返回第一列的值列表
+		/// </summary>
+		/// <typeparam name="T">返回值类型</typeparam>
+		/// <returns>结果集的第一列集合</returns>
+		public async Task<List<T>> ToScalarListAsync<T>()
+		{
+			return await ExecuteAsync<List<T>>(
+				async cmd => {
+					List<T> list = new List<T>();
+					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+						while( reader.Read() ) {
+							list.Add(ToScalar<T>(reader[0]));
+						}
+						return list;
+					}
+				}
+				);
+		}
+
+
 
 		/// <summary>
 		/// 执行命令，将结果集转换为实体列表
@@ -260,6 +435,24 @@ namespace ClownFish.Data
 			});
 		}
 
+
+		/// <summary>
+		/// 执行命令，将结果集转换为实体列表
+		/// </summary>
+		/// <typeparam name="T">实体类型</typeparam>
+		/// <returns>实体集合</returns>
+		public async Task<List<T>> ToListAsync<T>() where T : class, new()
+		{
+			return await ExecuteAsync<List<T>>(
+				async cmd => {
+					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+						IDataLoader<T> loader = DataLoaderFactory.GetLoader<T>();
+						return loader.ToList(reader);
+					}
+				});
+		}
+
+
 		/// <summary>
 		/// 执行命令，将结果集的第一行转换为实体
 		/// </summary>
@@ -274,6 +467,22 @@ namespace ClownFish.Data
 						return loader.ToSingle(reader);
 					}
 			});
+		}
+
+		/// <summary>
+		/// 执行命令，将结果集的第一行转换为实体
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public async Task<T> ToSingleAsync<T>() where T : class, new()
+		{
+			return await ExecuteAsync<T>(
+				async cmd => {
+					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+						IDataLoader<T> loader = DataLoaderFactory.GetLoader<T>();
+						return loader.ToSingle(reader);
+					}
+				});
 		}
 
 		#endregion

@@ -25,6 +25,8 @@ namespace ClownFish.Data
 			}
 
 			if(targetType.IsEnum ) {
+				// 返回指定枚举的基础类型，通常应该是 int
+				// 也就说，枚举类型都是按 int 来返回结果
 				targetType = Enum.GetUnderlyingType(targetType);
 			}
 

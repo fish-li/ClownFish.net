@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Data;
 using ClownFish.Data.UnitTest.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -79,16 +81,99 @@ namespace ClownFish.Data.UnitTest
 			}
 		}
 
-
 		[TestMethod]
-		public void Test_XmlCommand_GetList()
+		public async Task Test_XmlCommand_CRUD_Async()
 		{
 			using( DbContext db = DbContext.Create() ) {
-				var queryArgument = new { MaxCustomerID = 10 };
-				List <Customer> list = db.XmlCommand.Create("GetCustomerList", queryArgument).ToList<Customer>();
+				db.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
 
-				Assert.IsNotNull(list);
+				var newCustomer = new {
+					CustomerName = s_newName,
+					ContactName = Guid.NewGuid().ToString(),
+					Address = "111111 Address",
+					PostalCode = "111111",
+					Tel = "123456789"
+				};
+
+				// 插入一条记录
+				await db.XmlCommand.Create("InsertCustomer", newCustomer).ExecuteNonQueryAsync();
+
+				// 读取刚插入的记录
+				var queryArgument = new { CustomerName = s_newName };
+				Customer customer = await db.XmlCommand.Create("GetCustomerByName", queryArgument).ToSingleAsync<Customer>();
+
+				// 验证插入与读取
+				Assert.IsNotNull(customer);
+				Assert.AreEqual(newCustomer.ContactName, customer.ContactName);
+
+
+
+
+
+				// 准备更新数据
+				Customer updateArgument = new Customer {
+					CustomerID = customer.CustomerID,
+					CustomerName = newCustomer.CustomerName,
+					ContactName = newCustomer.ContactName,
+					Address = Guid.NewGuid().ToString(),
+					PostalCode = newCustomer.PostalCode,
+					Tel = newCustomer.Tel
+				};
+
+				// 更新记录
+				await db.XmlCommand.Create("UpdateCustomer", updateArgument).ExecuteNonQueryAsync();
+
+				// 读取刚更新的记录
+				var queryArgument2 = new { CustomerID = customer.CustomerID };
+				Customer customer2 = await db.XmlCommand.Create("GetCustomerById", queryArgument2).ToSingleAsync<Customer>();
+
+				// 验证更新与读取
+				Assert.IsNotNull(customer2);
+				Assert.AreEqual(updateArgument.Address, customer2.Address);
+
+
+				// 删除记录
+				var deleteArgument = new { CustomerID = customer.CustomerID };
+				await db.XmlCommand.Create("DeleteCustomer", deleteArgument).ExecuteNonQueryAsync();
+
+				// 验证删除			
+				Customer customer3 = await db.XmlCommand.Create("GetCustomerById", queryArgument2).ToSingleAsync<Customer>();
+				Assert.IsNull(customer3);
+
+
+				db.Commit();
 			}
+		}
+
+
+		[TestMethod]
+		public async Task Test_XmlCommand_GetList()
+		{
+			List<Customer> list1 = null;
+			using( DbContext db = DbContext.Create() ) {
+				var queryArgument = new { MaxCustomerID = 10 };
+				list1 = db.XmlCommand.Create("GetCustomerList", queryArgument).ToList<Customer>();
+
+				Assert.IsNotNull(list1);
+			}
+
+
+			List<Customer> list2 = null;
+			using( DbContext db = DbContext.Create() ) {
+				var queryArgument = new { MaxCustomerID = 10 };
+				list2 = await db.XmlCommand.Create("GetCustomerList", queryArgument).ToListAsync<Customer>();
+
+				Assert.IsNotNull(list2);
+			}
+
+
+
+			// 确认二次查询的结果一致
+			Assert.AreEqual(list1.Count, list2.Count);
+
+			string json1 = list1.ToJson();
+			string json2 = list2.ToJson();
+			Assert.AreEqual(json1, json2);
 		}
 
 
@@ -184,8 +269,9 @@ namespace ClownFish.Data.UnitTest
 			}
 		}
 
-
 		
+
+
 
 	}
 }

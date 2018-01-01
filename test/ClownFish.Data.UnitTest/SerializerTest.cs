@@ -11,7 +11,7 @@ namespace ClownFish.Data.UnitTest
 		[TestMethod]
 		public void Test_代理对象序列化_二进制()
 		{
-			Product p = Entity.BeginEdit(new Product());
+			Product p = Entity.BeginEdit<Product>();
 			p.ProductID = 2;
 			p.CategoryID = 3;
 			p.ProductName = "汉字";

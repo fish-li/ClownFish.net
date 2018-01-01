@@ -33,5 +33,20 @@ namespace ClownFish.Data
                 action.Invoke(command.Command);
             return command;
         }
-    }
+
+
+		/// <summary>
+		/// 设置等待命令执行的时间（以秒为单位）
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="command"></param>
+		/// <param name="commandTimeout"></param>
+		/// <returns></returns>
+		public static T SetCommandTimeout<T>(this T command, int commandTimeout) where T : BaseCommand
+		{
+			command.Command.CommandTimeout = commandTimeout;
+			return command;
+		}
+
+	}
 }

@@ -108,7 +108,7 @@ namespace ClownFish.Data
 		/// <returns></returns>
 		public Initializer CompileAllEntityProxy(bool useAttrFilter = false)
 		{
-			ProxyBuilder.CompileAllEntityProxy();
+			ProxyBuilder.CompileAllEntityProxy(useAttrFilter);
 			return this;
 		}
 

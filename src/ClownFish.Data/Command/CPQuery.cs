@@ -78,7 +78,8 @@ namespace ClownFish.Data
 			}
 		}
 
-		internal void Init(string parameterizedSQL, Dictionary<string, object> dictionary)
+
+		internal void Init(string parameterizedSQL, IDictionary dictionary)
 		{
 			this.AppendSql(parameterizedSQL);
 
@@ -86,8 +87,10 @@ namespace ClownFish.Data
 			if( dictionary == null || dictionary.Count == 0 )
 				return;
 
-			foreach( KeyValuePair<string, object> kvp in dictionary )
-				SetParameter(kvp.Key, kvp.Value);
+
+			foreach( DictionaryEntry entry in dictionary ) {
+				SetParameter(entry.Key.ToString(), entry.Value);
+			}
 		}
 
 		internal void Init(string parameterizedSQL, DbParameter[] parameters)
@@ -140,7 +143,7 @@ namespace ClownFish.Data
 		/// <param name="parameterizedSQL">参数化的SQL字符串</param>
 		/// <param name="dictionary">哈希表</param>
 		/// <returns>CPQuery对象实例</returns>
-		public static CPQuery Create(string parameterizedSQL, Dictionary<string, object> dictionary)
+		public static CPQuery Create(string parameterizedSQL, IDictionary dictionary)
 		{
 			if( string.IsNullOrEmpty(parameterizedSQL) )
 				throw new ArgumentNullException("parameterizedSQL");
@@ -368,7 +371,7 @@ namespace ClownFish.Data
 
 
 		/// <summary>
-		/// 返回CPQuery中生成的SQL语句
+		/// 返回CPQuery中包含的SQL语句
 		/// </summary>
 		/// <returns>SQL语句</returns>
 		public override string ToString()

@@ -262,7 +262,7 @@ namespace ClownFish.Data
 				if( this.Transaction != null )
 					throw new InvalidOperationException("当前上下文中已存在打开的事务，请不要重复开启事务。");
 
-				this.Transaction = this._connection.BeginTransaction(_isolationLevel.Value);
+				this.Transaction = this._connection.BeginTransaction(isolationLevel);
 			}
 		}
 

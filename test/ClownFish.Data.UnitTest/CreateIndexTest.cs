@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,6 +13,25 @@ namespace ClownFish.Data.UnitTest
 					, "intB", "moneyB", "guidB", "shortB", "charA", "charB", "img", "g2", "ts"
 		};
 
+
+		[TestMethod]
+		public void Test_FindIndex()
+		{
+			int x1 = DataExtensions.FindIndex(names, "intA");
+			Assert.AreEqual(1, x1);
+
+			int x2 = DataExtensions.FindIndex(names, "boolA");
+			Assert.AreEqual(5, x2);
+
+
+			List<string> list = names.ToList();
+
+			int x3 = DataExtensions.FindIndex(list, "timeA");
+			Assert.AreEqual(2, x3);
+
+			int x4 = DataExtensions.FindIndex(list, "moneyA");
+			Assert.AreEqual(3, x4);
+		}
 
 		//[TestMethod]
 		public void Test()

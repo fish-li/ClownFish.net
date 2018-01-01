@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace ClownFish.Data
 {
 	/// <summary>
-	/// 表示连接与事务的作用域
+	/// 表示连接与事务的作用域。
+	/// 注意：不要在异步环境下使用这个类型。
 	/// </summary>
 	public sealed class ConnectionScope : IDisposable
 	{
@@ -86,6 +87,20 @@ namespace ClownFish.Data
 		/// </summary>
 		[ThreadStatic]
 		private static ConnectionScope s_current;
+
+		// #####################################################
+
+		// 注意：
+		// 由于这里使用了一个线程关联的静态变量，在异步情况下，using( ConnectionScope ... ) 指示的范围将会无效，
+		// 因为在异步的回调过程中， await 后续代码将会切换到另外的线程上运行，此时的 s_current 变量指示的引用将不再有效，
+		// 所以，在异步场景下，不要使用这个类型！
+
+		// 在异步场景下，请直接使用 DbContext，例如：using( DbContext context = ........ )
+
+		// #####################################################
+
+
+
 
 		/// <summary>
 		/// 当前using范围块之前的ConnectionScope实例

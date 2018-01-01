@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace ClownFish.Data.Linq
 {
+
+	internal interface IAsyncQueryProvider
+	{
+		Task<TResult> ExecuteAsync<TResult>(Expression expression);
+	}
+
+
 	/// <summary>
 	/// 实体的LINQ查询的提供者
 	/// </summary>
-	public sealed class EntityLinqProvider : IQueryProvider
+	public sealed class EntityLinqProvider : IQueryProvider, IAsyncQueryProvider
 	{
 		internal DbContext Context { get; set; }
 
@@ -66,9 +73,20 @@ namespace ClownFish.Data.Linq
 			return (TResult)(object)result;
 		}
 
+		/// <summary>
+		/// 执行指定表达式目录树所表示的强类型查询。
+		/// </summary>
+		/// <typeparam name="TResult">执行查询所生成的值的类型</typeparam>
+		/// <param name="expression">表示 LINQ 查询的表达式目录树。</param>
+		/// <returns></returns>
+		public async Task<TResult> ExecuteAsync<TResult>(Expression expression) 
+		{
+			LinqParser sqlParser = new LinqParser();
+			sqlParser.WithNoLock = this.WithNoLock;
+			sqlParser.Context = this.Context;
 
-
-
-
+			object result = await sqlParser.TranslatorAsync(expression);
+			return (TResult)(object)result;
+		}
 	}
 }

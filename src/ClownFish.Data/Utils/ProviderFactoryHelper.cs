@@ -24,7 +24,10 @@ namespace ClownFish.Data
 		public static DbProviderFactory GetDbProviderFactory(string providerName)
 		{
 			if (string.IsNullOrEmpty(providerName))
-				throw new ArgumentNullException("providerName");
+				//throw new ArgumentNullException("providerName");
+				// 默认就是使用SQLSERVER
+				return System.Data.SqlClient.SqlClientFactory.Instance;
+
 
 			// 常用类型就直接返回固定结果，优化性能
 			if (providerName == "System.Data.SqlClient")

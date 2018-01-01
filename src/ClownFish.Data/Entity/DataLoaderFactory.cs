@@ -89,6 +89,11 @@ namespace ClownFish.Data
 			if( instance == null )
 				throw new ArgumentNullException(nameof(instance));
 
+			// 防止错误的调用
+			if( instance is Type )
+				throw new ArgumentException("参数不能是类型对象。");
+
+
 			// 检验对象的类型是否有效
 			Type entityType = GetEntityType(instance.GetType());
 
