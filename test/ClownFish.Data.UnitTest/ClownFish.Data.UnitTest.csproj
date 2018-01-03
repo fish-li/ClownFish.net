@@ -52,6 +52,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
@@ -80,6 +81,7 @@
     <Compile Include="DefaultDataLoaderTest.cs" />
     <Compile Include="EntityEditTest.cs" />
     <Compile Include="EntityGeneratorTest.cs" />
+    <Compile Include="EntityHttpLoaderTest.cs" />
     <Compile Include="EntityTableTest.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="LinqAsyncTest.cs" />
@@ -114,6 +116,10 @@
     <ProjectReference Include="..\..\src\ClownFish.Data\ClownFish.Data.csproj">
       <Project>{bc50d47f-b55c-4d9d-b0d4-d7a63163e3fc}</Project>
       <Name>ClownFish.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\ClownFish.Web\ClownFish.Web.csproj">
+      <Project>{0151e882-2de2-44bf-bcf0-b7d10b60be62}</Project>
+      <Name>ClownFish.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
