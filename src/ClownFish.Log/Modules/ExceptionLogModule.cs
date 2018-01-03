@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using ClownFish.Log.Model;
 
-namespace ClownFish.Log.Modules
+namespace ClownFish.Log
 {
     /// <summary>
     /// 一个简单的仅仅记录异常日志的HttpModule
