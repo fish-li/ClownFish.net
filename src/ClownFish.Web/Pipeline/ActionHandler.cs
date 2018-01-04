@@ -19,12 +19,17 @@ namespace ClownFish.Web
 	{
 	}
 
-	/// <summary>
-	/// 用于同步操作的 HttpHandler
-	/// </summary>
-	internal class ActionHandler : IHttpHandler
-	{
-		internal InvokeInfo InvokeInfo { get; private set; }
+    internal interface IActionHandler
+    {
+        InvokeInfo InvokeInfo { get;  }
+    }
+
+    /// <summary>
+    /// 用于同步操作的 HttpHandler
+    /// </summary>
+    internal class ActionHandler : IHttpHandler, IActionHandler
+    {
+		public InvokeInfo InvokeInfo { get; private set; }
 
 		internal ActionExecutor ActionExecutor { get; private set; }
 

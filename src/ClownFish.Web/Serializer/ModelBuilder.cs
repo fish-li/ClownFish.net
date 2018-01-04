@@ -231,8 +231,8 @@ namespace ClownFish.Web.Serializer
 				val = _context.Request.Form.GetValues(name);
 
 			if( val == null ) {
-				// 尝试从 ActionHandler 读取更多的参数
-				ActionHandler hanlder = _context.Handler as ActionHandler;
+                // 尝试从 ActionHandler 读取更多的参数
+                IActionHandler hanlder = _context.Handler as IActionHandler;
 				if( hanlder != null ) {
 
 					// 尝试从 PageRegexUrlAttribute 中读取正则表达式的匹配结果。

@@ -23,9 +23,9 @@ namespace ClownFish.Web
 	/// <summary>
 	/// 支持异步的 HttpHandler
 	/// </summary>
-	internal class TaskAsyncActionHandler : HttpTaskAsyncHandler
-	{
-		internal InvokeInfo InvokeInfo { get; private set; }
+	internal class TaskAsyncActionHandler : HttpTaskAsyncHandler, IActionHandler
+    {
+        public InvokeInfo InvokeInfo { get; private set; }
 
 		internal ActionExecutor ActionExecutor { get; private set; }
 

@@ -143,10 +143,14 @@ namespace ClownFish.Data
 				else
 					SetReplaceParameter(placeholder, value.ToString());
 			}
-			else
-				// 如果没有匹配的命令参数，也找不到匹配的【占位符参数】，就抛出异常告之调用者
-				throw new ArgumentException(string.Format(
-									"传入的参数对象中，属性 {0} 没有在MXL定义对应的参数名。", name));
+
+            // 2018-01-04 注释下面的抛异常代码，原因：
+            // 存在一种场景：实体中包含的某个属性是数据表的自增列，此时在XmlCommand是没有定义的，
+            //              当使用实体做为参数时，就会运行到这里，但是这种情况又是正常的。
+			//else
+			//	// 如果没有匹配的命令参数，也找不到匹配的【占位符参数】，就抛出异常告之调用者
+			//	throw new ArgumentException(string.Format(
+			//						"传入的参数对象中，属性 {0} 没有在MXL定义对应的参数名。", name));
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100")]
