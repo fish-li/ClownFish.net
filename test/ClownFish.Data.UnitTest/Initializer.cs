@@ -57,9 +57,13 @@ namespace ClownFish.Data.UnitTest
 
 			// 注意：在ASP.NET项目中，不需要这样写！
 
-			string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.EntityProxy.dll");
-			foreach( string f in files )
-				System.Reflection.Assembly.LoadFrom(f);
+			//string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.EntityProxy.dll");
+			//foreach( string f in files )
+			//	System.Reflection.Assembly.LoadFrom(f);
+
+			string dllFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Data.UnitTest.EntityProxy.dll");
+			System.Reflection.Assembly.LoadFrom(dllFilePath);
+
 		}
 	}
 }

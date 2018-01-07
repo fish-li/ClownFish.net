@@ -22,7 +22,8 @@ namespace ClownFish.Web
     internal interface IActionHandler
     {
         InvokeInfo InvokeInfo { get;  }
-    }
+		ActionExecutor ActionExecutor { get; }
+	}
 
     /// <summary>
     /// 用于同步操作的 HttpHandler
@@ -31,7 +32,7 @@ namespace ClownFish.Web
     {
 		public InvokeInfo InvokeInfo { get; private set; }
 
-		internal ActionExecutor ActionExecutor { get; private set; }
+		public ActionExecutor ActionExecutor { get; private set; }
 
 		public void ProcessRequest(HttpContext context)
 		{

@@ -187,7 +187,7 @@ namespace ClownFish.Data
 				return;
 
 			await this.Connection.OpenAsync();
-			EventManager.FireConnectionOpened(this.Connection);
+			EventManager.FireConnectionOpened(this.Connection, true);
 
 			InitConnection();
 		}

@@ -27,7 +27,7 @@ namespace ClownFish.Web
     {
         public InvokeInfo InvokeInfo { get; private set; }
 
-		internal ActionExecutor ActionExecutor { get; private set; }
+		public ActionExecutor ActionExecutor { get; private set; }
 
 
 		public override bool IsReusable

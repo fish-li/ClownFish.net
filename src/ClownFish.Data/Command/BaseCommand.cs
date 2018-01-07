@@ -138,7 +138,7 @@ namespace ClownFish.Data
 				command.Transaction = _context.Transaction;
 
 			// 触发执行 前 事件
-			_context.EventManager.FireBeforeExecute(this);
+			_context.EventManager.FireBeforeExecute(this, true);
 
 			this.BeforeExecute();
 

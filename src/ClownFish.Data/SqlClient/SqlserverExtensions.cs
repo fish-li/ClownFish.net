@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -126,13 +127,49 @@ where  RowIndex > (@PageSize * @PageIndex) and RowIndex <= (@PageSize * (@PageIn
 
 			CreatePagedQuery(command, pageInfo, out query1, out query2);
 
-			// 确保在一个连接中执行二次数据库操作
-			using( ConnectionScope scope = ConnectionScope.GetExistOrCreate() ) {
-				List<T> list = query1.ToList<T>();
-				pageInfo.TotalRows = query2.ExecuteScalar<int>();
+			List<T> list = query1.ToList<T>();
+			pageInfo.TotalRows = query2.ExecuteScalar<int>();
 
-				return list;
-			}
+			return list;
+		}
+
+		/// <summary>
+		/// 分页查询，返回实体列表
+		/// </summary>
+		/// <typeparam name="T">实体类型</typeparam>
+		/// <param name="command">XmlCommand实例引用</param>
+		/// <param name="pageInfo">分页信息</param>
+		/// <returns>实体集合</returns>
+		public static async Task<List<T>> ToPageListAsync<T>(this XmlCommand command, PagingInfo pageInfo) where T : class, new()
+		{
+			CPQuery query1 = null;
+			CPQuery query2 = null;
+
+			CreatePagedQuery(command, pageInfo, out query1, out query2);
+
+			List<T> list = await query1.ToListAsync<T>();
+			pageInfo.TotalRows = await query2.ExecuteScalarAsync<int>();
+
+			return list;
+		}
+
+		/// <summary>
+		/// 分页查询，返回DataTable
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="pageInfo"></param>
+		/// <returns></returns>
+		public static DataTable ToPageTable(this XmlCommand command, PagingInfo pageInfo)
+		{
+			CPQuery query1 = null;
+			CPQuery query2 = null;
+
+			CreatePagedQuery(command, pageInfo, out query1, out query2);
+
+			System.Data.DataTable table = query1.ToDataTable();
+			pageInfo.TotalRows = query2.ExecuteScalar<int>();
+
+			return table;
 		}
 
 
@@ -142,23 +179,18 @@ where  RowIndex > (@PageSize * @PageIndex) and RowIndex <= (@PageSize * (@PageIn
 		/// <param name="command"></param>
 		/// <param name="pageInfo"></param>
 		/// <returns></returns>
-		public static System.Data.DataTable ToPageTable(this XmlCommand command, PagingInfo pageInfo)
+		public static async Task<DataTable> ToPageTableAsync(this XmlCommand command, PagingInfo pageInfo)
 		{
 			CPQuery query1 = null;
 			CPQuery query2 = null;
 
 			CreatePagedQuery(command, pageInfo, out query1, out query2);
 
-			// 确保在一个连接中执行二次数据库操作
-			using( ConnectionScope scope = ConnectionScope.GetExistOrCreate() ) {
-				System.Data.DataTable table = query1.ToDataTable();
-				pageInfo.TotalRows = query2.ExecuteScalar<int>();
+			DataTable table = await query1.ToDataTableAsync();
+			pageInfo.TotalRows = await query2.ExecuteScalarAsync<int>();
 
-				return table;
-			}
+			return table;
 		}
-
-
 
 	}
 }

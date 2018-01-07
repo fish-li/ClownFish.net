@@ -11,12 +11,7 @@ namespace ClownFish.Data.SqlClient
 	/// </summary>
 	public static class EntityExtensions
 	{
-		/// <summary>
-		/// 执行INSERT操作，并返回新的自增列ID
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <returns></returns>
-		public static int InsertReturnNewId(this Entity entity)
+		private static CPQuery GetInsertReturnNewIdQuery(Entity entity)
 		{
 			if( entity == null )
 				throw new ArgumentNullException("entity");
@@ -33,9 +28,33 @@ namespace ClownFish.Data.SqlClient
 
 			proxy.ClearChangeFlags();  // 清除修改标记，防止多次调用
 
+			return query;
+		}
+		/// <summary>
+		/// 执行INSERT操作，并返回新的自增列ID
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public static int InsertReturnNewId(this Entity entity)
+		{
+			CPQuery query = GetInsertReturnNewIdQuery(entity);
+
 			// 执行INSERT操作，并查询最新的ID
 			return query.ExecuteScalar<int>();
 		}
 
+
+		/// <summary>
+		/// 执行INSERT操作，并返回新的自增列ID
+		/// </summary>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public static async Task<int> InsertReturnNewIdAsync(this Entity entity)
+		{
+			CPQuery query = GetInsertReturnNewIdQuery(entity);
+
+			// 执行INSERT操作，并查询最新的ID
+			return await query.ExecuteScalarAsync<int>();
+		}
 	}
 }

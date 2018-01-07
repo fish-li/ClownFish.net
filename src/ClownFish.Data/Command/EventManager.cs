@@ -40,12 +40,13 @@ namespace ClownFish.Data
 
 
 
-		internal void FireConnectionOpened(DbConnection connection)
+		internal void FireConnectionOpened(DbConnection connection, bool async = false)
 		{
 			EventHandler<ConnectionEventArgs> handler = ConnectionOpened;
 			if( handler != null ) {
 				ConnectionEventArgs e = new ConnectionEventArgs();
 				e.Connection = connection;
+				e.IsAsync = async;
 				handler(null, e);
 			}
 		}
@@ -61,12 +62,13 @@ namespace ClownFish.Data
 			}
 		}
 
-		internal void FireBeforeExecute(BaseCommand command)
+		internal void FireBeforeExecute(BaseCommand command, bool async = false)
 		{
 			EventHandler<CommandEventArgs> handler = BeforeExecute;
 			if( handler != null ) {
 				CommandEventArgs e = new CommandEventArgs();
 				e.Command = command;
+				e.IsAsync = async;
 				handler(null, e);
 			}
 		}
@@ -104,6 +106,10 @@ namespace ClownFish.Data
 		/// 当前打开的数据库连接
 		/// </summary>
 		public DbConnection Connection { get; internal set; }
+		/// <summary>
+		/// 是否为异步打开
+		/// </summary>
+		public bool IsAsync { get; internal set; }
 	}
 
 	/// <summary>
@@ -120,6 +126,10 @@ namespace ClownFish.Data
 		/// 当前正在执行的数据库命令（DbCommand实例）
 		/// </summary>
 		public DbCommand DbCommand { get { return Command.Command; } }
+		/// <summary>
+		/// 是否为异步执行
+		/// </summary>
+		public bool IsAsync { get; internal set; }
 	}
 
 

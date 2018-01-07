@@ -76,7 +76,7 @@ namespace ClownFish.Web
 
 
 			// 找回与当前请求有关的ActionExecutor实例。
-			ActionHandler handler = context.Handler as ActionHandler;
+			IActionHandler handler = context.Handler as IActionHandler;
 			if( handler == null )
 				throw new InvalidOperationException("HttpCacheResult只能与ActionHandler一起配合使用。");
 
