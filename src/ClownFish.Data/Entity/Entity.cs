@@ -37,6 +37,25 @@ namespace ClownFish.Data
 			}
 		}
 
+		/// <summary>
+		/// 绑定当前实体代理的DbContext关联，一般用于绑定从[EntityProxy]创建的实体代理。
+		/// </summary>
+		/// <param name="context"></param>
+		public void BindDbContext(DbContext context)
+		{
+			if( context == null )
+				throw new ArgumentNullException(nameof(context));
+
+			IEntityProxy proxy = this as IEntityProxy;
+			if( proxy == null )
+				throw new InvalidOperationException("BindDbContext方法仅允许在实体代理对象上调用。");
+
+			if( _context != null )
+				throw new InvalidOperationException("当前实体代理对象已存在DbContext引用，不能重复绑定。");
+
+			_context = context;
+		}
+
 
 		private IEntityProxy CreateProxy()
 		{
