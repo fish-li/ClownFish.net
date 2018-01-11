@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ClownFish.Data.ProxyGen")]
-[assembly: AssemblyCopyright("Copyright © ClownFish 2016")]
+[assembly: AssemblyCopyright("© Fish Li. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -96,9 +96,11 @@ namespace ClownFish.Web
 		{
 			BaseController controller = this.InvokeInfo.Instance as BaseController;
 
-			if( controller != null ) 
-				controller.HttpContext = this.HttpContext;			
-			
+			if( controller != null ) {
+				controller.HttpContext = this.HttpContext;
+
+				controller.OnLoad();
+			}			
 		}
 
 		internal void ProcessRequest(HttpContext context, ActionHandler handler)
@@ -139,7 +141,12 @@ namespace ClownFish.Web
 		{
 			// 准备要传给调用方法的参数
 			object[] parameters = ExecuteObtainParameters();
-						
+
+			MethodInfo method = this.InvokeInfo.Action.MethodInfo;
+
+			// 调用执行前虚方法
+			(this.InvokeInfo.Instance as BaseController)?.BeforeExecuteAction(method, parameters);
+
 			// 引发执行前事件
 			TriggerBeforeExecuteAction(parameters);
 
@@ -148,16 +155,19 @@ namespace ClownFish.Web
 			Exception lastException = null;
 			try {
 				if( this.InvokeInfo.Action.HasReturn )
-					actionResult = this.InvokeInfo.Action.MethodInfo.FastInvoke(this.InvokeInfo.Instance, parameters);
+					actionResult = method.FastInvoke(this.InvokeInfo.Instance, parameters);
 
 				else
-					this.InvokeInfo.Action.MethodInfo.FastInvoke(this.InvokeInfo.Instance, parameters);
+					method.FastInvoke(this.InvokeInfo.Instance, parameters);
+
+				// 调用执行后虚方法
+				(this.InvokeInfo.Instance as BaseController)?.AfterExecuteAction(method, actionResult);
 			}
 			catch( Exception ex ) {
 				lastException = ex;
 				throw;
 			}
-			finally {
+			finally {				
 				TriggerAfterExecuteAction(parameters, actionResult, lastException);
 			}
 
@@ -214,10 +224,14 @@ namespace ClownFish.Web
 		{
 			// 准备要传给调用方法的参数
 			object[] parameters = ExecuteObtainParameters();
-						
+
+			MethodInfo method = this.InvokeInfo.Action.MethodInfo;
+
+			// 调用执行前虚方法
+			(this.InvokeInfo.Instance as BaseController)?.BeforeExecuteAction(method, parameters);
+			
 			// 引发执行前事件
 			TriggerBeforeExecuteAction(parameters);
-
 
 			// 开始执行 Action 逻辑
 			object actionResult = null;
@@ -227,7 +241,7 @@ namespace ClownFish.Web
 				// 说明：能进入这里的，只能二类返回类型： Task, Task<T>，因此如果Action有返回值，只能是Task<T>类型
 
 				if( this.InvokeInfo.Action.HasReturn ) {
-					Task task = (Task)this.InvokeInfo.Action.MethodInfo.FastInvoke(this.InvokeInfo.Instance, parameters);
+					Task task = (Task)method.FastInvoke(this.InvokeInfo.Instance, parameters);
 					await task;
 
 					// 从 Task<T> 中获取返回值
@@ -235,8 +249,11 @@ namespace ClownFish.Web
 					actionResult = property.FastGetValue(task);
 				}
 				else {
-					await (Task)this.InvokeInfo.Action.MethodInfo.FastInvoke(this.InvokeInfo.Instance, parameters);
+					await (Task)method.FastInvoke(this.InvokeInfo.Instance, parameters);
 				}
+
+				// 调用执行后虚方法
+				(this.InvokeInfo.Instance as BaseController)?.AfterExecuteAction(method, actionResult);
 			}
 			catch( Exception ex ) {
 				lastException = ex;
@@ -274,6 +291,10 @@ namespace ClownFish.Web
 
 		internal void ExecuteEndRequest()
 		{
+			// 调用虚方法
+			(this.InvokeInfo.Instance as BaseController)?.OnUnload();
+
+
 			EventHandler<ActionEventArgs> eventHandler = this.EndRequest;
 			if( eventHandler != null )
 				eventHandler(this, CreateEventArgs<ActionEventArgs>());
@@ -281,6 +302,10 @@ namespace ClownFish.Web
 
 		internal bool ProcessException(Exception ex)
 		{
+			// 调用虚方法
+			(this.InvokeInfo.Instance as BaseController)?.OnException(this.InvokeInfo.Action.MethodInfo, ex);
+
+
 			EventHandler<ActionExceptionEventArgs> eventHandler = this.OnError;
 			if( eventHandler != null ) {
 				ActionExceptionEventArgs e = CreateEventArgs<ActionExceptionEventArgs>();
@@ -513,6 +538,7 @@ namespace ClownFish.Web
 
 			return actionResult;
 		}
+
 
 		#endregion
 
