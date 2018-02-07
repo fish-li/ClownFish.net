@@ -90,8 +90,12 @@ namespace ClownFish.Log
 			// 触发日志的配置检查
 			WriterFactory.Init();
 
-			// 忽略特定的对象类型
-			if( s_filter.Instance.IgnoreWrite(info) )
+            // 如果禁用日志写入就直接返回
+            if( WriterFactory.Config.Enable == false )
+                return;
+
+            // 忽略特定的对象类型
+            if( s_filter.Instance.IgnoreWrite(info) )
 				return;
 
 
@@ -119,8 +123,12 @@ namespace ClownFish.Log
 			// 触发日志的配置检查
 			WriterFactory.Init();
 
-			// 忽略特定的对象类型
-			if( s_filter.Instance.IgnoreWrite(info) )
+            // 如果禁用日志写入就直接返回
+            if( WriterFactory.Config.Enable == false )
+                return;
+
+            // 忽略特定的对象类型
+            if( s_filter.Instance.IgnoreWrite(info) )
 				return;
 
 			// 所有需要记录到日志的数据类型必须配置，否则不记录（因为不知道以什么方式记录）！

@@ -81,9 +81,6 @@ namespace ClownFish.Log.Serializer
 		/// <returns></returns>
 		public static bool IsSupport(Type t)
 		{
-			if( Config.Enable == false )
-				return false;
-
 			return s_writerTable[t.FullName] != null;			
 		}
 

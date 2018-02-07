@@ -125,25 +125,18 @@ namespace ClownFish.Base.WebClient
 			option.CheckInput();
 
 			HttpClient client = ObjectFactory.New<HttpClient>();
-			bool urlQuery = option.IsMustQueryString();
 
-			string requestUrl = option.Url;
-			if( option.Data != null && urlQuery ) {	//GET 请求，需要将参数合并到URL，形成查询字符串参数
-				if( option.Url.IndexOf('?') < 0 )
-					requestUrl = option.Url + "?" + GetQueryString(option.Data);
-				else
-					requestUrl = option.Url + "&" + GetQueryString(option.Data);
-			}
-				
+            // 获取实际请求址，并创建 HttpWebRequest 实例
+            string requestUrl = option.GetRequestUrl();
 			HttpWebRequest request = client.CreateWebRequest(requestUrl);
 
-			SetWebRequest(request, option);
+            // 设置HttpWebRequest请求头之类的属性
+            SetWebRequest(request, option);
 
 			option.SetRequestAction?.Invoke(request);		// 调用委托
 
-
-			if( option.Data != null && urlQuery == false )	// POST提交数据
-				client.SetRequestData(option.Data, option.Format);
+            // 设置提交数据
+			client.SetRequestData(option.GetPostData(), option.Format);
 
 			using( HttpWebResponse response = client.GetResponse() ) {
 
@@ -170,24 +163,17 @@ namespace ClownFish.Base.WebClient
 
 
 			HttpClient client = ObjectFactory.New<HttpClient>();
-			bool urlQuery = option.IsMustQueryString();
 
-			string requestUrl = option.Url;
-			if( option.Data != null && urlQuery ) {	//GET 请求，需要将参数合并到URL，形成查询字符串参数
-				if( option.Url.IndexOf('?') < 0 )
-					requestUrl = option.Url + "?" + GetQueryString(option.Data);
-				else
-					requestUrl = option.Url + "&" + GetQueryString(option.Data);
-			}
+            // 获取实际请求址，并创建 HttpWebRequest 实例
+            string requestUrl = option.GetRequestUrl();
+            HttpWebRequest request = client.CreateWebRequest(requestUrl);
 
-			HttpWebRequest request = client.CreateWebRequest(requestUrl);
-
-			SetWebRequest(request, option);
+            SetWebRequest(request, option);
 
 			option.SetRequestAction?.Invoke(request);       // 调用委托
 
-			if( option.Data != null && urlQuery == false )	// POST提交数据
-				await client.SetRequestDataAsync(option.Data, option.Format);
+            // 设置提交数据
+            await client.SetRequestDataAsync(option.GetPostData(), option.Format);
 
 			using( HttpWebResponse response = await client.GetResponseAsync() ) {
 
@@ -201,23 +187,7 @@ namespace ClownFish.Base.WebClient
 
 		#region 内部方法
 
-		/// <summary>
-		/// 生成查询字符串参数
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		private static string GetQueryString(object data)
-		{
-			if( data == null )
-				return null;
-
-			if( data.GetType() == typeof(string) )
-				return (string)data;
-
-
-			FormDataCollection form = FormDataCollection.Create(data);
-			return form.ToString();
-		}
+		
 
 		private static void SetWebRequest(HttpWebRequest request, HttpOption option)
 		{

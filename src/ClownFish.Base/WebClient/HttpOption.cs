@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,21 +15,23 @@ namespace ClownFish.Base.WebClient
 	/// </summary>
 	public sealed class HttpOption
 	{
-		/// <summary>
-		/// 构造方法
-		/// </summary>
-		public HttpOption()
+        private HttpHeaderCollection _headers;
+
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        public HttpOption()
 		{
 			_method = "GET";
 			Format = SerializeFormat.Form;
 			ContentType = "application/x-www-form-urlencoded";
-			Headers = new HttpHeaderCollection();
 		}
+        
 
-		/// <summary>
-		/// URL地址（建议查询字符串参数在Data属性中指定，此处只指定文件路径即可）
-		/// </summary>
-		public string Url { get; set; }
+        /// <summary>
+        /// URL地址（建议查询字符串参数在Data属性中指定，此处只指定文件路径即可）
+        /// </summary>
+        public string Url { get; set; }
 		
 
 
@@ -50,21 +51,29 @@ namespace ClownFish.Base.WebClient
 		}
 
 		/// <summary>
-		/// 请求头列表
+		/// 请求头集合
 		/// </summary>
-		public HttpHeaderCollection Headers { get; private set; }
+		public HttpHeaderCollection Headers {
+            get {
+                if( _headers == null )
+                    _headers = new HttpHeaderCollection();
+                return _headers;
+            }
+            set {
+                if( value == null )
+                    throw new ArgumentNullException(nameof(value));
 
-		// NameValueCollection 在JSON序列化后，看不到数据，所以不用算了。
-		//public NameValueCollection Headers { get; private set; }
+                _headers = value;
+            }
+        }
+        
 
-		
-
-		/// <summary>
-		/// 需要提交的数据（与 $.ajax()方法的 Data 属性含义类似），
-		/// 可指定一个FormDataCollection实例，或者一个 IDictionary实例，或者一个匿名对象实例
-		/// 如果是GET请求，数据会自动转变成查询字参数，如果是POST，则随请求体发送
-		/// </summary>
-		public object Data { get; set; }
+        /// <summary>
+        /// 需要提交的数据（与 $.ajax()方法的 Data 属性含义类似），
+        /// 可指定一个FormDataCollection实例，或者一个 IDictionary实例，或者一个匿名对象实例
+        /// 如果是GET请求，数据会自动转变成查询字参数，如果是POST，则随请求体发送
+        /// </summary>
+        public object Data { get; set; }
 
 		/// <summary>
 		/// 数据的序列化方式。
@@ -77,25 +86,6 @@ namespace ClownFish.Base.WebClient
 		/// 框架自动计算，不需要调用者指定
 		/// </summary>
 		public string ContentType { get; internal set; }
-
-		/// <summary>
-		/// 根据Method属性，返回是不是必须以查询字符串形式提交数据
-		/// </summary>
-		internal bool IsMustQueryString()
-		{
-			// 参考 Fiddler 的判断规则
-			return (this.Method == "GET"
-						|| this.Method == "HEAD"
-						|| this.Method == "TRACE"
-						|| this.Method == "DELETE"
-						|| this.Method == "CONNECT"
-						|| this.Method == "MKCOL"
-						|| this.Method == "COPY"
-						|| this.Method == "MOVE"
-						|| this.Method == "UNLOCK"
-						|| this.Method == "OPTIONS"
-				);
-		}
 
 
 		/// <summary>
@@ -121,9 +111,10 @@ namespace ClownFish.Base.WebClient
 		/// 2、cookieHeader的数据需要自行编码
 		/// </summary>
 		/// <param name="cookieHeader">要发送的COOKIE头内容</param>
-		public void SetCookieHeader(string cookieHeader)
+		public HttpOption SetCookieHeader(string cookieHeader)
 		{
 			this.Headers.Add("Cookie", cookieHeader);
+            return this;
 		}
 
 		/// <summary>
@@ -150,10 +141,11 @@ namespace ClownFish.Base.WebClient
 		public Action<HttpWebResponse> ReadResponseAction { get; set; }
 
 
-		/// <summary>
-		/// 检查传入的属性是否存在冲突的设置
-		/// </summary>
-		internal void CheckInput()
+
+        /// <summary>
+        /// 检查传入的属性是否存在冲突的设置
+        /// </summary>
+        internal void CheckInput()
 		{
 			if( string.IsNullOrEmpty(this.Url) )
 				throw new ArgumentNullException("Url");
@@ -163,14 +155,83 @@ namespace ClownFish.Base.WebClient
 		}
 
 
-		
-
-		/// <summary>
-		/// 根据原始请求信息文本构建 HttpOption 对象（格式可参考Fiddler的Inspectors标签页内容）
+        /// <summary>
+		/// 根据Method属性，返回是不是必须以查询字符串形式提交数据
 		/// </summary>
-		/// <param name="text"></param>
+		private bool IsMustQueryString()
+        {
+            // 参考 Fiddler 的判断规则
+            return (this.Method == "GET"
+                        || this.Method == "HEAD"
+                        || this.Method == "TRACE"
+                        || this.Method == "DELETE"
+                        || this.Method == "CONNECT"
+                        || this.Method == "MKCOL"
+                        || this.Method == "COPY"
+                        || this.Method == "MOVE"
+                        || this.Method == "UNLOCK"
+                        || this.Method == "OPTIONS"
+                );
+        }
+
+        /// <summary>
+        /// 获取实际的请求址。
+        /// 如果是GET请求，将会包含提交数据。
+        /// </summary>
+        /// <returns></returns>
+        internal string GetRequestUrl()
+        {
+            string requestUrl = this.Url;
+
+            // 如果有提交数据，并且是 GET 请求，就需要将参数合并到URL，形成查询字符串参数
+            if( this.Data != null && IsMustQueryString() ) {
+                if( this.Url.IndexOf('?') < 0 )
+                    requestUrl = this.Url + "?" + GetQueryString(this.Data);
+                else
+                    requestUrl = this.Url + "&" + GetQueryString(this.Data);
+            }
+
+            return requestUrl;
+        }
+
+        /// <summary>
+        /// 获取需要提交的数据。
+        /// 如果已指定要提交的数据，但是是GET请求，那么也认为是没有提交数据。
+        /// </summary>
+        /// <returns></returns>
+        internal object GetPostData()
+        {
+            if( this.Data != null && IsMustQueryString() == false )
+                return this.Data;
+            else
+                return null;
+        }
+
+
+        /// <summary>
+		/// 生成查询字符串参数
+		/// </summary>
+		/// <param name="data"></param>
 		/// <returns></returns>
-		public static HttpOption FromRawText(string text)
+		private static string GetQueryString(object data)
+        {
+            if( data == null )
+                return null;
+
+            if( data.GetType() == typeof(string) )
+                return (string)data;
+
+
+            FormDataCollection form = FormDataCollection.Create(data);
+            return form.ToString();
+        }
+
+        /// <summary>
+        /// 根据原始请求信息文本构建 HttpOption 对象（格式可参考Fiddler的Inspectors标签页内容）
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static HttpOption FromRawText(string text)
 		{
 			// 示例数据：
 			//POST http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
