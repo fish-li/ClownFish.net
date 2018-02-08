@@ -157,6 +157,15 @@ namespace ClownFish.Data
 			return new DbContext(connectionInfo);
 		}
 
+		/// <summary>
+		/// 将一个连接字符串隐式转换成DbContext实例
+		/// </summary>
+		/// <param name="connectionString"></param>
+		public static implicit operator DbContext(string connectionString)
+		{
+			return Create(connectionString, "System.Data.SqlClient");
+		}
+
 		#endregion
 
 

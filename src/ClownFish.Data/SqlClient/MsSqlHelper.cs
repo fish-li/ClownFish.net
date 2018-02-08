@@ -142,17 +142,51 @@ ORDER  BY [Schema],
           [Index]  
 ";
 
-        #endregion
+		#endregion
 
 
-        /// <summary>
-        /// 创建DbContext实例
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <returns></returns>
-        public static DbContext CreateDbContext(string connectionString, string database = null)
+		/// <summary>
+		/// 测试连接字符串是否有效
+		/// </summary>
+		/// <param name="connectionString">数据库连接字符串。</param>
+		/// <param name="connectTimeout">连接的超时时间，单位：秒</param>
+		/// <returns></returns>
+		public static string TestConnection(string connectionString, int connectTimeout = 0)
+		{
+			// 提示：
+			// 为了快速检查连接是否有效，应该在连接字符串中指定【连接超时时间】，
+			// 或者通过参数 connectTimeout 来指定，避免长时间等待
+
+
+			// 如果通过参数指定了超时时间，就修改连接字符串
+			if( connectTimeout > 0 ) {
+				SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+				builder.ConnectTimeout = connectTimeout;
+
+				connectionString = builder.ToString();
+			}
+
+			string sql = "select getdate() as time1";
+
+			using( DbContext db = CreateContext(connectionString) ) {
+				return db.CPQuery.Create(sql)
+								.SetCommand(x => x.CommandTimeout = 3)
+								.ExecuteScalar<string>();
+			}
+		}
+
+
+		/// <summary>
+		/// 创建DbContext实例
+		/// </summary>
+		/// <param name="connectionString">数据库连接字符串。</param>
+		/// <param name="database">数据库名称。可以不指定，不指定时使用connectionString中的数据库。</param>
+		/// <returns></returns>
+		public static DbContext CreateContext(string connectionString, string database = null)
         {
+			if( string.IsNullOrEmpty(connectionString) )
+				throw new ArgumentNullException(nameof(connectionString));
+
             if( string.IsNullOrEmpty(database) )
                 return DbContext.Create(connectionString, "System.Data.SqlClient");
 
@@ -163,90 +197,65 @@ ORDER  BY [Schema],
             return DbContext.Create(builder.ToString(), "System.Data.SqlClient");
         }
 
-        /// <summary>
-        /// 获取SQLSERVER版本号
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <returns></returns>
-        public static int GetVersion(string connectionString)
+
+		/// <summary>
+		/// 获取SQLSERVER版本号
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static int GetVersion(this DbContext dbContext)
         {
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-            if( builder.ConnectTimeout > 10 )   // default is 15
-                builder.ConnectTimeout = 3;     // 避免用户写错了连接字符串，结果傻等15秒，体验太差
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
 
-            using( DbContext dbContext = CreateDbContext(builder.ToString(), null) ) {
-                string query = "select (@@microsoftversion / 0x01000000);";
-                return dbContext.CPQuery.Create(query).ExecuteScalar<int>();
-            }
-        }
-
-        /// <summary>
-        /// 测试连接字符串是否有效
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="connectTimeout">连接的超时时间，单位：秒</param>
-        /// <returns></returns>
-        public static string TestConnection(string connectionString, int connectTimeout = 0)
-        {
-            // 提示：
-            // 为了快速检查连接是否有效，应该在连接字符串中指定【连接超时时间】，
-            // 或者通过参数 connectTimeout 来指定，避免长时间等待
-
-
-            // 如果通过参数指定了超时时间，就修改连接字符串
-            if( connectTimeout > 0 ) {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-                builder.ConnectTimeout = connectTimeout;
-
-                connectionString = builder.ToString();
-            }
-
-            string sql = "select getdate() as time1";
-
-            using( DbContext db = CreateDbContext(connectionString) ) {
-                return db.CPQuery.Create(sql)
-                                .SetCommand(x => x.CommandTimeout = 3)
-                                .ExecuteScalar<string>();
-            }
-        }
-
-        /// <summary>
-        /// 获取数据表的所有列定义
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <param name="tablename"></param>
-        /// <returns></returns>
-        public static List<Field> GetTableFields(string connectionString, string database, string tablename)
-		{
-			using( DbContext dbContext = CreateDbContext(connectionString, database) ) {
-				var parameter = new { TableName = tablename };
-				return dbContext.CPQuery.Create(ScriptGetTableFields, parameter).ToList<Field>();
-			}
+			string query = "select (@@microsoftversion / 0x01000000);";
+			return dbContext.CPQuery.Create(query).ExecuteScalar<int>();
 		}
 
-        /// <summary>
-        /// 获取SQL查询结果的列定义
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static List<Field> GetQueryFields(string connectionString, string database, string query)
+
+
+
+		/// <summary>
+		/// 获取数据表的所有列定义
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <param name="tablename"></param>
+		/// <returns></returns>
+		public static List<Field> GetTableFields(this DbContext dbContext, string tablename)
 		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+			if( string.IsNullOrEmpty(tablename) )
+				throw new ArgumentNullException(nameof(tablename));
+
+			var parameter = new { TableName = tablename };
+			return dbContext.CPQuery.Create(ScriptGetTableFields, parameter).ToList<Field>();
+		}
+
+		/// <summary>
+		/// 获取SQL查询结果的列定义
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <param name="query"></param>
+		/// <returns></returns>
+		public static List<Field> GetQueryFields(this DbContext dbContext, string query)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+			if( string.IsNullOrEmpty(query) )
+				throw new ArgumentNullException(nameof(query));
+
 			List<Field> list = new List<Field>();
 
-			using( DbContext dbContext = CreateDbContext(connectionString, database) ) {
-				CPQuery cpquery = dbContext.CPQuery.Create(query);
+			CPQuery cpquery = dbContext.CPQuery.Create(query);
 
-				using( SqlDataReader reader = (SqlDataReader)cpquery.ExecuteReader() ) {
-					for( int i = 0; i < reader.FieldCount; i++ ) {
-						list.Add(new Field {
-							Name = reader.GetName(i),
-							DataType = reader.GetFieldType(i).ToString(),
-							Nullable = false
-						});
-					}
+			using( SqlDataReader reader = (SqlDataReader)cpquery.ExecuteReader() ) {
+				for( int i = 0; i < reader.FieldCount; i++ ) {
+					list.Add(new Field {
+						Name = reader.GetName(i),
+						DataType = reader.GetFieldType(i).ToString(),
+						Nullable = false
+					});
 				}
 			}
 
@@ -257,127 +266,138 @@ ORDER  BY [Schema],
 			return list;
 		}
 
-		private static List<string> ToStringList(string script, string connectionString, string database)
+
+
+		/// <summary>
+		/// 获取SQLSERVER实例的数据库名称列表
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static List<string> GetDataBaseNames(this DbContext dbContext)
 		{
-			using( DbContext dbContext = CreateDbContext(connectionString, database) ) {
-				return dbContext.CPQuery.Create(script).ToScalarList<string>();
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+
+			return dbContext.CPQuery.Create(ScriptGetDataBaseNames).ToScalarList<string>();
+		}
+
+		/// <summary>
+		/// 获取某个数据库的数据表清单
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static List<string> GetTableNames(this DbContext dbContext)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+
+			return dbContext.CPQuery.Create(ScriptGetTableNames).ToScalarList<string>();
+		}
+
+		/// <summary>
+		/// 获取某个数据库的视图清单
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static List<string> GetViewNames(this DbContext dbContext)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+
+			return dbContext.CPQuery.Create(ScriptGetViewNames).ToScalarList<string>();
+		}
+
+		/// <summary>
+		/// 获取某个数据库的存储过程清单
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static List<string> GetSpNames(this DbContext dbContext)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+
+			return dbContext.CPQuery.Create(ScriptGetStoreProcedureNames).ToScalarList<string>();
+		}
+
+
+
+		/// <summary>
+		/// 获取某个存储过程的定义脚本
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static string GetProcedureCode(this DbContext dbContext, string name)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+			if( string.IsNullOrEmpty(name) )
+				throw new ArgumentNullException(nameof(name));
+
+			var parameter = new { ObjectName = name };
+			return dbContext.CPQuery.Create(ScriptGetProcedureSQL, parameter).ExecuteScalar<string>();
+		}
+
+		/// <summary>
+		/// 获取某个视图的定义脚本
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static string GetViewCode(this DbContext dbContext, string name)
+		{
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+			if( string.IsNullOrEmpty(name) )
+				throw new ArgumentNullException(nameof(name));
+
+			var parameter = new { ObjectName = name };
+			return dbContext.CPQuery.Create(ScriptGetViewSQL, parameter).ExecuteScalar<string>();
+		}
+
+
+
+		/// <summary>
+		/// 获取数据库的所有数据表的统计信息
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <returns></returns>
+		public static DataTable GetTablesStatisticalInformation(this DbContext dbContext)
+        {
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+
+			return dbContext.CPQuery.Create(ScriptGetTableStatisticalInformation).ToDataTable();
+		}
+
+
+		/// <summary>
+		/// 检验SQL语句的语法正确性
+		/// </summary>
+		/// <param name="dbContext"></param>
+		/// <param name="sql"></param>
+		/// <returns></returns>
+		public static string ValidSql(this DbContext dbContext, string sql)
+        {
+			if( dbContext == null )
+				throw new ArgumentNullException(nameof(dbContext));
+			if( string.IsNullOrEmpty(sql) )
+				throw new ArgumentNullException(nameof(sql));
+
+			dbContext.CPQuery.Create("SET PARSEONLY ON").ExecuteNonQuery();
+
+			try {
+				dbContext.CPQuery.Create(sql).ExecuteNonQuery();
+				return null;
+			}
+			catch( Exception ex ) {
+				return ex.Message;
+			}
+			finally {
+				dbContext.CPQuery.Create("SET PARSEONLY OFF").ExecuteNonQuery();
 			}
 		}
-
-        /// <summary>
-        /// 获取SQLSERVER实例的数据库名称列表
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <returns></returns>
-		public static List<string> GetDataBaseNames(string connectionString)
-		{
-			return ToStringList(ScriptGetDataBaseNames, connectionString, null);
-		}
-
-        /// <summary>
-        /// 获取某个数据库的数据表清单
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <returns></returns>
-		public static List<string> GetTableNames(string connectionString, string database = null)
-		{
-			return ToStringList(ScriptGetTableNames, connectionString, database);
-		}
-
-        /// <summary>
-        /// 获取某个数据库的视图清单
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <returns></returns>
-		public static List<string> GetViewNames(string connectionString, string database = null)
-		{
-			return ToStringList(ScriptGetViewNames, connectionString, database);
-		}
-
-        /// <summary>
-        /// 获取某个数据库的存储过程清单
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <returns></returns>
-        public static List<string> GetSpNames(string connectionString, string database = null)
-		{
-			return ToStringList(ScriptGetStoreProcedureNames, connectionString, database);
-		}
-
-
-		private static string QueryToString(string script, string connectionString, string database, string objectName)
-		{
-			using( DbContext dbContext = CreateDbContext(connectionString, database) ) {
-				var parameter = new { ObjectName = objectName };
-				return dbContext.CPQuery.Create(script, parameter).ExecuteScalar<string>();
-			}
-		}
-
-        /// <summary>
-        /// 获取某个存储过程的定义脚本
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-		public static string GetProcedureCode(string connectionString, string database, string name)
-		{
-			return QueryToString(ScriptGetProcedureSQL, connectionString, database, name);
-		}
-
-        /// <summary>
-        /// 获取某个视图的定义脚本
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="database">数据库名称，可以不指定。不指定时使用connectionString中的数据库。</param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-		public static string GetViewCode(string connectionString, string database, string name)
-		{
-			return QueryToString(ScriptGetViewSQL, connectionString, database, name);
-		}
-
-
-
-        /// <summary>
-        /// 获取数据库的所有数据表的统计信息
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <returns></returns>
-        public static DataTable GetTablesStatisticalInformation(string connectionString)
-        {
-            using( DbContext db = CreateDbContext(connectionString) ) {
-                return db.CPQuery.Create(ScriptGetTableStatisticalInformation).ToDataTable();
-            }
-        }
-
-
-        /// <summary>
-        /// 检验SQL语句的语法正确性
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串。</param>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        public static string ValidSql(string connectionString, string sql)
-        {
-            using( DbContext db = CreateDbContext(connectionString) ) {
-                db.CPQuery.Create("SET PARSEONLY ON").ExecuteNonQuery();
-
-                try {
-                    db.CPQuery.Create(sql).ExecuteNonQuery();
-                    return null;
-                }
-                catch( Exception ex ) {
-                    return ex.Message;
-                }
-                finally {
-                    db.CPQuery.Create("SET PARSEONLY OFF").ExecuteNonQuery();
-                }
-            }
-        }
 
 
 

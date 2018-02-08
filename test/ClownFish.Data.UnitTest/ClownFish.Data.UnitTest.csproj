@@ -90,6 +90,7 @@
     <Compile Include="LinqTest.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="MsSqlHelperTest.cs" />
     <Compile Include="ParaNameBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderFactoryHelperTest.cs" />
