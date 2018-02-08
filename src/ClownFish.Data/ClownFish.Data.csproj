@@ -67,6 +67,8 @@
     <Compile Include="Initializer.cs" />
     <Compile Include="SqlClient\EntityExtensions.cs" />
     <Compile Include="Linq\AsyncQueryExtensions.cs" />
+    <Compile Include="SqlClient\Field.cs" />
+    <Compile Include="SqlClient\MsSqlHelper.cs" />
     <Compile Include="Utils\CommandExtensions.cs" />
     <Compile Include="Utils\DataLoaderHelper.cs" />
     <Compile Include="Utils\EntityHelper.cs" />
