@@ -54,6 +54,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -68,10 +70,12 @@
     <Compile Include="Common\HashHelper.cs" />
     <Compile Include="Common\LazyObject.cs" />
     <Compile Include="Common\NameValue.cs" />
+    <Compile Include="Common\Retry.cs" />
     <Compile Include="Common\RsaHelper.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TestHelper.cs" />
     <Compile Include="Common\TypeExtensions.cs" />
+    <Compile Include="Common\ZipHelper.cs" />
     <Compile Include="Files\CacheResult.cs" />
     <Compile Include="Files\FileDependencyManager.cs" />
     <Compile Include="Framework\AppInitializer.cs" />
