@@ -100,6 +100,17 @@
     <Compile Include="StoreProcedureTest.cs" />
     <Compile Include="TableExtensionsTest.cs" />
     <Compile Include="XmlCommnadTest.cs" />
+    <Compile Include="_DEMO\01_Init.cs" />
+    <Compile Include="_DEMO\02_API.cs" />
+    <Compile Include="_DEMO\04_XmlCommand.cs" />
+    <Compile Include="_DEMO\05_CPQuery.cs" />
+    <Compile Include="_DEMO\03_Model.cs" />
+    <Compile Include="_DEMO\06_Action_CRUD.cs" />
+    <Compile Include="_DEMO\07_Entity_CUD.cs" />
+    <Compile Include="_DEMO\08_LINQ.cs" />
+    <Compile Include="_DEMO\09_Extend.cs" />
+    <Compile Include="_DEMO\10_Fiddler_Plugin.cs" />
+    <Compile Include="_DEMO\11_Tool.cs" />
     <Compile Include="_SampleCode.cs" />
   </ItemGroup>
   <ItemGroup>

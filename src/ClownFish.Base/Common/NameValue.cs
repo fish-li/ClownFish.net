@@ -7,10 +7,11 @@ using System.Xml.Serialization;
 
 namespace ClownFish.Base
 {
-	/// <summary>
-	/// 表示一组用于HTTP传输的 【名称/值】 对。
-	/// </summary>
-	public sealed class NameValue
+    /// <summary>
+    /// 表示一组用于HTTP传输的 【名称/值】 对。
+    /// </summary>
+    [Serializable]
+    public sealed class NameValue
 	{
         /// <summary>
         /// 键名

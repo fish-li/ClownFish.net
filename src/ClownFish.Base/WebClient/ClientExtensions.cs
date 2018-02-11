@@ -13,15 +13,123 @@ namespace ClownFish.Base.WebClient
 	/// </summary>
 	public static class ClientExtensions
 	{
-		#region Send 方法遇到 WebException 异常封装
+        #region Send 方法遇到 WebException 异常封装，支持失败重试
 
-		/// <summary>
-		/// 封装HttpOption的Send扩展方法发送HTTP请求，
-		/// 如果遇到WebException异常，就转换成RemoteWebException异常
-		/// </summary>
-		/// <param name="option"></param>
-		/// <returns></returns>
-		public static string GetResult(this HttpOption option)
+        private static Retry GetDefaultRetry()
+        {
+            // 默认的重试规则：
+            // 重试5次，间隔 1 秒，且仅在WebException发生时重试
+            return Retry.Create(5, 1000).Filter<WebException>();
+        }
+
+
+        /// <summary>
+        /// 封装HttpOption的Send扩展方法发送HTTP请求，并提供失败重试功能。
+        /// 如果遇到WebException异常，就转换成RemoteWebException异常
+        /// </summary>
+        /// <param name="option">HttpOption实例，用于包含HTTP请求的发送参数</param>
+        /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL将采用默认重试规则</param>
+        /// <returns></returns>
+        public static string GetResult(this HttpOption option, Retry retry)
+        {
+            if( retry == null )
+                retry = GetDefaultRetry();
+
+            try {
+                return retry.Run<string>(() => {
+                    return option.Send<string>();
+                });
+                //return retry.Run<string>(option.Send);
+            }
+            catch( WebException ex ) {
+                // 返回一个容易获取异常消息的异常类型
+                throw new RemoteWebException(ex);
+            }
+        }
+
+        /// <summary>
+        /// 封装HttpOption的Send扩展方法发送HTTP请求，并提供失败重试功能。
+        /// 如果遇到WebException异常，就转换成RemoteWebException异常
+        /// </summary>
+        /// <param name="option">HttpOption实例，用于包含HTTP请求的发送参数</param>
+        /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL将采用默认重试规则</param>
+        /// <returns></returns>
+        public async static Task<string> GetResultAsync(this HttpOption option, Retry retry)
+        {
+            if( retry == null )
+                retry = GetDefaultRetry();
+
+            try {
+                return await retry.RunAsync<string>(async () => {
+                    return await option.SendAsync();
+                });
+            }
+            catch( WebException ex ) {
+                // 返回一个容易获取异常消息的异常类型
+                throw new RemoteWebException(ex);
+            }
+        }
+
+        /// <summary>
+        /// 封装HttpOption的Send扩展方法发送HTTP请求，并提供失败重试功能。
+        /// 如果遇到WebException异常，就转换成RemoteWebException异常
+        /// </summary>
+        /// <param name="option">HttpOption实例，用于包含HTTP请求的发送参数</param>
+        /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL将采用默认重试规则</param>
+        /// <returns></returns>
+        public static T GetResult<T>(this HttpOption option, Retry retry)
+        {
+            if( retry == null )
+                retry = GetDefaultRetry();
+
+            try {
+                return retry.Run<T>(() => {
+                    return option.Send<T>();
+                });
+            }
+            catch( WebException ex ) {
+                // 返回一个容易获取异常消息的异常类型
+                throw new RemoteWebException(ex);
+            }
+        }
+
+
+        /// <summary>
+        /// 封装HttpOption的Send扩展方法发送HTTP请求，并提供失败重试功能。
+        /// 如果遇到WebException异常，就转换成RemoteWebException异常
+        /// </summary>
+        /// <param name="option">HttpOption实例，用于包含HTTP请求的发送参数</param>
+        /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL将采用默认重试规则</param>
+        /// <returns></returns>
+        public async static Task<T> GetResultAsync<T>(this HttpOption option, Retry retry)
+        {
+            if( retry == null )
+                retry = GetDefaultRetry();
+
+            try {
+                return await retry.RunAsync<T>(async () => {
+                    return await option.SendAsync<T>();
+                });
+            }
+            catch( WebException ex ) {
+                // 返回一个容易获取异常消息的异常类型
+                throw new RemoteWebException(ex);
+            }
+        }
+
+        #endregion
+
+
+
+        #region Send 方法遇到 WebException 异常封装
+
+        /// <summary>
+        /// 封装HttpOption的Send扩展方法发送HTTP请求，
+        /// 如果遇到WebException异常，就转换成RemoteWebException异常
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public static string GetResult(this HttpOption option)
 		{
 			try {
 				return option.Send();

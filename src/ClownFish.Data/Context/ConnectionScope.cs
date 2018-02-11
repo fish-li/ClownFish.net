@@ -185,10 +185,22 @@ namespace ClownFish.Data
 			Context.BeginTransaction();
 		}
 
-		/// <summary>
-		/// 提交数据库事务
-		/// </summary>
-		public void Commit()
+
+        /// <summary>
+        /// 开启数据库事务
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        public void BeginTransaction(IsolationLevel isolationLevel)
+        {
+            Context.BeginTransaction(isolationLevel);
+        }
+
+
+
+        /// <summary>
+        /// 提交数据库事务
+        /// </summary>
+        public void Commit()
 		{
 			Context.Commit();
 		}

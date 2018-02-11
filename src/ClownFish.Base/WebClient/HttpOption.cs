@@ -82,16 +82,33 @@ namespace ClownFish.Base.WebClient
 		public SerializeFormat Format { get; set; }
 
 
-		/// <summary>
-		/// 框架自动计算，不需要调用者指定
-		/// </summary>
-		public string ContentType { get; internal set; }
+        /// <summary>
+        /// 框架内部使用。
+        /// 如果需要指定请求数据格式，请设置 Format 属性。
+        /// </summary>
+        public string ContentType { get; private set; }
+
+        // ContentType 的设计说明：
+        // 一般来说，如果需要指定请求的数据格式，在创建HttpOption实例时，直接设置Format就可以了，
+        // 但是有一种特殊场景，HttpOption实例是通过 FromRawText 这个静态方法根据文本中解析出来的，
+        // 此时没有逆向生成 Format属性值，所以就用这个属性来保存原始的设置。
+
+        // 在实际运行时，就有二种场景：
+        // 1、HttpOption httpOption = new HttpOption() ，同时指定 Data 和 Format，
+        // 此时，先执行 request.ContentType = option.ContentType; 但是 option.ContentType还是默认值，估计是错误的。
+        // 然后，RequestWriter会根据 Format属性 来重新计算 request.ContentType，所以最终的结果仍然是正确的。
+
+        // 2、HttpOption httpOption = HttpOption.FromRawText(".........")
+        // 此时，option.ContentType 就是正确的设置，并且设置 option.Format = SerializeFormat.None;
+        // 所以，在发送数据时，RequestWriter不会重新计算 request.ContentType
 
 
-		/// <summary>
-		/// 在发送请求时指定 User-Agent 头
-		/// </summary>
-		public string UserAgent { get; set; }
+
+
+        /// <summary>
+        /// 在发送请求时指定 User-Agent 头
+        /// </summary>
+        public string UserAgent { get; set; }
 
 		/// <summary>
 		/// 禁止自动重定向
@@ -255,10 +272,12 @@ namespace ClownFish.Base.WebClient
 				throw new ArgumentNullException("text");
 
 			HttpOption option = new HttpOption();
-			option.ContentType = null;
-	
+            // 放弃构造方法中的默认值格式，因为请求头中可能会指定
+            option.ContentType = null;            
+            option.Format = SerializeFormat.None;
 
-			using( StringReader reader = new StringReader(text.Trim()) ) {
+
+            using( StringReader reader = new StringReader(text.Trim()) ) {
 				string firstLine = reader.ReadLine();
 
 				int p1 = firstLine.IndexOf(' ');
@@ -267,11 +286,9 @@ namespace ClownFish.Base.WebClient
 				if( p1 < 0 || p1 == p2 )
 					throw new ArgumentException("不能识别的请求文本格式。");
 
-
+                // 设置请求方法，GET OR POST
 				option.Method = firstLine.Substring(0, p1);
-
-                // 放弃构造方法中的默认值格式，因为请求头中可能会指定
-                option.Format = SerializeFormat.None;
+                                
 
 				// 不使用HTTP协议版本，只做校验。
 				string httpVersion = firstLine.Substring(p2 + 1);

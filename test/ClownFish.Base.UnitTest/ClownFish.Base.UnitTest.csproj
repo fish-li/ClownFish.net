@@ -97,6 +97,14 @@
     <Compile Include="Xml\XmlCdataTest.cs" />
     <Compile Include="Xml\XmlExtensionsTest.cs" />
     <Compile Include="Xml\XmlHelperTest.cs" />
+    <Compile Include="_DEMO\AttributeCache_DEMO.cs" />
+    <Compile Include="_DEMO\FileDependencyManager_DEMO.cs" />
+    <Compile Include="_DEMO\HttpOption_DEMO.cs" />
+    <Compile Include="_DEMO\JSON_XML_BIN_Serialize_DEMO.cs" />
+    <Compile Include="_DEMO\ObjectFactory_DEMO.cs" />
+    <Compile Include="_DEMO\Retry_DEMO.cs" />
+    <Compile Include="_DEMO\ToolMethod_DEMO.cs" />
+    <Compile Include="_DEMO\ZipHelper_DEMO.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ClownFish.AspnetMock\ClownFish.AspnetMock.csproj">

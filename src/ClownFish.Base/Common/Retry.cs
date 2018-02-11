@@ -19,43 +19,7 @@ namespace ClownFish.Base
         private List<Func<Exception, bool>> _filterList = null;
         private List<Action<Exception, int>> _callbakList = null;
 
-
-        //private void 示例代码()
-        //{
-        //    string text = Retry.Create().Run(()=> {
-        //        return System.IO.File.ReadAllText(@"c:\aa.txt", Encoding.UTF8);
-        //    });
-
-        //    string text2 = 
-        //        Retry.Create(3)
-        //            .Filter<RemoteWebException>()
-        //            .Run(() => {
-        //                return new HttpOption {
-        //                    Method = "POST",
-        //                    Url = "http://www.abc.com/test.aspx",
-        //                    Data = new { a = 1, b = 2, c = "Fish Li" },
-        //                    Headers = new Dictionary<string, string>() {
-        //                        { "X-Requested-With", "XMLHttpRequest" },
-        //                        { "User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64)"} }
-        //                }.GetResult();
-        //        });
-
-
-        //    object result =
-        //        Retry.Create(3)
-        //            .Filter<ArgumentException>()
-        //            .Filter<System.Data.SqlClient.SqlException>(ex => ex.Number == 1205)
-        //            .OnException((ex, n) => { /* log exception */ return; })
-        //            .Run(() => {
-        //                // 执行逻辑任务，返回结果
-        //                return "result";
-        //            });
-
-
-        //    // 更多示例可参考： RetryTest.cs
-        //}
-
-
+        
         /// <summary>
         /// 创建RetryOption实例
         /// </summary>
