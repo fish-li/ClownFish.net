@@ -161,7 +161,7 @@ namespace ClownFish.Data
 		/// 将一个连接字符串隐式转换成DbContext实例
 		/// </summary>
 		/// <param name="connectionString"></param>
-		public static implicit operator DbContext(string connectionString)
+		public static explicit operator DbContext(string connectionString)
 		{
 			return Create(connectionString, "System.Data.SqlClient");
 		}
@@ -170,7 +170,7 @@ namespace ClownFish.Data
 
 
 		#region 基础操作
-				
+
 
 		/// <summary>
 		/// 同步方式打开数据库连接

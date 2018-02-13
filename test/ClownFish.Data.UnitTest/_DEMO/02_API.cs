@@ -53,8 +53,8 @@ namespace ClownFish.Data.UnitTest._DEMO
             DbContext c1 = DbContext.Create("connectionString", "providerName");
             ConnectionScope c2 = ConnectionScope.Create("connectionString", "providerName");
 
-            // 甚至可以由隐式转换来实现：
-            DbContext c3 = "connectionString";
+            // 甚至可以由显式转换来实现：
+            DbContext c3 = (DbContext)"connectionString";
 
 
 
