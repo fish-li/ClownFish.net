@@ -73,6 +73,7 @@
     <Compile Include="Common\Retry.cs" />
     <Compile Include="Common\RsaHelper.cs" />
     <Compile Include="Common\StringExtensions.cs" />
+    <Compile Include="Common\TempFilesUtils.cs" />
     <Compile Include="Common\TestHelper.cs" />
     <Compile Include="Common\TypeExtensions.cs" />
     <Compile Include="Common\ZipHelper.cs" />
