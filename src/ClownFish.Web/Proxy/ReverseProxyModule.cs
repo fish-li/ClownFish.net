@@ -44,7 +44,8 @@ namespace ClownFish.Web.Proxy
 
 			app.Context.Items[ProxyTransferHandler.TargetUrlKeyName] = destAddress;
 
-			IHttpHandler hander = new ProxyTransferHandler();
+            ProxyTransferHandler hander = new ProxyTransferHandler();
+            hander.OriginalUrl = app.Request.Url.AbsoluteUri;
 			app.Context.RemapHandler(hander);
 
 			app.Context.Response.Headers.Add("X-ReverseProxyModule", destAddress);	// 用于调试诊断
@@ -81,27 +82,39 @@ namespace ClownFish.Web.Proxy
 				return s_DefaultProxySite;
 
 
-			HttpCookie cookie = app.Request.Cookies[s_ProxySiteCookieName];
-			if( cookie != null ) {
-				string value = cookie.Value;
-				if( string.IsNullOrEmpty(value) == false )
-					try {
-						return Encoding.UTF8.GetString(Convert.FromBase64String(value));
-					}
-					catch { /* 如果无法正确读取，就忽略   */ }
-			}
-
-			return null;
+            // 尝试从Cookie中获取代理目标的站点地址
+            return GetProxySiteAddressFromCookie(app);
 		}
 
-		
 
 
-		/// <summary>
-		/// 生成可供ReverseProxyModule读取的代理站点Cookie
+        /// <summary>
+		/// 尝试从Cookie中获取代理目标的站点地址
 		/// </summary>
-		/// <param name="siteAddress"></param>
-		public static HttpCookie CreateProxySiteCookie(string siteAddress)
+		/// <param name="app"></param>
+		/// <returns></returns>
+		protected virtual string GetProxySiteAddressFromCookie(HttpApplication app)
+        {
+            HttpCookie cookie = app.Request.Cookies[s_ProxySiteCookieName];
+            if( cookie != null ) {
+                string value = cookie.Value;
+                if( string.IsNullOrEmpty(value) == false )
+                    try {
+                        return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+                    }
+                    catch { /* 如果无法正确读取，就忽略   */ }
+            }
+
+            return null;
+        }
+
+
+
+        /// <summary>
+        /// 生成可供ReverseProxyModule读取的代理站点Cookie
+        /// </summary>
+        /// <param name="siteAddress"></param>
+        public static HttpCookie CreateProxySiteCookie(string siteAddress)
 		{
 			if( string.IsNullOrEmpty(siteAddress) )
 				throw new ArgumentNullException("siteAddress");
@@ -109,8 +122,8 @@ namespace ClownFish.Web.Proxy
 			if( (siteAddress.StartsWith("http://") == false) && (siteAddress.StartsWith("https://") == false) )
 				throw new ArgumentException("参数要求以 http:// 或者 https:// 开头的绝对地址URL格式。");
 
-			if( siteAddress.EndsWith("/") )	// 因为要和 Request.RawUrl 拼接，所以需要去掉【反斜杠】字符
-				siteAddress = siteAddress.Substring(0, siteAddress.Length - 1);
+			if( siteAddress.EndsWith("/") )	// 因为要和 Request.RawUrl 拼接，所以需要去掉结尾的【反斜杠】字符
+				siteAddress = siteAddress.TrimEnd('/');
 
 			string value = Convert.ToBase64String(Encoding.UTF8.GetBytes(siteAddress));	// 编码，防止出现特殊字符影响
 			HttpCookie cookie = new HttpCookie(s_ProxySiteCookieName, value);			// 临时会话Cookie

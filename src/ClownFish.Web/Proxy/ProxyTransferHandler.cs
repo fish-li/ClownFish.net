@@ -28,8 +28,14 @@ namespace ClownFish.Web.Proxy
 		/// </summary>
 		public static readonly string TargetUrlKeyName = "x-target-url";
 
+        /// <summary>
+        /// 原始的请求地址
+        /// </summary>
+        internal string OriginalUrl { get; set; }
 
-		static ProxyTransferHandler()
+
+
+        static ProxyTransferHandler()
 		{
 			// 触发 HttpClient 的静态构造函数
 			HttpClient.TriggerCctor();
@@ -69,6 +75,10 @@ namespace ClownFish.Web.Proxy
 
 			webRequest.AllowAutoRedirect = false;	// 禁止自动重定向，用于返回302信息
 			webRequest.ServicePoint.Expect100Continue = false;
+
+            // 设置原始请求地址
+            if( this.OriginalUrl != null )
+                webRequest.Headers.Add("X-ReverseProxy-OriginalUrl", OriginalUrl);
 
 			return webRequest;
 		}
