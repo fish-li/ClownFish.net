@@ -17,7 +17,8 @@ namespace ClownFish.Base.UnitTest.Common
 			string s1 = "abc";
 			string s2 = "aBc";
 			Assert.IsTrue(s1.EqualsIgnoreCase(s2));
-		}
+            Assert.IsTrue(s1.Is(s2));
+        }
 
 
 		[TestMethod]

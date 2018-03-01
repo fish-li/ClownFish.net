@@ -24,14 +24,27 @@ namespace ClownFish.Base
 			return string.Compare(a, b, StringComparison.OrdinalIgnoreCase) == 0;
 		}
 
-
-		/// <summary>
-		/// 以忽略大小写的方式调用 string.EndsWith
+        /// <summary>
+		/// 判断二个字符串是否相等，忽略大小写的比较方式。等同于 EqualsIgnoreCase方法。
 		/// </summary>
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		public static bool EndsWithIgnoreCase(this string a, string b)
+		public static bool Is(this string a, string b)
+        {
+            if( a == null )
+                throw new ArgumentNullException("a");
+            return string.Compare(a, b, StringComparison.OrdinalIgnoreCase) == 0;
+        }
+
+
+        /// <summary>
+        /// 以忽略大小写的方式调用 string.EndsWith
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool EndsWithIgnoreCase(this string a, string b)
 		{
 			if( a == null )
 				throw new ArgumentNullException("a");
