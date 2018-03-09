@@ -221,7 +221,7 @@ ORDER  BY [Schema],
 		/// <param name="dbContext"></param>
 		/// <param name="tablename"></param>
 		/// <returns></returns>
-		public static List<Field> GetTableFields(this DbContext dbContext, string tablename)
+		public static List<DbField> GetTableFields(this DbContext dbContext, string tablename)
 		{
 			if( dbContext == null )
 				throw new ArgumentNullException(nameof(dbContext));
@@ -229,7 +229,7 @@ ORDER  BY [Schema],
 				throw new ArgumentNullException(nameof(tablename));
 
 			var parameter = new { TableName = tablename };
-			return dbContext.CPQuery.Create(ScriptGetTableFields, parameter).ToList<Field>();
+			return dbContext.CPQuery.Create(ScriptGetTableFields, parameter).ToList<DbField>();
 		}
 
 		/// <summary>
@@ -238,20 +238,20 @@ ORDER  BY [Schema],
 		/// <param name="dbContext"></param>
 		/// <param name="query"></param>
 		/// <returns></returns>
-		public static List<Field> GetQueryFields(this DbContext dbContext, string query)
+		public static List<DbField> GetQueryFields(this DbContext dbContext, string query)
 		{
 			if( dbContext == null )
 				throw new ArgumentNullException(nameof(dbContext));
 			if( string.IsNullOrEmpty(query) )
 				throw new ArgumentNullException(nameof(query));
 
-			List<Field> list = new List<Field>();
+			List<DbField> list = new List<DbField>();
 
 			CPQuery cpquery = dbContext.CPQuery.Create(query);
 
 			using( SqlDataReader reader = (SqlDataReader)cpquery.ExecuteReader() ) {
 				for( int i = 0; i < reader.FieldCount; i++ ) {
-					list.Add(new Field {
+					list.Add(new DbField {
 						Name = reader.GetName(i),
 						DataType = reader.GetFieldType(i).ToString(),
 						Nullable = false
@@ -259,7 +259,7 @@ ORDER  BY [Schema],
 				}
 			}
 
-			foreach( Field f in list )
+			foreach( DbField f in list )
 				if( string.IsNullOrEmpty(f.Name) )
 					f.Name = "NoneName";
 

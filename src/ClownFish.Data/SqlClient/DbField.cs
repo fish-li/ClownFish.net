@@ -8,7 +8,7 @@ namespace ClownFish.Data.SqlClient
     /// <summary>
     /// 表示一个SQLSERVER数据表字段的描述信息
     /// </summary>
-	public class Field
+	public class DbField
     {
         /// <summary>
         /// 字段名
