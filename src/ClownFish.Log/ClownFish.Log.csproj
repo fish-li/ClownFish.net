@@ -81,10 +81,12 @@
     <Compile Include="Model\DebugInfo.cs" />
     <Compile Include="Model\ExceptionInfo.cs" />
     <Compile Include="Model\HttpInfo.cs" />
+    <Compile Include="Model\HttpRequestData.cs" />
     <Compile Include="Model\NameValue.cs" />
     <Compile Include="Model\PerformanceInfo.cs" />
     <Compile Include="Model\SqlInfo.cs" />
     <Compile Include="Modules\ExceptionLogModule.cs" />
+    <Compile Include="Modules\HttpLogModule.cs" />
     <Compile Include="Modules\PerformanceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializer\DirectoryHelper.cs" />
