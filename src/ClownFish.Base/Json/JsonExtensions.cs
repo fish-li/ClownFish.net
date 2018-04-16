@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ClownFish.Base.Json;
 using ClownFish.Base.TypeExtend;
-
+using Newtonsoft.Json;
 
 namespace ClownFish.Base
 {
@@ -63,6 +63,22 @@ namespace ClownFish.Base
 		}
 
 
+        /// <summary>
+        /// 将对象序列化成缩进结构的JSON，便于日志记录
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToDumpJson(this object obj)
+        {
+            if( obj == null )
+                return "null";
+
+            DefaultJsonSerializer serializer = ObjectFactory.New<DefaultJsonSerializer>();
+            JsonSerializerSettings settings = serializer.GetJsonSerializerSettings(true);
+            // 设置为缩进格式
+            settings.Formatting = Formatting.Indented;
+            return serializer.Serialize(obj, settings);
+        }
 
 	}
 }
