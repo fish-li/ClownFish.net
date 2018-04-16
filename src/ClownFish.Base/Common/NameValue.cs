@@ -25,6 +25,22 @@ namespace ClownFish.Base
         [XmlAttribute]
         public string Value { get; set; }
 
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        public NameValue() { }
+
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public NameValue(string name, string value)
+        {
+            this.Name = name;
+            this.Value = value;
+        }
+
 		/// <summary>
 		/// ToString
 		/// </summary>
