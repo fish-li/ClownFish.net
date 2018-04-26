@@ -13,6 +13,32 @@ namespace ClownFish.Base
     /// </summary>
     public static class HashHelper
     {
+        private static string HashString(HashAlgorithm hash, string text, Encoding encoding)
+        {
+            if( text == null )
+                throw new ArgumentNullException(nameof(text));
+
+
+            byte[] bb = encoding.GetBytes(text);
+            byte[] buffer = hash.ComputeHash(bb);
+            return BitConverter.ToString(buffer).Replace("-", "");
+        }
+
+        private static string HashFile(HashAlgorithm hash, string filePath)
+        {
+            if( string.IsNullOrEmpty(filePath) )
+                throw new ArgumentNullException(nameof(filePath));
+            if( File.Exists(filePath) == false )
+                throw new FileNotFoundException("文件不存在：" + filePath);
+
+
+            using( FileStream fs = File.OpenRead(filePath) ) {
+                byte[] buffer = hash.ComputeHash(fs);
+                return BitConverter.ToString(buffer).Replace("-", "");
+            }
+        }
+
+
         /// <summary>
         /// 计算字符串的 SHA1 签名
         /// </summary>
@@ -31,15 +57,39 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static string Sha1(this string text, Encoding encoding)
         {
-            if( text == null )
-                throw new ArgumentNullException(nameof(text));
-
             using( SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider() ) {
-                byte[] bb = encoding.GetBytes(text);
-                byte[] buffer = sha1.ComputeHash(bb);
-                return BitConverter.ToString(buffer).Replace("-", "");
+                return HashString(sha1, text, encoding);
             }
         }
+
+
+        /// <summary>
+        /// 计算字符串的 SHA256 签名
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string Sha256(this string text, Encoding encoding)
+        {
+            using( SHA256CryptoServiceProvider sha1 = new SHA256CryptoServiceProvider() ) {
+                return HashString(sha1, text, encoding);
+            }
+        }
+
+
+        /// <summary>
+        /// 计算字符串的 SHA512 签名
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string Sha512(this string text, Encoding encoding)
+        {
+            using( SHA512CryptoServiceProvider sha1 = new SHA512CryptoServiceProvider() ) {
+                return HashString(sha1, text, encoding);
+            }
+        }
+
 
 
         /// <summary>
@@ -49,16 +99,8 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static string FileSha1(string filePath)
         {
-            if( string.IsNullOrEmpty(filePath) )
-                throw new ArgumentNullException(nameof(filePath));
-            if( File.Exists(filePath) == false )
-                throw new FileNotFoundException("文件不存在：" + filePath);
-
             using( SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider() ) {
-                using( FileStream fs = File.OpenRead(filePath) ) {
-                    byte[] buffer = sha1.ComputeHash(fs);
-                    return BitConverter.ToString(buffer).Replace("-", "");
-                }
+                return HashFile(sha1, filePath);
             }
         }
 
@@ -80,13 +122,8 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static string Md5(this string text, Encoding encoding)
         {
-            if( text == null )
-                throw new ArgumentNullException(nameof(text));
-
             using( MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider() ) {
-                byte[] bb = encoding.GetBytes(text);
-                byte[] buffer = md5.ComputeHash(bb);
-                return BitConverter.ToString(buffer).Replace("-", "");
+                return HashString(md5, text, encoding);
             }
         }
 
@@ -98,16 +135,8 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static string FileMD5(string filePath)
         {
-            if( string.IsNullOrEmpty(filePath) )
-                throw new ArgumentNullException(nameof(filePath));
-            if( File.Exists(filePath) == false )
-                throw new FileNotFoundException("文件不存在：" + filePath);
-
             using( MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider() ) {
-                using( FileStream fs = File.OpenRead(filePath) ) {
-                    byte[] buffer = md5.ComputeHash(fs);
-                    return BitConverter.ToString(buffer).Replace("-", "");
-                }
+                return HashFile(md5, filePath);
             }
         }
 

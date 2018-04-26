@@ -98,11 +98,16 @@ namespace ClownFish.Base
 
 			byte[] pwd = Encoding.UTF8.GetBytes(string.Concat(password, "大明王朝"));
 
-			byte[] md5 = (new MD5CryptoServiceProvider()).ComputeHash(pwd);
-			byte[] sha1 = (new SHA1CryptoServiceProvider()).ComputeHash(pwd);
+            using( MD5CryptoServiceProvider  md5Provider = new MD5CryptoServiceProvider() ) {
+                using( SHA1CryptoServiceProvider sha1Provider = new SHA1CryptoServiceProvider() ) {
 
-			sa.IV = GetByteArray(md5, sa.IV.Length);
-			sa.Key = GetByteArray(sha1, sa.Key.Length);
+                    byte[] md5 = md5Provider.ComputeHash(pwd);
+                    byte[] sha1 = sha1Provider.ComputeHash(pwd);
+
+                    sa.IV = GetByteArray(md5, sa.IV.Length);
+                    sa.Key = GetByteArray(sha1, sa.Key.Length);
+                }
+            }			
 		}
 
 		private static byte[] GetByteArray(byte[] src, int destLen)

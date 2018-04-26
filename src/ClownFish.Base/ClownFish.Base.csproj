@@ -66,6 +66,7 @@
     <Compile Include="Common\CryptoHelper.cs" />
     <Compile Include="Common\DataTimeExtensions.cs" />
     <Compile Include="Common\DictionaryExtensions.cs" />
+    <Compile Include="Common\ExceptionExtensions.cs" />
     <Compile Include="Common\GzipHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
     <Compile Include="Common\LazyObject.cs" />
