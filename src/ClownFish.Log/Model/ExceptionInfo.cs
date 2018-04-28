@@ -59,17 +59,20 @@ namespace ClownFish.Log.Model
 		public XmlCdata Addition { get; set; }
 
 
+        /// <summary>
+        /// 机器环境信息
+        /// </summary>
+        public EnvironmentInfo Environment { get; set; }
 
 
-
-		/// <summary>
-		/// 根据异常及运行中的相关信息构造完整的异常日志信息
-		/// </summary>
-		/// <param name="ex">Exception实例（必选）</param>
-		/// <param name="context">HttpContext实例（可选）</param>
-		/// <param name="dbCommand">DbCommand实例（可选）</param>
-		/// <returns></returns>
-		public static ExceptionInfo Create(Exception ex, HttpContext context, DbCommand dbCommand)
+        /// <summary>
+        /// 根据异常及运行中的相关信息构造完整的异常日志信息
+        /// </summary>
+        /// <param name="ex">Exception实例（必选）</param>
+        /// <param name="context">HttpContext实例（可选）</param>
+        /// <param name="dbCommand">DbCommand实例（可选）</param>
+        /// <returns></returns>
+        public static ExceptionInfo Create(Exception ex, HttpContext context, DbCommand dbCommand)
 		{
 			if( ex == null )
 				throw new ArgumentNullException("ex");
@@ -79,6 +82,12 @@ namespace ClownFish.Log.Model
 			info.Message = ex.Message;
 			info.ExceptionType = ex.GetType().FullName;
 			info.Exception = ex.ToString();
+
+            try {
+                info.Environment = EnvironmentInfo.GetCurrent();
+            }
+            catch { // 如果获取机器环境信息失败，就直接忽略
+            }
 
 			if( context != null ) 
 				info.HttpInfo = HttpInfo.Create(context);

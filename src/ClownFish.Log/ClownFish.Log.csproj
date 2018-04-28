@@ -61,6 +61,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -79,6 +80,7 @@
     <Compile Include="Model\BaseInfo.cs" />
     <Compile Include="Model\BusinessInfo.cs" />
     <Compile Include="Model\DebugInfo.cs" />
+    <Compile Include="Model\EnvironmentInfo.cs" />
     <Compile Include="Model\ExceptionInfo.cs" />
     <Compile Include="Model\HttpInfo.cs" />
     <Compile Include="Model\HttpRequestData.cs" />
