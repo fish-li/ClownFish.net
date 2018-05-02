@@ -38,5 +38,33 @@ namespace ClownFish.Base
 
 
 
-	}
+        /// <summary>
+		/// 将byte[]做BASE64编码，Convert.ToBase64String(bytes);
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static string ToBase64(this byte[] bytes)
+        {
+            if( bytes == null || bytes.Length == 0 )
+                return string.Empty;
+
+            return Convert.ToBase64String(bytes);
+        }
+
+
+        /// <summary>
+		/// 将byte[]按十六进制转换成字符串，BitConverter.ToString(bytes).Replace("-", "");
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static string ToHexString(this byte[] bytes)
+        {
+            if( bytes == null || bytes.Length == 0 )
+                return string.Empty;
+
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+
+    }
 }
