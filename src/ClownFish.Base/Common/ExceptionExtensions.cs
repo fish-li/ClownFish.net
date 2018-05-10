@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ClownFish.Base.Common
+namespace ClownFish.Base
 {
     /// <summary>
     /// 封装一些与异常有关的扩展方法

@@ -195,15 +195,19 @@ namespace ClownFish.Data
 
 
 
-		/// <summary>
-		/// 执行查询，以DataTable形式返回结果
-		/// </summary>
-		/// <returns>数据集</returns>
-		public DataTable ToDataTable()
+        /// <summary>
+        /// 执行查询，以DataTable形式返回结果
+        /// </summary>
+        /// <param name="tableName">DataTable的表名</param>
+        /// <returns>查询结构的数据集</returns>
+        public DataTable ToDataTable(string tableName = null)
 		{
-			return Execute<DataTable>(
+            if( string.IsNullOrEmpty(tableName) )
+                tableName = "_tb";
+
+            return Execute<DataTable>(
 				cmd => {
-					DataTable table = new DataTable("_tb");
+					DataTable table = new DataTable(tableName);
 					DbDataAdapter da = _context.Factory.CreateDataAdapter();
 					da.SelectCommand = cmd;
 					da.Fill(table);
@@ -214,18 +218,22 @@ namespace ClownFish.Data
 		}
 
 
-		/// <summary>
-		/// 执行查询，以DataTable形式返回结果
-		/// </summary>
-		/// <returns>数据集</returns>
-		public async Task<DataTable> ToDataTableAsync()
+        /// <summary>
+        /// 执行查询，以DataTable形式返回结果
+        /// </summary>
+        /// <param name="tableName">DataTable的表名</param>
+        /// <returns>查询结构的数据集</returns>
+        public async Task<DataTable> ToDataTableAsync(string tableName = null)
 		{
-			return await ExecuteAsync<DataTable>(
+            if( string.IsNullOrEmpty(tableName) )
+                tableName = "_tb";
+
+            return await ExecuteAsync<DataTable>(
 				async cmd => {
 					DataSet ds = new DataSet();
 					ds.EnforceConstraints = false;  // 禁用约束检查
 
-					DataTable table = new DataTable("_tb");
+					DataTable table = new DataTable(tableName);
 					ds.Tables.Add(table);
 
 					using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {

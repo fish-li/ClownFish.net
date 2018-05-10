@@ -307,7 +307,7 @@ namespace ClownFish.Data.UnitTest
             Assert.AreEqual(2, query1.Command.CommandTimeout);
 
 
-			CPQuery query2 = CPQuery.Create("select * from t1").SetCommandTimeout(2);
+			CPQuery query2 = CPQuery.Create("select * from t1").SetTimeout(2);
 			Assert.AreEqual(2, query2.Command.CommandTimeout);
 		}
 

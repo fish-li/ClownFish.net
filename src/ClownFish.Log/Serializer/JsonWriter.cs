@@ -40,9 +40,17 @@ namespace ClownFish.Log.Serializer
             s_rootDirectory = DirectoryHelper.InitDirectory(value);
         }
 
+        /// <summary>
+        /// 获取日志的根目录
+        /// </summary>
+        /// <returns></returns>
+        public static string GetRootDirectory()
+        {
+            return s_rootDirectory;
+        }
 
 
-		internal string GetFilePath(Type t)
+        internal string GetFilePath(Type t)
 		{
 			return string.Format(@"{0}{1}\{2}_{3}.json.log",
 								s_rootDirectory, t.Name, t.Name, DateTime.Now.ToString("yyyy-MM-dd"));

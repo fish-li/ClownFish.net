@@ -75,8 +75,10 @@
     <Compile Include="Configuration\PerformanceConfig.cs" />
     <Compile Include="Configuration\TypeItemConfig.cs" />
     <Compile Include="Configuration\WriterSection.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="LogFilter.cs" />
     <Compile Include="LogHelper.cs" />
+    <Compile Include="MessageLoger.cs" />
     <Compile Include="Model\BaseInfo.cs" />
     <Compile Include="Model\BusinessInfo.cs" />
     <Compile Include="Model\DebugInfo.cs" />

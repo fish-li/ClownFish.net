@@ -42,7 +42,7 @@ namespace ClownFish.Data
 		/// <param name="command"></param>
 		/// <param name="commandTimeout"></param>
 		/// <returns></returns>
-		public static T SetCommandTimeout<T>(this T command, int commandTimeout) where T : BaseCommand
+		public static T SetTimeout<T>(this T command, int commandTimeout) where T : BaseCommand
 		{
 			command.Command.CommandTimeout = commandTimeout;
 			return command;

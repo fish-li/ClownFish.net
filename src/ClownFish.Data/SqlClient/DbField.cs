@@ -63,6 +63,13 @@ namespace ClownFish.Data.SqlClient
         /// </summary>
 		public int IncrementValue { get; set; }
 
+
+        /// <summary>
+        /// 是否为主键。
+        /// 注意：此属性不由 ClownFish.Data 填充，仅供应用程序标记使用。
+        /// </summary>
+        public bool IsPK { get; set; }
+
         /// <summary>
         /// ToString
         /// </summary>
