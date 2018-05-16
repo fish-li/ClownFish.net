@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ClownFish.Base;
 using ClownFish.Web;
 using DEMO.Models;
 
@@ -155,7 +156,7 @@ namespace DEMO.Controllers.Services
 		[Action]
 		public string GetFileText(string path)
 		{
-			return File.ReadAllText(path, Encoding.UTF8);
+			return RetryFile.ReadAllText(path, Encoding.UTF8);
 		}
 
 	}

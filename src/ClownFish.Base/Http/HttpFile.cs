@@ -45,7 +45,7 @@ namespace ClownFish.Base.Http
 			HttpFile result = new HttpFile();
 			result.FileName = file.FullName;
 			result.ContentLength = (int)file.Length;
-			result.FileBody = File.ReadAllBytes(file.FullName);
+			result.FileBody = RetryFile.ReadAllBytes(file.FullName);
 			return result;
 		}
 

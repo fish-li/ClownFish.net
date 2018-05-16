@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Web;
+using ClownFish.Base;
 
 namespace ClownFish.Web
 {
@@ -38,10 +39,10 @@ namespace ClownFish.Web
 			string filePath = AppRoot + path.Replace("/", "\\");
 			if( inline ) {
 				return string.Format("<script type=\"text/javascript\">\r\n{0}\r\n</script>",
-					File.ReadAllText(filePath, Encoding.UTF8));
+                    RetryFile.ReadAllText(filePath, Encoding.UTF8));
 			}
 			else {
-				string version = File.GetLastWriteTimeUtc(filePath).Ticks.ToString();
+				string version = RetryFile.GetLastWriteTimeUtc(filePath).Ticks.ToString();
 				return string.Format("<script type=\"text/javascript\" src=\"{0}?_t={1}\"></script>", path, version);
 			}
 		}
@@ -71,10 +72,10 @@ namespace ClownFish.Web
 			string filePath = AppRoot + path.Replace("/", "\\");
 			if( inline ) {
 				return string.Format("<style type=\"text/css\">\r\n{0}\r\n</style>",
-					File.ReadAllText(filePath, Encoding.UTF8));
+                    RetryFile.ReadAllText(filePath, Encoding.UTF8));
 			}
 			else {
-				string version = File.GetLastWriteTimeUtc(filePath).Ticks.ToString();
+				string version = RetryFile.GetLastWriteTimeUtc(filePath).Ticks.ToString();
 				return string.Format("<link type=\"text/css\" rel=\"Stylesheet\" href=\"{0}?_t={1}\" />", path, version);
 			}
 		}

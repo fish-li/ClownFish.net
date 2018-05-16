@@ -15,13 +15,14 @@ namespace ClownFish.Base.Xml
 	/// 实现XML序列化与反序列化的包装工具类
 	/// </summary>
 	public static class XmlHelper
-	{
-		/// <summary>
-		/// 将一个对象序列化为XML字符串。这个方法将不生成XML文档声明头。
-		/// </summary>
-		/// <param name="o">要序列化的对象</param>
-		/// <returns>序列化产生的XML字符串</returns>
-		public static string XmlSerializerObject(object o)
+    {
+        /// <summary>
+        /// 将一个对象序列化为XML字符串。这个方法将不生成XML文档声明头。
+        /// </summary>
+        /// <param name="o">要序列化的对象</param>
+        /// <returns>序列化产生的XML字符串</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
+        public static string XmlSerializerObject(object o)
 		{
 			if( o == null )
 				throw new ArgumentNullException("o");
@@ -114,7 +115,7 @@ namespace ClownFish.Base.Xml
 			if( string.IsNullOrEmpty(path) )
 				throw new ArgumentNullException("path");
 
-			using( FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write) ) {
+			using( FileStream file = RetryFile.OpenCreate(path) ) {
 				XmlSerializeInternal(file, o, encoding);
 			}
 		}
@@ -189,7 +190,7 @@ namespace ClownFish.Base.Xml
 				throw new ArgumentNullException("path");
 
 			try {
-				using( FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read) ) {
+				using( FileStream fs = RetryFile.OpenRead(path) ) {
 					return (T)XmlDeserialize(fs, typeof(T));
 				}
 			}

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 using ClownFish.Log.Serializer;
 
@@ -56,7 +57,7 @@ namespace ClownFish.Log.Configuration
 		public static LogConfig ReadConfigFile()
 		{
 			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
-			if( File.Exists(configFile) == false )
+			if( RetryFile.Exists(configFile) == false )
 				throw new FileNotFoundException("配置文件不存在：" + configFile);
 
 			return XmlHelper.XmlDeserializeFromFile<LogConfig>(configFile);

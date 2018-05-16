@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ClownFish.Base
 {
     /// <summary>
@@ -50,8 +51,7 @@ namespace ClownFish.Base
                     Directory.CreateDirectory(destPath);
 
                     // 如果目标文件已经存在，就删除
-                    if( File.Exists(targetFile) )
-                        File.Delete(targetFile);
+                    RetryFile.Delete(targetFile);
 
                     // 释放文件
                     entry.ExtractToFile(targetFile, true);
@@ -106,10 +106,8 @@ namespace ClownFish.Base
         /// <param name="zipPath"></param>
         public static void Compress(string path, string zipPath)
         {
-            if( File.Exists(zipPath) )
-                File.Delete(zipPath);
-
-
+            RetryFile.Delete(zipPath);
+            
             // 直接调用 .NET framework
             ZipFile.CreateFromDirectory(path, zipPath);
         }
@@ -121,6 +119,7 @@ namespace ClownFish.Base
         /// </summary>
         /// <param name="files"></param>
         /// <param name="zipPath"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
         public static void Compress(List<Tuple<string, byte[]>> files, string zipPath)
         {
             if( files == null )
@@ -129,8 +128,7 @@ namespace ClownFish.Base
                 throw new ArgumentNullException(nameof(zipPath));
 
 
-            if( File.Exists(zipPath) )
-                File.Delete(zipPath);
+            RetryFile.Delete(zipPath);
 
 
             using( FileStream file = new FileStream(zipPath, FileMode.Create) ) {

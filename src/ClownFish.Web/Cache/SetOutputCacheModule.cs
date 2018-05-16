@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using ClownFish.Base;
 using ClownFish.Base.Files;
 using ClownFish.Base.Xml;
 using ClownFish.Web.Config;
@@ -25,7 +26,7 @@ namespace ClownFish.Web
 		private static Dictionary<string, OutputCacheSetting> LoadConfigFile(string[] files)
 		{
 			string configFilePath = files[0];
-			if( File.Exists(configFilePath) == false )
+			if( RetryFile.Exists(configFilePath) == false )
 				throw new FileNotFoundException("未能找到文件：" + configFilePath + " ，如果要启用 SetOutputCacheModule，必须配置这个文件。");
 
 			OutputCacheConfig config = XmlHelper.XmlDeserializeFromFile<OutputCacheConfig>(configFilePath);

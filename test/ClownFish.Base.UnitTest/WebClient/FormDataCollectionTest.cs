@@ -100,7 +100,7 @@ namespace ClownFish.Base.UnitTest.WebClient
 		public void Test_FormDataCollection_AddObject_File()
 		{
 			string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Test_FormDataCollection_AddObject_bytes.txt");
-			File.WriteAllText(filePath, "不能直接重载 -= 运算符", Encoding.UTF8);
+            RetryFile.WriteAllText(filePath, "不能直接重载 -= 运算符", Encoding.UTF8);
 
 			FormDataCollection form = new FormDataCollection();
 			form.AddObject("a", new byte[] { 1, 2, 3, 4, 5 });

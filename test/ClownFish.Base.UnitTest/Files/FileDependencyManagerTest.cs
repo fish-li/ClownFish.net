@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.AspnetMock;
 using System.Web.Caching;
 using ClownFish.Base.Files;
+using ClownFish.Base;
 
 namespace ClownFish.Web.UnitTest.Cache
 {
@@ -19,8 +20,8 @@ namespace ClownFish.Web.UnitTest.Cache
 
 		private static string SafeReadFile(string filePath)
 		{
-			if( File.Exists(filePath) )
-				return File.ReadAllText(filePath, Encoding.UTF8);
+			if( RetryFile.Exists(filePath) )
+				return RetryFile.ReadAllText(filePath, Encoding.UTF8);
 
 			return null;
 		}
@@ -28,7 +29,7 @@ namespace ClownFish.Web.UnitTest.Cache
 		[TestInitialize]
 		public void Init2()
 		{
-			File.WriteAllText(s_testFilePath, "abc", Encoding.UTF8);
+            RetryFile.WriteAllText(s_testFilePath, "abc", Encoding.UTF8);
 
 			// 设置 FileDependencyManager.RemovedCallback 的等待时间
 			typeof(FileDependencyManager<string>).SetValue("s_WaitFileCloseTimeout", null, 100);
@@ -43,8 +44,8 @@ namespace ClownFish.Web.UnitTest.Cache
 
 			Assert.AreEqual("abc", cacheItem.Result);
 
-			// 修改文件
-			File.WriteAllText(s_testFilePath, "Fish Li", Encoding.UTF8);
+            // 修改文件
+            RetryFile.WriteAllText(s_testFilePath, "Fish Li", Encoding.UTF8);
 
 			// FileDependencyManager.RemovedCallback 有等待时间，所以这里要比那个时间再长一点
 			System.Threading.Thread.Sleep(300);

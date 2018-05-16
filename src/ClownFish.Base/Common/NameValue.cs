@@ -22,7 +22,7 @@ namespace ClownFish.Base
         /// <summary>
         /// 键值
         /// </summary>
-        [XmlAttribute]
+        //[XmlAttribute]
         public string Value { get; set; }
 
         /// <summary>

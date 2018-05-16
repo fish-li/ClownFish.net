@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ClownFish.Base;
 using ClownFish.Data.CodeDom;
 using ClownFish.Data.UnitTest.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,8 +21,8 @@ namespace ClownFish.Data.UnitTest
 
 			code = EntityGenerator.UsingCodeBlock + code;
 
-			//File.WriteAllText("..\\AutoCode1.cs", code, Encoding.UTF8);
-			File.WriteAllText("EntityGeneratorTest_code.cs", code, Encoding.UTF8);
+            //RetryFile.WriteAllText("..\\AutoCode1.cs", code, Encoding.UTF8);
+            RetryFile.WriteAllText("EntityGeneratorTest_code.cs", code, Encoding.UTF8);
 		}
 
 
@@ -31,12 +32,11 @@ namespace ClownFish.Data.UnitTest
 			Type[] entityTypes = new Type[] { typeof(Product), typeof(Customer) };
 			string dllFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Test.EntityProxy.dll");
 
-			if( File.Exists(dllFilePath) )
-				File.Delete(dllFilePath);
+            RetryFile.Delete(dllFilePath);
 
 			var result = ProxyBuilder.Compile(entityTypes, dllFilePath);
 
-			Assert.IsTrue(File.Exists(dllFilePath));
+			Assert.IsTrue(RetryFile.Exists(dllFilePath));
 
 			// 加载程序集并确认结果
 			Assembly asm = Assembly.LoadFrom(dllFilePath);

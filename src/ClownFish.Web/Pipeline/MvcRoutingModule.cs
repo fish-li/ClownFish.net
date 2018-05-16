@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Routing;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 using ClownFish.Web.Debug404;
 using ClownFish.Web.Reflection;
@@ -44,7 +45,7 @@ namespace ClownFish.Web
 		{
 			string filePath = WebRuntime.Instance.GetPhysicalPath("ClownFish.Web.RouteTable.config");
 
-			if( File.Exists(filePath) == false )
+			if( RetryFile.Exists(filePath) == false )
 				throw new FileNotFoundException("未能找到文件：" + filePath + " ，如果要启用 MvcRoutingModule，必须配置这个文件。");
 
 

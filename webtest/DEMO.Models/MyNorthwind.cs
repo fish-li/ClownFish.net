@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Web;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 
 namespace DEMO.Models
@@ -28,7 +29,7 @@ namespace DEMO.Models
 
 			string xmlPath = Path.Combine(HttpRuntime.AppDomainAppPath, @"App_Data\MyNorthwindDataBase.xml");
 
-			if( System.IO.File.Exists(xmlPath) == false )
+			if( RetryFile.Exists(xmlPath) == false )
 				throw new ArgumentException("指定的文件不存在：" + xmlPath);
 
 			s_db = XmlHelper.XmlDeserializeFromFile<MyNorthwind>(xmlPath);

@@ -3,6 +3,7 @@ using System.Web;
 using System.IO;
 using ClownFish.Web.Serializer;
 using DEMO.Models;
+using ClownFish.Base;
 
 namespace DEMO.Controllers.Common
 {
@@ -38,7 +39,7 @@ namespace DEMO.Controllers.Common
 				if( HttpContext.Current != null )
 					message = "Url: " + HttpContext.Current.Request.RawUrl + "\r\n" + message;
 
-				File.AppendAllText(logfilePath, message, System.Text.Encoding.UTF8);
+                RetryFile.AppendAllText(logfilePath, message, System.Text.Encoding.UTF8);
 			}
 			catch { }
 		}

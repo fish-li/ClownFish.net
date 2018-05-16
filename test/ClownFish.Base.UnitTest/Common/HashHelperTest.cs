@@ -16,7 +16,7 @@ namespace ClownFish.Base.UnitTest.Common
         [ClassInitialize]
         public static void Init(TestContext context)
         {
-            File.WriteAllText(s_filename, "禁止使用 ViewState，Session", Encoding.UTF8);
+            RetryFile.WriteAllText(s_filename, "禁止使用 ViewState，Session", Encoding.UTF8);
         }
 
 

@@ -133,7 +133,7 @@ namespace ClownFish.Log
 
 			// 所有需要记录到日志的数据类型必须配置，否则不记录（因为不知道以什么方式记录）！
 			if( WriterFactory.IsSupport(typeof(T)) == false )
-				throw new NotSupportedException("不支持未配置的数据类型。");
+				throw new NotSupportedException("不支持未配置的数据类型：" + typeof(T).Name);
 
 
 			// 为第一次调用，创建定时器

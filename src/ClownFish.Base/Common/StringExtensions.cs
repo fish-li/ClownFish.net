@@ -206,5 +206,43 @@ namespace ClownFish.Base
 
             return text.Substring(0, keepLength) + "..." + text.Length.ToString();
         }
+
+        /// <summary>
+        /// 尝试将一个字符串转成【正整数】，如果失败就返回默认值
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static int TryToUInt(this string text, int defaultValue)
+        {
+            int result = 0;
+            if( int.TryParse(text, out result) == false )
+                return defaultValue;
+
+            if( result < 0 )
+                return defaultValue;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 尝试将一个字符串转成【布尔值】，如果失败就返回默认值
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static bool TryToBool(this string text, bool defaultValue)
+        {
+            if( string.IsNullOrEmpty(text) )
+                return defaultValue;
+
+            if( text == "1" || text.Is("true") )
+                return true;
+
+            return false;
+        }
+
+
     }
 }

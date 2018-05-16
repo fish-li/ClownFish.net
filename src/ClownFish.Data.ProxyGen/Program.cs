@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Data.CodeDom;
 
 
@@ -44,7 +45,7 @@ namespace ClownFish.Data.ProxyGen
 			bool isFile = false;
 			string path = Path.GetFullPath(Path.Combine(System.Environment.CurrentDirectory, args[0]));
 
-			if( File.Exists(path) ) {
+			if( RetryFile.Exists(path) ) {
 				if( path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) == false ) {
 					Console.WriteLine("命令参数必须是一个程序集的DLL文件。");
 					return;
@@ -88,7 +89,7 @@ namespace ClownFish.Data.ProxyGen
 			string name = args.Name.Split(',')[0] + ".dll";
 			string filePath = Path.Combine(s_dllDirectory, name);
 
-			if( File.Exists(filePath) == false )
+			if( RetryFile.Exists(filePath) == false )
 				return null;
 
 			return Assembly.LoadFrom(filePath);
@@ -103,8 +104,7 @@ namespace ClownFish.Data.ProxyGen
 			string newName = Path.GetFileNameWithoutExtension(dllFile) + ".EntityProxy.dll";
 			string outFile = Path.Combine(currentPath, newName);
 
-			if( File.Exists(outFile) )
-				File.Delete(outFile);
+            RetryFile.Delete(outFile);
 
 			if( asm == null)
 				asm = Assembly.LoadFrom(dllFile);

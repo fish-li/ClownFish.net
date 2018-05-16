@@ -68,7 +68,7 @@ namespace ClownFish.Log.Web
             string filePath = filenameBase64.FromBase64();
             filePath = Path.Combine(_logPath, filePath);
 
-            if( File.Exists(filePath) == false ) {
+            if( RetryFile.Exists(filePath) == false ) {
                 WriteMessage("要查看的日志文件不存在：" + filePath);
                 return;
             }
@@ -80,7 +80,7 @@ namespace ClownFish.Log.Web
             }
 
             // 读文件，写响应流
-            string text = File.ReadAllText(filePath, Encoding.UTF8);
+            string text = RetryFile.ReadAllText(filePath, Encoding.UTF8);
             // 由于是文本文件，所以就直接字符串输出
             WriteMessage(text);
         }

@@ -14,6 +14,7 @@ namespace ClownFish.Base
     /// </summary>
     public static class GuidHelper
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060")]
         [DllImport("rpcrt4.dll", SetLastError = true)]
         private static extern int UuidCreateSequential(out Guid guid);
 

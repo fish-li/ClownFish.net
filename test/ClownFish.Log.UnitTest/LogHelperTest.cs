@@ -10,6 +10,7 @@ using ClownFish.AspnetMock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
+using ClownFish.Base;
 
 namespace ClownFish.Log.UnitTest
 {
@@ -156,7 +157,7 @@ namespace ClownFish.Log.UnitTest
 			FileWriter fileWriter = new FileWriter();
 			string filePath = fileWriter.GetFilePath(typeof(ExceptionInfo));
 
-			string logText = File.ReadAllText(filePath, Encoding.UTF8);
+			string logText = RetryFile.ReadAllText(filePath, Encoding.UTF8);
 
 			Assert.IsTrue(logText.IndexOf(flagString) > 0);
 

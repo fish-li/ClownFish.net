@@ -37,18 +37,18 @@ namespace ClownFish.Base
                 foreach( string file in files ) {
 
                     // 清除过程中，也有可能其它进程正在删除文件，所有文件不存在就忽略
-                    if( File.Exists(file) == false )
+                    if( RetryFile.Exists(file) == false )
                         continue;
                     
                     // 以文件的最后修改时间做为对比标准
-                    DateTime time = File.GetLastWriteTime(file);
+                    DateTime time = RetryFile.GetLastWriteTime(file);
                     TimeSpan span = now - time;
 
                     // 删除 指定时间 前的文件
                     if( span >= timeAgo ) {
                         try {
                             //Console.WriteLine(file);
-                            File.Delete(file);
+                            RetryFile.Delete(file);
                         }
                         catch( Exception ex ) {
                             list.Add(ex);

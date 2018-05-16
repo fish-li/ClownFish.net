@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Base;
 using ClownFish.Web.Config;
 using Microsoft.Win32;
 
@@ -51,7 +52,7 @@ namespace ClownFish.Web
 				get
 				{
 					if( _lastWriteTime.HasValue == false )
-						_lastWriteTime = File.GetLastWriteTime(_filePath);
+						_lastWriteTime = RetryFile.GetLastWriteTime(_filePath);
 					return _lastWriteTime.Value;
 				}
 			}
@@ -117,7 +118,7 @@ namespace ClownFish.Web
 			string filePath = context.Request.PhysicalPath;
 			bool isCssFile = filePath.EndsWith(".css", StringComparison.OrdinalIgnoreCase);
 
-			if( File.Exists(filePath) == false ) {
+			if( RetryFile.Exists(filePath) == false ) {
 				new Http404Result().Ouput(context);
 				return;
 			}
@@ -284,7 +285,7 @@ namespace ClownFish.Web
 			// 5. 如果是文件，则计算版本号，再一起写入到StringBuilder实例
 			// 6. 最后，StringBuilder实例包含的内容就是处理后的结果。
 
-			string text = File.ReadAllText(context.Request.PhysicalPath, Encoding.UTF8);
+			string text = RetryFile.ReadAllText(context.Request.PhysicalPath, Encoding.UTF8);
 
 			MatchCollection matches = s_CssBackgroundImageRegex.Matches(text);
 			if( matches != null && matches.Count > 0 ) {
@@ -299,8 +300,8 @@ namespace ClownFish.Web
 
 						//string fileFullPath = HttpRuntime.AppDomainAppPath.TrimEnd('\\') + g.Value.Replace("/", "\\");
 						string fileFullPath = WebRuntime.Instance.GetPhysicalPath(g.Value.Replace("/", "\\"));
-						if( File.Exists(fileFullPath) ) {
-							string version = File.GetLastWriteTimeUtc(fileFullPath).Ticks.ToString();
+						if( RetryFile.Exists(fileFullPath) ) {
+							string version = RetryFile.GetLastWriteTimeUtc(fileFullPath).Ticks.ToString();
 							sb.Append("?_v=").Append(version);
 						}
 					}

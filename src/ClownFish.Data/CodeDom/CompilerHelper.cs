@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ClownFish.Base.Framework;
 using Microsoft.CSharp;
 using System.IO;
+using ClownFish.Base;
 
 namespace ClownFish.Data.CodeDom
 {
@@ -71,7 +72,7 @@ namespace ClownFish.Data.CodeDom
 
             try {
                 string filePath = Path.Combine(tempOutPath, "__last_temp_code.cs");
-                File.WriteAllText(filePath, code, Encoding.UTF8);
+                RetryFile.WriteAllText(filePath, code, Encoding.UTF8);
             }
             catch {  /* 输出最近一次运行时运行的代码，方便调试程序，忽略写文件出现的异常。 */
             }
@@ -86,7 +87,7 @@ namespace ClownFish.Data.CodeDom
             try {
                 string errorText = GetCompileErrorMessage(cr);
                 string filePath = Path.Combine(tempOutPath, "__last_CompilerError.txt");
-                File.WriteAllText(filePath, errorText, Encoding.UTF8);
+                RetryFile.WriteAllText(filePath, errorText, Encoding.UTF8);
             }
             catch {  /* 输出最近一次运行时运行的异常，方便调试程序，忽略写文件出现的异常。 */
             }

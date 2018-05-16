@@ -23,6 +23,7 @@ namespace ClownFish.Base.Http
         /// 将一个字典转换成HttpHeaderCollection实例
         /// </summary>
         /// <param name="dictionary"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065")]
         public static implicit operator HttpHeaderCollection(Dictionary<string, string> dictionary)
         {
             // 说明：

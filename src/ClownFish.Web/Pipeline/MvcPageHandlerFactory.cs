@@ -39,7 +39,7 @@ namespace ClownFish.Web
 			// 如果没有找到合适的Action，并且请求的是一个ASPX页面，则按ASP.NET默认的方式来继续处理
 			if( vkInfo == null  ) {
 				if( requestPath.EndsWithIgnoreCase(".aspx")
-					&& System.IO.File.Exists(context.Request.PhysicalPath) ) {
+					&& RetryFile.Exists(context.Request.PhysicalPath) ) {
 					// 调用ASP.NET默认的Page处理器工厂来处理
 					return _msPageHandlerFactory.GetHandler(context, requestType, requestPath, physicalPath);
 				}

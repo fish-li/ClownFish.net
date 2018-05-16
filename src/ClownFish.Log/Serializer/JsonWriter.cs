@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Log.Configuration;
 
 namespace ClownFish.Log.Serializer
@@ -73,7 +74,7 @@ namespace ClownFish.Log.Serializer
 			string json = ClownFish.Base.JsonExtensions.ToJson(info);
 
 			string contents = json + "\r\n\r\n" + s_separateLine + "\r\n\r\n";
-			File.AppendAllText(filePath, contents, Encoding.UTF8);
+            RetryFile.AppendAllText(filePath, contents, Encoding.UTF8);
 		}
 
 		/// <summary>
@@ -99,7 +100,7 @@ namespace ClownFish.Log.Serializer
 
 
 			if( sb.Length > 0 )
-				File.AppendAllText(filePath, sb.ToString(), Encoding.UTF8);
+                RetryFile.AppendAllText(filePath, sb.ToString(), Encoding.UTF8);
 		}
 
 		/// <summary>

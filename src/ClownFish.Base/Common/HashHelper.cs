@@ -28,11 +28,11 @@ namespace ClownFish.Base
         {
             if( string.IsNullOrEmpty(filePath) )
                 throw new ArgumentNullException(nameof(filePath));
-            if( File.Exists(filePath) == false )
+            if( RetryFile.Exists(filePath) == false )
                 throw new FileNotFoundException("文件不存在：" + filePath);
 
 
-            using( FileStream fs = File.OpenRead(filePath) ) {
+            using( FileStream fs = RetryFile.OpenRead(filePath) ) {
                 byte[] buffer = hash.ComputeHash(fs);
                 return BitConverter.ToString(buffer).Replace("-", "");
             }
@@ -151,7 +151,7 @@ namespace ClownFish.Base
         {
             if( string.IsNullOrEmpty(filePath) )
                 throw new ArgumentNullException(nameof(filePath));
-            if( File.Exists(filePath) == false )
+            if( RetryFile.Exists(filePath) == false )
                 throw new FileNotFoundException("文件不存在：" + filePath);
 
             if( headerLength <= 0 )
@@ -159,7 +159,7 @@ namespace ClownFish.Base
 
 
             using( MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider() ) {
-                using( FileStream file = File.OpenRead(filePath) ) {
+                using( FileStream file = RetryFile.OpenRead(filePath) ) {
                     if( headerLength > file.Length )
                         headerLength = (int)file.Length;
 

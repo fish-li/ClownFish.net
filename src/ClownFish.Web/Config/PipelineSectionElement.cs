@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 
 namespace ClownFish.Web.Config
 {
@@ -28,7 +29,7 @@ namespace ClownFish.Web.Config
 			try {
 				string templatePath = UiHelper.AppRoot + this.Http404PagePath.Replace("/", "\\");
 
-				if( System.IO.File.Exists(templatePath) == false )
+				if( RetryFile.Exists(templatePath) == false )
 					throw new System.IO.FileNotFoundException();
 			}
 			catch {
