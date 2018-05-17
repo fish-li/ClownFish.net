@@ -23,7 +23,7 @@ namespace ClownFish.Log.Serializer
             /// <summary>
             /// 队列中允许的最大长度，如果超过这个长度，队列就不接收消息。避免占用大量内存而导致OOM
             /// </summary>
-            private static readonly int s_maxQueueLength = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient.HttpMessageQueue:MaxQueueLength"].TryToUInt(10000);
+            private static readonly int s_maxQueueLength = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:MaxQueueLength"].TryToUInt(10000);
 
 
             /// <summary>
@@ -58,7 +58,7 @@ namespace ClownFish.Log.Serializer
         }
 
 
-        private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:WaitMillisecond"].TryToUInt(1000);
+        private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:WaitMillisecond"].TryToUInt(500);
         private readonly HttpMessageQueue _messageQueue = new HttpMessageQueue();
         private Thread _thread = null;
 
@@ -99,7 +99,7 @@ namespace ClownFish.Log.Serializer
             while( true ) {
                 SendMessageToServer();
 
-                // 间隔 1 秒执行
+                // 间隔 500 毫秒执行
                 Thread.Sleep(s_WaitMillisecond);
             }
         }

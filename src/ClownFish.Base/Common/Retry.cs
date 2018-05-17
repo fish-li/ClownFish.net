@@ -13,7 +13,6 @@ namespace ClownFish.Base
     {
         private int _retryCount;
 
-        private static readonly int DefaultMilliseconds = 1000;
 
         private List<Func<Exception, bool>> _filterList = null;
         private List<Action<Exception, int>> _callbakList = null;
@@ -25,7 +24,7 @@ namespace ClownFish.Base
         /// <param name="count"></param>
         /// <param name="milliseconds"></param>
         /// <returns></returns>
-        public static Retry Create(int count = 5, int milliseconds = 0)
+        public static Retry Create(int count = 5, int milliseconds = 500)
         {
             return new Retry { Count = count, Milliseconds = milliseconds };
         }
@@ -211,10 +210,7 @@ namespace ClownFish.Base
                 _retryCount++;
 
                 // 为了保证重试有效，先暂停，等待外部环境变化
-                if( this.Milliseconds <= 0 )
-                    // 如果不指定间隔时间，就取默认值
-                    System.Threading.Thread.Sleep(DefaultMilliseconds);
-                else
+                if( this.Milliseconds > 0 )
                     System.Threading.Thread.Sleep(this.Milliseconds);
 
                 

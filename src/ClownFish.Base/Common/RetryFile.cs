@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,10 +26,14 @@ namespace ClownFish.Base
             return File.Exists(filePath);
         }
 
+        // 本地磁盘 I/O 的重试参数
+        private static readonly int s_tryCount = ConfigurationManager.AppSettings["ClownFish.Base.RetryFile:RetryCount"].TryToUInt(5);
+        private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Base.RetryFile:WaitMillisecond"].TryToUInt(500);
+
         private static Retry CreateRetry()
         {
-            // 重试策略：当发生 IOException 时，最大重试 10 次，每次间隔 500 毫秒
-            return Retry.Create(10, 500).Filter<IOException>();
+            // 重试策略：当发生 IOException 时，最大重试 5 次，每次间隔 500 毫秒
+            return Retry.Create(s_tryCount, s_WaitMillisecond).Filter<IOException>();
         }
 
         /// <summary>

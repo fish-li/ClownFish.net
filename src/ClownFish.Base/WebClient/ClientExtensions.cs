@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,11 +16,15 @@ namespace ClownFish.Base.WebClient
 	{
         #region Send 方法遇到 WebException 异常封装，支持失败重试
 
+        // 网络 I/O 的重试参数
+        private static readonly int s_tryCount = ConfigurationManager.AppSettings["ClownFish.Base.WebClient:RetryCount"].TryToUInt(5);
+        private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Base.WebClient:WaitMillisecond"].TryToUInt(500);
+
         private static Retry GetDefaultRetry()
         {
             // 默认的重试规则：
-            // 重试5次，间隔 1 秒，且仅在WebException发生时重试
-            return Retry.Create(5, 1000).Filter<WebException>();
+            // 重试5次，间隔 500 毫秒，且仅在WebException发生时重试
+            return Retry.Create(s_tryCount, s_WaitMillisecond).Filter<WebException>();
         }
 
 

@@ -215,6 +215,9 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static int TryToUInt(this string text, int defaultValue)
         {
+            if( string.IsNullOrEmpty(text) )
+                return defaultValue;
+
             int result = 0;
             if( int.TryParse(text, out result) == false )
                 return defaultValue;
