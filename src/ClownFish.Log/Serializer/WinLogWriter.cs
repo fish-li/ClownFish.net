@@ -50,7 +50,8 @@ namespace ClownFish.Log.Serializer
 				s_sourceName = sourceName;
 				s_initOK = true;
 			}
-			catch {
+			catch (Exception ex){
+                string xx = ex.Message;     // 无用代码，仅用于调试查看错误原因
 				// 如果权限不够，就直接存在到Application目录中。
 				// 所以，这里不做异常处理
 			}

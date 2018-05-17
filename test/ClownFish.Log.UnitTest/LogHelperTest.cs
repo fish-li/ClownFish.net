@@ -17,59 +17,31 @@ namespace ClownFish.Log.UnitTest
 	[TestClass]
 	public class LogHelperTest : TestBase
 	{
-		//[TestMethod]
-		//public void DeleteEventLog()
-		//{
-		//	try {
-		//		EventLog.DeleteEventSource("WinLogWriter日志消息");
-		//	}
-		//	catch { }
+        //[TestMethod]
+        //public void DeleteEventLog()
+        //{
+        //    try {
+        //        EventLog.Delete("ClownFish-Log");
+        //    }
+        //    catch(Exception ex1) { string xx = ex1.Message; }
 
-		//	try {
-		//		EventLog.Delete("ClownFish-Log");
-		//	}
-		//	catch { }
-		//}
+        //    try {
+        //        EventLog.Delete("ClownFish");
+        //    }
+        //    catch( Exception ex1 ) { string xx = ex1.Message; }
 
-		//[TestMethod]
-		//public void DeleteEventLog()
-		//{
-		//	try {
-		//		EventLog.DeleteEventSource("明源ERP错误消息");
-		//	}
-		//	catch { }
+        //    try {
+        //        EventLog.DeleteEventSource("ClownFish");
+        //    }
+        //    catch( Exception ex1 ) { string xx = ex1.Message; }
 
-		//	try {
-		//		EventLog.Delete("mysoft-erp6");
-		//	}
-		//	catch { }
+        //    try {
+        //        EventLog.DeleteEventSource("LogTest");
+        //    }
+        //    catch( Exception ex1 ) { string xx = ex1.Message; }
+        //}
 
-		//	try {
-		//		EventLog.Delete("Mysoft-ERP");
-		//	}
-		//	catch { }			
-		//}
-
-
-		//[TestMethod]
-		//public void CreateEventSourece()
-		//{
-		//	string logName = "Mysoft-MetadataTfs";
-		//	string sourceName = "Mysoft.MetadataTfs.WebApplication";
-
-		//	try {
-		//		EventLog.DeleteEventSource(sourceName);
-		//	}
-		//	catch { }
-		//	try {
-		//		EventLog.Delete(logName);
-		//	}
-		//	catch { }
-
-		//	EventLog.CreateEventSource(sourceName, logName);
-		//}
-
-		internal static Exception CreateException()
+        internal static Exception CreateException()
 		{
 			try {
 				int a = 2;
