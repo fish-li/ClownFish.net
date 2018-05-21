@@ -69,6 +69,7 @@
     <Compile Include="Common\GuidHelper.cs" />
     <Compile Include="Common\GzipHelper.cs" />
     <Compile Include="Common\HashHelper.cs" />
+    <Compile Include="Common\HttpExtensions.cs" />
     <Compile Include="Common\LazyObject.cs" />
     <Compile Include="Common\NameValue.cs" />
     <Compile Include="Common\Retry.cs" />
