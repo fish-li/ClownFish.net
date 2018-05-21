@@ -26,10 +26,30 @@ namespace ClownFish.Log.Configuration
 		/// </summary>
 		public int TimerPeriod { get; set; }
 
-		/// <summary>
-		/// 所有Writer的配置集合
+        /// <summary>
+		/// 性能日志的配置信息
 		/// </summary>
-		[XmlArrayItem("Writer")]
+		public PerformanceConfig Performance { get; set; }
+
+
+        /// <summary>
+        /// 写日志失败时，异常消息的写入器
+        /// </summary>
+        public string ExceptionWriter { get; set; }
+
+        /// <summary>
+        /// 异常日志中是否包含环境信息。
+        /// 老版本的异常日志是不包含环境信息的。
+        /// 使用建议：如果环境可控，例如Web站点，可以不开启；
+        /// 如果是给客户私有部署，环境各不相同，当出现异常时想参考客户运行环境，那么可以开启此参数。
+        /// </summary>
+        public bool LogEnvironmentInfo { get; set; }
+
+
+        /// <summary>
+        /// 所有Writer的配置集合
+        /// </summary>
+        [XmlArrayItem("Writer")]
 		public WriterSection[] Writers { get; set; }
 
 		/// <summary>
@@ -38,23 +58,14 @@ namespace ClownFish.Log.Configuration
 		[XmlArrayItem("Type")]
 		public TypeItemConfig[] Types { get; set; }
 
-		/// <summary>
-		/// 性能日志的配置信息
-		/// </summary>
-		public PerformanceConfig Performance { get; set; }
+		
 
 
-		/// <summary>
-		/// 写日志失败时，异常消息的写入器
-		/// </summary>
-		public string ExceptionWriter { get; set; }
-
-
-		/// <summary>
-		/// 加载默认的配置文件（ClownFish.Log.config）
-		/// </summary>
-		/// <returns></returns>
-		public static LogConfig ReadConfigFile()
+        /// <summary>
+        /// 加载默认的配置文件（ClownFish.Log.config）
+        /// </summary>
+        /// <returns></returns>
+        public static LogConfig ReadConfigFile()
 		{
 			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ClownFish.Log.config");
 			if( RetryFile.Exists(configFile) == false )

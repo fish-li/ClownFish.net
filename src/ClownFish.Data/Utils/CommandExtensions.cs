@@ -36,7 +36,7 @@ namespace ClownFish.Data
 
 
 		/// <summary>
-		/// 设置等待命令执行的时间（以秒为单位）
+		/// 设置等待命令执行的时间（单位：秒）
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="command"></param>

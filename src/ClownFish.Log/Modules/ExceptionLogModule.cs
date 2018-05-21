@@ -6,7 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Data;
 using ClownFish.Log.Model;
+using ClownFish.Log.Serializer;
 
 namespace ClownFish.Log
 {
@@ -28,6 +30,17 @@ namespace ClownFish.Log
         /// <param name="app"></param>
         public void Init(HttpApplication app)
         {
+            // 确保配置文件已读取
+            WriterFactory.Init();
+
+
+            // 检查配置文件，是否启用 <Type DataType="ClownFish.Log.Model.ExceptionInfo, ClownFish.Log"
+            if( WriterFactory.Config.Types.FirstOrDefault(x => x.Type == typeof(ExceptionInfo)) == null ) {
+                throw new System.Configuration.ConfigurationErrorsException(
+                        "启用 ExceptionLogModule 时，必需在 ClownFish.Log.config 的<Types>节点中注册 ExceptionInfo 数据类型。");
+            }
+
+
             app.Error += App_Error;
 
             // 注意：这里只记录异常，不解决异常
@@ -47,14 +60,14 @@ namespace ClownFish.Log
             if( ex != null ) {
 
                 DbCommand dbCommand = null;
-                Type t = ex.GetType();
-                if( t.Namespace == "ClownFish.Data" && t.Name == "DbExceuteException" ) {
-                    PropertyInfo p = t.GetProperty("Command");
-                    dbCommand = (DbCommand)p.GetValue(ex);
+
+                DbExceuteException dbExceuteException = ex as DbExceuteException;
+                if( dbExceuteException != null ) {
+                    dbCommand = dbExceuteException.Command;
                 }
 
                 ExceptionInfo exceptionInfo = ExceptionInfo.Create(ex, app.Context, dbCommand);
-                ClownFish.Log.LogHelper.Write(exceptionInfo);
+                LogHelper.Write(exceptionInfo);
             }
         }
     }

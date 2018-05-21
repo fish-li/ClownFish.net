@@ -47,6 +47,9 @@ namespace ClownFish.Data
 			if( s_inited )
 				throw new InvalidOperationException("已经调用过Init方法，不允许重复调用。");
 
+            // 处理 configFilePath 为相对目录的场景，方便调用
+            configFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFilePath);
+
 			ExeConfigurationFileMap filemap = new ExeConfigurationFileMap();
 			filemap.ExeConfigFilename = configFilePath;
 

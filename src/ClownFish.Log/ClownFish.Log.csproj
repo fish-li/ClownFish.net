@@ -88,6 +88,7 @@
     <Compile Include="Model\PerformanceInfo.cs" />
     <Compile Include="Model\SqlInfo.cs" />
     <Compile Include="Model\WarningInfo.cs" />
+    <Compile Include="Modules\EventManagerEventSubscriber.cs" />
     <Compile Include="Modules\ExceptionLogModule.cs" />
     <Compile Include="Modules\HttpLogModule.cs" />
     <Compile Include="Modules\PerformanceModule.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="Serializer\NullWriter.cs" />
     <Compile Include="Serializer\WinLogWriter.cs" />
     <Compile Include="Serializer\WriterFactory.cs" />
-    <Compile Include="SomeExtenstions.cs" />
     <Compile Include="Web\LogFileViewHandler.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +120,10 @@
     <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
       <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
       <Name>ClownFish.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClownFish.Data\ClownFish.Data.csproj">
+      <Project>{bc50d47f-b55c-4d9d-b0d4-d7a63163e3fc}</Project>
+      <Name>ClownFish.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
+using ClownFish.Base;
+using ClownFish.Base.WebClient;
 using ClownFish.Base.Xml;
 using ClownFish.Log;
 using MongoDB.Bson.Serialization.Attributes;
@@ -31,6 +33,10 @@ namespace ClownFish.Log.Model
 		/// </summary>
 		public XmlCdata RequestText { get; set; }
 
+        /// <summary>
+        /// 为每个请求分配的唯一ID
+        /// </summary>
+        public string RequestId { get; set; }
 
 		/// <summary>
 		/// 页面地址
@@ -82,12 +88,6 @@ namespace ClownFish.Log.Model
 		}
 
 
-		/// <summary>
-		/// 一个特定的字符串，指示在日志记录时，不记录请求体内容。
-		/// 如果不希望记录某个请求体的内容，可以设置 context.Items[IgnoreHttpsRequestBody] = "yes";
-		/// </summary>
-		public static readonly string IgnoreHttpsRequestBody = "ClownFish.Log:IgnoreHttpsRequestBody";
-
 
 		/// <summary>
 		/// 设置请求信息
@@ -101,7 +101,7 @@ namespace ClownFish.Log.Model
             if( context.Request.IsAuthenticated )
                 this.UserName = context.User.Identity.Name;
 
-
+            this.RequestId = context.GetRequestId();
             this.Url = context.Request.Url.ToString();
             this.RawUrl = context.Request.RawUrl;
 
@@ -131,40 +131,59 @@ namespace ClownFish.Log.Model
             }
 
 
-            string postData = GetPostText(context);
+            string postData = GetRequestBody(context);
             if( postData != null )
                 sb.AppendLine().AppendLine(postData);
 
             this.RequestText = sb.ToString();
         }
 
-        private string GetPostText(HttpContext context)
+
+        private static readonly string IgnoreRequestBodyFlag = "_logIgnoreBody";
+
+
+        private string GetRequestBody(HttpContext context)
         {
+            // 如果当前请求不包含请求体，就直接返回
+            if( HttpOption.RequestHasBody(context.Request.HttpMethod ) == false )
+                return null;
+
+
+            // 注意：详细的日志内容中可能会导致密码泄露，
+            // 例如，一个登录请求在执行时发生异常，如果把请求体的全部内容记录到异常日志，后台人员就可以看到用户的密码。
+            // 所以这里在记录请求体时，会检查一些特殊的标记，如果它们存在，就不再记录请求体
+
+            // 注意：为了安全，密码不应该放在URL中。
+
+            if( context.Request.QueryString[IgnoreRequestBodyFlag] != null
+                || context.Request.Form[IgnoreRequestBodyFlag] != null
+                || context.Items[IgnoreRequestBodyFlag] != null
+                )
+                return "## 当前请求包含敏感信息，已忽略请求体内容。";
+            
+
             string postData = null;
 
-            // 这里可能会有一个安全漏洞，应该可能会记录一些敏感信息
-            if( context.Items[IgnoreHttpsRequestBody] == null ) {
-                if( context.Request.RequestType == "POST" ) {
-                    if( context.Request.Files.Count == 0 ) {
-                        postData = context.Request.ReadInputStream();
-                        context.Request.InputStream.Position = 0;
-                    }
-                    else {
-                        StringBuilder sb = new StringBuilder();
-                        foreach( string name in context.Request.Form.AllKeys ) {
-                            string[] values = context.Request.Form.GetValues(name);
-                            if( values != null ) {
-                                foreach( string value in values )
-                                    sb.AppendFormat("&{0}={1}", HttpUtility.UrlEncode(name), HttpUtility.UrlEncode(value));
-                            }
-                        }
-
-                        if( sb.Length > 0 ) {
-                            sb.Remove(0, 1);
-                            postData = sb.ToString();
-                        }
+            if( context.Request.Files.Count > 0 ) {
+                // 如果请求包含了上传文件，格式一定是： multipart/form-data，此时可能按 Form 方式来读取
+                StringBuilder sb = new StringBuilder();
+                foreach( string name in context.Request.Form.AllKeys ) {
+                    string[] values = context.Request.Form.GetValues(name);
+                    if( values != null ) {
+                        foreach( string value in values )
+                            sb.AppendFormat("&{0}={1}", HttpUtility.UrlEncode(name), HttpUtility.UrlEncode(value));
                     }
                 }
+
+                if( sb.Length > 0 ) {
+                    sb.Remove(0, 1);
+                    postData = sb.ToString();
+                }
+            }
+            else {
+                // 这里有可能是 FORM, XML, JSON，……
+                postData = context.Request.ReadInputStream();
+                context.Request.InputStream.Position = 0;
             }
 
             return postData;

@@ -177,18 +177,36 @@ namespace ClownFish.Base.WebClient
 		/// </summary>
 		private bool IsMustQueryString()
         {
+            return RequestHasBody(this.Method) == false;
+        }
+
+        /// <summary>
+        /// 根据一个请求的提交方法，判断是否包含请求体
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static bool RequestHasBody(string method)
+        {
+            if( string.IsNullOrEmpty(method) )
+                throw new ArgumentNullException(nameof(method));
+
+            method = method.ToUpper();
+
             // 参考 Fiddler 的判断规则
-            return (this.Method == "GET"
-                        || this.Method == "HEAD"
-                        || this.Method == "TRACE"
-                        || this.Method == "DELETE"
-                        || this.Method == "CONNECT"
-                        || this.Method == "MKCOL"
-                        || this.Method == "COPY"
-                        || this.Method == "MOVE"
-                        || this.Method == "UNLOCK"
-                        || this.Method == "OPTIONS"
-                );
+            if( method == "GET"
+                || method == "HEAD"
+                || method == "TRACE"
+                || method == "DELETE"
+                || method == "CONNECT"
+                || method == "MKCOL"
+                || method == "COPY"
+                || method == "MOVE"
+                || method == "UNLOCK"
+                || method == "OPTIONS"
+                )
+                return false;
+            else
+                return true;
         }
 
         /// <summary>

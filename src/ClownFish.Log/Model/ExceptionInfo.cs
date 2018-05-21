@@ -83,10 +83,13 @@ namespace ClownFish.Log.Model
 			info.ExceptionType = ex.GetType().FullName;
 			info.Exception = ex.ToString();
 
-            try {
-                info.Environment = EnvironmentInfo.GetCurrent();
-            }
-            catch { // 如果获取机器环境信息失败，就直接忽略
+
+            if( ClownFish.Log.Serializer.WriterFactory.Config.LogEnvironmentInfo ) {
+                try {
+                    info.Environment = EnvironmentInfo.GetCurrent();
+                }
+                catch { // 如果获取机器环境信息失败，就直接忽略
+                }
             }
 
 			if( context != null ) 

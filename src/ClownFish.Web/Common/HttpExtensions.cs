@@ -15,22 +15,12 @@ namespace ClownFish.Web
 	internal static class HttpExtensions
 	{
 
-		public static string ReadInputStream(this HttpRequest request)
-		{
-			//if( request == null )
-			//    throw new ArgumentNullException("request");
-
-			request.InputStream.Position = 0;
-			StreamReader sr = new StreamReader(request.InputStream, request.ContentEncoding);
-			return  sr.ReadToEnd();
-		}
-
-		/// <summary>
-		/// 获取实际的虚拟路径，如果网站部署在虚拟目录中，将去除虚拟目录的顶层目录名。
-		/// </summary>
-		/// <param name="context">HttpContext实例的引用</param>
-		/// <returns>去除虚拟目录后的实际虚拟路径。</returns>
-		public static string GetRealVirtualPath(this HttpContext context)
+        /// <summary>
+        /// 获取实际的虚拟路径，如果网站部署在虚拟目录中，将去除虚拟目录的顶层目录名。
+        /// </summary>
+        /// <param name="context">HttpContext实例的引用</param>
+        /// <returns>去除虚拟目录后的实际虚拟路径。</returns>
+        public static string GetRealVirtualPath(this HttpContext context)
 		{
 			string virtualPath = context.Request.Path;
 

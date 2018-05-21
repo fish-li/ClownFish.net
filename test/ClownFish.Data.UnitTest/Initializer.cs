@@ -14,15 +14,13 @@ namespace ClownFish.Data.UnitTest
 			LoadProxyAssembly();
 
 
-			string configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Connections.config");
-
 			// ########################################
 			// ClownFish.Data 初始化 3 步骤（都是可选步骤）：
 			// ########################################
 
 			ClownFish.Data.Initializer.Instance
 							// 1、初始化连接字符串
-							.InitConnection(configFile)
+							.InitConnection("Connections.config")
 
 							// 2、加载 XmlCommand （如果不使用XmlCommand，可以忽略这个步骤）
 							.LoadXmlCommandFromDirectory(/* 不指定参数，接受XmlCommand规范的默认目录  */)

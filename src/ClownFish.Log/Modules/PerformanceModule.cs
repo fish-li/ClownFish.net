@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using ClownFish.Base;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
 
@@ -23,15 +24,40 @@ namespace ClownFish.Log
 		/// <param name="app"></param>
 		public void Init(HttpApplication app)
 		{
-			// 确保配置文件已读取
-			WriterFactory.Init();
+            // 确保配置文件已读取
+            WriterFactory.Init();
 
-			// 这里只记录 Handler 的执行时间，排除管线过程中HttpModule的执行时间
-			app.PreRequestHandlerExecute += app_PreRequestHandlerExecute;
-			app.PostRequestHandlerExecute += app_PostRequestHandlerExecute;
-		}
 
-		void app_PreRequestHandlerExecute(object sender, EventArgs e)
+            // 检查配置文件，是否启用 <Type DataType="ClownFish.Log.Model.PerformanceInfo, ClownFish.Log"
+            if( WriterFactory.Config.Types.FirstOrDefault(x => x.Type == typeof(PerformanceInfo)) == null ) {
+                throw new System.Configuration.ConfigurationErrorsException(
+                        "启用 PerformanceModule 时，必需在 ClownFish.Log.config 的<Types>节点中注册 PerformanceInfo 数据类型。");
+            }
+
+            app.BeginRequest += App_BeginRequest;
+
+            if( WriterFactory.Config.Performance?.HttpExecuteTimeout > 0 ) {
+                // 启用 HttpHandler 性能监控
+                // 这里只记录 Handler 的执行时间，排除管线过程中HttpModule的执行时间
+                app.PreRequestHandlerExecute += app_PreRequestHandlerExecute;
+                app.PostRequestHandlerExecute += app_PostRequestHandlerExecute;
+            }
+
+            if( WriterFactory.Config.Performance?.DbExecuteTimeout > 0 ) {
+                // 启用数据库性能监控
+                ClownFish.Log.Modules.EventManagerEventSubscriber.Register();
+            }
+        }
+
+        private void App_BeginRequest(object sender, EventArgs e)
+        {
+            HttpApplication app = (HttpApplication)sender;
+
+            // 设置 RequestID
+            app.Context.SetRequestId();
+        }
+
+        void app_PreRequestHandlerExecute(object sender, EventArgs e)
 		{
 			HttpApplication app = (HttpApplication)sender;
 			app.Context.Items[s_ItemKey] = DateTime.Now;
@@ -65,13 +91,10 @@ namespace ClownFish.Log
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="timeSpan"></param>
-		public static void CheckDbExecuteTime(DbCommand command, TimeSpan timeSpan)
+		internal static void CheckDbExecuteTime(DbCommand command, TimeSpan timeSpan)
 		{
 			if( command == null )
 				return;
-
-			// 确保配置文件已读取
-			WriterFactory.Init();
 
 
 			if( timeSpan.TotalMilliseconds >= WriterFactory.Config.Performance.DbExecuteTimeout ) {
