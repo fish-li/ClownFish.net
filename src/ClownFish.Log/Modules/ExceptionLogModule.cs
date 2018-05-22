@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using ClownFish.Data;
+using ClownFish.Base.Internals;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
 
@@ -47,6 +47,20 @@ namespace ClownFish.Log
             // 所以异常会继续抛出，会被其它地方处理。
         }
 
+
+        /// <summary>
+        /// 决定某个异常是否需要写入异常日志，
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        protected virtual bool IsNeedLog(Exception ex)
+        {
+            // 扩展点：如果不希望记录某些类型的异常，可以重写这个方法。
+
+            return true;
+        }
+
+
         /// <summary>
         /// Error事件处理方法
         /// </summary>
@@ -57,18 +71,21 @@ namespace ClownFish.Log
             HttpApplication app = (HttpApplication)sender;
             Exception ex = app.Server.GetLastError();
 
-            if( ex != null ) {
+            if( ex == null )
+                return;
 
-                DbCommand dbCommand = null;
+            if( IsNeedLog(ex) == false )
+                return;
 
-                DbExceuteException dbExceuteException = ex as DbExceuteException;
-                if( dbExceuteException != null ) {
-                    dbCommand = dbExceuteException.Command;
-                }
+            DbCommand dbCommand = null;
 
-                ExceptionInfo exceptionInfo = ExceptionInfo.Create(ex, app.Context, dbCommand);
-                LogHelper.Write(exceptionInfo);
+            IIncludeDbCommand dbExceuteException = ex as IIncludeDbCommand;
+            if( dbExceuteException != null ) {
+                dbCommand = dbExceuteException.Command;
             }
+
+            ExceptionInfo exceptionInfo = ExceptionInfo.Create(ex, app.Context, dbCommand);
+            LogHelper.Write(exceptionInfo);
         }
     }
 }

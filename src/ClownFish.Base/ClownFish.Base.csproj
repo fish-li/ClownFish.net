@@ -49,6 +49,7 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Newtonsoft.Json.8.0.2\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -86,11 +87,13 @@
     <Compile Include="Framework\AppInitializer.cs" />
     <Compile Include="Framework\PreApplicationStartMethodAttribute.cs" />
     <Compile Include="Framework\RunTimeEnvironment.cs" />
-    <Compile Include="Common\HttpInternalExtensions.cs" />
+    <Compile Include="Internals\HttpInternalExtensions.cs" />
     <Compile Include="Http\CustomDataAttribute.cs" />
     <Compile Include="Http\HttpFile.cs" />
     <Compile Include="Http\HttpHeaderCollection.cs" />
     <Compile Include="Http\SerializeFormat.cs" />
+    <Compile Include="Internals\IIncludeDbCommand.cs" />
+    <Compile Include="Internals\InternalBridge.cs" />
     <Compile Include="Json\JsonExtensions.cs" />
     <Compile Include="Json\DefaultJsonSerializer.cs" />
     <Compile Include="Json\XmlCdataJsonConverter.cs" />

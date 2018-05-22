@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base.Internals;
 using ClownFish.Data.CodeDom;
 using ClownFish.Data.Xml;
 
@@ -13,10 +14,16 @@ namespace ClownFish.Data
 	/// </summary>
 	public sealed class Initializer
 	{
-		/// <summary>
-		/// Initializer的实例引用
-		/// </summary>
-		public static readonly Initializer Instance = new Initializer();
+        private Initializer()
+        {
+            // 供 PerformanceModule 调用
+            InternalBridge.RegisterEventManagerEventSubscriber = EventManagerEventSubscriber.Register;
+        }
+
+        /// <summary>
+        /// Initializer的实例引用
+        /// </summary>
+        public static readonly Initializer Instance = new Initializer();
 
 		/// <summary>
 		/// 默认的实例列表长度

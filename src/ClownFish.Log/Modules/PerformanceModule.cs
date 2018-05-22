@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using ClownFish.Base;
+using ClownFish.Base.Internals;
 using ClownFish.Log.Model;
 using ClownFish.Log.Serializer;
 
@@ -44,8 +45,17 @@ namespace ClownFish.Log
             }
 
             if( WriterFactory.Config.Performance?.DbExecuteTimeout > 0 ) {
-                // 启用数据库性能监控
-                ClownFish.Log.Modules.EventManagerEventSubscriber.Register();
+                // 启用数据库性能监控，注册扩展类型：EventManagerEventSubscriber
+                bool? flag = InternalBridge.RegisterEventManagerEventSubscriber?.Invoke();
+
+                // 说明：如果希望上面这行代码能正常工作，
+                // 必须在程序初始化时调用 ClownFish.Data.Initializer.Instance.XXX 来初始化ClownFish.Data
+                // 在 ClownFish.Data.Initializer 的构造方法中，会给 InternalBridge.RegisterEventManagerEventSubscriber 赋值
+
+                // 如果是第一次调用，再注册回调委托，供 EventManagerEventSubscriber 使用
+                if( flag.HasValue && flag.Value ) {
+                    InternalBridge.PerformanceModuleCheckDbExecuteTime = CheckDbExecuteTime;
+                }
             }
         }
 

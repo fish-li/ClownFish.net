@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base.Internals;
 using ClownFish.Base.TypeExtend;
 using ClownFish.Data;
 
-namespace ClownFish.Log.Modules
+namespace ClownFish.Data
 {
     internal class EventManagerEventSubscriber : EventSubscriber<EventManager>
     {
@@ -15,7 +16,7 @@ namespace ClownFish.Log.Modules
 
         private DateTime _startTime;
 
-        internal static void Register()
+        internal static bool Register()
         {
             if( s_inited == false ) {
                 lock( s_lock ) {
@@ -23,9 +24,14 @@ namespace ClownFish.Log.Modules
                         ExtenderManager.RegisterSubscriber(typeof(EventManagerEventSubscriber));
 
                         s_inited = true;
+
+                        // 第一次注册返回 true，后面调用全部返回 false
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
 
         public override void SubscribeEvent(EventManager instance)
@@ -45,7 +51,8 @@ namespace ClownFish.Log.Modules
             DateTime endTime = DateTime.Now;
             TimeSpan ts = endTime - _startTime;
 
-            PerformanceModule.CheckDbExecuteTime(e.DbCommand, ts);
+            //PerformanceModule.CheckDbExecuteTime(e.DbCommand, ts);
+            InternalBridge.PerformanceModuleCheckDbExecuteTime?.Invoke(e.DbCommand, ts);
         }
     }
 }

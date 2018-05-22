@@ -58,6 +58,7 @@
     <Compile Include="CodeDom\CompileException.cs" />
     <Compile Include="CodeDom\CompilerHelper.cs" />
     <Compile Include="Command\DbExceuteException.cs" />
+    <Compile Include="Command\EventManagerEventSubscriber.cs" />
     <Compile Include="Context\SomeExtensions.cs" />
     <Compile Include="Entity\BaseDataLoader.cs" />
     <Compile Include="Entity\ColumnInfo.cs" />
@@ -118,6 +119,7 @@
     <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
       <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
       <Name>ClownFish.Base</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

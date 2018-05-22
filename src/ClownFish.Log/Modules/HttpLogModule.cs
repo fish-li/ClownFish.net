@@ -13,7 +13,7 @@ namespace ClownFish.Log
     /// <summary>
     /// 一个简单的记录HTTP请求数据的IHttpModule
     /// </summary>
-    public class HttpLogModule : IHttpModule
+    public sealed class HttpLogModule : IHttpModule
     {
         /// <summary>
         /// Dispose

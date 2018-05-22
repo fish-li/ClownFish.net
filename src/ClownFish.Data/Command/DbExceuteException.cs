@@ -12,8 +12,8 @@ namespace ClownFish.Data
 	/// 表示在数据访问执行过程中发生的异常。
 	/// </summary>
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237")]
-	public sealed class DbExceuteException : Exception
-	{
+	public sealed class DbExceuteException : Exception, ClownFish.Base.Internals.IIncludeDbCommand
+    {
 		/// <summary>
 		/// SQL执行时关联的命令对象。
 		/// </summary>
