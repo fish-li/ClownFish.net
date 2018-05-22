@@ -106,9 +106,11 @@ namespace ClownFish.Log
 			if( writers == null || writers.Length == 0 )
 				return;
 
-
-			foreach( var writer in writers )
-				writer.Write(info);
+            // 用类型的名称做锁对象，防止并发写入问题
+            lock( typeof(T).Name ) {
+                foreach( var writer in writers )
+                    writer.Write(info);
+            }
 		}
 
 
