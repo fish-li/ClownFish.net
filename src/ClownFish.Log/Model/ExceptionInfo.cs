@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
+using ClownFish.Base;
 using ClownFish.Base.Xml;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -79,8 +80,8 @@ namespace ClownFish.Log.Model
 
 			ExceptionInfo info = new ExceptionInfo();
 			info.FillBaseInfo();
-			info.Message = ex.Message;  // TODO: 应该保证能拿到一个有价值的异常消息
-			info.ExceptionType = ex.GetType().FullName;
+            info.Message = ex.GetErrorMessage();
+            info.ExceptionType = ex.GetType().FullName;
 			info.Exception = ex.ToString();
 
 

@@ -58,10 +58,10 @@ namespace ClownFish.Base
         /// <param name="filePath"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string ReadAllText(string filePath, Encoding encoding)
+        public static string ReadAllText(string filePath, Encoding encoding = null)
         {
             return CreateRetry().Run(() => {
-                return File.ReadAllText(filePath, encoding);
+                return File.ReadAllText(filePath, encoding.GetIt());
             });
         }
 
@@ -86,10 +86,10 @@ namespace ClownFish.Base
         /// <param name="filePath"></param>
         /// <param name="text"></param>
         /// <param name="encoding"></param>
-        public static void WriteAllText(string filePath, string text, Encoding encoding)
+        public static void WriteAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.WriteAllText(filePath, text, encoding);
+                File.WriteAllText(filePath, text, encoding.GetIt());
                 return 1;
             });
         }
@@ -115,10 +115,10 @@ namespace ClownFish.Base
         /// <param name="filePath"></param>
         /// <param name="text"></param>
         /// <param name="encoding"></param>
-        public static void AppendAllText(string filePath, string text, Encoding encoding)
+        public static void AppendAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.AppendAllText(filePath, text, encoding);
+                File.AppendAllText(filePath, text, encoding.GetIt());
                 return 1;
             });
         }
