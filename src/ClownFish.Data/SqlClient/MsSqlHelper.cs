@@ -85,16 +85,73 @@ left outer join sys.computed_columns cmc on cmc.object_id = clmns.object_id and 
 left outer join sys.identity_columns idc on idc.object_id = clmns.object_id and idc.column_id = clmns.column_id 
 WHERE (tbl.name= @TableName ) ORDER BY clmns.column_id ASC";
 
+
+
+/* 主键，聚集索引 测试脚本
+
+CREATE TABLE [dbo].[Tablexxxx](
+	[TableName] [nvarchar](200) NOT NULL,
+	[LastVersion] [bigint] NOT NULL,
+	[UpdateTime] [datetime] NOT NULL,
+	CONSTRAINT [PK_Tablexxxx] PRIMARY KEY NONCLUSTERED 
+	(
+		[TableName] ASC, [LastVersion]
+	)
+) 
+GO
+CREATE CLUSTERED INDEX [IX_Tablexxxx] ON [dbo].[Tablexxxx]
+(
+	[TableName] ASC,[UpdateTime] ASC
+)
+GO
+CREATE  INDEX [IX_Tablexxxx2] ON [dbo].[Tablexxxx]
+(
+	[LastVersion] ASC
+)
+GO
+
+
+select ind.name,  ind.index_id, ind.type, ind.is_unique, 
+		 ind.is_primary_key, ind.is_unique_constraint, 
+		 ind_col.index_column_id, col.name as column_nName
+from sys.indexes ind 
+	left outer join (sys.index_columns ind_col inner join sys.columns col 
+					on col.object_id = ind_col.object_id and col.column_id = ind_col.column_id ) 
+	on ind_col.object_id = ind.object_id and ind_col.index_id = ind.index_id 
+where ind.object_id = object_id( N'dbo.Tablexxxx' )  and ind.index_id >= 0  and ind.is_hypothetical = 0  
+order by ind.index_id, ind_col.key_ordinal
+
+*/
+
+
         /// <summary>
-        /// SQL脚本，用于获取某个数据表的主键字段
+        /// SQL脚本，用于获取某个数据表的 聚集索引 字段
+        /// </summary>
+        public static readonly string ScriptGetTableClustered = @"
+select col.name as column_nName 
+from sys.indexes ind 
+    left outer join (sys.index_columns ind_col inner join sys.columns col 
+                on col.object_id = ind_col.object_id and col.column_id = ind_col.column_id )  
+    on ind_col.object_id = ind.object_id and ind_col.index_id = ind.index_id 
+where ind.object_id = object_id( @TableName )  and ind.index_id >= 0 and ind.type = 1 and ind.is_hypothetical = 0
+order by ind.index_id, ind_col.key_ordinal
+";
+
+        /// <summary>
+        /// SQL脚本，用于获取某个数据表的 主键 字段
         /// </summary>
         public static readonly string ScriptGetTablePrimaryKey = @"
 select col.name as column_nName 
 from sys.indexes ind 
-left outer join (sys.index_columns ind_col inner join sys.columns col on col.object_id = ind_col.object_id and col.column_id = ind_col.column_id )  on ind_col.object_id = ind.object_id and ind_col.index_id = ind.index_id 
-where ind.object_id = object_id( @TableName )  and ind.index_id >= 0 and ind.type = 1 
-and ind.is_hypothetical = 0   order by ind.index_id, ind_col.key_ordinal
+    left outer join (sys.index_columns ind_col inner join sys.columns col 
+                on col.object_id = ind_col.object_id and col.column_id = ind_col.column_id )  
+    on ind_col.object_id = ind.object_id and ind_col.index_id = ind.index_id 
+where ind.object_id = object_id( @TableName )  and ind.index_id >= 0 and ind.is_primary_key = 1 and ind.is_hypothetical = 0
+order by ind.index_id, ind_col.key_ordinal
 ";
+
+
+
 
         /// <summary>
         /// SQL脚本，用于获取某个存储过程的定义脚本
