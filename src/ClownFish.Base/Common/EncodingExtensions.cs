@@ -13,7 +13,7 @@ namespace ClownFish.Base
         /// </summary>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static Encoding GetIt(this Encoding encoding)
+        public static Encoding TryGet(this Encoding encoding)
         {
             return encoding ?? Encoding.UTF8;
         }

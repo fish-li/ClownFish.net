@@ -12,9 +12,8 @@ namespace ClownFish.Base.UnitTest._Sample
     {
         public void 发送HTTP请求_支持重试()
         {
-            // 由于 HttpOption.GetResult 方法提供重试功能
-            // 这里使用一个 null 的 Retry变量，指示使用HttpOption默认的重试功能
-            Retry retry = null;
+            // 如果发生异常，最多重试5次，间隔 500 毫秒
+            Retry retry = Retry.Create(5, 500);
 
             string text = new HttpOption {
                 Url = "http://www.fish-web-demo.com/abc.aspx",
