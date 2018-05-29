@@ -66,7 +66,14 @@ namespace ClownFish.Base
 
 			// 公钥放在程序集中
 			byte[] bb = Encoding.ASCII.GetBytes(publicKey.Trim());
-			X509Certificate2 cert = new X509Certificate2(bb);
+
+            // 注意：下面这行代码在 .NET 3.5及以下版本中会有问题：每次会在临时目录下创建二个空文件，最后调用 Path.GetTempFilename() 时，当临时文件超过65536时会出现异常
+            // 可参考以链接： https://blogs.msmvps.com/infinitec/2009/03/29/x509certificate2-constructor-creates-two-empty-files-in-the-temporary-files-directory/
+            // 对应解决办法：
+            // 1，用 byte[] 生成临时文件，文件临时文件中构造X509Certificate2实例
+            // 2，创建临时文件时，计算publicKey的sha1值，用来做临时文件名，用完后不删除，就当是文件缓存了
+
+            X509Certificate2 cert = new X509Certificate2(bb);
 
 			if( cert.HasPrivateKey )        // 增加这个检查可以防止把私钥写到字符串中，从而泄露私钥
 				throw new ArgumentException("字符串证书中不允许包含私钥！");
