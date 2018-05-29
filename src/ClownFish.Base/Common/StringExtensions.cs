@@ -247,5 +247,18 @@ namespace ClownFish.Base
         }
 
 
+        /// <summary>
+        /// 将字符串数组合并成单一的字符串
+        /// </summary>
+        /// <param name="stringAray"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static string Merge(this string[] stringAray, string separator)
+        {
+            if( stringAray == null )
+                throw new ArgumentNullException(nameof(stringAray));
+
+            return string.Join(separator, stringAray);
+        }
     }
 }

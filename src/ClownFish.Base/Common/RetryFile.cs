@@ -61,7 +61,7 @@ namespace ClownFish.Base
         public static string ReadAllText(string filePath, Encoding encoding = null)
         {
             return CreateRetry().Run(() => {
-                return File.ReadAllText(filePath, encoding.TryGet());
+                return File.ReadAllText(filePath, encoding.GetOrDefault());
             });
         }
 
@@ -89,7 +89,7 @@ namespace ClownFish.Base
         public static void WriteAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.WriteAllText(filePath, text, encoding.TryGet());
+                File.WriteAllText(filePath, text, encoding.GetOrDefault());
                 return 1;
             });
         }
@@ -118,7 +118,7 @@ namespace ClownFish.Base
         public static void AppendAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.AppendAllText(filePath, text, encoding.TryGet());
+                File.AppendAllText(filePath, text, encoding.GetOrDefault());
                 return 1;
             });
         }
