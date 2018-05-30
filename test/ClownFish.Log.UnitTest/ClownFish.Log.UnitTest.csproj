@@ -78,6 +78,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ConfigTest.cs" />
+    <Compile Include="DeleteLog.cs" />
     <Compile Include="ErrorWriter.cs" />
     <Compile Include="HttpInfoTest.cs" />
     <Compile Include="Initializer.cs" />

@@ -79,9 +79,19 @@ namespace ClownFish.Base
         }
 
 
+        private static void CreateDirectory(Exception ex, int n)
+        {
+            if( n >= 2 )
+                return;
+
+            DirectoryNotFoundException ex2 = ex as DirectoryNotFoundException;
+            if( ex2 != null ) {
+
+            }
+        }
 
         /// <summary>
-        /// 等同于：System.IO.File.WriteAllText()
+        /// 等同于：System.IO.File.WriteAllText()，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="text"></param>
@@ -89,28 +99,40 @@ namespace ClownFish.Base
         public static void WriteAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.WriteAllText(filePath, text, encoding.GetOrDefault());
+                try {
+                    File.WriteAllText(filePath, text, encoding.GetOrDefault());
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    File.WriteAllText(filePath, text, encoding.GetOrDefault());
+                }
                 return 1;
             });
         }
 
 
         /// <summary>
-        /// 等同于：System.IO.File.WriteAllBytes()
+        /// 等同于：System.IO.File.WriteAllBytes()，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="buffer"></param>
         public static void WriteAllBytes(string filePath, byte[] buffer)
         {
             CreateRetry().Run(() => {
-                File.WriteAllBytes(filePath, buffer);
+                try {
+                    File.WriteAllBytes(filePath, buffer);
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    File.WriteAllBytes(filePath, buffer);
+                }
                 return 1;
             });
         }
 
 
         /// <summary>
-        /// 等同于：System.IO.File.AppendAllText()
+        /// 等同于：System.IO.File.AppendAllText()，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="text"></param>
@@ -118,7 +140,13 @@ namespace ClownFish.Base
         public static void AppendAllText(string filePath, string text, Encoding encoding = null)
         {
             CreateRetry().Run(() => {
-                File.AppendAllText(filePath, text, encoding.GetOrDefault());
+                try {
+                    File.AppendAllText(filePath, text, encoding.GetOrDefault());
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    File.AppendAllText(filePath, text, encoding.GetOrDefault());
+                }
                 return 1;
             });
         }
@@ -164,28 +192,40 @@ namespace ClownFish.Base
 
 
 
-       /// <summary>
-        /// 等同于：System.IO.File.OpenWrite()
+        /// <summary>
+        /// 等同于：System.IO.File.OpenWrite()，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
         public static FileStream OpenWrite(string filePath)
         {
             return CreateRetry().Run(() => {
-                return File.OpenWrite(filePath);
+                try {
+                    return File.OpenWrite(filePath);
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    return File.OpenWrite(filePath);
+                }
             });
         }
 
 
         /// <summary>
-        /// 等同于：new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+        /// 等同于：new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None); ，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
         public static FileStream OpenCreate(string filePath)
         {
             return CreateRetry().Run(() => {
-                return new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                try {
+                    return new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    return new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                }
             });
         }
 

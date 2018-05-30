@@ -17,30 +17,6 @@ namespace ClownFish.Log.UnitTest
 	[TestClass]
 	public class LogHelperTest : TestBase
 	{
-        //[TestMethod]
-        //public void DeleteEventLog()
-        //{
-        //    try {
-        //        EventLog.Delete("ClownFish-Log");
-        //    }
-        //    catch(Exception ex1) { string xx = ex1.Message; }
-
-        //    try {
-        //        EventLog.Delete("ClownFish");
-        //    }
-        //    catch( Exception ex1 ) { string xx = ex1.Message; }
-
-        //    try {
-        //        EventLog.DeleteEventSource("ClownFish");
-        //    }
-        //    catch( Exception ex1 ) { string xx = ex1.Message; }
-
-        //    try {
-        //        EventLog.DeleteEventSource("LogTest");
-        //    }
-        //    catch( Exception ex1 ) { string xx = ex1.Message; }
-        //}
-
         internal static Exception CreateException()
 		{
 			try {
