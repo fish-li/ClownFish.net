@@ -32,13 +32,10 @@ namespace ClownFish.Base
 
             // TODO: 可能还需要完善
 
-            string message1 = ex.Message;
-            string message2 = baseException.Message;
-
-            if( message1 == message2 )
-                return message1;
+            if( ex == baseException )
+                return ex.Message;
             else
-                return message1 + " => " + message2;
+                return ex.Message + " => " + baseException.Message;
         }
     }
 }
