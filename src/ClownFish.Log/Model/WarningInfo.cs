@@ -12,16 +12,22 @@ namespace ClownFish.Log.Model
     public sealed class WarningInfo : BaseInfo
     {
         /// <summary>
-        /// 构造方法
+        /// 根据消息构造WarningInfo实例
         /// </summary>
         /// <param name="message"></param>
-        public WarningInfo(string message)
+        /// <returns></returns>
+        public static WarningInfo Create(string message)
         {
             if( string.IsNullOrEmpty(message) )
                 throw new ArgumentNullException(nameof(message));
 
-            this.FillBaseInfo();
-            this.Message = message;
+            WarningInfo info = new WarningInfo();
+            info.FillBaseInfo();
+            info.Message = message;
+            return info;
         }
+
+
+
     }
 }

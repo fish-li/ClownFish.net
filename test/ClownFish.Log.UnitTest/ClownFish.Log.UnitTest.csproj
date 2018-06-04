@@ -89,6 +89,7 @@
     <Compile Include="SqlInfoTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WarningInfoTest.cs" />
     <Compile Include="WinLogWriterTest.cs" />
     <Compile Include="WriterFactoryTest.cs" />
     <Compile Include="WriterTest.cs" />
