@@ -115,7 +115,7 @@ namespace ClownFish.Base.Xml
 			if( string.IsNullOrEmpty(path) )
 				throw new ArgumentNullException("path");
 
-			using( FileStream file = RetryFile.OpenCreate(path) ) {
+			using( FileStream file = RetryFile.Create(path) ) {
 				XmlSerializeInternal(file, o, encoding);
 			}
 		}

@@ -77,6 +77,7 @@
     <Compile Include="Common\LazyObject.cs" />
     <Compile Include="Common\NameValue.cs" />
     <Compile Include="Common\Retry.cs" />
+    <Compile Include="Common\RetryDirectory.cs" />
     <Compile Include="Common\RetryFile.cs" />
     <Compile Include="Common\RsaHelper.cs" />
     <Compile Include="Common\StringExtensions.cs" />

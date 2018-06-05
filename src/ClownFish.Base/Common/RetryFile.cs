@@ -30,7 +30,7 @@ namespace ClownFish.Base
         private static readonly int s_tryCount = ConfigurationManager.AppSettings["ClownFish.Base.RetryFile:RetryCount"].TryToUInt(5);
         private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Base.RetryFile:WaitMillisecond"].TryToUInt(500);
 
-        private static Retry CreateRetry()
+        internal static Retry CreateRetry()
         {
             // 重试策略：当发生 IOException 时，最大重试 5 次，每次间隔 500 毫秒
             return Retry.Create(s_tryCount, s_WaitMillisecond).Filter<IOException>();
@@ -78,17 +78,6 @@ namespace ClownFish.Base
             });
         }
 
-
-        private static void CreateDirectory(Exception ex, int n)
-        {
-            if( n >= 2 )
-                return;
-
-            DirectoryNotFoundException ex2 = ex as DirectoryNotFoundException;
-            if( ex2 != null ) {
-
-            }
-        }
 
         /// <summary>
         /// 等同于：System.IO.File.WriteAllText()，且当目录不存在时自动创建。
@@ -212,20 +201,44 @@ namespace ClownFish.Base
 
 
         /// <summary>
-        /// 等同于：new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None); ，且当目录不存在时自动创建。
+        /// 等同于：File.Create() ，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static FileStream OpenCreate(string filePath)
+        public static FileStream Create(string filePath)
         {
             return CreateRetry().Run(() => {
                 try {
-                    return new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    return File.Create(filePath);
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    return new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    return File.Create(filePath);
                 }
+            });
+        }
+
+
+        /// <summary>
+        /// 等同于：System.IO.File.Copy()，且当目录不存在时自动创建。
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        /// <param name="overwrite"></param>
+        public static void Copy(string sourceFileName, string destFileName, bool overwrite = true)
+        {
+            if( File.Exists(sourceFileName) == false )
+                throw new FileNotFoundException("File not found: " + sourceFileName);
+
+            CreateRetry().Run(() => {
+                try {
+                    File.Copy(sourceFileName, destFileName, overwrite);
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                    File.Copy(sourceFileName, destFileName, overwrite);
+                }
+                return 1;
             });
         }
 
