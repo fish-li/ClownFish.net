@@ -30,8 +30,13 @@ namespace ClownFish.Base
 			return Sign(data, cert);
 		}
 
-
-		private static string Sign(byte[] data, X509Certificate2 cert)
+        /// <summary>
+        /// 用指定的证书对数据做签名
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="cert"></param>
+        /// <returns></returns>
+		public static string Sign(byte[] data, X509Certificate2 cert)
 		{
 			if( cert.HasPrivateKey == false )
 				throw new ArgumentException("指定的证书没有包含私钥：" + cert.Subject);
