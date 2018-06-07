@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data.Common;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace ClownFish.Data.SqlClient
 {
@@ -490,6 +491,36 @@ ORDER  BY [Schema],
             return false;
         }
 
+
+        /// <summary>
+        /// 拆分TSQL批脚本的正则表达式， 分割符：GO
+        /// </summary>
+        private static Regex s_RegexGO = new Regex(@"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        /// <summary>
+		/// 运行一段 T-SQL脚本（不使用ADO.NET的事务）
+		/// </summary>
+		/// <param name="dbContext">DbContext实例</param>
+		/// <param name="script">SQL Server T-SQL脚本</param>
+        public static void ExecuteScript(DbContext dbContext, string script)
+        {
+            if( dbContext == null )
+                throw new ArgumentNullException(nameof(dbContext));
+
+            if( string.IsNullOrEmpty(script) )
+                return;
+
+
+            string[] lines = s_RegexGO.Split(script);
+
+            foreach( string line in lines ) {
+                string query = line.Trim();
+
+                if( query.Length > 0 ) {
+                    dbContext.CPQuery.Create(query).ExecuteNonQuery();
+                }
+            }
+        }
 
     }
 }
