@@ -104,7 +104,7 @@ namespace ClownFish.Log.UnitTest
 			mail.Name = "Mail";
 			mail.Type = "ClownFish.Log.Serializer.MailWriter, ClownFish.Log";
 			mail.Options = new WriterOption[1];
-			mail.Options[0] = new WriterOption { Key = "Receivers", Value = "liqf01@mysoft.com.cn" };
+			mail.Options[0] = new WriterOption { Key = "Receivers", Value = "aaaaaa@163.com" };
 			config.Writers[1] = mail;
 			
 #if _MongoDB_

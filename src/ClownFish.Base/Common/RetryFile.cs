@@ -93,7 +93,7 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    File.WriteAllText(filePath, text, encoding.GetOrDefault());
+                    throw;
                 }
                 return 1;
             });
@@ -113,7 +113,7 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    File.WriteAllBytes(filePath, buffer);
+                    throw;
                 }
                 return 1;
             });
@@ -134,7 +134,7 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    File.AppendAllText(filePath, text, encoding.GetOrDefault());
+                    throw;
                 }
                 return 1;
             });
@@ -194,7 +194,7 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    return File.OpenWrite(filePath);
+                    throw;
                 }
             });
         }
@@ -213,7 +213,7 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    return File.Create(filePath);
+                    throw;
                 }
             });
         }
@@ -236,7 +236,30 @@ namespace ClownFish.Base
                 }
                 catch( DirectoryNotFoundException ) {
                     Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                    File.Copy(sourceFileName, destFileName, overwrite);
+                    throw;
+                }
+                return 1;
+            });
+        }
+
+
+        /// <summary>
+        /// 等同于：System.IO.File.Move()，且当目录不存在时自动创建。
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        public static void Move(string sourceFileName, string destFileName)
+        {
+            if( File.Exists(sourceFileName) == false )
+                throw new FileNotFoundException("File not found: " + sourceFileName);
+
+            CreateRetry().Run(() => {
+                try {
+                    File.Move(sourceFileName, destFileName);
+                }
+                catch( DirectoryNotFoundException ) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                    throw;
                 }
                 return 1;
             });
