@@ -2,72 +2,87 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace ClownFish.Data.SqlClient
 {
     /// <summary>
     /// 表示一个SQLSERVER数据表字段的描述信息
     /// </summary>
-	public class DbField
+	public sealed class DbField
     {
         /// <summary>
         /// 字段名
         /// </summary>
-		public string Name { get; set; }
+        [XmlAttribute]
+        public string Name { get; set; }
         /// <summary>
         /// 数据类型
         /// </summary>
-		public string DataType { get; set; }
+        [XmlAttribute]
+        public string DataType { get; set; }
         /// <summary>
         /// 长度
         /// </summary>
-		public int Length { get; set; }
+        [XmlAttribute]
+        public int Length { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public int scale { get; set; }
+        [XmlAttribute]
+        public int scale { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public int Precision { get; set; }
+        [XmlAttribute]
+        public int Precision { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public bool Identity { get; set; }
+        [XmlAttribute]
+        public bool Identity { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public bool Nullable { get; set; }
+        [XmlAttribute]
+        public bool Nullable { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public bool Computed { get; set; }
+        [XmlAttribute]
+        public bool Computed { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public bool IsPersisted { get; set; }
+        [XmlAttribute]
+        public bool IsPersisted { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public string DefaultValue { get; set; }
+        [XmlAttribute]
+        public string DefaultValue { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public string Formular { get; set; }
+        [XmlAttribute]
+        public string Formular { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public int SeedValue { get; set; }
+        [XmlAttribute]
+        public int SeedValue { get; set; }
         /// <summary>
         /// 
         /// </summary>
-		public int IncrementValue { get; set; }
+        [XmlAttribute]
+        public int IncrementValue { get; set; }
 
 
         /// <summary>
         /// 是否为主键。
         /// 注意：此属性不由 ClownFish.Data 填充，仅供应用程序标记使用。
         /// </summary>
+        [XmlAttribute]
         public bool IsPK { get; set; }
 
         /// <summary>

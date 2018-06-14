@@ -26,8 +26,10 @@ namespace ClownFish.Base
 
 			// 查找私钥，优先在计算机的证书存储中查找
 			X509Certificate2 cert = FindCertificate(certName);
+            if( cert == null )
+                throw new ArgumentException($"加密证书{certName}不存在。");
 
-			return Sign(data, cert);
+            return Sign(data, cert);
 		}
 
         /// <summary>
@@ -121,15 +123,19 @@ namespace ClownFish.Base
 
 				// 再查找  CurrentUser
 				cert = FindCertificate(certName, StoreName.My, StoreLocation.CurrentUser);
-
-				if( cert == null )
-					throw new ArgumentException($"加密证书{certName}不存在。");
 			}
 
 			return cert;
 		}
 
-		private static X509Certificate2 FindCertificate(string certName, StoreName storeName, StoreLocation storeLocation)
+        /// <summary>
+        /// 根据指定的证书名称和位置，查找证书。
+        /// </summary>
+        /// <param name="certName"></param>
+        /// <param name="storeName"></param>
+        /// <param name="storeLocation"></param>
+        /// <returns></returns>
+		public static X509Certificate2 FindCertificate(string certName, StoreName storeName, StoreLocation storeLocation)
 		{
 			// 查找这个存储区域，是与生成证书所使用的命令行对应的： -ss my -sr localMachine
 			X509Store x509Store = new X509Store(storeName, storeLocation);
