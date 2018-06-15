@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.Base;
 using ClownFish.Base.Reflection;
 using ClownFish.Data;
 
@@ -86,8 +87,7 @@ using ClownFish.Data;
 
 		private string GetMd5(string input)
 		{
-			byte[] bb = (new MD5CryptoServiceProvider()).ComputeHash(Encoding.UTF8.GetBytes(input));
-			return BitConverter.ToString(bb).Replace("-", "");
+            return HashHelper.Md5(input);
 		}
 
 		private void Init()

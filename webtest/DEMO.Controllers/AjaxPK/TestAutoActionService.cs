@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using ClownFish.Web;
+using ClownFish.Base;
 
 
 // ClownFish.Web的用法可参考：http://www.cnblogs.com/fish-li/archive/2012/02/12/2348395.html
@@ -24,17 +25,13 @@ namespace DEMO.Controllers.AjaxPK
 		[Action(Verb = "post")]
 		public string Md5(string input)
 		{
-			byte[] bb = Encoding.Default.GetBytes(input);
-			byte[] md5 = (new MD5CryptoServiceProvider()).ComputeHash(bb);
-			return BitConverter.ToString(md5).Replace("-", string.Empty);
+            return HashHelper.Md5(input);
 		}
 
 		[Action]
 		public string Sha1(string input)
 		{
-			byte[] bb = Encoding.Default.GetBytes(input);
-			byte[] sha1 = (new SHA1CryptoServiceProvider()).ComputeHash(bb);
-			return BitConverter.ToString(sha1).Replace("-", string.Empty);
-		}
+            return HashHelper.Sha1(input);
+        }
 	}
 }

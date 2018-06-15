@@ -126,7 +126,7 @@ namespace ClownFish.Base.UnitTest.WebClient
 
 				// byte 数组太难写断言，所以就计算 MD5 来比较
 				byte[] bb = (new MD5CryptoServiceProvider()).ComputeHash(buffer);
-				md5 = BitConverter.ToString(bb).Replace("-", "").ToLower();
+				md5 = bb.ToHexString().ToLower();
 			}
 
 			Assert.IsTrue(form.HasFile);

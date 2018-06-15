@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using ClownFish.Web;
 using System.Collections.Specialized;
 using System.Web;
+using ClownFish.Base;
 
 
 // ClownFish.Web的用法可参考：http://www.cnblogs.com/fish-li/archive/2012/02/12/2348395.html
@@ -25,8 +26,7 @@ namespace DEMO.Controllers.Services
 
 			this.WriteCookie(new HttpCookie("cookie1", DateTime.Now.Ticks.ToString()));
 
-			byte[] bb = (new MD5CryptoServiceProvider()).ComputeHash(Encoding.Default.GetBytes(input));
-			return BitConverter.ToString(bb).Replace("-", "").ToLower();
+			return HashHelper.Md5(input).ToLower();
 		}
 
 		[Action]

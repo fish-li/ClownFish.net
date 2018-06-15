@@ -18,10 +18,12 @@ namespace ClownFish.Base
             if( text == null )
                 throw new ArgumentNullException(nameof(text));
 
+            if( encoding == null )
+                encoding = Encoding.UTF8;
 
             byte[] bb = encoding.GetBytes(text);
             byte[] buffer = hash.ComputeHash(bb);
-            return BitConverter.ToString(buffer).Replace("-", "");
+            return buffer.ToHexString();
         }
 
         private static string HashFile(HashAlgorithm hash, string filePath)
@@ -34,7 +36,7 @@ namespace ClownFish.Base
 
             using( FileStream fs = RetryFile.OpenRead(filePath) ) {
                 byte[] buffer = hash.ComputeHash(fs);
-                return BitConverter.ToString(buffer).Replace("-", "");
+                return buffer.ToHexString();
             }
         }
 
@@ -43,19 +45,9 @@ namespace ClownFish.Base
         /// 计算字符串的 SHA1 签名
         /// </summary>
         /// <param name="text"></param>
-        /// <returns></returns>
-        public static string Sha1(this string text)
-        {
-            return Sha1(text, Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// 计算字符串的 SHA1 签名
-        /// </summary>
-        /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Sha1(this string text, Encoding encoding)
+        public static string Sha1(this string text, Encoding encoding = null)
         {
             using( SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider() ) {
                 return HashString(sha1, text, encoding);
@@ -69,7 +61,7 @@ namespace ClownFish.Base
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Sha256(this string text, Encoding encoding)
+        public static string Sha256(this string text, Encoding encoding = null)
         {
             using( SHA256CryptoServiceProvider sha1 = new SHA256CryptoServiceProvider() ) {
                 return HashString(sha1, text, encoding);
@@ -83,7 +75,7 @@ namespace ClownFish.Base
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Sha512(this string text, Encoding encoding)
+        public static string Sha512(this string text, Encoding encoding = null)
         {
             using( SHA512CryptoServiceProvider sha1 = new SHA512CryptoServiceProvider() ) {
                 return HashString(sha1, text, encoding);
@@ -104,15 +96,6 @@ namespace ClownFish.Base
             }
         }
 
-        /// <summary>
-        /// 计算字符串的 MD5 签名
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static string Md5(this string text)
-        {
-            return Md5(text, Encoding.UTF8);
-        }
 
         /// <summary>
         /// 计算字符串的 MD5 签名
@@ -120,7 +103,7 @@ namespace ClownFish.Base
         /// <param name="text"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Md5(this string text, Encoding encoding)
+        public static string Md5(this string text, Encoding encoding = null)
         {
             using( MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider() ) {
                 return HashString(md5, text, encoding);
@@ -139,6 +122,7 @@ namespace ClownFish.Base
                 return HashFile(md5, filePath);
             }
         }
+
 
 
         /// <summary>

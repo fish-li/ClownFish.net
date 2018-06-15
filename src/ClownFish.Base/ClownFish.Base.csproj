@@ -61,11 +61,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AesHelper.cs" />
     <Compile Include="Common\AppSettingsHelper.cs" />
     <Compile Include="Common\Base64Extensions.cs" />
     <Compile Include="Common\BinSerializerHelper.cs" />
     <Compile Include="Common\ByteExtensions.cs" />
-    <Compile Include="Common\CryptoHelper.cs" />
     <Compile Include="Common\DataTimeExtensions.cs" />
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\EncodingExtensions.cs" />
