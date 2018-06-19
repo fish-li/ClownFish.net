@@ -96,7 +96,7 @@ namespace ClownFish.Base
         }
 
         /// <summary>
-        /// 当异常发生并需要重试时执行的回调委托
+        /// 注册当异常发生时需要执行的回调委托
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
@@ -198,27 +198,28 @@ namespace ClownFish.Base
 
         private bool CheckCount(Exception ex)
         {
+            _retryCount++;
+
+            // 执行异常回调
+            if( _callbakList != null ) {
+                foreach( var cb in _callbakList )
+                    cb(ex, _retryCount);
+            }
+
+
             // 如果不满足过滤条件，就直接跳出，最终也不会被重试
             if( CheckFilter(ex) == false ) {
                 return false;
             }
 
-            
 
             // 如果在重试次数之内，就启动重试机制
-            if( _retryCount < this.Count ) {
-                _retryCount++;
-
+            if( _retryCount <= this.Count ) {
+                
                 // 为了保证重试有效，先暂停，等待外部环境变化
                 if( this.Milliseconds > 0 )
                     System.Threading.Thread.Sleep(this.Milliseconds);
 
-                
-                // 执行回调
-                if( _callbakList != null ) {
-                    foreach( var cb in _callbakList )
-                        cb(ex, _retryCount);
-                }
 
                 return true;
             }

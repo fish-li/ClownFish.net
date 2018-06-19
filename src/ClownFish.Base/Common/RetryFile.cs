@@ -46,10 +46,20 @@ namespace ClownFish.Base
             if( File.Exists(filePath) == false )
                 return;
 
-            CreateRetry().Run(() => {
-                File.Delete(filePath);
-                return 1;
-            });
+            CreateRetry()
+                .Filter<UnauthorizedAccessException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is UnauthorizedAccessException )
+                        try {
+                            File.SetAttributes(filePath, FileAttributes.Normal);
+                        }
+                        catch { // 这里就是一个尝试机制，所以如果出错就忽略这个异常
+                        }
+                })
+                .Run(() => {
+                    File.Delete(filePath);
+                    return 1;
+                });
         }
 
         /// <summary>
@@ -79,6 +89,15 @@ namespace ClownFish.Base
         }
 
 
+        private static void SafeCreateDirectory(string path)
+        {
+            try {
+                Directory.CreateDirectory(path);
+            }
+            catch {// 这里就是一个尝试机制，所以如果出错就忽略这个异常
+            }
+        }
+
         /// <summary>
         /// 等同于：System.IO.File.WriteAllText()，且当目录不存在时自动创建。
         /// </summary>
@@ -87,16 +106,16 @@ namespace ClownFish.Base
         /// <param name="encoding"></param>
         public static void WriteAllText(string filePath, string text, Encoding encoding = null)
         {
-            CreateRetry().Run(() => {
-                try {
+            CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
                     File.WriteAllText(filePath, text, encoding.GetOrDefault());
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    throw;
-                }
-                return 1;
-            });
+                    return 1;
+                });
         }
 
 
@@ -107,16 +126,16 @@ namespace ClownFish.Base
         /// <param name="buffer"></param>
         public static void WriteAllBytes(string filePath, byte[] buffer)
         {
-            CreateRetry().Run(() => {
-                try {
+            CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
                     File.WriteAllBytes(filePath, buffer);
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    throw;
-                }
-                return 1;
-            });
+                    return 1;
+                });
         }
 
 
@@ -128,16 +147,16 @@ namespace ClownFish.Base
         /// <param name="encoding"></param>
         public static void AppendAllText(string filePath, string text, Encoding encoding = null)
         {
-            CreateRetry().Run(() => {
-                try {
+            CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
                     File.AppendAllText(filePath, text, encoding.GetOrDefault());
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    throw;
-                }
-                return 1;
-            });
+                    return 1;
+                });
         }
 
 
@@ -188,15 +207,15 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static FileStream OpenWrite(string filePath)
         {
-            return CreateRetry().Run(() => {
-                try {
+            return CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
                     return File.OpenWrite(filePath);
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    throw;
-                }
-            });
+                });
         }
 
 
@@ -207,15 +226,15 @@ namespace ClownFish.Base
         /// <returns></returns>
         public static FileStream Create(string filePath)
         {
-            return CreateRetry().Run(() => {
-                try {
+            return CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
                     return File.Create(filePath);
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    throw;
-                }
-            });
+                });
         }
 
 
@@ -230,16 +249,16 @@ namespace ClownFish.Base
             if( File.Exists(sourceFileName) == false )
                 throw new FileNotFoundException("File not found: " + sourceFileName);
 
-            CreateRetry().Run(() => {
-                try {
+            CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(destFileName));
+                })
+                .Run(() => {
                     File.Copy(sourceFileName, destFileName, overwrite);
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                    throw;
-                }
-                return 1;
-            });
+                    return 1;
+                });
         }
 
 
@@ -253,16 +272,16 @@ namespace ClownFish.Base
             if( File.Exists(sourceFileName) == false )
                 throw new FileNotFoundException("File not found: " + sourceFileName);
 
-            CreateRetry().Run(() => {
-                try {
+            CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(destFileName));
+                })
+                .Run(() => {
                     File.Move(sourceFileName, destFileName);
-                }
-                catch( DirectoryNotFoundException ) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                    throw;
-                }
-                return 1;
-            });
+                    return 1;
+                });
         }
 
 

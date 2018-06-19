@@ -99,7 +99,7 @@ namespace ClownFish.Base.UnitTest.Common
                     .Filter<NotSupportedException>()
                     .OnException((ex, n)=> { count++; })
                     .OnException((ex, n) => { count2+=n; })
-                      .Run(() => {                          
+                      .Run(() => {
                           return task.Exec3();
                       });
 
