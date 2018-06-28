@@ -21,8 +21,8 @@ namespace ClownFish.Base
         /// <summary>
         /// 创建RetryOption实例
         /// </summary>
-        /// <param name="count"></param>
-        /// <param name="milliseconds"></param>
+        /// <param name="count">重试次数，0表示不重试</param>
+        /// <param name="milliseconds">重试的间隔时间，单位：毫秒</param>
         /// <returns></returns>
         public static Retry Create(int count = 5, int milliseconds = 500)
         {

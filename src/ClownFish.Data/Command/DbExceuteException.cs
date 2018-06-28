@@ -21,6 +21,12 @@ namespace ClownFish.Data
 		// 这个对象不可序列化
 
 
+        /// <summary>
+        /// 当前连接的连接字符串
+        /// </summary>
+        public string ConnectionString { get; private set; }
+
+
 		/// <summary>
 		/// 初始化 <see cref="DbExceuteException"/>对象。
 		/// </summary>
@@ -36,6 +42,9 @@ namespace ClownFish.Data
 				throw new ArgumentNullException("command");
 
 			Command = command;
+
+            if( command.Connection != null )
+                this.ConnectionString = command.Connection.ConnectionString;
 		}
 		
 	}
