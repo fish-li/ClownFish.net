@@ -208,8 +208,8 @@ ORDER  BY [Schema],
 		/// </summary>
 		/// <param name="connectionString">数据库连接字符串。</param>
 		/// <param name="connectTimeout">连接的超时时间，单位：秒</param>
-		/// <returns></returns>
-		public static string TestConnection(string connectionString, int connectTimeout = 0)
+		/// <returns>返回数据库的当前时间</returns>
+		public static string TestConnection(string connectionString, int connectTimeout = 5)
 		{
 			// 提示：
 			// 为了快速检查连接是否有效，应该在连接字符串中指定【连接超时时间】，
@@ -227,9 +227,7 @@ ORDER  BY [Schema],
 			string sql = "select getdate() as time1";
 
 			using( DbContext db = CreateContext(connectionString) ) {
-				return db.CPQuery.Create(sql)
-								.SetCommand(x => x.CommandTimeout = 3)
-								.ExecuteScalar<string>();
+				return db.CPQuery.Create(sql).ExecuteScalar<string>();
 			}
 		}
 
@@ -270,16 +268,29 @@ ORDER  BY [Schema],
 			return dbContext.CPQuery.Create(query).ExecuteScalar<int>();
 		}
 
+        /// <summary>
+        /// 隐藏连接字符串中的密码
+        /// </summary>
+        /// <param name="sqlConnectionString"></param>
+        /// <returns></returns>
+        public static string HideConnectionStringPassword(string sqlConnectionString)
+        {
+            if( string.IsNullOrEmpty(sqlConnectionString) )
+                throw new ArgumentNullException(nameof(sqlConnectionString));
+
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(sqlConnectionString);
+            builder.Password = "######";
+            return builder.ToString();
+        }
 
 
-
-		/// <summary>
-		/// 获取数据表的所有列定义
-		/// </summary>
-		/// <param name="dbContext"></param>
-		/// <param name="tablename"></param>
-		/// <returns></returns>
-		public static List<DbField> GetTableFields(this DbContext dbContext, string tablename)
+        /// <summary>
+        /// 获取数据表的所有列定义
+        /// </summary>
+        /// <param name="dbContext"></param>
+        /// <param name="tablename"></param>
+        /// <returns></returns>
+        public static List<DbField> GetTableFields(this DbContext dbContext, string tablename)
 		{
 			if( dbContext == null )
 				throw new ArgumentNullException(nameof(dbContext));
