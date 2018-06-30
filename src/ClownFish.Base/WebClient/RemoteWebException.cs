@@ -20,6 +20,11 @@ namespace ClownFish.Base.WebClient
 	{
 		private string _message;
 
+        /// <summary>
+        /// 发生异常时的调用网址
+        /// </summary>
+        public string Url { get; private set; }
+
 		/// <summary>
 		/// 服务端返回的响应内容（可能为空）
 		/// </summary>
@@ -29,28 +34,39 @@ namespace ClownFish.Base.WebClient
 		/// 异常的简单描述
 		/// </summary>
 		public override string Message {
-			get {
-				return _message ?? base.Message;
-			}
-		}
+            get {
+                return (_message ?? base.Message)
+                        + (string.IsNullOrEmpty(Url) ? string.Empty : ("\r\n当前调用网址：" + this.Url));
+                    }
+        }
 
-		/// <summary>
-		/// 构造函数
-		/// </summary>
-		/// <param name="ex"></param>
-		public RemoteWebException(WebException ex)
-			: base(ex.Message, ex)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="url"></param>
+        public RemoteWebException(WebException ex, string url)
+            : base(ex.Message, ex)
+        {
+            if( ex == null )
+                throw new ArgumentNullException("ex");
+
+            this.Url = url;
+            ResponseText = TryReadResponseText(ex);
+
+            if( ResponseText != null )
+                _message = GetHtmlTitle(ResponseText);
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="ex"></param>
+        public RemoteWebException(WebException ex)
+			: this(ex, null)
 		{
-			if( ex == null )
-				throw new ArgumentNullException("ex");
-
-			ResponseText = TryReadResponseText(ex);
-
-			if( ResponseText != null )
-				_message = GetHtmlTitle(ResponseText);
 		}
-
-
+        
 
 		/// <summary>
 		/// 尝试从WebException实例中读取服务端响应文本
@@ -107,7 +123,8 @@ namespace ClownFish.Base.WebClient
         {
 			this._message = info.GetString("_message");
 			this.ResponseText = info.GetString("ResponseText");
-		}
+            this.Url = info.GetString("Url");
+        }
 
 		/// <summary>
 		/// 重写方法，用关于异常的信息设置
@@ -119,7 +136,8 @@ namespace ClownFish.Base.WebClient
 			base.GetObjectData(info, context);
 			info.AddValue("_message", this._message, typeof(string));
 			info.AddValue("ResponseText", this.ResponseText, typeof(string));
-		}
+            info.AddValue("Url", this.Url, typeof(string));
+        }
 
 	}
 }

@@ -34,7 +34,7 @@ namespace ClownFish.Base.WebClient
             }
             catch( WebException ex ) {
                 // 返回一个容易获取异常消息的异常类型
-                throw new RemoteWebException(ex);
+                throw new RemoteWebException(ex, option.Url);
             }
         }
 
@@ -55,7 +55,7 @@ namespace ClownFish.Base.WebClient
             }
             catch( WebException ex ) {
                 // 返回一个容易获取异常消息的异常类型
-                throw new RemoteWebException(ex);
+                throw new RemoteWebException(ex, option.Url);
             }
         }
 
@@ -76,7 +76,7 @@ namespace ClownFish.Base.WebClient
             }
             catch( WebException ex ) {
                 // 返回一个容易获取异常消息的异常类型
-                throw new RemoteWebException(ex);
+                throw new RemoteWebException(ex, option.Url);
             }
         }
 
@@ -99,7 +99,7 @@ namespace ClownFish.Base.WebClient
             }
             catch( WebException ex ) {
                 // 返回一个容易获取异常消息的异常类型
-                throw new RemoteWebException(ex);
+                throw new RemoteWebException(ex, option.Url);
             }
         }
 
