@@ -16,7 +16,7 @@ namespace ClownFish.Base.UnitTest.Common
 
 
 
-		private static readonly string s_certName = "FishLi-TEST";
+		private static readonly string s_certSubject = "FishLi-TEST";
 
 
 		private static readonly string s_publicKey = @"
@@ -49,8 +49,8 @@ es3Iz6Lajw==
 和融做此需求时改动量比较大，且与252版本跨系列了，参考价值降低。";
 			byte[] bb = Encoding.UTF8.GetBytes(s);
 
-			byte[] b1 = RsaHelper.Encrypt(bb, s_certName);
-			byte[] b2 = RsaHelper.Decrypt(b1, s_certName);
+			byte[] b1 = RsaHelper.Encrypt(bb, s_certSubject);
+			byte[] b2 = RsaHelper.Decrypt(b1, s_certSubject);
 
 			string s2 = Encoding.UTF8.GetString(b2);
 
@@ -67,7 +67,7 @@ es3Iz6Lajw==
 				RsaHelper.Encrypt(bb, "abc");
 			});
 
-			Assert.AreEqual($"加密证书abc不存在。", error);
+			Assert.AreEqual($"不能根据指定的证书主题 abc 找到匹配的证书。", error);
 		}
 
 		[TestMethod]
@@ -79,7 +79,7 @@ es3Iz6Lajw==
 				RsaHelper.Decrypt(bb, "abc");
 			});
 
-			Assert.AreEqual($"加密证书abc不存在。", error);
+			Assert.AreEqual($"不能根据指定的证书主题 abc 找到匹配的证书。", error);
 		}
 
 
@@ -92,7 +92,7 @@ es3Iz6Lajw==
 				RsaHelper.Sign(bb, "abc");
 			});
 
-			Assert.AreEqual($"加密证书abc不存在。", error);
+			Assert.AreEqual($"不能根据指定的证书主题 abc 找到匹配的证书。", error);
 		}
 
 
@@ -112,7 +112,7 @@ es3Iz6Lajw==
 如对本管理制度有任何疑问，欢迎咨询各团队QA";
 
 			byte[] data = s.GetBytes();
-			string signature = RsaHelper.Sign(data, s_certName);
+			string signature = RsaHelper.Sign(data, s_certSubject);
 			bool ok = RsaHelper.Verify(data, signature, s_publicKey);
 			Assert.IsTrue(ok);
 
@@ -125,7 +125,7 @@ es3Iz6Lajw==
 			// 随便修改下原始输入数据
 			string s2 = "abc" + s;
 			byte[] data2 = s2.GetBytes();
-			string sign2 = RsaHelper.Sign(data2, s_certName);
+			string sign2 = RsaHelper.Sign(data2, s_certSubject);
 
 			// 数据修改了，签名就肯定不一样
 			Assert.AreNotEqual(signature, sign2);

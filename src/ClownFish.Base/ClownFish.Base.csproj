@@ -85,6 +85,8 @@
     <Compile Include="Common\TestHelper.cs" />
     <Compile Include="Common\TypeExtensions.cs" />
     <Compile Include="Common\UrlExtensions.cs" />
+    <Compile Include="Common\X509Extensions.cs" />
+    <Compile Include="Common\X509Finder.cs" />
     <Compile Include="Common\ZipHelper.cs" />
     <Compile Include="Files\CacheResult.cs" />
     <Compile Include="Files\FileDependencyManager.cs" />
