@@ -78,11 +78,11 @@ namespace ClownFish.Log.Model
         public static string GetComputerName()
         {
             // 注意：这段代码需要在Windows XP及较新版本的操作系统中才能正常运行。
-            SelectQuery query = new SelectQuery("Win32_ComputerSystem");
+            SelectQuery query = new SelectQuery("SELECT PartOfDomain, DNSHostName, Domain FROM  Win32_ComputerSystem");
             using( ManagementObjectSearcher searcher = new ManagementObjectSearcher(query) ) {
                 foreach( ManagementObject mo in searcher.Get() ) {
-                    if( (bool)mo["partofdomain"] )
-                        return mo["DNSHostName"].ToString() + "." + mo["domain"].ToString();
+                    if( (bool)mo["PartOfDomain"] )
+                        return mo["DNSHostName"].ToString() + "." + mo["Domain"].ToString();
                 }
             }
 
