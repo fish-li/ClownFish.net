@@ -15,9 +15,16 @@ namespace ClownFish.Log.Serializer
 	/// <summary>
 	/// 将日志记录到文件的写入器
 	/// </summary>
-	public sealed class FileWriter : ILogWriter
+	public class FileWriter : ILogWriter
 	{
-		private static string s_rootDirectory = null;
+        /// <summary>
+        /// 日志文件的根目录
+        /// </summary>
+		protected static string s_rootDirectory = null;
+        /// <summary>
+        /// 单个文件最大长度
+        /// </summary>
+        protected static long s_maxLength = 0;
 
 		private static readonly string s_separateLine = "<!--###############-f2781505-f286-4c9d-b73d-fa78eae22723-###############-->";
 
@@ -29,19 +36,23 @@ namespace ClownFish.Log.Serializer
 		/// </summary>
 		/// <param name="config"></param>
 		[MethodImpl( MethodImplOptions.Synchronized)]
-		public void Init(WriterSection config)
+		public virtual void Init(WriterSection config)
 		{
-			string value = config.GetOptionValue("RootDirectory");
+            string value = config.GetOptionValue("RootDirectory");
 			if( string.IsNullOrEmpty(value) )
 				throw new LogConfigException("日志配置文件中，没有为FileWriter指定RootDirectory属性。");
-
-
+            
 			if( s_rootDirectory != null )
 				return;
-
-
+            
             s_rootDirectory = DirectoryHelper.InitDirectory(value);
+
+
+            string value2 = config.GetOptionValue("MaxLength");
+            s_maxLength = value2.TryToUInt(100) * 1024L * 1024;
         }
+
+
 
         /// <summary>
         /// 获取日志的根目录
@@ -53,8 +64,12 @@ namespace ClownFish.Log.Serializer
         }
 
 
-
-        internal string GetFilePath(Type t)
+        /// <summary>
+        /// 根据指定的类型，获取对应的日志文件全路径
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public virtual string GetFilePath(Type t)
 		{
 			return  string.Format(@"{0}{1}\{2}_{3}.log",
 								s_rootDirectory, t.Name, t.Name, DateTime.Now.ToString("yyyy-MM-dd"));
@@ -65,7 +80,7 @@ namespace ClownFish.Log.Serializer
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="info"></param>
-		public void Write<T>(T info) where T : Model.BaseInfo
+		public virtual void Write<T>(T info) where T : Model.BaseInfo
 		{
 			if( info == null )
 				return;
@@ -74,10 +89,9 @@ namespace ClownFish.Log.Serializer
 			string filePath = GetFilePath(typeof(T));
 
 
-			string xml = XmlHelper.XmlSerialize(info, Encoding.UTF8);
-
+			string xml = ObjectToText(info);
 			string contents = xml + "\r\n\r\n" + s_separateLine + "\r\n\r\n";
-            RetryFile.AppendAllText(filePath, contents, Encoding.UTF8);
+            FileHelper.AppendAllText(filePath, contents, Encoding.UTF8, s_maxLength);
 		}
 
 		/// <summary>
@@ -85,7 +99,7 @@ namespace ClownFish.Log.Serializer
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list"></param>
-		public void Write<T>(List<T> list) where T : Model.BaseInfo
+		public virtual void Write<T>(List<T> list) where T : Model.BaseInfo
 		{
 			if( list == null || list.Count == 0 )
 				return;
@@ -96,23 +110,35 @@ namespace ClownFish.Log.Serializer
 			StringBuilder sb = new StringBuilder();
 
 			foreach( T info in list ) {
-				string xml = XmlHelper.XmlSerialize(info, Encoding.UTF8);
-				string contents = xml + "\r\n\r\n" + s_separateLine + "\r\n\r\n";
+                string xml = ObjectToText(info);
+                string contents = xml + "\r\n\r\n" + s_separateLine + "\r\n\r\n";
 				sb.Append(contents);
 			}
-
-
+            
 			if( sb.Length > 0)
-                RetryFile.AppendAllText(filePath, sb.ToString(), Encoding.UTF8);
+                FileHelper.AppendAllText(filePath, sb.ToString(), Encoding.UTF8, s_maxLength);
 		}
 
-		/// <summary>
-		/// 根据日志ID获取单条日志信息
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="guid"></param>
-		/// <returns></returns>
-		public T Get<T>(Guid guid) where T : Model.BaseInfo
+        /// <summary>
+        /// 将对象转成要保存的文本
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        protected virtual string ObjectToText(object obj)
+        {
+            return XmlHelper.XmlSerialize(obj, Encoding.UTF8);
+        }
+
+
+        
+
+        /// <summary>
+        /// 根据日志ID获取单条日志信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public virtual T Get<T>(Guid guid) where T : Model.BaseInfo
 		{
 			throw new NotImplementedException();
 		}
@@ -124,7 +150,7 @@ namespace ClownFish.Log.Serializer
 		/// <param name="t1"></param>
 		/// <param name="t2"></param>
 		/// <returns></returns>
-		public List<T> GetList<T>(DateTime t1, DateTime t2) where T : Model.BaseInfo
+		public virtual List<T> GetList<T>(DateTime t1, DateTime t2) where T : Model.BaseInfo
 		{
 			throw new NotImplementedException();
 		}

@@ -220,6 +220,25 @@ namespace ClownFish.Base
 
 
         /// <summary>
+        /// 打开或者创建文件，后面以追加方式操作
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static FileStream OpenAppend(string filePath)
+        {
+            return CreateRetry()
+                .Filter<DirectoryNotFoundException>()
+                .OnException((ex, n) => {
+                    if( n == 1 && ex is DirectoryNotFoundException )
+                        SafeCreateDirectory(Path.GetDirectoryName(filePath));
+                })
+                .Run(() => {
+                    return new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None, 4096, FileOptions.SequentialScan);
+                });
+        }
+
+
+        /// <summary>
         /// 等同于：File.Create() ，且当目录不存在时自动创建。
         /// </summary>
         /// <param name="filePath"></param>

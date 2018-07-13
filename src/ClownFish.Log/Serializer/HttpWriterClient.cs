@@ -2,97 +2,131 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ClownFish.Base;
+using ClownFish.Base.Http;
+using ClownFish.Base.WebClient;
+using ClownFish.Log.Configuration;
 
 namespace ClownFish.Log.Serializer
 {
-    internal class HttpWriterClient
+    /// <summary>
+    /// 发送日志数据的客户端
+    /// </summary>
+    public class HttpWriterClient
     {
+        private string _url = null;
+        private SerializeFormat _format = SerializeFormat.None;
+        private List<NameValue> _header = null;
+
+        private int _retryCount = 0;
+        private int _retryWaitMillisecond = 0;
+
+        private readonly int _waitMillisecond = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:WaitMillisecond"].TryToUInt(500);
+        private readonly ObjectQueue _messageQueue = new ObjectQueue();
+
+
+        private Thread _thread = null;
+        private bool _threadInited = false;
+        private readonly object _lock = new object();
+        
+
+
+
         /// <summary>
-        /// 一个简单的，线程安全的，消息队列，用于缓存将要发送到服务端的消息
+        /// 初始化
         /// </summary>
-        internal sealed class HttpMessageQueue
+        /// <param name="config"></param>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public virtual void Init(WriterSection config)
         {
-            private readonly object _lock = new object();
+            string url = config.GetOptionValue("url");
+            if( string.IsNullOrEmpty(url) )
+                throw new LogConfigException("日志配置文件中，没有为HttpWriter指定url参数。");
 
-            private Queue<object> _queue = new Queue<object>(1024);
-
-            /// <summary>
-            /// 队列中允许的最大长度，如果超过这个长度，队列就不接收消息。避免占用大量内存而导致OOM
-            /// </summary>
-            private static readonly int s_maxQueueLength = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:MaxQueueLength"].TryToUInt(10000);
+            string format = config.GetOptionValue("format");
+            _format = (string.IsNullOrEmpty(format) || format.Is("json")) ? SerializeFormat.Json : SerializeFormat.Xml;
 
 
-            /// <summary>
-            /// 将消息压到消息队列
-            /// </summary>
-            /// <param name="message"></param>
-            public void Enqueue(object message)
-            {
-                lock( _lock ) {
-                    if( _queue.Count >= s_maxQueueLength )
-                        return;
+            _retryCount = config.GetOptionValue("retry-count").TryToUInt(10);
+            _retryWaitMillisecond = config.GetOptionValue("retry-wait-millisecond").TryToUInt(1000);
 
-                    _queue.Enqueue(message);
-                }
-            }
+            _header = ReadHttpArgs(config, "header:");
 
-            /// <summary>
-            /// 从消息队列取出一条消息
-            /// </summary>
-            /// <returns></returns>
-            public object Dequeue()
-            {
-                lock( _lock ) {
-                    if( _queue.Count == 0 )
-                        return null;
-
-                    return _queue.Dequeue();
-                }
-            }
-
-
+            List<NameValue> queryString = ReadHttpArgs(config, "querystring:");
+            _url = url.ConcatQueryStringArgs(queryString);
         }
 
 
-        private static readonly int s_WaitMillisecond = ConfigurationManager.AppSettings["ClownFish.Log.Serializer.HttpWriterClient:WaitMillisecond"].TryToUInt(500);
-        private readonly HttpMessageQueue _messageQueue = new HttpMessageQueue();
-        private Thread _thread = null;
+        /// <summary>
+        /// 读取指定前缀的配置参数
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="flag"></param>
+        /// <returns></returns>
+        protected virtual List<NameValue> ReadHttpArgs(WriterSection config, string flag)
+        {
+            List<NameValue> list = new List<NameValue>();
 
+            foreach( var item in config.Options ) {
+                string key = item.Key;
 
+                if( key.StartsWith(flag) ) {
+
+                    key = key.Substring(flag.Length);
+                    if( key.Trim().Length == 0 )
+                        continue;
+
+                    list.Add(new NameValue { Name = key, Value = item.Value });
+                }
+            }
+
+            if( list.Count == 0 )
+                return null;
+            else
+                return list;
+        }
+
+        
 
         /// <summary>
         /// 添加一条消息到待发送队列
         /// </summary>
         /// <param name="message"></param>
-        public void AddMessage(object message)
+        public virtual void AddMessage(object message)
         {
             if( message == null )
                 return;
 
-            Start();
+            StartThread();
 
             _messageQueue.Enqueue(message);
         }
 
+
         /// <summary>
         /// 启动后台发送线程
         /// </summary>
-        private void Start()
+        protected void StartThread()
         {
-            if( _thread != null )
-                return;
+            if( _threadInited == false ) {
+                lock( _lock ) {
+                    if( _threadInited == false ) {
 
-            _thread = new Thread(ThreadMethod);
-            _thread.IsBackground = true;
-            _thread.Name = "HttpWriterClient";
-            _thread.Start();
+                        _thread = new Thread(ThreadMethod);
+                        _thread.IsBackground = true;
+                        _thread.Name = "HttpWriterClient";
+                        _thread.Start();
+
+                        _threadInited = true;
+                    }
+                }
+            }
         }
-
-
+        
 
         private void ThreadMethod()
         {
@@ -100,7 +134,7 @@ namespace ClownFish.Log.Serializer
                 SendMessageToServer();
 
                 // 间隔 500 毫秒执行
-                Thread.Sleep(s_WaitMillisecond);
+                Thread.Sleep(_waitMillisecond);
             }
         }
 
@@ -112,10 +146,53 @@ namespace ClownFish.Log.Serializer
                 if( message == null )
                     break;
 
-                HttpWriter.SendData(message);
+                SendData(message);
             }
 
         }
+
+        /// <summary>
+        /// 发送HTTP请求
+        /// </summary>
+        /// <param name="data"></param>
+        public virtual void SendData(object data)
+        {
+            if( data == null )
+                return;
+
+            HttpOption httpOption = CreateHttpOption(data);
+            if( httpOption == null )
+                return;
+
+            Retry retry = Retry.Create(_retryCount, _retryWaitMillisecond);
+            httpOption.GetResult(retry);
+        }
+
+
+        /// <summary>
+        /// 创建HttpOption实例
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public virtual HttpOption CreateHttpOption(object data)
+        {
+            string url = _url.ConcatQueryStringArgs("x-datatype", data.GetType().Name);
+            
+            HttpOption httpOption = new HttpOption();
+            httpOption.Url = url;
+            httpOption.Method = "POST";
+            httpOption.Format = _format;
+            httpOption.Data = data;
+
+            if( _header != null && _header.Count > 0 ) {
+                foreach( var item in _header )
+                    httpOption.Headers.Add(item.Name.UrlEncode(), item.Value.UrlEncode());
+            }
+
+            //httpOption.Headers.Add("x-datatype", data.GetType().Name.UrlEncode());
+            return httpOption;
+        }
+
 
     }
 }

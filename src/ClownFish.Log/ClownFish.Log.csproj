@@ -78,6 +78,7 @@
     <Compile Include="Configuration\PerformanceConfig.cs" />
     <Compile Include="Configuration\TypeItemConfig.cs" />
     <Compile Include="Configuration\WriterSection.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="LogFilter.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="MessageLoger.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializer\DirectoryHelper.cs" />
     <Compile Include="Serializer\FileWriter.cs" />
+    <Compile Include="Serializer\ObjectQueue.cs" />
     <Compile Include="Serializer\HttpWriter.cs" />
     <Compile Include="Serializer\HttpWriterClient.cs" />
     <Compile Include="Serializer\ILogWriter.cs" />

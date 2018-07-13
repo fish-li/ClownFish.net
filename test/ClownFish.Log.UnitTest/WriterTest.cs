@@ -122,11 +122,12 @@ namespace ClownFish.Log.UnitTest
 		{
 			int count = 0;
 
-			MethodInfo method = typeof(MailWriter).GetMethod("SendEmail", BindingFlags.Static | BindingFlags.NonPublic);
+            MailWriter writer = new MailWriter();
+            MethodInfo method = typeof(MailWriter).GetMethod("SendEmail", BindingFlags.Instance | BindingFlags.NonPublic);
 
 			try {
 				string[] to = new string[0];
-				method.Invoke(null, new object[] { to, "aaa", "bbb" });
+				method.Invoke(writer, new object[] { to, "aaa", "bbb" });
 			}
 			catch( System.Reflection.TargetInvocationException ex ) {
 				if( ex.InnerException.GetType() == typeof(ArgumentNullException) 
@@ -136,7 +137,7 @@ namespace ClownFish.Log.UnitTest
 
 
 			try {
-				method.Invoke(null, new object[] { null, "aaa", "bbb" });
+				method.Invoke(writer, new object[] { null, "aaa", "bbb" });
 			}
 			catch( System.Reflection.TargetInvocationException ex ) {
 				if( ex.InnerException.GetType() == typeof(ArgumentNullException)

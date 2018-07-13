@@ -15,7 +15,7 @@ namespace ClownFish.Log.Serializer
 	/// <summary>
 	/// 将日志记录到MSMQ的写入器
 	/// </summary>
-	public sealed class MsmqWriter : ILogWriter
+	public class MsmqWriter : ILogWriter
 	{
 		private static string s_rootPath = null;
 
@@ -26,7 +26,7 @@ namespace ClownFish.Log.Serializer
 		/// </summary>
 		/// <param name="config"></param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void Init(WriterSection config)
+        public virtual void Init(WriterSection config)
 		{
 			string value = config.GetOptionValue("RootPath");
 			if( string.IsNullOrEmpty(value) )
@@ -50,12 +50,12 @@ namespace ClownFish.Log.Serializer
 			s_rootPath = value + "-";
 		}
 
-		/// <summary>
-		/// 写入单条日志信息
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
-		public void Write<T>(T info) where T : Model.BaseInfo
+        /// <summary>
+        /// 写入单条日志信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="info"></param>
+        public virtual void Write<T>(T info) where T : Model.BaseInfo
 		{
 			if( info == null )
 				return;
@@ -70,12 +70,12 @@ namespace ClownFish.Log.Serializer
 			}
 		}
 
-		/// <summary>
-		/// 批量写入日志信息
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="list"></param>
-		public void Write<T>(List<T> list) where T : Model.BaseInfo
+        /// <summary>
+        /// 批量写入日志信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        public virtual void Write<T>(List<T> list) where T : Model.BaseInfo
 		{
 			if( list == null || list.Count == 0 )
 				return;
@@ -91,25 +91,25 @@ namespace ClownFish.Log.Serializer
 			}
 		}
 
-		/// <summary>
-		/// 根据日志ID获取单条日志信息
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="guid"></param>
-		/// <returns></returns>
-		public T Get<T>(Guid guid) where T : Model.BaseInfo
+        /// <summary>
+        /// 根据日志ID获取单条日志信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public virtual T Get<T>(Guid guid) where T : Model.BaseInfo
 		{
 			throw new NotImplementedException();
 		}
 
-		/// <summary>
-		/// 根据指定的一段时间获取对应的日志记录
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="t1"></param>
-		/// <param name="t2"></param>
-		/// <returns></returns>
-		public List<T> GetList<T>(DateTime t1, DateTime t2) where T : Model.BaseInfo
+        /// <summary>
+        /// 根据指定的一段时间获取对应的日志记录
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
+        /// <returns></returns>
+        public virtual List<T> GetList<T>(DateTime t1, DateTime t2) where T : Model.BaseInfo
 		{
 			throw new NotImplementedException();
 		}

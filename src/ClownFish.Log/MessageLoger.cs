@@ -15,18 +15,21 @@ namespace ClownFish.Log
     {
         private readonly string _filePath;
         private readonly object _lock;
+        private readonly long _maxLength;
 
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="logFilePath">日志的保存文件路径</param>
         /// <param name="supportConcurrent">是否支持多线程的并发调用</param>
-        public MessageLoger(string logFilePath, bool supportConcurrent = false)
+        /// <param name="maxLength">文件的最大长度</param>
+        public MessageLoger(string logFilePath, bool supportConcurrent = false, long maxLength = 0)
         {
             if( string.IsNullOrEmpty(logFilePath) )
                 throw new ArgumentNullException(logFilePath);
 
             _filePath = logFilePath;
+            _maxLength = maxLength;
 
             if( supportConcurrent ) {
                 _lock = new object();
@@ -51,11 +54,11 @@ namespace ClownFish.Log
 
             if( _lock != null ) {
                 lock( _lock ) {
-                    RetryFile.AppendAllText(_filePath, line, Encoding.UTF8);
+                    FileHelper.AppendAllText(_filePath, line, Encoding.UTF8, _maxLength);
                 }
             }
             else {
-                RetryFile.AppendAllText(_filePath, line, Encoding.UTF8);
+                FileHelper.AppendAllText(_filePath, line, Encoding.UTF8, _maxLength);
             }
             return line;
         }
