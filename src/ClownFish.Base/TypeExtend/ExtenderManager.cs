@@ -44,12 +44,7 @@ namespace ClownFish.Base.TypeExtend
 			if( extType == null )
 				throw new ArgumentNullException("extType");
 
-			if( extType.IsAbstract )
-				throw new ArgumentException(string.Format(
-						"扩展类型 [{0}] 不能是抽象类。", extType.FullName));
-
-			Type srcType = extType.BaseType;
-			s_typeMapDict[srcType] = extType;
+            RegisterExtendType(extType, extType.BaseType);
 		}
 
 
@@ -63,22 +58,56 @@ namespace ClownFish.Base.TypeExtend
 			if( extType == null )
 				return;
 
-			Type srcType = extType.BaseType;
-			s_typeMapDict.Remove(srcType);
+            RemoveExtendBaseType(extType.BaseType);
 		}
 
 
+        /// <summary>
+        /// 注册扩展类型（继承类）
+        /// </summary>
+        /// <param name="extType">用于替换基类的继承类</param>
+        /// <param name="baseType">要被替换的基类</param>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void RegisterExtendType(Type extType, Type baseType)
+        {
+            if( extType == null )
+                throw new ArgumentNullException("extType");
+            if( baseType == null )
+                throw new ArgumentNullException(nameof(baseType));
 
-		#endregion
+            if( extType.IsAbstract )
+                throw new ArgumentException(string.Format(
+                        "扩展类型 [{0}] 不能是抽象类。", extType.FullName));
+
+            s_typeMapDict[baseType] = extType;
+        }
 
 
-		#region 事件扩展管理
+        /// <summary>
+        /// 移除某个基类的扩展类型的注册（应该仅用于单元测试）
+        /// </summary>
+        /// <param name="baseType"></param>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static void RemoveExtendBaseType(Type baseType)
+        {
+            if( baseType == null )
+                return;
+
+            s_typeMapDict.Remove(baseType);
+        }
 
 
-		/// <summary>
-		/// 保存事件源与订阅类型的映射关系： Type / Type[]
-		/// </summary>
-		private static readonly Hashtable s_eventDict = Hashtable.Synchronized(new Hashtable(128));
+
+        #endregion
+
+
+        #region 事件扩展管理
+
+
+        /// <summary>
+        /// 保存事件源与订阅类型的映射关系： Type / Type[]
+        /// </summary>
+        private static readonly Hashtable s_eventDict = Hashtable.Synchronized(new Hashtable(128));
 
 
 		/// <summary>
