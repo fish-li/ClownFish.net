@@ -236,7 +236,6 @@ namespace ClownFish.Base.Reflection
 	internal abstract class ReflectMethodBase<TDelegate> : IInvokeMethod, IBindMethod where TDelegate : class
 	{
 		protected TDelegate _caller;
-		protected object _returnValue;
 
 		public void BindMethod(MethodInfo method)
 		{
@@ -254,10 +253,9 @@ namespace ClownFish.Base.Reflection
 			if( _caller == null )
 				throw new InvalidOperationException("在调用Invoke之前没有调用BindMethod方法。");
 
-			InvokeInternal(target, parameters);
-			return _returnValue;
+			return InvokeInternal(target, parameters);
 		}
-		protected abstract void InvokeInternal(object target, object[] parameters);
+		protected abstract object InvokeInternal(object target, object[] parameters);
 	}
 
 	internal class CommonInvokerWrapper : IInvokeMethod
@@ -287,33 +285,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget> : ReflectMethodBase<InstanceAction<TTarget>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target);
+            return null;
 		}
 	}
 
 	internal partial class StaticActionWrapper : ReflectMethodBase<StaticAction>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller();
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, TResult> : ReflectMethodBase<InstanceFunc<TTarget, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target);
+			return _caller((TTarget)target);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<TResult> : ReflectMethodBase<StaticFunc<TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller();
+			return _caller();
 		}
 	}
 
@@ -323,33 +323,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget, A1> : ReflectMethodBase<InstanceAction<TTarget, A1>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target, (A1)parameters[0]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class StaticActionWrapper<A1> : ReflectMethodBase<StaticAction<A1>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((A1)parameters[0]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, A1, TResult> : ReflectMethodBase<InstanceFunc<TTarget, A1, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0]);
+			return _caller((TTarget)target, (A1)parameters[0]);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<A1, TResult> : ReflectMethodBase<StaticFunc<A1, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0]);
+			return _caller((A1)parameters[0]);
 		}
 	}
 
@@ -359,33 +361,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget, A1, A2> : ReflectMethodBase<InstanceAction<TTarget, A1, A2>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target, (A1)parameters[0], (A2)parameters[1]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class StaticActionWrapper<A1, A2> : ReflectMethodBase<StaticAction<A1, A2>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((A1)parameters[0], (A2)parameters[1]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, A1, A2, TResult> : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1]);
+			return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1]);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, TResult> : ReflectMethodBase<StaticFunc<A1, A2, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1]);
+			return _caller((A1)parameters[0], (A2)parameters[1]);
 		}
 	}
 	
@@ -395,33 +399,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget, A1, A2, A3> : ReflectMethodBase<InstanceAction<TTarget, A1, A2, A3>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class StaticActionWrapper<A1, A2, A3> : ReflectMethodBase<StaticAction<A1, A2, A3>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, TResult> : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
+			return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, TResult> : ReflectMethodBase<StaticFunc<A1, A2, A3, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
+			return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2]);
 		}
 	}
 	
@@ -431,33 +437,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget, A1, A2, A3, A4> : ReflectMethodBase<InstanceAction<TTarget, A1, A2, A3, A4>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class StaticActionWrapper<A1, A2, A3, A4> : ReflectMethodBase<StaticAction<A1, A2, A3, A4>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, TResult> : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
+			return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, TResult> : ReflectMethodBase<StaticFunc<A1, A2, A3, A4, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
+			return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3]);
 		}
 	}
 	
@@ -467,33 +475,35 @@ namespace ClownFish.Base.Reflection
 
 	internal partial class ActionWrapper<TTarget, A1, A2, A3, A4, A5> : ReflectMethodBase<InstanceAction<TTarget, A1, A2, A3, A4, A5>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class StaticActionWrapper<A1, A2, A3, A4, A5> : ReflectMethodBase<StaticAction<A1, A2, A3, A4, A5>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
 			_caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
-		}
+            return null;
+        }
 	}
 
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, A5, TResult> : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, A5, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
+			return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
 		}
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, A5, TResult> : ReflectMethodBase<StaticFunc<A1, A2, A3, A4, A5, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
+			return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], (A5)parameters[4]);
 		}
 	}
 	
@@ -505,21 +515,21 @@ namespace ClownFish.Base.Reflection
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, A5, A6, TResult> 
 : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, A5, A6, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], 
+            return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3], 
 				(A5)parameters[4], (A6)parameters[5]);
-		}
+        }
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, A5, A6, TResult> 
 		: ReflectMethodBase<StaticFunc<A1, A2, A3, A4, A5, A6, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5]);
-		}
+        }
 	}
 
 	#endregion
@@ -529,21 +539,21 @@ namespace ClownFish.Base.Reflection
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, A5, A6, A7, TResult>
 : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, A5, A6, A7, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6]);
-		}
+        }
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, A5, A6, A7, TResult>
 		: ReflectMethodBase<StaticFunc<A1, A2, A3, A4, A5, A6, A7, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6]);
-		}
+        }
 	}
 
 	#endregion
@@ -553,21 +563,21 @@ namespace ClownFish.Base.Reflection
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, A5, A6, A7, A8, TResult>
 : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, A5, A6, A7, A8, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6], (A8)parameters[7]);
-		}
+        }
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, A5, A6, A7, A8, TResult>
 		: ReflectMethodBase<StaticFunc<A1, A2, A3, A4, A5, A6, A7, A8, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6], (A8)parameters[7]);
-		}
+        }
 	}
 
 	#endregion
@@ -577,21 +587,21 @@ namespace ClownFish.Base.Reflection
 	internal partial class FunctionWrapper<TTarget, A1, A2, A3, A4, A5, A6, A7, A8, A9, TResult>
 : ReflectMethodBase<InstanceFunc<TTarget, A1, A2, A3, A4, A5, A6, A7, A8, A9, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((TTarget)target, (A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6], (A8)parameters[7], (A9)parameters[8]);
-		}
+        }
 	}
 
 	internal partial class StaticFunctionWrapper<A1, A2, A3, A4, A5, A6, A7, A8, A9, TResult>
 		: ReflectMethodBase<StaticFunc<A1, A2, A3, A4, A5, A6, A7, A8, A9, TResult>>
 	{
-		protected override void InvokeInternal(object target, object[] parameters)
+		protected override object InvokeInternal(object target, object[] parameters)
 		{
-			_returnValue = _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
+            return _caller((A1)parameters[0], (A2)parameters[1], (A3)parameters[2], (A4)parameters[3],
 				(A5)parameters[4], (A6)parameters[5], (A7)parameters[6], (A8)parameters[7], (A9)parameters[8]);
-		}
+        }
 	}
 
 	#endregion

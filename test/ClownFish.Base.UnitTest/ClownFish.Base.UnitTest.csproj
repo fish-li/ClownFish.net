@@ -87,6 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\AttributeClass1.cs" />
     <Compile Include="Reflection\AttributeCacheTest.cs" />
+    <Compile Include="Reflection\ReflectionOptimizeExtensionsTest.cs" />
     <Compile Include="TypeExtend\BaseObject.cs" />
     <Compile Include="TypeExtend\EventClass.cs" />
     <Compile Include="TypeExtend\EventClass2.cs" />
