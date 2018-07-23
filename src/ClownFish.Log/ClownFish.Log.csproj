@@ -79,6 +79,7 @@
     <Compile Include="Configuration\TypeItemConfig.cs" />
     <Compile Include="Configuration\WriterSection.cs" />
     <Compile Include="FileHelper.cs" />
+    <Compile Include="LockObject.cs" />
     <Compile Include="LogFilter.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="MessageLoger.cs" />

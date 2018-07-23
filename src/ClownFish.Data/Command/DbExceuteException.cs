@@ -32,8 +32,8 @@ namespace ClownFish.Data
 		/// </summary>
 		/// <param name="innerException">当前异常对象。</param>
 		/// <param name="command"><see cref="DbCommand"/>的实例。</param>
-		public DbExceuteException(Exception innerException, DbCommand command) :
-			base(innerException.Message, innerException)
+		public DbExceuteException(Exception innerException, DbCommand command)	
+            : base(innerException.Message, innerException)
 		{
 			if( innerException == null )
 				throw new ArgumentNullException("innerException");

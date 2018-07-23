@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,5 +31,15 @@ namespace ClownFish.Log.Configuration
 			: base(message, innerException)
 		{
 		}
-	}
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public LogConfigException(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
+        {
+        }
+    }
 }

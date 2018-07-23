@@ -79,16 +79,16 @@ namespace ClownFish.Log
 
 
 
-		/// <summary>
-		/// 以同步方式把消息写入日志
-		/// 如果需要写入到指定的持久化方式，可以直接调用相应的 Writter ，就不需要调用这个方法。
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
-		public static void SyncWrite<T>(T info) where T : BaseInfo
-		{
-			// 触发日志的配置检查
-			WriterFactory.Init();
+        /// <summary>
+        /// 以同步方式把消息写入日志
+        /// 如果需要写入到指定的持久化方式，可以直接调用相应的 Writter ，就不需要调用这个方法。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="info"></param>
+        public static void SyncWrite<T>(T info) where T : BaseInfo
+        {
+            // 触发日志的配置检查
+            WriterFactory.Init();
 
             // 如果禁用日志写入就直接返回
             if( WriterFactory.Config.Enable == false )
@@ -96,22 +96,22 @@ namespace ClownFish.Log
 
             // 忽略特定的对象类型
             if( s_filter.Instance.IgnoreWrite(info) )
-				return;
+                return;
 
 
-			// 获取写日志的实例，注意：允许一个类型配置多个写入方式
-			ILogWriter[] writers = WriterFactory.CreateWriters(typeof(T));
+            // 获取写日志的实例，注意：允许一个类型配置多个写入方式
+            ILogWriter[] writers = WriterFactory.CreateWriters(typeof(T));
 
-			// 如果类型没有配置日志序列化器，就忽略
-			if( writers == null || writers.Length == 0 )
-				return;
+            // 如果类型没有配置日志序列化器，就忽略
+            if( writers == null || writers.Length == 0 )
+                return;
 
-            // 用类型的名称做锁对象，防止并发写入问题
-            lock( typeof(T).Name ) {
+            // 按类型锁定，防止并发写入问题
+            lock( LockObject<T>.SyncObject ) {
                 foreach( var writer in writers )
                     writer.Write(info);
             }
-		}
+        }
 
 
 		/// <summary>
