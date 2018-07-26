@@ -14,7 +14,7 @@ namespace ClownFish.Log
     public class MessageLoger
     {
         private readonly string _filePath;
-        private readonly object _lock;
+        private readonly object _syncObject;
         private readonly long _maxLength;
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace ClownFish.Log
             _maxLength = maxLength;
 
             if( supportConcurrent ) {
-                _lock = new object();
+                _syncObject = new object();
             }
         }
 
@@ -49,18 +49,33 @@ namespace ClownFish.Log
             // 扩展点：如果希望在写文件时，同时将消息输出到控制台，可以重写这个方法。
 
             string line = GetLine(message, category);
-            if( line == null )
-                return null;
 
-            if( _lock != null ) {
-                lock( _lock ) {
+            WriteToFile(line);
+
+            return line;
+        }
+
+
+        /// <summary>
+        /// 将消息文本写入文件
+        /// </summary>
+        /// <param name="line"></param>
+        protected virtual void WriteToFile(string line)
+        {
+            if( line == null )
+                return;
+
+            try {
+                if( _syncObject != null ) {
+                    lock( _syncObject ) {
+                        FileHelper.AppendAllText(_filePath, line, Encoding.UTF8, _maxLength);
+                    }
+                }
+                else {
                     FileHelper.AppendAllText(_filePath, line, Encoding.UTF8, _maxLength);
                 }
             }
-            else {
-                FileHelper.AppendAllText(_filePath, line, Encoding.UTF8, _maxLength);
-            }
-            return line;
+            catch { /* 忽略写日志时遇到的错误，例如：磁盘空间已满，文件被占用  */ }
         }
 
         /// <summary>

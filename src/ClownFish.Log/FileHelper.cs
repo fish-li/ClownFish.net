@@ -18,9 +18,19 @@ namespace ClownFish.Log
                 if( maxLength > 0 && file.Position >= maxLength )
                     return;
 
-                // 注意：这样写出来的文件没有BOM头
+
+                if( file.Position == 0 ) {
+                    // 写入 BOM
+                    byte[] preamble = encoding.GetPreamble();
+                    if( preamble.Length != 0 ) {
+                        file.Write(preamble, 0, preamble.Length);
+                    }
+                }
+
                 byte[] bb = encoding.GetBytes(text);
                 file.Write(bb, 0, bb.Length);
+
+                file.Flush(true);
             }
         }
 
