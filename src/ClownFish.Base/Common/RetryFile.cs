@@ -77,6 +77,20 @@ namespace ClownFish.Base
 
 
         /// <summary>
+        /// 等同于：System.IO.File.ReadAllLines()
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string[] ReadAllLines(string filePath, Encoding encoding = null)
+        {
+            return CreateRetry().Run(() => {
+                return File.ReadAllLines(filePath, encoding.GetOrDefault());
+            });
+        }
+
+
+        /// <summary>
         /// 等同于：System.IO.File.ReadAllBytes()
         /// </summary>
         /// <param name="filePath"></param>
@@ -184,6 +198,52 @@ namespace ClownFish.Base
                 return File.GetLastWriteTimeUtc(filePath);
             });
         }
+
+
+        /// <summary>
+        /// 等同于：System.IO.File.GetAttributes()
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static FileAttributes GetAttributes(string filePath)
+        {
+            return CreateRetry().Run(() => {
+                return File.GetAttributes(filePath);
+            });
+        }
+
+        /// <summary>
+        /// 判断文件是否为隐藏文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static bool IsHidden(string filePath)
+        {
+            return RetryFile.GetAttributes(filePath).HasFlag(FileAttributes.Hidden);
+        }
+
+
+        /// <summary>
+        /// 取消文件的只读设置
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static void ClearReadonly(string filePath)
+        {
+            FileAttributes attributes = RetryFile.GetAttributes(filePath);
+
+            if( attributes.HasFlag(FileAttributes.ReadOnly) == false )
+                return;
+
+            // 清除只读属性
+            attributes &= ~FileAttributes.ReadOnly;
+
+            CreateRetry().Run(() => {
+                File.SetAttributes(filePath, attributes);
+                return 1;
+            });
+        }
+
 
 
         /// <summary>

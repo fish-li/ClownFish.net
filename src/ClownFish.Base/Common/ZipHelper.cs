@@ -131,7 +131,7 @@ namespace ClownFish.Base
             RetryFile.Delete(zipPath);
 
 
-            using( FileStream file = new FileStream(zipPath, FileMode.Create) ) {
+            using( FileStream file = RetryFile.Create(zipPath)) {
                 using( ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Create, true, Encoding.UTF8) ) {
 
                     foreach( Tuple<string, byte[]> tuple in files ) {
@@ -140,6 +140,54 @@ namespace ClownFish.Base
 
                         using( BinaryWriter writer = new BinaryWriter(entry.Open()) ) {
                             writer.Write(tuple.Item2);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// 根据指定的包内文件名及对应的文件清单打包成ZIP文件
+        /// </summary>
+        /// <param name="files">要打包的文件清单，可以为string（指示文件路径）或者byte[]（文件内容）</param>
+        /// <param name="zipPath">zip文件的保存路径</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
+        public static void Compress(List<Tuple<string, object>> files, string zipPath)
+        {
+            if( files == null )
+                throw new ArgumentNullException(nameof(files));
+            if( string.IsNullOrEmpty(zipPath) )
+                throw new ArgumentNullException(nameof(zipPath));
+
+
+            RetryFile.Delete(zipPath);
+
+
+            using( FileStream file = RetryFile.Create(zipPath) ) {
+                using( ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Create, true, Encoding.UTF8) ) {
+
+                    foreach( Tuple<string, object> tuple in files ) {
+
+                        var entry = zip.CreateEntry(tuple.Item1, CompressionLevel.Optimal);
+
+                        Type dataType = tuple.Item2.GetType();
+
+                        if( dataType == typeof(string) ) {
+                            using( var stream = entry.Open() ) {
+                                using( FileStream fs = RetryFile.OpenRead((string)tuple.Item2) ) {
+                                    fs.CopyTo(stream);
+                                }
+                            }
+                        }
+                        else  if( dataType == typeof(byte[]) ) {
+                            using( BinaryWriter writer = new BinaryWriter(entry.Open()) ) {
+                                writer.Write((byte[])tuple.Item2);
+                            }
+                        }
+                        else {
+                            // 暂且忽略错误的参数吧。
                         }
                     }
                 }

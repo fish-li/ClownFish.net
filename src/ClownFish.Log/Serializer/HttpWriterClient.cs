@@ -146,7 +146,12 @@ namespace ClownFish.Log.Serializer
                 if( message == null )
                     break;
 
-                SendData(message);
+                try {
+                    SendData(message);
+                }
+                catch {
+                    // 发送失败就忽略错误，不能让后台线程崩溃！
+                }
             }
 
         }

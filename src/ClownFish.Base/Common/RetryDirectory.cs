@@ -52,6 +52,22 @@ namespace ClownFish.Base
             });
         }
 
+
+        /// <summary>
+        /// 等同于：System.IO.Directory.GetDirectories()
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="searchPattern"></param>
+        /// <param name="searchOption"></param>
+        /// <returns></returns>
+        public static string[] GetDirectories(string path, string searchPattern, SearchOption searchOption)
+        {
+            return RetryFile.CreateRetry().Run(() => {
+                return Directory.GetDirectories(path, searchPattern, searchOption);
+            });
+        }
+
+
         /// <summary>
         /// 等同于：System.IO.Directory.Exists()
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
@@ -26,14 +27,19 @@ namespace ClownFish.Base.WebClient
         public string Url { get; private set; }
 
 		/// <summary>
-		/// 服务端返回的响应内容（可能为空）
+		/// 服务端返回的响应内容（可能为NULL）
 		/// </summary>
 		public string ResponseText { get; private set; }
 
-		/// <summary>
-		/// 异常的简单描述
-		/// </summary>
-		public override string Message {
+        /// <summary>
+        /// 响应头集合（可能为NULL）
+        /// </summary>
+        public NameValueCollection Headers { get; private set; }
+
+        /// <summary>
+        /// 异常的简单描述
+        /// </summary>
+        public override string Message {
             get {
                 return (_message ?? base.Message)
                         + (string.IsNullOrEmpty(Url) ? string.Empty : ("\r\n当前调用网址：" + this.Url));
@@ -52,10 +58,7 @@ namespace ClownFish.Base.WebClient
                 throw new ArgumentNullException("ex");
 
             this.Url = url;
-            ResponseText = TryReadResponseText(ex);
-
-            if( ResponseText != null )
-                _message = GetHtmlTitle(ResponseText);
+            ReadResponse(ex);
         }
 
         /// <summary>
@@ -69,27 +72,40 @@ namespace ClownFish.Base.WebClient
         
 
 		/// <summary>
-		/// 尝试从WebException实例中读取服务端响应文本
+		/// 尝试从WebException实例中读取服务端响应内容
 		/// </summary>
 		/// <param name="ex">WebException的实例</param>
-		/// <returns>异常的描述信息，通常是一段HTML代码</returns>
-		private string TryReadResponseText(WebException ex)
+		private void ReadResponse(WebException ex)
 		{
 			if( ex.Response == null )
-				return null;
+				return;
 
 			HttpWebResponse response = ex.Response as HttpWebResponse;
-
 			if( response == null )
-				return null;
-			else {
-				using( response ) {
-					using( ResponseReader reader = new ResponseReader(response) ) {
-						return reader.Read<string>();
-					}
-				}
-			}
-		}
+				return;
+
+
+            using( response ) {
+                using( ResponseReader reader = new ResponseReader(response) ) {
+                    this.ResponseText = reader.Read<string>();
+                }
+
+                // 读取响应头
+                this.Headers = new NameValueCollection();
+                this.Headers.Add(response.Headers);
+
+                // 确定错误消息
+                if( string.IsNullOrEmpty(this.ResponseText) == false ) {
+                    if( response.ContentType?.IndexOf("text/plain") == 0 ) {
+                        _message = this.ResponseText;
+                    }
+                    else if( response.ContentType?.IndexOf("text/html") == 0 ) {
+                        _message = GetHtmlTitle(this.ResponseText);
+                    }
+
+                }
+            }
+        }
 
 		/// <summary>
 		/// 尝试从一段HTML代码中读取文档标题部分
