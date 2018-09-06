@@ -134,10 +134,15 @@ namespace ClownFish.Base.WebClient
 
 		private void ExecuteBeforeSendRequestEvent()
 		{
-			if( string.IsNullOrEmpty(Request.ContentType) && Request.Headers["Content-Type"] == null )
-				Request.ContentType = "application/x-www-form-urlencoded";
+            // 有些2B程序不规范，用了自己特定定的数据格式，不允许指定"Content-Type"，所以这里不能自动增加这个请求头
+            // 例如： jira，它就不允许在GET时指定"Content-Type"，
+            //        即使是上传文件，虽然是POST，但是它没有使用标准的multipart/form-data，也不能指定"Content-Type"
+            // 所以，为了与这些2B程序能正常交互，只能注释下面二行代码。
 
-			if( string.IsNullOrEmpty(Request.UserAgent) && Request.Headers["User-Agent"] == null )
+            //if( string.IsNullOrEmpty(Request.ContentType) && Request.Headers["Content-Type"] == null )
+            //    Request.ContentType = "application/x-www-form-urlencoded";
+
+            if( string.IsNullOrEmpty(Request.UserAgent) && Request.Headers["User-Agent"] == null )
 				Request.UserAgent = "ClownFish.net.HttpClient/"	 + DllVersion;
 
 

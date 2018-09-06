@@ -224,8 +224,10 @@ namespace ClownFish.Base.WebClient
 			if( option.Timeout.HasValue )
 				request.Timeout = option.Timeout.Value;
 
-			if( string.IsNullOrEmpty(option.ContentType) == false)
-				request.ContentType = option.ContentType;
+            if( HttpOption.RequestHasBody(option.Method) ) {
+                if( string.IsNullOrEmpty(option.ContentType) == false )
+                    request.ContentType = option.ContentType;
+            }
 
 			if( string.IsNullOrEmpty(option.UserAgent) == false )
 				request.UserAgent = option.UserAgent;

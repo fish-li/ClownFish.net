@@ -233,8 +233,16 @@ namespace ClownFish.Base.WebClient
 			stream.Write(boundaryBytes, 0, boundaryBytes.Length);
 		}
 
-
-
+        /// <summary>
+        /// 根据一个匿名对象的键值，生成URL查询字符串参数
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string GetQueryString(object obj)
+        {
+            FormDataCollection form = Create(obj);
+            return form.ToString();
+        }
 
 
 
