@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ClownFish.Base.Http;
 using ClownFish.Base.Xml;
 
 
@@ -98,10 +99,10 @@ namespace ClownFish.Base.WebClient
 				return (T)(object)responseText;
 
 
-			if( _response.ContentType.IndexOfIgnoreCase("application/json") >= 0 )
+			if( _response.ContentType.IndexOfIgnoreCase(ResponseContentType.Json) >= 0 )
 				return JsonExtensions.FromJson<T>(responseText);
 
-			else if( _response.ContentType.IndexOfIgnoreCase("application/xml") >= 0 )
+			else if( _response.ContentType.IndexOfIgnoreCase(ResponseContentType.Xml) >= 0 )
 				return XmlHelper.XmlDeserialize<T>(responseText);
 
 			else
@@ -113,7 +114,7 @@ namespace ClownFish.Base.WebClient
 			string contentType = _response.Headers["Content-Type"];
 			if( string.IsNullOrEmpty(contentType) == false ) {
 				_httpHeaderEncoding = GetEncodingFromHttpHeader(contentType);
-				_isHtml = contentType.StartsWithIgnoreCase("text/html");
+				_isHtml = contentType.StartsWithIgnoreCase(ResponseContentType.Html);
 			}
 
 

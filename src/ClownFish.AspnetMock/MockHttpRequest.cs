@@ -9,6 +9,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections.Specialized;
+using ClownFish.Base.Http;
 
 namespace ClownFish.AspnetMock
 {
@@ -28,7 +29,7 @@ namespace ClownFish.AspnetMock
 			request.Browser = new MockHttpBrowserCapabilities() as HttpBrowserCapabilities;
 
 			request.ContentEncoding = Encoding.UTF8;
-			request.ContentType = "application/x-www-form-urlencoded";
+			request.ContentType = RequestContentType.Form;
         }
 
 		/// <summary>

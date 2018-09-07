@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using ClownFish.Base.Http;
 using ClownFish.Base.Xml;
 using ClownFish.Web;
 
@@ -32,7 +33,7 @@ namespace ClownFish.Web
 
 		void IActionResult.Ouput(HttpContext context)
 		{
-			context.Response.ContentType = "application/xml";
+			context.Response.ContentType = ResponseContentType.Xml;
 			string xml = XmlHelper.XmlSerialize(Model, Encoding.UTF8);
 			context.Response.Write(xml);
 		}

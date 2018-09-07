@@ -7,6 +7,7 @@ using System.Web;
 using ClownFish.Web.Config;
 using ClownFish.Web.Serializer;
 using ClownFish.Base;
+using ClownFish.Base.Http;
 
 namespace ClownFish.Web
 {
@@ -61,7 +62,7 @@ namespace ClownFish.Web
 				context.Response.Write(json);
 			}
 			else {
-				context.Response.ContentType = "application/json";
+				context.Response.ContentType = ResponseContentType.Json;
 				string json = this.Model.ToJson(this.KeepTypeInfo);
 				context.Response.Write(json);
 			}

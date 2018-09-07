@@ -64,14 +64,10 @@ namespace ClownFish.Base.WebClient
                 case SerializeFormat.Form:
                     WriteAsFormFormat(stream, data);
                     break;
-
-                case SerializeFormat.Auto:
-                case SerializeFormat.None:
-                    WriteAsAutoFormat(stream, data);
-                    break;
-
+                     
                 default:
-                    throw new NotSupportedException();
+                    WriteAsUnknownFormat(stream, data);
+                    break;
             }
         }
 
@@ -105,7 +101,7 @@ namespace ClownFish.Base.WebClient
 
         private void WriteAsJsonFormat(Stream stream, object data)
         {
-            _request.ContentType = "application/json";
+            _request.ContentType = RequestContentType.Json;
             string text = (data.GetType() == typeof(string))
                             ? (string)data
                             : JsonExtensions.ToJson(data, false);
@@ -114,7 +110,7 @@ namespace ClownFish.Base.WebClient
 
         private void WriteAsJson2Format(Stream stream, object data)
         {
-            _request.ContentType = "application/json";
+            _request.ContentType = RequestContentType.Json;
             string text = (data.GetType() == typeof(string))
                             ? (string)data
                             : JsonExtensions.ToJson(data, true);    // 序列化时保留类型信息
@@ -123,7 +119,7 @@ namespace ClownFish.Base.WebClient
 
         private void WriteAsXmlFormat(Stream stream, object data)
         {
-            _request.ContentType = "application/xml";
+            _request.ContentType = RequestContentType.Xml;
             string text = (data.GetType() == typeof(string))
                                 ? (string)data
                                  : XmlHelper.XmlSerialize(data, Encoding.UTF8);
@@ -133,7 +129,7 @@ namespace ClownFish.Base.WebClient
         private void WriteAsFormFormat(Stream stream, object data)
         {
             if( data.GetType() == typeof(string) ) {
-                _request.ContentType = "application/x-www-form-urlencoded";
+                _request.ContentType = RequestContentType.Form;
                 WriteText(stream, (string)data);
             }
             else {
@@ -142,12 +138,12 @@ namespace ClownFish.Base.WebClient
                 if( form.HasFile )
                     _request.ContentType = form.GetMultipartContentType();
                 else
-                    _request.ContentType = "application/x-www-form-urlencoded";
+                    _request.ContentType = RequestContentType.Form;
                 form.WriteToStream(stream, Encoding.UTF8);
             }
         }
 
-        private void WriteAsAutoFormat(Stream stream, object data)
+        private void WriteAsUnknownFormat(Stream stream, object data)
         {
             // 这二类场景就不指定内容头了
             if( data.GetType() == typeof(string) ) {

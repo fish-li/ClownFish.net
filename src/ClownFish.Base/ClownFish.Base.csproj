@@ -93,6 +93,8 @@
     <Compile Include="Framework\AppInitializer.cs" />
     <Compile Include="Framework\PreApplicationStartMethodAttribute.cs" />
     <Compile Include="Framework\RunTimeEnvironment.cs" />
+    <Compile Include="Http\RequestContentType.cs" />
+    <Compile Include="Http\ResponseContentType.cs" />
     <Compile Include="Internals\HttpInternalExtensions.cs" />
     <Compile Include="Http\CustomDataAttribute.cs" />
     <Compile Include="Http\HttpFile.cs" />

@@ -29,7 +29,7 @@ namespace ClownFish.Base.Http
 		/// 采用 JSON.NET 序列化为 JSON 字符串，并尽量输出类型信息，可用于服务端之间或者客户端是C#的反序列化。
 		/// 匹配标头："application/json"
 		/// </summary>
-		Json2,		// 原枚举名：JsonWithType
+		Json2,
 		/// <summary>
 		/// 序列化成 XML 字符串
 		/// 匹配标头："application/xml"
@@ -37,15 +37,18 @@ namespace ClownFish.Base.Http
 		Xml,
 		/// <summary>
 		/// 采用 "application/x-www-form-urlencoded" 方式序列化
-		/// 匹配标头："application/x-www-form-urlencoded"
 		/// </summary>
 		Form,
 		/// <summary>
 		/// 自动根据请求头去响应，用于服务端响应。
 		/// 客户端发起请求时，需要指定 Request.Headers["X-Result-Format"]，否则按文本输出
 		/// </summary>
-		Auto
-	}
+		Auto,
+        /// <summary>
+        /// 未知的请求头（不是标准的请求头）
+        /// </summary>
+        Unknown
+    }
 
 
 

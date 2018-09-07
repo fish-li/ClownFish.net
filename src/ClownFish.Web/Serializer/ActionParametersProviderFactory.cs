@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using ClownFish.Base;
+using ClownFish.Base.Http;
 
 namespace ClownFish.Web.Serializer
 {
@@ -53,15 +54,15 @@ namespace ClownFish.Web.Serializer
 			string contentType = context.Request.ContentType;
 
 			if( string.IsNullOrEmpty(contentType)
-				|| contentType.IndexOfIgnoreCase("application/x-www-form-urlencoded") >= 0
-                || contentType.IndexOfIgnoreCase("multipart/form-data") >= 0 )
+				|| contentType.IndexOfIgnoreCase(RequestContentType.Form) >= 0
+                || contentType.IndexOfIgnoreCase(RequestContentType.Multipart) >= 0 )
 				return CreateFormProvider(context);
 
-			if( contentType.IndexOfIgnoreCase("application/json") >= 0 ) 
+			if( contentType.IndexOfIgnoreCase(RequestContentType.Json) >= 0 ) 
 				return CreateJsonProvider(context);
 
 
-			if( contentType.IndexOfIgnoreCase("application/xml") >= 0 )
+			if( contentType.IndexOfIgnoreCase(RequestContentType.Xml) >= 0 )
 				return CreateXmlProvider(context);
 
 

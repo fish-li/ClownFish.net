@@ -24,7 +24,7 @@ namespace ClownFish.Base.WebClient
 		{
 			_method = "GET";
 			Format = SerializeFormat.Form;
-            ContentType = "application/x-www-form-urlencoded";
+            ContentType = RequestContentType.Form;
         }
         
 
@@ -354,8 +354,11 @@ namespace ClownFish.Base.WebClient
                 // 没有找到 "Content-Type"
                 // 为了方便使用，这里增加一个默认设置
                 if( option.Data != null )
-                    option.ContentType = "application/x-www-form-urlencoded"; 
+                    option.ContentType = RequestContentType.Form; 
             }
+
+            if( string.IsNullOrEmpty(option.ContentType) == false )
+                option.Format = RequestContentType.GetFormat(option.ContentType);
 
             return option;
 		}

@@ -104,7 +104,9 @@
     <Compile Include="Xml\XmlHelperTest.cs" />
     <Compile Include="_DEMO\AttributeCache_DEMO.cs" />
     <Compile Include="_DEMO\FileDependencyManager_DEMO.cs" />
-    <Compile Include="_DEMO\HttpOption_DEMO.cs" />
+    <Compile Include="_DEMO\HttpOptionDEMO\Simple_DEMO.cs" />
+    <Compile Include="_DEMO\HttpOptionDEMO\JiraClient.cs" />
+    <Compile Include="_DEMO\HttpOptionDEMO\JiraClientV2.cs" />
     <Compile Include="_DEMO\JSON_XML_BIN_Serialize_DEMO.cs" />
     <Compile Include="_DEMO\ObjectFactory_DEMO.cs" />
     <Compile Include="_DEMO\Retry_DEMO.cs" />
