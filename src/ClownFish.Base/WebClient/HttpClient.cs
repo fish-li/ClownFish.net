@@ -273,13 +273,11 @@ namespace ClownFish.Base.WebClient
 								object data = null, 
 								SerializeFormat format = SerializeFormat.Form)
 		{
-			HttpClient client = ObjectFactory.New<HttpClient>();
-			client.CreateWebRequest(url);
-			client.SetRequestData(data, format);
-
-			using( HttpWebResponse response = client.GetResponse() ) {
-				return client.GetResult<T>(response);
-			}
+            return new HttpOption {
+                Url = url,
+                Data = data,
+                Format = format
+            }.Send<T>();
 		}
 
 
@@ -295,14 +293,12 @@ namespace ClownFish.Base.WebClient
 												object data = null, 
 												SerializeFormat format = SerializeFormat.Form)
 		{
-			HttpClient client = ObjectFactory.New<HttpClient>();
-			client.CreateWebRequest(url);
-			await client.SetRequestDataAsync(data, format);
-
-			using( HttpWebResponse response = await client.GetResponseAsync() ) {
-				return client.GetResult<T>(response);
-			}
-		}
+            return await new HttpOption {
+                Url = url,
+                Data = data,
+                Format = format
+            }.SendAsync<T>();
+        }
 	}
 
 

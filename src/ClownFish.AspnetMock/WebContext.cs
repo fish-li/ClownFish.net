@@ -128,17 +128,17 @@ namespace ClownFish.AspnetMock
 				if( string.IsNullOrEmpty(userAgent) == false ) {
 					SetBrowserInfo(userAgent, context);
 				}
-			}
+
+                string contentType = option.Headers["Content-Type"];
+                if(string.IsNullOrEmpty(contentType) == false)
+                    context.Request.ContentType = contentType;
+            }
 
 			// 设置请求体
 			if( option.Data != null ) {
 				context.Request.SetForm((string)option.Data);
 				context.Request.SetInputStream((string)option.Data);				
 			}
-
-			// 设置请求体类型
-			if( option.ContentType != null )
-				context.Request.ContentType = option.ContentType;
 
 			return context;
 		}

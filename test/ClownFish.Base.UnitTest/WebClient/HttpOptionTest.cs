@@ -37,7 +37,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
 
             Assert.AreEqual("http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx", option.GetRequestUrl());
             Assert.AreEqual("input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81", option.GetPostData().ToString());
-            Assert.AreEqual("application/x-www-form-urlencoded", option.ContentType);
+            Assert.AreEqual("application/x-www-form-urlencoded", option.Headers["Content-Type"]);
         }
 
 

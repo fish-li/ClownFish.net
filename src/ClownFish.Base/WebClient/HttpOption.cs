@@ -24,7 +24,6 @@ namespace ClownFish.Base.WebClient
 		{
 			_method = "GET";
 			Format = SerializeFormat.Form;
-            ContentType = RequestContentType.Form;
         }
         
 
@@ -50,10 +49,11 @@ namespace ClownFish.Base.WebClient
 			}
 		}
 
-		/// <summary>
-		/// 请求头集合
-		/// </summary>
-		public HttpHeaderCollection Headers {
+        /// <summary>
+        /// 请求头集合。
+        /// 允许为当前属性指定一个 Dictionary《string, string》 类型的变量
+        /// </summary>
+        public HttpHeaderCollection Headers {
             get {
                 if( _headers == null )
                     _headers = new HttpHeaderCollection();
@@ -66,6 +66,24 @@ namespace ClownFish.Base.WebClient
                 _headers = value;
             }
         }
+
+
+        /// <summary>
+        /// 这个属性只能赋值，等同于给 Headers 属性赋值。差别在于这二个属性的类型不一样。
+        /// 建议：给当前属性指定一个 匿名对象。属性名做为请求头的 NAME，值做为VALUE。
+        /// 说明：如果属性名中包含【下划线】，生成的请求头中将变成【中横线】 例如：prefix_name =》 "prefix-name"
+        /// </summary>
+        public object Header {
+            // 定义一个【只写属性】不是好的设计方式！
+            // 这里没有办法，因为 C# 编译器不允许 从 object 到 HttpHeaderCollection 的类型转换，所以不能沿用 Headers ，只能再定义一个变量
+
+            set {
+                if( value == null )
+                    throw new ArgumentNullException(nameof(value));
+
+                _headers = HttpHeaderCollection.create(value);
+            }
+        }
         
 
         /// <summary>
@@ -75,33 +93,16 @@ namespace ClownFish.Base.WebClient
         /// </summary>
         public object Data { get; set; }
 
-		/// <summary>
-		/// 数据的序列化方式。
-		/// 注意：不包含请求体的请求，不需要指定这个属性，例如：GET , HEAD
-		/// </summary>
-		public SerializeFormat Format { get; set; }
-
-
         /// <summary>
-        /// 框架内部使用。
-        /// 如果需要指定请求数据格式，请设置 Format 属性。
+        /// 数据的序列化方式。相当于指定 Content-Type 请求头。
+        /// 注意：不包含请求体的请求，不需要指定这个属性，例如：GET , HEAD
         /// </summary>
-        public string ContentType { get; private set; }
+        public SerializeFormat Format { get; set; }
 
-        // ContentType 的设计说明：
-        // 一般来说，如果需要指定请求的数据格式，在创建HttpOption实例时，直接设置Format就可以了，
-        // 但是有一种特殊场景，HttpOption实例是通过 FromRawText 这个静态方法根据文本中解析出来的，
-        // 此时没有逆向生成 Format属性值，所以就用这个属性来保存原始的设置。
-
-        // 在实际运行时，就有二种场景：
-        // 1、HttpOption httpOption = new HttpOption() ，同时指定 Data 和 Format，
-        // 此时，先执行 request.ContentType = option.ContentType; 但是 option.ContentType还是默认值，估计是错误的。
-        // 然后，RequestWriter会根据 Format属性 来重新计算 request.ContentType，所以最终的结果仍然是正确的。
-
-        // 2、HttpOption httpOption = HttpOption.FromRawText(".........")
-        // 此时，option.ContentType 就是正确的设置，并且设置 option.Format = SerializeFormat.None;
-        // 所以，在发送数据时，RequestWriter不会重新计算 request.ContentType
-
+        // 不使用 ContentType 的原因有三点：
+        // 1，ContentType 是个【长】字符串，容易写错，
+        // 2，Json, Json2 这样的序列列没法表达
+        // 3，限制范围，只允许枚举定义的几种取值
 
 
 
@@ -268,30 +269,29 @@ namespace ClownFish.Base.WebClient
         /// <returns></returns>
         public static HttpOption FromRawText(string text)
 		{
-			// 示例数据：
-			//POST http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
-			//Host: www.fish-web-demo.com
-			//User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
-			//Accept: */*
-			//Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
-			//Accept-Encoding: gzip, deflate
-			//Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-			//X-Requested-With: XMLHttpRequest
-			//Referer: http://www.fish-web-demo.com/Pages/Demo/TestAutoFindAction.htm
-			//Content-Length: 72
-			//Cookie: hasplmlang=_int_; LoginBy=productKey; PageStyle=Style2;
-			//Connection: keep-alive
-			//Pragma: no-cache
-			//Cache-Control: no-cache
+            // text参数的 示例数据：
+            //POST http://www.fish-web-demo.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
+            //Host: www.fish-web-demo.com
+            //User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
+            //Accept: */*
+            //Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+            //Accept-Encoding: gzip, deflate
+            //Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+            //X-Requested-With: XMLHttpRequest
+            //Referer: http://www.fish-web-demo.com/Pages/Demo/TestAutoFindAction.htm
+            //Content-Length: 72
+            //Cookie: hasplmlang=_int_; LoginBy=productKey; PageStyle=Style2;
+            //Connection: keep-alive
+            //Pragma: no-cache
+            //Cache-Control: no-cache
 
-			//input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
+            //input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
 
-			if( string.IsNullOrEmpty(text) )
+            if( string.IsNullOrEmpty(text) )
 				throw new ArgumentNullException("text");
 
 			HttpOption option = new HttpOption();
             // 放弃构造方法中的默认值格式，因为请求头中可能会指定
-            option.ContentType = null;            
             option.Format = SerializeFormat.None;
 
 
@@ -306,7 +306,7 @@ namespace ClownFish.Base.WebClient
 
                 // 设置请求方法，GET OR POST
 				option.Method = firstLine.Substring(0, p1);
-                                
+                
 
 				// 不使用HTTP协议版本，只做校验。
 				string httpVersion = firstLine.Substring(p2 + 1);
@@ -322,6 +322,10 @@ namespace ClownFish.Base.WebClient
 						int p3 = line.IndexOf(':');
 						if( p3 > 0 ) {
 							string name = line.Substring(0, p3);
+
+                            if( name.EqualsIgnoreCase("Content-Length") )   // 这个头可以直接丢弃
+                                continue;
+
 							string value = line.Substring(p3 + 2);	// 2 表示2个字符，一个冒号，一个空格
 							option.Headers.Add(name, value);
 						}
@@ -338,27 +342,20 @@ namespace ClownFish.Base.WebClient
 					option.Data = postText;
 			}
 
-
-			string contentType = option.Headers["Content-Type"];
-			if( contentType != null ) {
-				int p = contentType.IndexOf("; charset=");
-				// 注意：这里丢弃了 charset 设置，因为 HttpClient 固定以 utf-8 编码方式发送请求！
-				if( p > 0 )
-					option.ContentType = contentType.Substring(0, p);
-				else
-					option.ContentType = contentType;
-
-				option.Headers.Remove("Content-Type");
-			}
+            string contentType = option.Headers["Content-Type"];
+            if( contentType != null ) {
+                int p = contentType.IndexOf("; charset=");
+                // 注意：这里丢弃了 charset 设置，因为 HttpClient 固定以 utf-8 编码方式发送请求！
+                if( p > 0 ) {
+                    option.Headers["Content-Type"] = contentType.Substring(0, p);
+                }
+            }
             else {
-                // 没有找到 "Content-Type"
-                // 为了方便使用，这里增加一个默认设置
+                // 为了兼容以前的测试用例：当时为了简单，在POST时没有指定Content-Type
                 if( option.Data != null )
-                    option.ContentType = RequestContentType.Form; 
+                    option.Format = SerializeFormat.Form;
             }
 
-            if( string.IsNullOrEmpty(option.ContentType) == false )
-                option.Format = RequestContentType.GetFormat(option.ContentType);
 
             return option;
 		}

@@ -178,9 +178,7 @@ namespace ClownFish.Base.WebClient
 				throw new ArgumentNullException("option");
 
 			option.CheckInput();
-
-
-
+            
 			HttpClient client = ObjectFactory.New<HttpClient>();
 
             // 获取实际请求址，并创建 HttpWebRequest 实例
@@ -224,10 +222,6 @@ namespace ClownFish.Base.WebClient
 			if( option.Timeout.HasValue )
 				request.Timeout = option.Timeout.Value;
 
-            if( HttpOption.RequestHasBody(option.Method) ) {
-                if( string.IsNullOrEmpty(option.ContentType) == false )
-                    request.ContentType = option.ContentType;
-            }
 
 			if( string.IsNullOrEmpty(option.UserAgent) == false )
 				request.UserAgent = option.UserAgent;

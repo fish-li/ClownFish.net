@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ClownFish.Base.Http;
+using ClownFish.Base.Reflection;
 using ClownFish.Base.Xml;
 
 
@@ -51,25 +54,70 @@ namespace ClownFish.Base.WebClient
 				_responseStream = new GZipStream(_response.GetResponseStream(), CompressionMode.Decompress);
 			else
 				_responseStream = _response.GetResponseStream();
-			
 
-			if( typeof(T) == typeof(byte[]) ) {
-				// 二进制，就直接读取，忽略字符编码
-				return (T)(object)GetResponseBytes();
-			}
-			else {
-				// 其它类型的结果，先得到字符串，再做反序列化处理
-				InitTextStream();
 
-				string responseText = GetResponseText();
+            Type resultType = typeof(T);
 
-				// 转换结果
-				return ConvertResult<T>(responseText);
-			}
+            // 先判断是不是HttpResult类型
+            if( resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(HttpResult<>) ) {
+                Type argType = resultType.GetGenericArguments()[0];
+                MethodInfo method = this.GetType()
+                                        .GetMethod(nameof(GetHttpResult), BindingFlags.Instance| BindingFlags.Public | BindingFlags.NonPublic)
+                                        .MakeGenericMethod(argType);
+                return (T)method.FastInvoke(this, null);
+            }
+            
+            return GetResult<T>();
 		}
 
 
-		private MemoryStream ConvertToMemoryStream(Stream stream)
+
+        public T GetResult<T>()
+        {
+            if( typeof(T) == typeof(byte[]) ) {
+                // 二进制，就直接读取，忽略字符编码
+                return (T)(object)GetResponseBytes();
+            }
+            else {
+                // 其它类型的结果，先得到字符串，再做反序列化处理
+                InitTextStream();
+
+                string responseText = GetResponseText();
+
+                // 转换结果
+                return ConvertResult<T>(responseText);
+            }
+        }
+
+
+        public HttpResult<T> GetHttpResult<T>()
+        {
+            HttpResult<T> httpResult = new HttpResult<T>();
+            httpResult.Headers = new HttpHeaderCollection();
+
+            // 先获取内部的响应头集合
+            PropertyInfo propInfo = _response.Headers.GetType().GetProperty("InnerCollection", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            NameValueCollection headers = (NameValueCollection)propInfo.FastGetValue(_response.Headers);
+
+            
+            // 复制响应头
+            foreach( string name in _response.Headers.AllKeys ) {
+
+                // 不能直接这样访问， WebHeaderCollection 的实现方式有BUG
+                //string[] values = _response.Headers.GetValues(name);
+
+                string[] values = headers.GetValues(name);
+                foreach( string value in values )
+                    httpResult.Headers.Add(name, value);
+            }
+
+            httpResult.Result = GetResult<T>();
+
+            return httpResult;
+        }
+
+
+        private MemoryStream ConvertToMemoryStream(Stream stream)
 		{
 			if( stream.CanSeek )
 				stream.Position = 0;

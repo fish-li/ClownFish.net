@@ -122,6 +122,7 @@
     <Compile Include="WebClient\FormDataCollection.cs" />
     <Compile Include="WebClient\HttpClient.cs" />
     <Compile Include="WebClient\HttpOption.cs" />
+    <Compile Include="WebClient\HttpResult.cs" />
     <Compile Include="WebClient\RemoteWebException.cs" />
     <Compile Include="WebClient\RequestWriter.cs" />
     <Compile Include="WebClient\ResponseReader.cs" />

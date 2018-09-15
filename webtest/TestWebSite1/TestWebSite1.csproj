@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -254,6 +255,7 @@
     <Content Include="Pages\TestSerializer.htm" />
     <Content Include="Pages\TestServiceIsReady.html" />
     <Content Include="Pages\TestTaskPage.aspx" />
+    <Content Include="test1.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

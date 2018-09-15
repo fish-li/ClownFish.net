@@ -43,6 +43,32 @@ namespace ClownFish.Base.Http
         }
 
 
+        /// <summary>
+        /// 将一个匿名对象转换成HttpHeaderCollection实例
+        /// </summary>
+        /// <param name="obj"></param>
+        public static HttpHeaderCollection create(object obj)
+        {
+            // 说明： C# 编译器不允许 从 object 到 HttpHeaderCollection 的类型转换，所以只能这样定义一个方法。
+
+            // 对参数做个简单的判断，防止传入了错误的类型
+            if( obj.GetType().IsPrimitive || obj.GetType() == typeof(string) )
+                throw new ArgumentException("参数类型不正确，应该传递一个匿名对象。");
+
+
+            HttpHeaderCollection result = new HttpHeaderCollection();
+
+            var ps = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach(var p in ps ) {
+                string name = p.Name.Replace('_', '-');
+                string value = (p.FastGetValue(obj) ?? string.Empty).ToString();
+                result.Add(name, value);
+            }
+
+            return result;
+        }
+
+
 
         /// <summary>
         /// 索引器，根据名称访问集合
@@ -60,6 +86,17 @@ namespace ClownFish.Base.Http
                     return item.Value;
                 else
                     return null;
+            }
+            set {
+                NameValue item = this.FirstOrDefault(
+                    x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+
+                if( item != null )
+                    item.Value = value;
+                else {
+                    NameValue nv = new NameValue { Name = name, Value = value };
+                    this.Add(nv);
+                }
             }
         }
 
