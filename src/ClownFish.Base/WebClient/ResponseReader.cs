@@ -16,7 +16,10 @@ using ClownFish.Base.Xml;
 
 namespace ClownFish.Base.WebClient
 {
-	internal class ResponseReader : IDisposable
+    /// <summary>
+    /// 读取HttpWebResponse的工具类
+    /// </summary>
+	public sealed class ResponseReader : IDisposable
 	{
 		/// <summary>
 		/// HTTP响应对象
@@ -39,7 +42,10 @@ namespace ClownFish.Base.WebClient
 		/// </summary>
 		private bool _isHtml;
 
-
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="response"></param>
 		public ResponseReader(HttpWebResponse response)
 		{
 			if( response == null )
@@ -48,6 +54,11 @@ namespace ClownFish.Base.WebClient
 			_response = response;
 		}
 
+        /// <summary>
+        /// 获取指定类型的结果
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
 		public T Read<T>()
 		{
 			if( _response.Headers["Content-Encoding"] == "gzip" )
@@ -71,8 +82,7 @@ namespace ClownFish.Base.WebClient
 		}
 
 
-
-        public T GetResult<T>()
+        private T GetResult<T>()
         {
             if( typeof(T) == typeof(byte[]) ) {
                 // 二进制，就直接读取，忽略字符编码
@@ -90,9 +100,10 @@ namespace ClownFish.Base.WebClient
         }
 
 
-        public HttpResult<T> GetHttpResult<T>()
+        private HttpResult<T> GetHttpResult<T>()
         {
             HttpResult<T> httpResult = new HttpResult<T>();
+            httpResult.StatusCode = (int)_response.StatusCode;
             httpResult.Headers = new HttpHeaderCollection();
 
             // 先获取内部的响应头集合
@@ -328,7 +339,7 @@ namespace ClownFish.Base.WebClient
 
 		#region IDisposable 成员
 
-		public void Dispose()
+		void IDisposable.Dispose()
 		{
 			if( object.ReferenceEquals(_responseStream, _textStream) ) {
 				if( _responseStream != null )	// 异常日志居然记录这里会有NULL引用！

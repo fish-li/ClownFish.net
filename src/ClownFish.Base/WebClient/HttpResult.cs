@@ -14,6 +14,10 @@ namespace ClownFish.Base.WebClient
     public sealed class HttpResult<T>
     {
         /// <summary>
+        /// 状态码
+        /// </summary>
+        public int StatusCode { get; internal set; }
+        /// <summary>
         /// 从服务端返回响应头集合
         /// </summary>
         public HttpHeaderCollection Headers { get; internal set; }
