@@ -344,9 +344,12 @@ namespace ClownFish.Base.WebClient
 
             string contentType = option.Headers["Content-Type"];
             if( contentType != null ) {
-                int p = contentType.IndexOf("; charset=");
-                // 注意：这里丢弃了 charset 设置，因为 HttpClient 固定以 utf-8 编码方式发送请求！
+                // 可能的格式：Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+                // 此时，只需要获取 "application/x-www-form-urlencoded"
+
+                int p = contentType.IndexOf(';');                
                 if( p > 0 ) {
+                    // 注意：这里丢弃了 charset 设置，因为 HttpClient 固定以 utf-8 编码方式发送请求！
                     option.Headers["Content-Type"] = contentType.Substring(0, p);
                 }
             }
