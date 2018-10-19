@@ -57,6 +57,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -69,6 +70,7 @@
     <Compile Include="Common\DataTimeExtensions.cs" />
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\EncodingExtensions.cs" />
+    <Compile Include="Common\EnvironmentHelper.cs" />
     <Compile Include="Common\ExceptionExtensions.cs" />
     <Compile Include="Common\GuidHelper.cs" />
     <Compile Include="Common\GzipHelper.cs" />

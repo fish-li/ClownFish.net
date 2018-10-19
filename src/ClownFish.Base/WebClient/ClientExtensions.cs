@@ -154,8 +154,11 @@ namespace ClownFish.Base.WebClient
 
 			option.SetRequestAction?.Invoke(request);		// 调用委托
 
+            // 触发发送前事件
+            client.ExecuteBeforeSendRequestEvent();
+
             // 设置提交数据
-			client.SetRequestData(option.GetPostData(), option.Format);
+            client.SetRequestData(option.GetPostData(), option.Format);
 
 			using( HttpWebResponse response = client.GetResponse() ) {
 
@@ -186,8 +189,11 @@ namespace ClownFish.Base.WebClient
             HttpWebRequest request = client.CreateWebRequest(requestUrl);
 
             SetWebRequest(request, option);
-
+            
 			option.SetRequestAction?.Invoke(request);       // 调用委托
+
+            // 触发发送前事件
+            client.ExecuteBeforeSendRequestEvent();
 
             // 设置提交数据
             await client.SetRequestDataAsync(option.GetPostData(), option.Format);

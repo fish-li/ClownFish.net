@@ -132,7 +132,7 @@ namespace ClownFish.Base.WebClient
 		internal static readonly string DllVersion
 			= System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(HttpClient).Assembly.Location).FileVersion;
 
-		private void ExecuteBeforeSendRequestEvent()
+		internal void ExecuteBeforeSendRequestEvent()
 		{
             // 有些2B程序不规范，用了自己特定定的数据格式，不允许指定"Content-Type"，所以这里不能自动增加这个请求头
             // 例如： jira，它就不允许在GET时指定"Content-Type"，
@@ -176,8 +176,8 @@ namespace ClownFish.Base.WebClient
 			Request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
 			Request.Method = "GET";
 			Request.ServicePoint.Expect100Continue = false;
-			
-			return Request;
+
+             return Request;
 		}
 
 
@@ -222,11 +222,12 @@ namespace ClownFish.Base.WebClient
 		/// <returns></returns>
 		public HttpWebResponse GetResponse()
 		{
-			// 触发事件
-			ExecuteBeforeSendRequestEvent();
+            // 2018-10-19 注释这里，因为对于POST请求，执行到这里已经向服务端发起请求了
+            //// 触发事件
+            //ExecuteBeforeSendRequestEvent();
 
-			// 获取服务端响应
-			return (HttpWebResponse)this.Request.GetResponse();
+            // 获取服务端响应
+            return (HttpWebResponse)this.Request.GetResponse();
 		}
 
 		/// <summary>
@@ -235,8 +236,8 @@ namespace ClownFish.Base.WebClient
 		/// <returns></returns>
 		public async Task<HttpWebResponse> GetResponseAsync()
 		{
-			// 触发事件
-			ExecuteBeforeSendRequestEvent();
+			//// 触发事件
+			//ExecuteBeforeSendRequestEvent();
 
 			// 获取服务端响应
 			return (HttpWebResponse)await this.Request.GetResponseAsync();
