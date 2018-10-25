@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("PerformanceTest.Web")]
+[assembly: AssemblyTitle("PerformanceTest.Website")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PerformanceTest.Web")]
+[assembly: AssemblyProduct("PerformanceTest.Website")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -38,4 +38,3 @@ using System.Runtime.InteropServices;
 
 [assembly: ClownFish.Web.ControllerAssembly]
 
-[assembly: ClownFish.Web.NamespaceMap("PerformanceTest.Handlers", "test")]

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Web;
 
-namespace PerformanceTest.Handlers
+namespace PerformanceTest.Website.Handlers
 {
     public sealed class Class1Controller : BaseController
     {
