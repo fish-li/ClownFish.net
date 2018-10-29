@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace ClownFish.Data
 {
-	/// <summary>
-	/// 表示在数据访问执行过程中发生的异常。
-	/// </summary>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237")]
-	public sealed class DbExceuteException : Exception, ClownFish.Base.Internals.IIncludeDbCommand
+    // CA2237	将 [Serializable] 添加到 'DbExceuteException'，原因是此类型实现了 ISerializable。
+    // 由于DbExceuteException包含了DbCommand，而DbCommand没有标记为可序列化，因此只能禁止CA2237的检查。
+
+    /// <summary>
+    /// 表示在数据访问执行过程中发生的异常。
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237")]
+    public sealed class DbExceuteException : Exception, ClownFish.Base.Internals.IIncludeDbCommand
     {
 		/// <summary>
 		/// SQL执行时关联的命令对象。
