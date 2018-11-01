@@ -79,5 +79,19 @@ namespace ClownFish.Base
             return Directory.Exists(path);
         }
 
+
+
+        /// <summary>
+        /// 等同于：System.IO.Directory.GetLastWriteTime()
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static DateTime GetLastWriteTime(string path)
+        {
+            return RetryFile.CreateRetry().Run(() => {
+                return Directory.GetLastWriteTime(path);
+            });
+        }
+
     }
 }
