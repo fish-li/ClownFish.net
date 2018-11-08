@@ -101,8 +101,6 @@
         <a href="http://www.dingtalk.com/">www.dingtalk.com</a>
         <a href="http://www.163.com/">www.163.com</a>
         <a href="http://www.hao123.com/">www.hao123.com</a>
-        <a href="http://tucao.mingyuanyun.com:1088/">tucao.mingyuanyun.com</a>
-        <a href="http://spec.mingyuanyun.com:55768/">spec.mingyuanyun.com</a>
 
     </div>
 
