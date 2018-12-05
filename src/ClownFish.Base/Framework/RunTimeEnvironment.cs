@@ -43,8 +43,8 @@ namespace ClownFish.Base.Framework
 		public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
 		{
 			Assembly[] assemblies = GetLoadAssemblies();
-			if( ignoreSystemAssembly == false )
-				return assemblies;
+			//if( ignoreSystemAssembly == false )
+			//	return assemblies;
 			
 
 
@@ -55,9 +55,11 @@ namespace ClownFish.Base.Framework
 				if( assembly.IsDynamic )    // 动态程序通常是不需要参考的
 					continue;
 
-				// 过滤以【System】开头的程序集，加快速度
-				if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
-					continue;
+                if( ignoreSystemAssembly ) {
+                    // 过滤以【System】开头的程序集，加快速度
+                    if( assembly.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase) )
+                        continue;
+                }
 
 				list.Add(assembly);
 			}

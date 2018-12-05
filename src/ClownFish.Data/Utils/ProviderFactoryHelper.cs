@@ -55,7 +55,7 @@ namespace ClownFish.Data
 		/// <returns>与数据提供者名称对应的DbProviderFactory实例</returns>
 		private static DbProviderFactory GetDbProviderFactoryViaReflection(string providerName)
 		{
-			Type factoryType = (from asm in RunTimeEnvironment.GetLoadAssemblies()
+			Type factoryType = (from asm in RunTimeEnvironment.GetLoadAssemblies(true)
 								from t in asm.GetPublicTypes()
 								where t.Namespace == providerName && typeof(DbProviderFactory).IsAssignableFrom(t)
 								select t).FirstOrDefault();
