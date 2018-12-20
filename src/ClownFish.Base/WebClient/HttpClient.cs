@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ClownFish.Base.Http;
 using ClownFish.Base.TypeExtend;
@@ -23,27 +22,8 @@ namespace ClownFish.Base.WebClient
 
 		static HttpClient()
 		{
-			// 设置无效证书的处理方式：忽略错误
-			ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
-		}
-
-		private static bool RemoteCertificateValidationCallback(
-			Object sender,
-			System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-			System.Security.Cryptography.X509Certificates.X509Chain chain,
-			System.Net.Security.SslPolicyErrors sslPolicyErrors)
-		{
-			// 忽略证书错误。
-			// HttpClient定位在后台代码调用，因此对方网站应该是确定的，
-			// 因此，发生证书错误时，通常是由于证书过期导致的，所以这里就直接忽略这类错误。
-			return true;
-		}
-
-
-		internal static void TriggerCctor()
-		{
-			// 触发静态构造方法，设置与HttpWebRequest相关的参数
-		}
+            SysNetInitializer.Init();
+        }
 
 		#endregion
 

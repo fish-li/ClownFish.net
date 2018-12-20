@@ -34,20 +34,6 @@ namespace ClownFish.Web
 		}
 
 
-		private static readonly Regex s_urlRootRegex = new Regex(@"\w+://[^/]+", RegexOptions.Compiled);
-
-
-		public static string GetWebSiteRoot(string absoluteUrl)
-		{
-			Match m = s_urlRootRegex.Match(absoluteUrl);		// 提取：http://xxx.xxxx.com
-
-			if( m.Success ) 
-				return m.Groups[0].Value;
-			else
-				return null;
-		}
-
-
 		/// <summary>
 		/// 尝试判断是不是JSONP请求，并获取回调方法名称
 		/// </summary>

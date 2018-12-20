@@ -144,9 +144,9 @@ namespace ClownFish.Web
 
 				// 也有可能是我没找到更有效的方法，如果看到注释的你有更好的解决方法，请告诉我：liqifeng0503@163.com ，谢谢。
 
-				if( context.Request.Headers[Proxy.ProxyTransferHandler.ProxyFlagHeader] != null )
-					// 反向代理发出的请求，这里就直接调用UrlEncode，因为在那边还要调用 UrlDecode来还原
-					context.Response.AddHeader("X-Content-Disposition-proxy", HttpUtility.UrlEncode(filename));
+				if( context.Request.Headers["x-HttpProxyHandler"] != null )
+                    // 反向代理发出的请求，这里就直接调用UrlEncode，因为在那边还要调用 UrlDecode来还原
+                    context.Response.AddHeader("X-Content-Disposition-proxy", HttpUtility.UrlEncode(filename));
 			}
 
 			else  // 符合新标准的浏览器（部分特殊字符仍然有问题，汉字没问题）

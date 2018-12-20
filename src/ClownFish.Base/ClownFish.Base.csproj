@@ -97,6 +97,7 @@
     <Compile Include="Framework\RunTimeEnvironment.cs" />
     <Compile Include="Http\RequestContentType.cs" />
     <Compile Include="Http\ResponseContentType.cs" />
+    <Compile Include="Http\SysNetInitializer.cs" />
     <Compile Include="Internals\HttpInternalExtensions.cs" />
     <Compile Include="Http\CustomDataAttribute.cs" />
     <Compile Include="Http\HttpFile.cs" />

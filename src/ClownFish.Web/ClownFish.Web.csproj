@@ -133,9 +133,11 @@
     <Compile Include="Pipeline\MvcRoutingModule.cs" />
     <Compile Include="Pipeline\TaskAsyncActionHandler.cs" />
     <Compile Include="Pipeline\UrlParser.cs" />
-    <Compile Include="Proxy\LoadBalanceModule.cs" />
+    <Compile Include="Proxy\DefineHeader.cs" />
+    <Compile Include="Proxy\HttpProxyHandler.cs" />
+    <Compile Include="Proxy\HttpProxyModule.cs" />
     <Compile Include="Proxy\ProxyTransferHandler.cs" />
-    <Compile Include="Proxy\ReverseProxyModule.cs" />
+    <Compile Include="Proxy\CookieProxyModule.cs" />
     <Compile Include="Reflection\ControllerRecognizer.cs" />
     <Compile Include="Reflection\ReflectionHelper.cs" />
     <Compile Include="Serializer\BaseDataProvider.cs" />

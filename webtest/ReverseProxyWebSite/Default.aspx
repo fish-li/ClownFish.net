@@ -4,28 +4,15 @@
 
 <script runat="server">
 
-    protected void SetSiteCookie(string siteAddress)
-    {
-        HttpCookie cookie = ClownFish.Web.Proxy.ReverseProxyModule.CreateProxySiteCookie(siteAddress);
-
-        this.Response.Cookies.Add(cookie);
-    }
-
     protected override void OnPreLoad(EventArgs e)
     {
         base.OnPreLoad(e);
 
-        string[] target = this.Request.QueryString.GetValues("target");
-        if( target == null || target.Length == 0 )
+        string target = this.Request.QueryString["target"];
+        if( string.IsNullOrEmpty(target) )
             return;
 
-        if( string.IsNullOrEmpty(target[0]) == false )
-            SetSiteCookie(target[0]);
-        else {
-            if( string.IsNullOrEmpty(target[1]) == false )
-                SetSiteCookie(target[1]);
-        }
-
+        ClownFish.Web.Proxy.CookieProxyModule.CreateProxySiteCookie(target, this.Response);
         this.Response.Redirect("/");
     }
 
@@ -34,7 +21,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>选择目标站点</title>
+    <title>演示简单的站点反向代理</title>
     <style type="text/css">
         * {
             font-family: Consolas, '微软雅黑', '宋体';
@@ -94,23 +81,13 @@
         
         <a href="http://www.fish-ajax-cors.com/">fish-ajax-cors.com</a>
         <a href="http://www.fish-web-demo.com/">fish-web-demo.com</a>
-        <a href="http://cn.bing.com/">cn.bing.com</a>
-        <a href="http://email.163.com/">email.163.com</a>
-        <a href="http://www.aliyun.com/">www.aliyun.com</a>
-        <a href="http://baike.baidu.com/">baike.baidu.com</a>
-        <a href="http://www.dingtalk.com/">www.dingtalk.com</a>
-        <a href="http://www.163.com/">www.163.com</a>
-        <a href="http://www.hao123.com/">www.hao123.com</a>
 
     </div>
 
     <div class="clear"></div>
 
     <p class="comment">
-        说明：<br />
-        1、如果需要切换到其它站点，请关闭浏览器程序（APP要退出应用），然后再次打开本页面重新选择目标站点。<br />
-        2、灰色字体的站点由于目标网站本身问题，生成了固定链接，不支持代理访问，所以有兼容性缺陷。
-
+        说明： 如果需要切换到其它站点，请将URL修改为  /?target=clear
     </p>
 
 
