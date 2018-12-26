@@ -96,19 +96,41 @@ namespace ClownFish.Base
 						select u).ToArray();
 		}
 
+        /// <summary>
+        /// 换行分隔符
+        /// </summary>
+        public static readonly char[] LineSeparator = new char[] { '\r', '\n' };
 
-		
-
-		/// <summary>
-		/// <para>拆分一个字符串行。如：a=1;b=2;c=3;d=4;</para>
-		/// <para>此时可以调用: SplitString("a=1;b=2;c=3;d=4;", ';', '=');</para>
-		/// <para>说明：对于空字符串，方法也会返回一个空的列表。</para>
+        /// <summary>
+		/// 等效于 string.Split(换行符, StringSplitOptions.RemoveEmptyEntries)
+		/// 且为每个拆分后的结果又做了Trim()操作。
 		/// </summary>
-		/// <param name="line">包含所有项目组成的字符串行</param>
-		/// <param name="separator1">每个项目之间的分隔符</param>
-		/// <param name="separator2">每个项目内的分隔符</param>
-		/// <returns>拆分后的结果列表</returns>
-		public static List<NameValue> SplitString(this string line, char separator1, char separator2)
+		/// <param name="str">要拆分的字符串</param>
+		/// <returns></returns>
+		public static string[] SplitLines(this string str)
+        {
+            if( string.IsNullOrEmpty(str) )
+                return null;
+            else
+                return (from s in str.Split(LineSeparator)
+                        let u = s.Trim()
+                        where u.Length > 0
+                        select u).ToArray();
+        }
+
+
+
+
+        /// <summary>
+        /// <para>拆分一个字符串行。如：a=1;b=2;c=3;d=4;</para>
+        /// <para>此时可以调用: SplitString("a=1;b=2;c=3;d=4;", ';', '=');</para>
+        /// <para>说明：对于空字符串，方法也会返回一个空的列表。</para>
+        /// </summary>
+        /// <param name="line">包含所有项目组成的字符串行</param>
+        /// <param name="separator1">每个项目之间的分隔符</param>
+        /// <param name="separator2">每个项目内的分隔符</param>
+        /// <returns>拆分后的结果列表</returns>
+        public static List<NameValue> SplitString(this string line, char separator1, char separator2)
 		{
 			if( string.IsNullOrEmpty(line) )
 				return new List<NameValue>();
