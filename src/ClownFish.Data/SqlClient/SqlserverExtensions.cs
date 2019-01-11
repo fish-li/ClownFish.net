@@ -32,23 +32,23 @@ namespace ClownFish.Data.SqlClient
 			//--在运行时，将会生成下面二条SQL
 
 			//select * from (
-			// ------------------ 原SQL语句 ------------------
-			//select row_number() over (order by UpCount asc) as RowIndex, 
-			//    Title, Tag, [Description], Creator, CreateTime, UpCount, ReadCount, ReplyCount
-			//from   CaoItem
-			//where CreateTime < @CreateTime
-			// ------------------ 原SQL语句 ------------------
+			    // ------------------ 原SQL语句 ------------------
+			    //select row_number() over (order by UpCount asc) as RowIndex, 
+			    //    Title, Tag, [Description], Creator, CreateTime, UpCount, ReadCount, ReplyCount
+			    //from   CaoItem
+			    //where CreateTime < @CreateTime
+			    // ------------------ 原SQL语句 ------------------
 			//) as t1
 			//where  RowIndex > (@PageSize * @PageIndex) and RowIndex <= (@PageSize * (@PageIndex+1))
 
 
 			//select  count(*) from   ( select 
-			// ------------------ 原SQL语句 ------------------
-			// ----- 去掉 select row_number() over (order by UpCount asc) as RowIndex,
-			//    Title, Tag, [Description], Creator, CreateTime, UpCount, ReadCount, ReplyCount
-			//from   CaoItem as p 
-			//where CreateTime < @CreateTime
-			// ------------------ 原SQL语句 ------------------
+			    // ------------------ 原SQL语句 ------------------
+			    // ----- 去掉 select row_number() over (order by UpCount asc) as RowIndex,
+			    //    Title, Tag, [Description], Creator, CreateTime, UpCount, ReadCount, ReplyCount
+			    //from   CaoItem as p 
+			    //where CreateTime < @CreateTime
+			    // ------------------ 原SQL语句 ------------------
 			//) as t1
 
 			if( command == null )
