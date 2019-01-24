@@ -146,7 +146,21 @@ namespace ClownFish.Web.Reflection
 			// 用于 Service 调用的Action信息则采用延迟加载的方式。
 			// 所以这里只提取类型全名称形成字典
 
-			ServiceFullNameDict = serviceControllerList.ToDictionary(x => x.ControllerType.FullName, StringComparer.OrdinalIgnoreCase);
+		    var dic = new Dictionary<string, ControllerDescription>(StringComparer.OrdinalIgnoreCase);
+		    foreach (var controllerDescription in serviceControllerList)
+		    {
+		        string key = controllerDescription.ControllerType.FullName;
+		        if (dic.ContainsKey(key))
+		        {
+		            throw new InvalidOperationException("Service名称重复：" 
+		                                                + Environment.NewLine + dic[key].ControllerType.AssemblyQualifiedName
+		                                                + Environment.NewLine + controllerDescription.ControllerType.AssemblyQualifiedName);
+		        }
+
+		        dic.Add(key, controllerDescription);
+		    }
+
+		    ServiceFullNameDict = dic;
 		}
 
 
