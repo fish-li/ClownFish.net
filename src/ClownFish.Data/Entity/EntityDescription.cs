@@ -90,8 +90,8 @@ namespace ClownFish.Data
 
 				ColumnInfo info = new ColumnInfo(prop, attr) { DataType = dataType, Index = index };
 
-				dict[info.PropertyInfo.Name] = info;
-			}
+                dict[info.DbName] = info;
+            }
 
 			return new EntityDescription {
 				MemberDict = dict,

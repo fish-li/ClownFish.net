@@ -78,6 +78,7 @@
     <Compile Include="CPQueryTest.cs" />
     <Compile Include="CreateIndexTest.cs" />
     <Compile Include="DataLoaderFactoryTest.cs" />
+    <Compile Include="DbColumnAttributeTest.cs" />
     <Compile Include="DefaultDataLoaderTest.cs" />
     <Compile Include="EntityEditTest.cs" />
     <Compile Include="EntityGeneratorTest.cs" />
