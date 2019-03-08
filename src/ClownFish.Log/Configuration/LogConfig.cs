@@ -37,14 +37,6 @@ namespace ClownFish.Log.Configuration
         /// </summary>
         public string ExceptionWriter { get; set; }
 
-        /// <summary>
-        /// 异常日志中是否包含环境信息。
-        /// 老版本的异常日志是不包含环境信息的。
-        /// 使用建议：如果环境可控，例如Web站点，可以不开启；
-        /// 如果是给客户私有部署，环境各不相同，当出现异常时想参考客户运行环境，那么可以开启此参数。
-        /// </summary>
-        public bool LogEnvironmentInfo { get; set; }
-
 
         /// <summary>
         /// 所有Writer的配置集合

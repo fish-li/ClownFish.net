@@ -60,11 +60,6 @@ namespace ClownFish.Log.Model
 		public XmlCdata Addition { get; set; }
 
 
-        /// <summary>
-        /// 机器环境信息
-        /// </summary>
-        public EnvironmentInfo Environment { get; set; }
-
 
         /// <summary>
         /// 根据异常及运行中的相关信息构造完整的异常日志信息
@@ -83,15 +78,6 @@ namespace ClownFish.Log.Model
             info.Message = ex.GetErrorMessage();
             info.ExceptionType = ex.GetType().FullName;
 			info.Exception = ex.ToString();
-
-
-            if( ClownFish.Log.Serializer.WriterFactory.Config.LogEnvironmentInfo ) {
-                try {
-                    info.Environment = EnvironmentInfo.GetCurrent();
-                }
-                catch { // 如果获取机器环境信息失败，就直接忽略
-                }
-            }
 
 			if( context != null ) 
 				info.HttpInfo = HttpInfo.Create(context);
