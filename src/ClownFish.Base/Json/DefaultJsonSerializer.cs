@@ -70,38 +70,39 @@ namespace ClownFish.Base.Json
 		}
 
 
-		/// <summary>
-		/// 将一个对象序列化为JSON字符串。
-		/// </summary>
-		/// <param name="obj">要序列化的对象</param>
-		/// <param name="keepType">尽量在序列化过程中保留类型信息（Newtonsoft.Json可支持）</param>
-		/// <returns>序列化得到的JSON字符串</returns>
-		public virtual string Serialize(object obj, bool keepType)
-		{
-			// 扩展点：允许重新指定JSON序列化实现方式
+        /// <summary>
+        /// 将一个对象序列化为JSON字符串。
+        /// </summary>
+        /// <param name="obj">要序列化的对象</param>
+        /// <param name="keepType">尽量在序列化过程中保留类型信息（Newtonsoft.Json可支持）</param>
+        /// <param name="indented">JSON序列化时，是否做缩进的格式化处理</param>
+        /// <returns>序列化得到的JSON字符串</returns>
+        public virtual string Serialize(object obj, bool keepType = false, bool indented = false)
+        {
+            // 扩展点：允许重新指定JSON序列化实现方式
 
-			if( obj == null )
-				throw new ArgumentNullException("obj");
+            if( obj == null )
+                throw new ArgumentNullException("obj");
 
-			JsonSerializerSettings settings = GetJsonSerializerSettings(true);
+            JsonSerializerSettings settings = GetJsonSerializerSettings(true);
 
-			if( keepType )
-				settings.TypeNameHandling = TypeNameHandling.All;
+            if( keepType )
+                settings.TypeNameHandling = TypeNameHandling.All;
 
-			if( WebConfig.IsDebugMode )
-				settings.Formatting = Formatting.Indented;
+            if( indented )
+                settings.Formatting = Formatting.Indented;
 
-			return Serialize(obj, settings);
-		}
+            return Serialize(obj, settings);
+        }
 
 
-		/// <summary>
-		/// 将一个对象序列化为JSON字符串。
-		/// </summary>
-		/// <param name="obj">要序列化的对象</param>
-		/// <param name="settings">序列化参数</param>
-		/// <returns></returns>
-		public virtual string Serialize(object obj, JsonSerializerSettings settings)
+        /// <summary>
+        /// 将一个对象序列化为JSON字符串。
+        /// </summary>
+        /// <param name="obj">要序列化的对象</param>
+        /// <param name="settings">序列化参数</param>
+        /// <returns></returns>
+        public virtual string Serialize(object obj, JsonSerializerSettings settings)
 		{
 			if( obj == null )
 				throw new ArgumentNullException("obj");

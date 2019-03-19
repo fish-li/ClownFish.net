@@ -80,7 +80,7 @@ namespace ClownFish.Log.Serializer
 			}
 			else {
 				// 如果不能注册日志和事件源，就写入应用程序日志中
-				EventLog.WriteEntry("Application Error ", xml);
+				EventLog.WriteEntry("Application Error", xml);
 			}
 		}
 
