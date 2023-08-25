@@ -1,29 +1,15 @@
-# Windows image file caches
 Thumbs.db
 ehthumbs.db
 ErrorLog.txt
-
-# Folder config file
 Desktop.ini
-
-# Recycle Bin used on file shares
 $RECYCLE.BIN/
+nuget-pack.cmd
 
-# Windows Installer files
 *.cab
 *.msi
 *.msm
 *.msp
-
-# Windows shortcuts
 *.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
 
 .DS_Store
 .AppleDouble
@@ -46,13 +32,17 @@ TestResults
 Log111
 bin
 dll_release
+packages
+publish
 
+.sonarlint
 .apdisk
 *.pdb
 *.suo
 *.user
 *.CodeAnalysisLog.xml
 *.lastcodeanalysissucceeded
-
-
 .vs/
+.config/
+.idea/
+

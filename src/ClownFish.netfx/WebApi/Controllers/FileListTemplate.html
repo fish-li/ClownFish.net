@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>目录清单</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Consolas, 'Courier New', '微软雅黑', '宋体';
+            font-size: 14px;
+            color: #808080;
+        }
+        body{
+            padding: 0 10px 10px 10px;
+        }
+        a{
+            text-decoration:none;
+        }
+        a:hover{
+            color: blue;
+        }
+        table{
+            width: 95%;
+            border-collapse: collapse;
+            border: none;
+        }
+        tr{
+            border-bottom: dotted 1px #808080;
+        }
+        thead tr {
+            border-top: dotted 1px #808080;
+            background-color: SkyBlue;
+        }
+        thead tr td{
+            font-weight: bold;
+            color: #fff;
+        }
+        tbody tr:hover {
+            background-color: Azure;
+        }
+        td{
+            padding: 5px;
+        }
+        td.filesize{
+            text-align: right;
+        }
+        p.navigation{
+            font-weight: bold;
+            padding: 5px 2px;
+        }
+        p.navigation i, p.navigation span, p.navigation a {
+            display: block;
+            float: left;
+            padding: 3px 5px;
+        }
+        p.navigation a {
+            color: blue;
+        }
+        p.navigation a:hover{
+            background-color: deepskyblue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <p class="navigation"><i>当前目录：</i> <!--{current-path}--></p>
+    <div style="clear: both;"></div>
+
+    <table style="width: 95%;">
+        <thead>
+            <tr>
+                <td style="width: 35px;">#</td>
+                <td style="width: auto">文件名</td>
+                <td style="width: 150px">修改时间</td>
+                <td class="filesize" style="width: 130px;">文件大小（B）</td>
+            </tr>
+        </thead>
+        <tbody>
+            <!--{data-row}-->
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+﻿联想驱动管理硬件检测报告
+================================================================
+当前操作系统		Windows 8.1 64位
+主机编号		20K6A00ECDPC0KLFNU
+CPU系列			第六代智能英特尔酷睿i5
+CPU型号			i5-6200U
+CPU主频			2.3GHz
+最高睿频		2.8GHz
+CPU缓存			3MB
+核心架构		Skylake
+核心/线程数		2/4
+制程工艺		光刻  14nm
+指令集			64-bit
+功耗			15W
+内存容量		8GB
+内存类型		DDR4 2133MHz
+插槽数量		1个内存插槽
+最大内存容量		16GB
+硬盘容量		256GB 固态硬盘
+光驱类型		无光驱
+光驱描述		无
+触控屏			不支持
+屏幕尺寸		12.5英寸
+显示比例		16:9
+屏幕分辨率		1366x768
+屏幕技术		LED背光TN显示屏， 防眩目显示屏; 最大可视角度170度
+显卡类型		集成显卡
+显卡芯片		Intel HD Graphics 520
+显存容量		共享系统内存
+摄像头			720p HD 摄像头
+音频系统		HD Audio, Realtek ALC3268codec, stereo speakers
+扬声器			立体声扬声器 1.5W×2
+麦克风			Built-in Dual Array Microphone(内置双阵列麦克风)
+无线网卡		Intel 8260(2x2 AC)
+有线网卡		内置 Intel Ethernet Connection I219-V (Jacksonville)
+蓝牙			BT 4.1
+数据接口		2个USB3.0(1个USB接口为Always On),Type-C Gen 1 (with the function of Power Delivery 2.0),
+视频接口		HDMI
+音频接口		Combo jack(麦克风/耳机二合一接口)
+读卡器			4合1读卡器(MMC, SD, SDHC, SDXC)
+指取设备		TrackPad 经典触控板 多点触控 3+2按键
+键盘描述		6行全尺寸键盘(不带背光)
+指纹识别		有
+电池类型		3芯前置电池(23.2Whr)+3芯后置电池(23.2Whr)
+续航时间		具体时间视使用环境而定
+电源适配器		45W AC Adapter
+预装操作系统		Win10家庭版64位
+WWAN			本机不带WWAN
+OFFICE			office2016家庭学生版

@@ -1,229 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0151E882-2DE2-44BF-BCF0-B7D10B60BE62}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClownFish.Web</RootNamespace>
-    <AssemblyName>ClownFish.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
-    <PublishUrl>发布\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>bin\ClownFish.Web.XML</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\ClownFish.Web.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>../ClownFish.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Newtonsoft.Json.8.0.2\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Action\BinaryResult.cs" />
-    <Compile Include="Action\FileDownloadResult.cs" />
-    <Compile Include="Attributes\FromBodyAttribute.cs" />
-    <Compile Include="Attributes\PageRegexUrlAttribute.cs" />
-    <Compile Include="Common\HttpFileConvert.cs" />
-    <Compile Include="Action\Http304Result.cs" />
-    <Compile Include="Action\Http404Result.cs" />
-    <Compile Include="Action\HttpCacheResult.cs" />
-    <Compile Include="Action\StreamResult.cs" />
-    <Compile Include="Action\TextResult.cs" />
-    <Compile Include="Action\XmlResult.cs" />
-    <Compile Include="Attributes\ControllerAssemblyAttribute.cs" />
-    <Compile Include="Attributes\AuthorizeAttribute.cs" />
-    <Compile Include="Attributes\ContextDataAttribute.cs" />
-    <Compile Include="Attributes\HttpValueIgnoreAttribute.cs" />
-    <Compile Include="Attributes\PageUrlAttribute.cs" />
-    <Compile Include="Attributes\NamespaceMapAttribute.cs" />
-    <Compile Include="Cache\OutputCacheConfig.cs" />
-    <Compile Include="Cache\SetOutputCacheModule.cs" />
-    <Compile Include="Common\WebConfig.cs" />
-    <Compile Include="Common\WebRuntime.cs" />
-    <Compile Include="Config\ActionSectionElement.cs" />
-    <Compile Include="Config\PipelineSectionElement.cs" />
-    <Compile Include="Config\RouteTableConfig.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
-    <Compile Include="Common\ValidateRequestMode.cs" />
-    <Compile Include="Config\FrameworkConfig.cs" />
-    <Compile Include="Common\DebugHelper.cs" />
-    <Compile Include="Config\StaticFileHandlerSectionElement.cs" />
-    <Compile Include="Debug404\DiagnoseResult.cs" />
-    <Compile Include="Debug404\Http404PageHandler.cs" />
-    <Compile Include="Debug404\TestResult.cs" />
-    <Compile Include="Common\HttpExtensions.cs" />
-    <Compile Include="Common\HttpValueCollection.cs" />
-    <Compile Include="Debug404\Http404DebugModule.cs" />
-    <Compile Include="Output\WebPageExtensions.cs" />
-    <Compile Include="Pipeline\ActionHelper.cs" />
-    <Compile Include="Pipeline\ControllerFactory.cs" />
-    <Compile Include="Pipeline\IControllerResolver.cs" />
-    <Compile Include="Pipeline\StaticFileHandler.cs" />
-    <Compile Include="Pipeline\ActionHandlerFactory.cs" />
-    <Compile Include="Pipeline\ActionExecutorEventArgs.cs" />
-    <Compile Include="Pipeline\BaseController.cs" />
-    <Compile Include="Pipeline\MvcRouteHandler.cs" />
-    <Compile Include="Pipeline\MvcRoutingModule.cs" />
-    <Compile Include="Pipeline\TaskAsyncActionHandler.cs" />
-    <Compile Include="Pipeline\UrlParser.cs" />
-    <Compile Include="Proxy\DefineHeader.cs" />
-    <Compile Include="Proxy\HttpProxyHandler.cs" />
-    <Compile Include="Proxy\HttpProxyModule.cs" />
-    <Compile Include="Proxy\ProxyTransferHandler.cs" />
-    <Compile Include="Proxy\CookieProxyModule.cs" />
-    <Compile Include="Reflection\ControllerRecognizer.cs" />
-    <Compile Include="Reflection\ReflectionHelper.cs" />
-    <Compile Include="Serializer\BaseDataProvider.cs" />
-    <Compile Include="Common\UiHelper.cs" />
-    <Compile Include="Action\IActionResult.cs" />
-    <Compile Include="Action\JsonResult.cs" />
-    <Compile Include="Action\PageResult.cs" />
-    <Compile Include="Action\RedirectResult.cs" />
-    <Compile Include="Action\UcResult.cs" />
-    <Compile Include="Pipeline\GzipModule.cs" />
-    <Compile Include="Output\ResponseWriter.cs" />
-    <Compile Include="Pipeline\BaseActionHandlerFactory.cs" />
-    <Compile Include="Pipeline\ServiceHandlerFactory.cs" />
-    <Compile Include="Reflection\ActionDescription.cs" />
-    <Compile Include="Reflection\BaseDescription.cs" />
-    <Compile Include="Reflection\MetadataCache.cs" />
-    <Compile Include="Common\UrlActionInfo.cs" />
-    <Compile Include="Reflection\ControllerDescription.cs" />
-    <Compile Include="Reflection\ModelDescripton.cs" />
-    <Compile Include="Common\VoidType.cs" />
-    <Compile Include="Serializer\ActionParametersProviderFactory.cs" />
-    <Compile Include="Serializer\FormDataProvider.cs" />
-    <Compile Include="Serializer\HttpDataConvertFactory.cs" />
-    <Compile Include="Serializer\IActionParametersProvider.cs" />
-    <Compile Include="Serializer\IHttpDataConvert.cs" />
-    <Compile Include="Serializer\JsonDataProvider.cs" />
-    <Compile Include="Serializer\JsonnetDataProvider.cs" />
-    <Compile Include="Serializer\ModelBuilder.cs" />
-    <Compile Include="Serializer\XmlDataProvider.cs" />
-    <Compile Include="Output\PageExecutor.cs" />
-    <Compile Include="Pipeline\ActionHandler.cs" />
-    <Compile Include="Pipeline\MvcPageHandlerFactory.cs" />
-    <Compile Include="Attributes\ActionAttribute.cs" />
-    <Compile Include="Cache\OutputCacheAttribute.cs" />
-    <Compile Include="Attributes\SessionModeAttribute.cs" />
-    <Compile Include="View\MyBaseMasterPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="View\MyBasePage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="View\MyBaseUserControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="View\MyPageView.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="View\MyUserControlView.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Output\RazorHelper.cs" />
-    <Compile Include="View\ViewType.cs" />
-    <Compile Include="View\ViewTypeParserFilter.cs" />
-    <Compile Include="Common\ExceptionHelper.cs" />
-    <Compile Include="Pipeline\ActionExecutor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\ControllerResolver.cs" />
-    <Compile Include="Reflection\InvokeInfo.cs" />
-    <Compile Include="Output\UcExecutor.cs">
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ClownFish.Base\ClownFish.Base.csproj">
-      <Project>{34a299a8-a199-4176-bacb-bc1c80814c50}</Project>
-      <Name>ClownFish.Base</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <RootNamespace>ClownFish.Web</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.824.100</Version>
+        <FileVersion>7.23.824.100</FileVersion>
+        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.Web</PackageId>
+        <Authors>Fish Li</Authors>
+        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+        <Description>一个“小而美”的.NET工具类库</Description>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
 </Project>

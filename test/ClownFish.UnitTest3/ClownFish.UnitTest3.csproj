@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <IsPackable>false</IsPackable>
+        <AssemblyName>ClownFish.UnitTest</AssemblyName>
+        <LangVersion>11.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <OutputPath>bin</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <OutputPath>bin</OutputPath>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
+        <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+        <PackageReference Include="coverlet.collector" Version="1.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
+    </ItemGroup>
+
+
+    <ItemGroup>        
+        <ProjectReference Include="..\..\src\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="App_Data\XmlCommand\Test1.config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="ClownFish.App.config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="ClownFish.Log.config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

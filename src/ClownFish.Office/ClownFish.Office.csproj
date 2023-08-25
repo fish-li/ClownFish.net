@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>ClownFish.Office</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.815.100</Version>
+        <FileVersion>7.23.815.100</FileVersion>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="ClosedXML" Version="0.95.4" />
+        <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+</Project>

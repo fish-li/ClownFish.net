@@ -1,0 +1,550 @@
+﻿[
+    {
+        "Windows": "Dateline Standard Time",
+        "Linux": "Etc/GMT+12"
+    },
+    {
+        "Windows": "UTC-11",
+        "Linux": "Etc/GMT+11"
+    },
+    {
+        "Windows": "Aleutian Standard Time",
+        "Linux": "America/Adak"
+    },
+    {
+        "Windows": "Hawaiian Standard Time",
+        "Linux": "Pacific/Honolulu"
+    },
+    {
+        "Windows": "Marquesas Standard Time",
+        "Linux": "Pacific/Marquesas"
+    },
+    {
+        "Windows": "Alaskan Standard Time",
+        "Linux": "America/Anchorage"
+    },
+    {
+        "Windows": "UTC-09",
+        "Linux": "Etc/GMT+9"
+    },
+    {
+        "Windows": "Pacific Standard Time (Mexico)",
+        "Linux": "America/Tijuana"
+    },
+    {
+        "Windows": "UTC-08",
+        "Linux": "Etc/GMT+8"
+    },
+    {
+        "Windows": "Pacific Standard Time",
+        "Linux": "America/Los_Angeles"
+    },
+    {
+        "Windows": "US Mountain Standard Time",
+        "Linux": "America/Phoenix"
+    },
+    {
+        "Windows": "Mountain Standard Time (Mexico)",
+        "Linux": "America/Chihuahua"
+    },
+    {
+        "Windows": "Mountain Standard Time",
+        "Linux": "America/Denver"
+    },
+    {
+        "Windows": "Central America Standard Time",
+        "Linux": "America/Guatemala"
+    },
+    {
+        "Windows": "Central Standard Time",
+        "Linux": "America/Chicago"
+    },
+    {
+        "Windows": "Easter Island Standard Time",
+        "Linux": "Pacific/Easter"
+    },
+    {
+        "Windows": "Central Standard Time (Mexico)",
+        "Linux": "America/Mexico_City"
+    },
+    {
+        "Windows": "Canada Central Standard Time",
+        "Linux": "America/Regina"
+    },
+    {
+        "Windows": "SA Pacific Standard Time",
+        "Linux": "America/Bogota"
+    },
+    {
+        "Windows": "Eastern Standard Time (Mexico)",
+        "Linux": "America/Cancun"
+    },
+    {
+        "Windows": "Eastern Standard Time",
+        "Linux": "America/New_York"
+    },
+    {
+        "Windows": "Haiti Standard Time",
+        "Linux": "America/Port-au-Prince"
+    },
+    {
+        "Windows": "Cuba Standard Time",
+        "Linux": "America/Havana"
+    },
+    {
+        "Windows": "US Eastern Standard Time",
+        "Linux": "America/Indiana/Indianapolis"
+    },
+    {
+        "Windows": "Turks And Caicos Standard Time",
+        "Linux": "America/Grand_Turk"
+    },
+    {
+        "Windows": "Paraguay Standard Time",
+        "Linux": "America/Asuncion"
+    },
+    {
+        "Windows": "Atlantic Standard Time",
+        "Linux": "America/Halifax"
+    },
+    {
+        "Windows": "Venezuela Standard Time",
+        "Linux": "America/Caracas"
+    },
+    {
+        "Windows": "Central Brazilian Standard Time",
+        "Linux": "America/Cuiaba"
+    },
+    {
+        "Windows": "SA Western Standard Time",
+        "Linux": "America/La_Paz"
+    },
+    {
+        "Windows": "Pacific SA Standard Time",
+        "Linux": "America/Santiago"
+    },
+    {
+        "Windows": "Newfoundland Standard Time",
+        "Linux": "America/St_Johns"
+    },
+    {
+        "Windows": "Tocantins Standard Time",
+        "Linux": "America/Araguaina"
+    },
+    {
+        "Windows": "E. South America Standard Time",
+        "Linux": "America/Sao_Paulo"
+    },
+    {
+        "Windows": "SA Eastern Standard Time",
+        "Linux": "America/Cayenne"
+    },
+    {
+        "Windows": "Argentina Standard Time",
+        "Linux": "America/Argentina/Buenos_Aires"
+    },
+    {
+        "Windows": "Greenland Standard Time",
+        "Linux": "America/Godthab"
+    },
+    {
+        "Windows": "Montevideo Standard Time",
+        "Linux": "America/Montevideo"
+    },
+    {
+        "Windows": "Magallanes Standard Time",
+        "Linux": "America/Punta_Arenas"
+    },
+    {
+        "Windows": "Saint Pierre Standard Time",
+        "Linux": "America/Miquelon"
+    },
+    {
+        "Windows": "Bahia Standard Time",
+        "Linux": "America/Bahia"
+    },
+    {
+        "Windows": "UTC-02",
+        "Linux": "Etc/GMT+2"
+    },
+    {
+        "Windows": "Mid-Atlantic Standard Time",
+        "Linux": "Etc/GMT+2"
+    },
+    {
+        "Windows": "Azores Standard Time",
+        "Linux": "Atlantic/Azores"
+    },
+    {
+        "Windows": "Cape Verde Standard Time",
+        "Linux": "Atlantic/Cape_Verde"
+    },
+    {
+        "Windows": "UTC",
+        "Linux": "Etc/UTC"
+    },
+    {
+        "Windows": "Morocco Standard Time",
+        "Linux": "Africa/Casablanca"
+    },
+    {
+        "Windows": "GMT Standard Time",
+        "Linux": "Europe/London"
+    },
+    {
+        "Windows": "Greenwich Standard Time",
+        "Linux": "Atlantic/Reykjavik"
+    },
+    {
+        "Windows": "W. Europe Standard Time",
+        "Linux": "Europe/Berlin"
+    },
+    {
+        "Windows": "Central Europe Standard Time",
+        "Linux": "Europe/Budapest"
+    },
+    {
+        "Windows": "Romance Standard Time",
+        "Linux": "Europe/Paris"
+    },
+    {
+        "Windows": "Sao Tome Standard Time",
+        "Linux": "Africa/Sao_Tome"
+    },
+    {
+        "Windows": "Central European Standard Time",
+        "Linux": "Europe/Warsaw"
+    },
+    {
+        "Windows": "W. Central Africa Standard Time",
+        "Linux": "Africa/Lagos"
+    },
+    {
+        "Windows": "Jordan Standard Time",
+        "Linux": "Asia/Amman"
+    },
+    {
+        "Windows": "GTB Standard Time",
+        "Linux": "Europe/Bucharest"
+    },
+    {
+        "Windows": "Middle East Standard Time",
+        "Linux": "Asia/Beirut"
+    },
+    {
+        "Windows": "Egypt Standard Time",
+        "Linux": "Africa/Cairo"
+    },
+    {
+        "Windows": "E. Europe Standard Time",
+        "Linux": "Europe/Chisinau"
+    },
+    {
+        "Windows": "Syria Standard Time",
+        "Linux": "Asia/Damascus"
+    },
+    {
+        "Windows": "West Bank Standard Time",
+        "Linux": "Asia/Hebron"
+    },
+    {
+        "Windows": "South Africa Standard Time",
+        "Linux": "Africa/Johannesburg"
+    },
+    {
+        "Windows": "FLE Standard Time",
+        "Linux": "Europe/Kiev"
+    },
+    {
+        "Windows": "Israel Standard Time",
+        "Linux": "Asia/Jerusalem"
+    },
+    {
+        "Windows": "Kaliningrad Standard Time",
+        "Linux": "Europe/Kaliningrad"
+    },
+    {
+        "Windows": "Sudan Standard Time",
+        "Linux": "Africa/Khartoum"
+    },
+    {
+        "Windows": "Libya Standard Time",
+        "Linux": "Africa/Tripoli"
+    },
+    {
+        "Windows": "Namibia Standard Time",
+        "Linux": "Africa/Windhoek"
+    },
+    {
+        "Windows": "Arabic Standard Time",
+        "Linux": "Asia/Baghdad"
+    },
+    {
+        "Windows": "Turkey Standard Time",
+        "Linux": "Europe/Istanbul"
+    },
+    {
+        "Windows": "Arab Standard Time",
+        "Linux": "Asia/Riyadh"
+    },
+    {
+        "Windows": "Belarus Standard Time",
+        "Linux": "Europe/Minsk"
+    },
+    {
+        "Windows": "Russian Standard Time",
+        "Linux": "Europe/Moscow"
+    },
+    {
+        "Windows": "E. Africa Standard Time",
+        "Linux": "Africa/Nairobi"
+    },
+    {
+        "Windows": "Iran Standard Time",
+        "Linux": "Asia/Tehran"
+    },
+    {
+        "Windows": "Arabian Standard Time",
+        "Linux": "Asia/Dubai"
+    },
+    {
+        "Windows": "Astrakhan Standard Time",
+        "Linux": "Europe/Astrakhan"
+    },
+    {
+        "Windows": "Azerbaijan Standard Time",
+        "Linux": "Asia/Baku"
+    },
+    {
+        "Windows": "Russia Time Zone 3",
+        "Linux": "Europe/Samara"
+    },
+    {
+        "Windows": "Mauritius Standard Time",
+        "Linux": "Indian/Mauritius"
+    },
+    {
+        "Windows": "Saratov Standard Time",
+        "Linux": "Europe/Saratov"
+    },
+    {
+        "Windows": "Georgian Standard Time",
+        "Linux": "Asia/Tbilisi"
+    },
+    {
+        "Windows": "Caucasus Standard Time",
+        "Linux": "Asia/Yerevan"
+    },
+    {
+        "Windows": "Afghanistan Standard Time",
+        "Linux": "Asia/Kabul"
+    },
+    {
+        "Windows": "West Asia Standard Time",
+        "Linux": "Asia/Tashkent"
+    },
+    {
+        "Windows": "Ekaterinburg Standard Time",
+        "Linux": "Asia/Yekaterinburg"
+    },
+    {
+        "Windows": "Pakistan Standard Time",
+        "Linux": "Asia/Karachi"
+    },
+    {
+        "Windows": "India Standard Time",
+        "Linux": "Asia/Kolkata"
+    },
+    {
+        "Windows": "Sri Lanka Standard Time",
+        "Linux": "Asia/Colombo"
+    },
+    {
+        "Windows": "Nepal Standard Time",
+        "Linux": "Asia/Kathmandu"
+    },
+    {
+        "Windows": "Central Asia Standard Time",
+        "Linux": "Asia/Almaty"
+    },
+    {
+        "Windows": "Bangladesh Standard Time",
+        "Linux": "Asia/Dhaka"
+    },
+    {
+        "Windows": "Omsk Standard Time",
+        "Linux": "Asia/Omsk"
+    },
+    {
+        "Windows": "Myanmar Standard Time",
+        "Linux": "Asia/Yangon"
+    },
+    {
+        "Windows": "SE Asia Standard Time",
+        "Linux": "Asia/Bangkok"
+    },
+    {
+        "Windows": "Altai Standard Time",
+        "Linux": "Asia/Barnaul"
+    },
+    {
+        "Windows": "W. Mongolia Standard Time",
+        "Linux": "Asia/Hovd"
+    },
+    {
+        "Windows": "North Asia Standard Time",
+        "Linux": "Asia/Krasnoyarsk"
+    },
+    {
+        "Windows": "N. Central Asia Standard Time",
+        "Linux": "Asia/Novosibirsk"
+    },
+    {
+        "Windows": "Tomsk Standard Time",
+        "Linux": "Asia/Tomsk"
+    },
+    {
+        "Windows": "China Standard Time",
+        "Linux": "Asia/Shanghai"
+    },
+    {
+        "Windows": "North Asia East Standard Time",
+        "Linux": "Asia/Irkutsk"
+    },
+    {
+        "Windows": "Singapore Standard Time",
+        "Linux": "Asia/Singapore"
+    },
+    {
+        "Windows": "W. Australia Standard Time",
+        "Linux": "Australia/Perth"
+    },
+    {
+        "Windows": "Taipei Standard Time",
+        "Linux": "Asia/Taipei"
+    },
+    {
+        "Windows": "Ulaanbaatar Standard Time",
+        "Linux": "Asia/Ulaanbaatar"
+    },
+    {
+        "Windows": "North Korea Standard Time",
+        "Linux": "Asia/Pyongyang"
+    },
+    {
+        "Windows": "Aus Central W. Standard Time",
+        "Linux": "Australia/Eucla"
+    },
+    {
+        "Windows": "Transbaikal Standard Time",
+        "Linux": "Asia/Chita"
+    },
+    {
+        "Windows": "Tokyo Standard Time",
+        "Linux": "Asia/Tokyo"
+    },
+    {
+        "Windows": "Korea Standard Time",
+        "Linux": "Asia/Seoul"
+    },
+    {
+        "Windows": "Yakutsk Standard Time",
+        "Linux": "Asia/Yakutsk"
+    },
+    {
+        "Windows": "Cen. Australia Standard Time",
+        "Linux": "Australia/Adelaide"
+    },
+    {
+        "Windows": "AUS Central Standard Time",
+        "Linux": "Australia/Darwin"
+    },
+    {
+        "Windows": "E. Australia Standard Time",
+        "Linux": "Australia/Brisbane"
+    },
+    {
+        "Windows": "AUS Eastern Standard Time",
+        "Linux": "Australia/Sydney"
+    },
+    {
+        "Windows": "West Pacific Standard Time",
+        "Linux": "Pacific/Port_Moresby"
+    },
+    {
+        "Windows": "Tasmania Standard Time",
+        "Linux": "Australia/Hobart"
+    },
+    {
+        "Windows": "Vladivostok Standard Time",
+        "Linux": "Asia/Vladivostok"
+    },
+    {
+        "Windows": "Lord Howe Standard Time",
+        "Linux": "Australia/Lord_Howe"
+    },
+    {
+        "Windows": "Bougainville Standard Time",
+        "Linux": "Pacific/Bougainville"
+    },
+    {
+        "Windows": "Russia Time Zone 10",
+        "Linux": "Asia/Srednekolymsk"
+    },
+    {
+        "Windows": "Magadan Standard Time",
+        "Linux": "Asia/Magadan"
+    },
+    {
+        "Windows": "Norfolk Standard Time",
+        "Linux": "Pacific/Norfolk"
+    },
+    {
+        "Windows": "Sakhalin Standard Time",
+        "Linux": "Asia/Sakhalin"
+    },
+    {
+        "Windows": "Central Pacific Standard Time",
+        "Linux": "Pacific/Guadalcanal"
+    },
+    {
+        "Windows": "Russia Time Zone 11",
+        "Linux": "Asia/Kamchatka"
+    },
+    {
+        "Windows": "New Zealand Standard Time",
+        "Linux": "Pacific/Auckland"
+    },
+    {
+        "Windows": "UTC+12",
+        "Linux": "Etc/GMT-12"
+    },
+    {
+        "Windows": "Fiji Standard Time",
+        "Linux": "Pacific/Fiji"
+    },
+    {
+        "Windows": "Kamchatka Standard Time",
+        "Linux": "Asia/Kamchatka"
+    },
+    {
+        "Windows": "Chatham Islands Standard Time",
+        "Linux": "Pacific/Chatham"
+    },
+    {
+        "Windows": "UTC+13",
+        "Linux": "Etc/GMT-13"
+    },
+    {
+        "Windows": "Tonga Standard Time",
+        "Linux": "Pacific/Tongatapu"
+    },
+    {
+        "Windows": "Samoa Standard Time",
+        "Linux": "Pacific/Apia"
+    },
+    {
+        "Windows": "Line Islands Standard Time",
+        "Linux": "Pacific/Kiritimati"
+    }
+]

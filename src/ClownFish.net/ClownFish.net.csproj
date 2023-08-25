@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <RootNamespace>ClownFish</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.824.100</Version>
+        <FileVersion>7.23.824.100</FileVersion>
+        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='net48' or '$(TargetFramework)'=='netcoreapp3.1' ">
+        <LangVersion>11.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.net</PackageId>
+        <Authors>Fish Li</Authors>
+        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+        <Description>一个“小而美”的.NET工具类库</Description>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <Reference Include="System.IO.Compression" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.Configuration" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="System.CodeDom" Version="6.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
+    </ItemGroup>
+   
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' ">
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.CodeDom" Version="7.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <None Remove="WindowsLinuxTimeZone.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="WindowsLinuxTimeZone.json" />
+    </ItemGroup>
+
+</Project>

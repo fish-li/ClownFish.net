@@ -1,0 +1,7 @@
+﻿
+1、导入证书  cert\ClownFishTest.pfx
+2、运行 \script\demo-sql 目录中的脚本
+3、调整 ClownFish.App.config 中的连接字符串
+4、调整 ClownFish.Log.config 中的连接字符串
+5、编辑 hosts 文件，添加一条映射：  127.0.0.1   www.fish-test.com
+6、将 test\TestWebSite1 部署到IIS，并绑定域名   www.fish-test.com
