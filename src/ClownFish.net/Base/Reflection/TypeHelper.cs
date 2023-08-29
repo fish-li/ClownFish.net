@@ -30,7 +30,7 @@ internal static class TypeHelper
 
     /// <summary>
     /// 根据一个类型的全名称，获取其中的短名称，
-    /// 例如："ClownFish.Log.Models.ExceptionInfo, Nebula.net"， 返回 "ExceptionInfo"
+    /// 例如："ClownFish.Log.Models.ExceptionInfo, ClownFish.net"， 返回 "ExceptionInfo"
     /// </summary>
     /// <param name="typeName"></param>
     /// <returns></returns>

@@ -90,7 +90,7 @@ public static class TypeExtensionsCF
 
 
     /// <summary>
-    /// 获取一个类型的完整的名称，例如："Nebula.Security.Auth.WebUserInfo, Nebula.net"，返回的结果可用于调用Type.GetType(...)
+    /// 获取一个类型的完整的名称，包含程序集名称，返回的结果可用于调用Type.GetType(...)
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>

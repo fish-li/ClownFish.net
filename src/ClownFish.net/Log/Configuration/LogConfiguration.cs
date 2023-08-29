@@ -173,8 +173,6 @@ public sealed class LogConfiguration
 
     public void OverrideWriters(string logWriterNames)
     {
-        //string logWriterNames = Settings.GetSetting("Nebula_Log_WritersMap");
-
         // 配置参数示例：InvokeLog=Rabbit,ES;*=ES;xx=NULL
         // 表示将 InvokeLog 的数据类型用 Rabbit和ES 写入器，其它全部为 ES
 
@@ -206,7 +204,6 @@ public sealed class LogConfiguration
     public void TryUpdateFromLocalSetting()
     {
         // 下面这几个参数的调整概念比较大
-        // 如果按照Nebula常规做法，需要为个别服务单独准备一个 ClownFish.Log.config 来重写它们，
         // 为了调整这几个参数而单独准备一个文件，又显然有点麻烦了，所以这里允许使用环境变量的方式来调整它们
 
         int x1 = LocalSettings.GetInt("ClownFish_Log_Performance_HttpExecute");

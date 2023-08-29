@@ -73,9 +73,9 @@ public static class HttpHeaders
         public static readonly string DataType = "x-datatype";
 
         /// <summary>
-        /// "x-nebula-DEBUG"
+        /// "x-clownfish-DEBUG"
         /// </summary>
-        public static readonly string Debug = "x-nebula-DEBUG";
+        public static readonly string Debug = "x-clownfish-DEBUG";
 
         /// <summary>
         /// "x-client-app"

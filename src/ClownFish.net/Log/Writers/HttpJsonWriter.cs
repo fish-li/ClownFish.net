@@ -2,7 +2,7 @@
 
 // 使用方法：
 // log.config:  <Writer Name="http" Type="ClownFish.Log.Writers.HttpJsonWriter, ClownFish.net" />
-// app.config:  Nebula_Log_WritersMap = InvokeLog=null;OprLog=http;*=null
+// app.config:  ClownFish_Log_WritersMap = InvokeLog=null;OprLog=http;*=null
 // app.config:  HttpJsonWriter_Target_Url = http://xxxx.com/v20/api/log/save/{datatype}
 
 internal class HttpJsonWriter : ILogWriter

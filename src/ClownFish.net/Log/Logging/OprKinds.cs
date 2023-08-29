@@ -40,8 +40,4 @@ public static class OprKinds
     /// </summary>
     public static readonly string Info = "info";
 
-    /// <summary>
-    /// string "nebula"，表示一条Nebula专用的日志记录
-    /// </summary>
-    public static readonly string Nebula = "nebula";
 }

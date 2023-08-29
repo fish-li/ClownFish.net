@@ -2,7 +2,7 @@
 
 /// <summary>
 /// 用于记录致命异常的日志，例如：程序初始化，写日志时失败。
-/// 默认行为：错误消息固定写入到系统临时目录下，文件名: {sys-temp-directory}\_Nebula_net_error_{date}.txt
+/// 默认行为：错误消息固定写入到系统临时目录下，文件名: {sys-temp-directory}\_ClownFish_net_error_{date}.txt
 /// </summary>
 public static class FatalErrorLogger
 {
@@ -19,8 +19,6 @@ public static class FatalErrorLogger
     {
         WriteFile(ex, "_ClownFish_net_error_");
         ClownFishCounters.Logging.FatalErrorCount.Increment();
-
-        //Nebula.Monitor.Utils.FatalErrorNotify.SendError(ex);   // 这里不能调用这个方法，所以产生一个事件供Nebula订阅
 
         try {
             EventHandler<ExceptionEventArgs> eventHandler = OnExceptionRecived;

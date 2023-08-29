@@ -8,7 +8,7 @@ namespace ClownFish.Base;
 public static class EnvironmentVariables
 {
     //========================================================================
-    // 说明：由于历史原因，早期的Nebula采用的配置参数名称的风格是：x.y.z
+    // 说明：由于历史原因，早期的配置参数名称的风格是：x.y.z
     // 后来感觉不方便：1，不能双击全选，2，“不符合”环境变量的约定命名风格，
     // 所以后面采用新的命名风格：x_y_z
     // 但是为了向后兼容，配置API要支持：用 x_y_z 的风格去读取 x.y.z 的配置参数
@@ -77,13 +77,13 @@ public static class EnvironmentVariables
     {
         // 清理一些无用的环境变量
         // 例如：在K8S环境中，会为每个服务增加7个变量：
-        // NEBULAVENUS_PORT: tcp://172.21.0.119:80
-        // NEBULAVENUS_PORT_80_TCP: tcp://172.21.0.119:80
-        // NEBULAVENUS_PORT_80_TCP_ADDR: 172.21.0.119
-        // NEBULAVENUS_PORT_80_TCP_PORT: 80
-        // NEBULAVENUS_PORT_80_TCP_PROTO: tcp
-        // NEBULAVENUS_SERVICE_HOST: 172.21.0.119
-        // NEBULAVENUS_SERVICE_PORT: 80
+        // CONFIGSERVICE_PORT: tcp://172.21.0.119:80
+        // CONFIGSERVICE_PORT_80_TCP: tcp://172.21.0.119:80
+        // CONFIGSERVICE_PORT_80_TCP_ADDR: 172.21.0.119
+        // CONFIGSERVICE_PORT_80_TCP_PORT: 80
+        // CONFIGSERVICE_PORT_80_TCP_PROTO: tcp
+        // CONFIGSERVICE_SERVICE_HOST: 172.21.0.119
+        // CONFIGSERVICE_SERVICE_PORT: 80
         // 一个集群中，服务越多，这种无用的环境变量就越多，非常多，所以这里就把它们清理掉
 
         List<string> names = (from x in dict

@@ -28,9 +28,6 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
         httpContext.RegisterForDispose(scope);
     }
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // 由于类型依赖的原因，OprLog 的其它一些数据成员放在 NebulaModule 写入
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
     /// <summary>

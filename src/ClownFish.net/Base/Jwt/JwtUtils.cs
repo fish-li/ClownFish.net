@@ -4,7 +4,7 @@ namespace ClownFish.Base.Jwt;
 
 /// <summary>
 /// JWT加密解密工具类。
-/// 这个类仅供 Nebula.net 使用，因此有些地方做了简化处理，例如：仅使用 HS256 签名算法。
+/// 这个类仅供 框架内部使用，因此有些地方做了简化处理，例如：仅使用 HS256 签名算法。
 /// </summary>
 public static class JwtUtils
 {
