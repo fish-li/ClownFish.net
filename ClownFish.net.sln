@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.UnitTest2", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.UnitTest3", "test\ClownFish.UnitTest3\ClownFish.UnitTest3.csproj", "{7C992C0A-E883-4479-AF2E-319DB44E0E22}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceTest", "test\PerformanceTest\PerformanceTest.csproj", "{6444BD8E-05E0-463C-8586-F3C0A9397B7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{D1862BBA-55B6-4D75-A69A-06199D4E5BBF} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
+		{6444BD8E-05E0-463C-8586-F3C0A9397B7D} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A03DB219-9FFE-470E-9974-062E69976B29}
