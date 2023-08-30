@@ -1,10 +1,20 @@
 ﻿namespace ClownFish.Web.Aspnetcore;
 
-internal class ExceptionModule : NHttpModule
+public sealed class ExceptionModule : NHttpModule
 {
     public override int Order => base.Order + 10;
 
-    internal static readonly bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
+    internal static bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
+
+    /// <summary>
+    /// 决定在异常发生时，是否要给客户端输出异常详情的回调委托
+    /// </summary>
+    public static Func<NHttpContext, Exception, bool> IsShowFullExceptionCallback = IsShowFullException;
+
+    private static bool IsShowFullException(NHttpContext httpContext, Exception ex)
+    {
+        return AlwaysShowFullException;
+    }
 
     public override void OnError(NHttpContext httpContext)
     {
@@ -28,7 +38,7 @@ internal class ExceptionModule : NHttpModule
             httpContext.Response.WriteAll(ex2.Message.GetBytes());
         }
         else {
-            if( AlwaysShowFullException ) {
+            if( IsShowFullExceptionCallback.Invoke(httpContext, ex) ) {
                 OutExceptionForDebug(ex, httpContext);
             }
             else {
@@ -87,35 +97,6 @@ internal class ExceptionModule : NHttpModule
             string json = model.ToJson();
             response.WriteAll(json.GetBytes());
         }
-    }
-
-
-
-    /// <summary>
-    /// 异常页面的数据结构
-    /// </summary>
-    public sealed class ErrorPageModel
-    {
-        /// <summary>
-        /// 异常的消息内容
-        /// </summary>
-        public string Message { get; set; }
-
-        /// <summary>
-        /// 异常类型
-        /// </summary>
-        public string ExceptionType { get; set; }
-
-        /// <summary>
-        /// 异常状态码
-        /// </summary>
-        public int StatusCode { get; set; }
-
-        /// <summary>
-        /// 当前请求ID
-        /// </summary>
-        public string RequestId { get; set; }
-
     }
 
 

@@ -1,4 +1,5 @@
-﻿namespace ClownFish.Web.Aspnetcore;
+﻿#if NET6_0_OR_GREATER
+namespace ClownFish.Web.Aspnetcore;
 
 
 /// <summary>
@@ -43,3 +44,4 @@ public class WebApplicationStartup
     }
 
 }
+#endif

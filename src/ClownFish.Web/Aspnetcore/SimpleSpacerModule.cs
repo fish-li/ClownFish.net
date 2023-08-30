@@ -1,4 +1,5 @@
-﻿namespace ClownFish.Web.Aspnetcore;
+﻿#if NET6_0_OR_GREATER
+namespace ClownFish.Web.Aspnetcore;
 
 internal sealed class SimpleSpacerModule
 {
@@ -107,4 +108,5 @@ internal sealed class SimpleSpacerModule
 
 }
 
+#endif
 

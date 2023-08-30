@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
         <Version>7.23.828.100</Version>
@@ -20,6 +20,10 @@
         <Authors>Fish Li</Authors>
         <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
         <Description>一个“小而美”的.NET工具类库</Description>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' ">
+        <LangVersion>11.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>

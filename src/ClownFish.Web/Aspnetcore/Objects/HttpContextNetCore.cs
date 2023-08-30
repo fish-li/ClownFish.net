@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.Web.AspnetCore.Objects;
 
-internal class HttpContextNetCore : NHttpContext
+public sealed class HttpContextNetCore : NHttpContext
 {
     private readonly HttpContext _context;
     private readonly HttpRequestNetCore _request;

@@ -11,6 +11,15 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.Office</PackageId>
+        <Authors>Fish Li</Authors>
+        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+        <Description>对个别典型场景的Office文档操作做了一点简单的封装</Description>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     </PropertyGroup>
 

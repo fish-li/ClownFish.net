@@ -1,4 +1,5 @@
-﻿namespace ClownFish.Web.Aspnetcore;
+﻿#if NET6_0_OR_GREATER
+namespace ClownFish.Web.Aspnetcore;
 
 /// <summary>
 /// 启动asp.netcore的工具类
@@ -104,3 +105,4 @@ public static class AspnetCoreStarter
 }
 
 
+#endif

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ClownFish.Web.AspnetCore.Objects;
 
-internal class HttpRequestNetCore : NHttpRequest
+public sealed class HttpRequestNetCore : NHttpRequest
 {
     private readonly HttpRequest _request;
     public override object OriginalHttpRequest => _request;

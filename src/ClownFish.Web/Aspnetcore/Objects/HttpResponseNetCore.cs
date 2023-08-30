@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace ClownFish.Web.AspnetCore.Objects;
 
-namespace ClownFish.Web.AspnetCore.Objects;
-
-internal class HttpResponseNetCore : NHttpResponse
+public sealed class HttpResponseNetCore : NHttpResponse
 {
     private readonly HttpResponse _response;
 
