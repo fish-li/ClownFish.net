@@ -109,7 +109,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
     private void BeforeSend(object eventData)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         HttpRequestMessage request = eventData.Get<HttpRequestMessage>("Request");
@@ -135,7 +135,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
     private void OnError(object eventData)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         HttpClientEventData data = s_local.Value;
@@ -149,7 +149,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
     private void AfterSend(object eventData)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         HttpClientEventData data = s_local.Value;

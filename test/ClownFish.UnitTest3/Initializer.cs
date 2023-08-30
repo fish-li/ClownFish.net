@@ -19,7 +19,7 @@ namespace ClownFish.UnitTest
         [AssemblyInitialize]
         public static void InitRuntime(TestContext context)
         {
-            AsmHelper.EntryAssembly = typeof(Initializer).Assembly;
+            AsmHelper.SetEntryAssembly(typeof(Initializer).Assembly);
             EnvironmentVariables.Set("RUNTIME_ENVIRONMENT", "FishDev");
             EnvironmentVariables.Set("ClownFish_Console2_Trace_Enabled", "1");
             EnvironmentVariables.Set("x1.y1.z1", "123");

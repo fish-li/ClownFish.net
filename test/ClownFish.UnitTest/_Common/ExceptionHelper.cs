@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ClownFish.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ClownFish.UnitTest
+namespace ClownFish.UnitTest._Common
 {
 	internal static class ExceptionHelper
 	{

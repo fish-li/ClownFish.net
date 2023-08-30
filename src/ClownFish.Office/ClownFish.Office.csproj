@@ -4,8 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>ClownFish.Office</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.815.100</Version>
-        <FileVersion>7.23.815.100</FileVersion>
+        <Version>7.23.828.100</Version>
+        <FileVersion>7.23.828.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

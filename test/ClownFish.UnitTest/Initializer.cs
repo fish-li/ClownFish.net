@@ -1,4 +1,5 @@
 ﻿global using System.Data.SqlClient;
+global using ClownFish.UnitTest._Common;
 
 using System;
 using System.IO;
@@ -19,7 +20,7 @@ namespace ClownFish.UnitTest
         [AssemblyInitialize]
         public static void InitRuntime(TestContext context)
         {
-            AsmHelper.EntryAssembly = typeof(Initializer).Assembly;
+            AsmHelper.SetEntryAssembly(typeof(Initializer).Assembly);
             EnvironmentVariables.Set("MySqlClientProviderSupport", "3");
             EnvironmentVariables.Set("RUNTIME_ENVIRONMENT", "FishDev");
             EnvironmentVariables.Set("ClownFish_Console2_Trace_Enabled", "1");

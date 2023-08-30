@@ -25,7 +25,24 @@ public sealed class OprLogScope : IDisposable
     /// 日志对象引用
     /// </summary>
     public OprLog OprLog { get; private set; }
-    
+
+
+    /// <summary>
+    /// 指示当前实例是否为“空实例”
+    /// </summary>
+    public bool IsNull { get; private set; }
+
+
+    /// <summary>
+    /// 一个不与任何线程关联的 “空对象”。
+    /// 空对象不会做日志持久化。
+    /// </summary>
+    public static readonly OprLogScope NullObject = new OprLogScope {
+        _isEnd = true,
+        IsNull = true,
+        OprLog = new OprLog()
+    };
+
 
     private OprLogScope()
     {
@@ -41,7 +58,7 @@ public sealed class OprLogScope : IDisposable
     internal static OprLogScope Start(BasePipelineContext context = null)
     {
         if( s_local.Value != null )
-            throw new InvalidOperationException("OprLogScope不允许嵌套使用。");  // 只允许在【顶层】使用
+            throw new InvalidOperationException("OprLogScope不允许嵌套使用！");  // 只允许在【顶层】使用
 
         var scope = new OprLogScope();
         scope.OprLog = OprLog.CreateNew(context);
@@ -59,13 +76,16 @@ public sealed class OprLogScope : IDisposable
     {
         OprLogScope scope = s_local.Value;
 
+        // HttpPipelineContext实例可能【逃逸】了，原因是 new Thread/Task.Run 之类的写法导致
+        // 所以这里还要检查它的有效性
         if( scope != null && scope._isEnd ) {
-            // HttpPipelineContext实例可能【逃逸】了，原因是 new Thread/Task.Run 之类的写法导致
-            // 所以这里还要检查它的有效性
             s_local.Value = null;
-            return null;
+
+            return NullObject;
         }
-        return scope;
+
+        // 说明：返回 NullObject 可以避免 NullReferenceException 的可能性，代码写起来也更容易。
+        return scope ?? NullObject;
     }
 
 
@@ -124,6 +144,9 @@ public sealed class OprLogScope : IDisposable
     {
         if( name.IsNullOrEmpty() )
             return 0;
+
+        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+            return -2;
 
         StepItem step = StepItem.CreateNew(start);
         step.StepKind = "ext";
@@ -191,7 +214,7 @@ public sealed class OprLogScope : IDisposable
         if( _isEnd )
             return 0;
 
-        this.EndSet(context);
+        this.EndSet0(context);
 
         // 持久化操作日志
         LogHelper.Write(this.OprLog);
@@ -208,7 +231,7 @@ public sealed class OprLogScope : IDisposable
     /// <summary>
     /// 结束监控，填充一些数据成员
     /// </summary>
-    internal void EndSet(BasePipelineContext context)
+    internal void EndSet0(BasePipelineContext context)
     {
         this.Release();
 
@@ -236,9 +259,7 @@ public sealed class OprLogScope : IDisposable
             }
         }
 
-        if( _logs != null ) {
-            this.OprLog.Logs = GetLogsText();
-        }        
+        this.OprLog.Logs = GetLogsText();
 
         // 检查并截断一些较长的文本字段
         this.OprLog.TruncateTextnField();
@@ -282,15 +303,20 @@ public sealed class OprLogScope : IDisposable
 
     private string GetLogsText()
     {
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            foreach( var x in _logs )
-                sb.AppendLineRN(x.Time.ToTime23String() + ": " + x.Name);
-
-            return sb.ToString();
+        if( _logs == null ) {
+            return null;
         }
-        finally {
-            StringBuilderPool.Return(sb);
+        else {
+            StringBuilder sb = StringBuilderPool.Get();
+            try {
+                foreach( var x in _logs )
+                    sb.AppendLineRN(x.Time.ToTime23String() + ": " + x.Name);
+
+                return sb.ToString();
+            }
+            finally {
+                StringBuilderPool.Return(sb);
+            }
         }
     }
 

@@ -167,6 +167,8 @@ namespace ClownFish.UnitTest.Data.EntityX
 
                     Assert.IsNotNull(list);
                     Assert.AreEqual(2, list.Count);
+
+                    list = list.OrderBy(x=>x.CategoryID).ToList();
                     Assert.AreEqual(1, list[0].CategoryID);
                     Assert.AreEqual(2, list[1].CategoryID);
                     Assert.AreEqual(100, list[0].Quantity);

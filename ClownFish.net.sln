@@ -25,6 +25,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.UnitTest3", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceTest", "test\PerformanceTest\PerformanceTest.csproj", "{6444BD8E-05E0-463C-8586-F3C0A9397B7D}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TestWebSite1", "test\TestWebSite1\", "{7CE6AC9D-272E-4472-A66F-F1447B340620}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51778"
+		Debug.AspNetCompiler.PhysicalPath = "test\TestWebSite1\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51778\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51778"
+		Release.AspNetCompiler.PhysicalPath = "test\TestWebSite1\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51778\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51778"
+		SlnRelativePath = "test\TestWebSite1\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,19 +75,18 @@ Global
 		{D1862BBA-55B6-4D75-A69A-06199D4E5BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1862BBA-55B6-4D75-A69A-06199D4E5BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1862BBA-55B6-4D75-A69A-06199D4E5BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1862BBA-55B6-4D75-A69A-06199D4E5BBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C992C0A-E883-4479-AF2E-319DB44E0E22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6444BD8E-05E0-463C-8586-F3C0A9397B7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CE6AC9D-272E-4472-A66F-F1447B340620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CE6AC9D-272E-4472-A66F-F1447B340620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CE6AC9D-272E-4472-A66F-F1447B340620}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +101,7 @@ Global
 		{7F183D9F-D4ED-4DE2-9F1A-E8AAFE9496CD} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{7C992C0A-E883-4479-AF2E-319DB44E0E22} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{6444BD8E-05E0-463C-8586-F3C0A9397B7D} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
+		{7CE6AC9D-272E-4472-A66F-F1447B340620} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A03DB219-9FFE-470E-9974-062E69976B29}

@@ -124,7 +124,13 @@ public static class EnvironmentVariables
     }
 
 
-    internal static void Set(string name, string value)
+    /// <summary>
+    /// 修改内存中的环境变量参数值，【除非测试项目，否则不建议调用】
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="value"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void Set(string name, string value)
     {
         if( string.IsNullOrEmpty(name) )
             throw new ArgumentNullException(nameof(name));

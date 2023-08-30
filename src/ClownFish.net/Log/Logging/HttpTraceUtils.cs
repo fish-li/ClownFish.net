@@ -38,7 +38,7 @@ public static class HttpTraceUtils
         System.Net.HttpWebRequest request = (client as ClownFish.Base.WebClient.V1.HttpClient).Request;
 
         OprLogScope scope = OprLogScope.Get();
-        if( scope != null ) {
+        if( scope.IsNull == false  ) {
 
             if( request.Headers.AllKeys.Contains(HttpHeaders.XRequest.RootId) == false ) {
 
@@ -57,14 +57,14 @@ public static class HttpTraceUtils
         System.Net.Http.HttpRequestMessage request = (client as ClownFish.Base.WebClient.V2.HttpClient2).Request;
 
         OprLogScope scope = OprLogScope.Get();
-        if( scope != null ) {
+        if( scope.IsNull == false ) {
             SetTraceHeader(request, scope, client.OperationId);
         }
     }
 
     internal static void SetTraceHeader(System.Net.Http.HttpRequestMessage request, OprLogScope scope, string operationId = null)
     {
-        if( scope != null && request.Headers.Contains(HttpHeaders.XRequest.RootId) == false ) {
+        if( scope.IsNull == false && request.Headers.Contains(HttpHeaders.XRequest.RootId) == false ) {
 
             operationId = operationId ?? Guid.NewGuid().ToString("N");
             request.Headers.TryAddWithoutValidation(HttpHeaders.XRequest.RootId, scope.OprLog.RootId);

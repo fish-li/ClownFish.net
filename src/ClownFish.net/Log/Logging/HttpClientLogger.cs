@@ -14,7 +14,7 @@ internal static class HttpClientLogger
     private static void HttpClientOnRequestFinished(object sender, RequestFinishedEventArgs e)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         HttpPipelineContext httpPipeline = HttpPipelineContext.Get();

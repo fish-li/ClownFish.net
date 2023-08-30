@@ -84,7 +84,7 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
     private void ConnectionOpened(object eventData, bool hasError)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         DateTime startTime = eventData.Get<DateTimeOffset>("StartTime").DateTime.ToLocalTime();
@@ -108,7 +108,7 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
     private void AfterExecute(object eventData, bool hasError)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         DateTime startTime = eventData.Get<DateTimeOffset>("StartTime").DateTime.ToLocalTime();
@@ -173,7 +173,7 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
     private void OnCommit(object eventData, bool hasError)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         DateTime startTime = eventData.Get<DateTimeOffset>("StartTime").DateTime.ToLocalTime();

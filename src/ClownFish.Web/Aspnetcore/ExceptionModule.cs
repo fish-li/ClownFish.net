@@ -28,9 +28,7 @@ internal class ExceptionModule : NHttpModule
             httpContext.Response.WriteAll(ex2.Message.GetBytes());
         }
         else {
-            if( AlwaysShowFullException
-            || httpContext.Request.Header(HttpHeaders.XRequest.Debug) == "Nebula.DEBUG" ) {
-
+            if( AlwaysShowFullException ) {
                 OutExceptionForDebug(ex, httpContext);
             }
             else {

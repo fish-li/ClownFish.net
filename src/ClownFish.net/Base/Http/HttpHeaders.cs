@@ -73,11 +73,6 @@ public static class HttpHeaders
         public static readonly string DataType = "x-datatype";
 
         /// <summary>
-        /// "x-clownfish-DEBUG"
-        /// </summary>
-        public static readonly string Debug = "x-clownfish-DEBUG";
-
-        /// <summary>
         /// "x-client-app"
         /// </summary>
         public static readonly string ClientApp = "x-client-app";

@@ -21,6 +21,9 @@ namespace ClownFish.UnitTest.Base
         public void Test()
         {
             XxxPipelineContext ctx = new XxxPipelineContext();
+            Assert.IsNotNull(ctx.OprLogScope);
+            Assert.IsTrue(ctx.OprLogScope.IsNull);
+
             ctx.PerformanceThresholdMs = 50;
 
             Assert.AreEqual(200, ctx.GetStatus());
@@ -55,8 +58,16 @@ namespace ClownFish.UnitTest.Base
             ctx.SetOprLogScope(scope);
 
             Assert.IsNotNull(ctx.OprLogScope);
+            Assert.IsFalse(ctx.OprLogScope.IsNull);
+
             ctx.DisposeOprLogScope();
-            Assert.IsNull(ctx.OprLogScope);
+            Assert.IsNotNull(ctx.OprLogScope);
+            Assert.IsTrue(ctx.OprLogScope.IsNull);
+
+            Assert.IsFalse(ctx.IsLongTask);
+            ctx.SetAsLongTask();
+            Assert.IsTrue(ctx.IsLongTask);
+            Assert.AreEqual(0, ctx.PerformanceThresholdMs);
 
         }
     }

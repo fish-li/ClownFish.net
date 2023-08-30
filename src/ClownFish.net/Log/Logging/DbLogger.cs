@@ -21,7 +21,7 @@ internal static class DbLogger
     private static void ConnectionOpened(object sender, OpenConnEventArgs e)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
 
@@ -53,7 +53,7 @@ internal static class DbLogger
     private static void OnCommited(object sender, CommitTransEventArgs e)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         StepItem step = StepItem.CreateNew(e.StartTime);
@@ -70,7 +70,7 @@ internal static class DbLogger
     private static void CommandAfterExecute(object sender, ExecuteCommandEventArgs e)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         StepItem step = StepItem.CreateNew(e.StartTime);
@@ -106,7 +106,7 @@ internal static class DbLogger
     private static void BatchAfterExecute(object sender, ExecuteBatchEventArgs e)
     {
         OprLogScope scope = OprLogScope.Get();
-        if( scope == null )
+        if( scope.IsNull )
             return;
 
         StepItem step = StepItem.CreateNew(e.StartTime);

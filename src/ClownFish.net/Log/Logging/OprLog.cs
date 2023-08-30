@@ -4,9 +4,6 @@
 /// 表示一条操作日志
 /// </summary>
 [Serializable]
-//#if NETCOREAPP
-//    [Nest.ElasticsearchType(IdProperty = nameof(OprId))]
-//#endif
 public partial class OprLog : IMsgObject
 {
     /// <summary>

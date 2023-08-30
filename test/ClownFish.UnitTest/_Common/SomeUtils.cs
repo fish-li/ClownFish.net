@@ -8,7 +8,7 @@ using System.IO;
 using System.Collections.Specialized;
 using ClownFish.Base;
 
-namespace ClownFish.UnitTest
+namespace ClownFish.UnitTest._Common
 {
     internal static class SomeUtils
     {

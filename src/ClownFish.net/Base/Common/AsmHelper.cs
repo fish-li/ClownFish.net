@@ -10,8 +10,17 @@ public static class AsmHelper
 
 
     // 在单元测试环境下，Assembly.GetEntryAssembly() 的结果不是我们期望的，所以可以直接修改下面这个变量
-    internal static Assembly EntryAssembly;
+    internal static Assembly EntryAssembly { get; private set; }
 
+    /// <summary>
+    /// 在单元测试环境下，Assembly.GetEntryAssembly() 的结果不是我们期望的，所以可以调用当前方法。
+    /// 然后需要获取时，调用 GetEntryAssembly()
+    /// </summary>
+    /// <param name="entryAssembly"></param>
+    public static void SetEntryAssembly(Assembly entryAssembly)
+    {
+        EntryAssembly = entryAssembly;
+    }
 
     internal static Assembly GetEntryAssembly()
     {

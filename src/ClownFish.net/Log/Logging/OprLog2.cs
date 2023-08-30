@@ -14,7 +14,7 @@ public partial class OprLog
     /// 填充一些基本信息
     /// </summary>
     /// <param name="context"></param>
-    internal void SetBaseInfo(BasePipelineContext context = null)
+    public void SetBaseInfo(BasePipelineContext context = null)
     {
         if( context == null ) {
             this.OprId = Guid.NewGuid().ToString("N");
@@ -47,7 +47,7 @@ public partial class OprLog
     /// 绑定 HttpRequest 信息
     /// </summary>
     /// <param name="httpContext"></param>
-    internal void SetHttpRequest(NHttpContext httpContext)
+    public void SetHttpRequest(NHttpContext httpContext)
     {
         if( this.Url != null )  // 避免多次调用
             return;
@@ -208,7 +208,7 @@ public partial class OprLog
     }
 
 
-    internal int SetException(Exception ex)
+    public int SetException(Exception ex)
     {
         if( ex != null ) {
             this.Status = ex.GetErrorCode();
@@ -225,7 +225,7 @@ public partial class OprLog
     /// <summary>
     /// 根据【当前调用所在的方法】填充 Module,Controller,Action
     /// </summary>
-    internal int SetMCA(int skipFrames = 1)
+    public int SetMCA(int skipFrames = 1)
     {
         try {
             StackFrame stack = new StackFrame(skipFrames, false);
@@ -365,18 +365,4 @@ public partial class OprLog
         return 400;
     }
 
-
-    /// <summary>
-    /// 给当前实例的某个成员赋值
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="value"></param>
-    public void Set(string name, object value)
-    {
-        PropertyInfo p = this.GetType().GetProperty(name, BindingFlags.Instance| BindingFlags.Public);
-        if( p == null )
-            throw new ArgumentOutOfRangeException(nameof(name), $"属性名称 {name} 无效！");
-
-        p.FastSetValue(this, value);
-    }
 }

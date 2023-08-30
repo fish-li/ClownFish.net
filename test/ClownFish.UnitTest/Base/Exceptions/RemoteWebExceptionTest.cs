@@ -244,7 +244,7 @@ xx_<title>服务端异常XXX</title>", text);
 =)本次调用的目标地址：http://www.abc.com/aa/bb.aspx
  ---> System.Net.WebException: 服务端异常XXX
  ---> ClownFish.Base.MessageException: 一个用于测试的异常
-   at ClownFish.UnitTest.ExceptionHelper.CreateException() in x:\xxxxxx\Nebula.net\test\ClownFish.UnitTest\ExceptionHelper.cs:line 9999999999999
+   at ClownFish.UnitTest.ExceptionHelper.CreateException() in x:\xxxxxx\test\ClownFish.UnitTest\ExceptionHelper.cs:line 9999999999999
    --- End of inner exception stack trace ---
    --- End of inner exception stack trace ---
 -------------------------Response-------------------------
@@ -275,9 +275,8 @@ internal static class RemoteWebExceptionTestUtils
     {
         string[] lines = text.ToArray('\r', '\n');
 
-        if( lines[4].StartsWith0("at ClownFish.UnitTest.ExceptionHelper.CreateException() in" ) )
-            lines[4] = "at ClownFish.UnitTest.ExceptionHelper.CreateException() in";
+        string[] lines2 = lines.Where(x => x.Contains(".ExceptionHelper.CreateException() ") == false).ToArray();
 
-        return string.Join("\r\n", lines);
+        return string.Join("\r\n", lines2);
     }
 }

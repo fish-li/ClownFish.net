@@ -47,11 +47,12 @@ public abstract class BasePipelineContext
 
 
     /// <summary>
-    /// OprLogScope 实例。
-    /// 当日志开关不启用时，此属性为 NULL
+    /// 获取关联的 OprLogScope 实例。
+    /// 当日志开关不启用时，此属性为 OprLogScope.NullObject
     /// </summary>
-    public OprLogScope OprLogScope { get; private set; }
+    public OprLogScope OprLogScope { get; private set; } = OprLogScope.NullObject;
 
+    // 说明：默认使用 NullObject 可以避免 NullReferenceException 的可能性，代码写起来也更容易。
 
     internal void SetOprLogScope(OprLogScope scope)
     {
@@ -64,11 +65,12 @@ public abstract class BasePipelineContext
 
     internal void DisposeOprLogScope()
     {
-        if( this.OprLogScope != null ) {
+        if( this.OprLogScope != null && this.OprLogScope.IsNull == false ) {
             (this.OprLogScope as IDisposable).Dispose();
-            this.OprLogScope = null;
+            this.OprLogScope = OprLogScope.NullObject;
         }
     }
+
     /// <summary>
     /// 将当前操作标记为【长任务】
     /// </summary>

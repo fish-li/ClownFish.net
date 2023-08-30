@@ -36,14 +36,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
     /// <param name="httpContext"></param>
     public override void OnError(NHttpContext httpContext)
     {
-        Exception ex = httpContext.LastException;
-        if( ex != null ) {
-
-            OprLogScope scope = httpContext.PipelineContext.OprLogScope;
-            if( scope != null ) {
-                scope.SetException(ex);
-            }
-        }
+        httpContext.PipelineContext.OprLogScope.SetException(httpContext.LastException);
     }
 
     /// <summary>
@@ -69,7 +62,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
 
 
         OprLogScope scope = httpContext.PipelineContext.OprLogScope;
-        if( scope != null ) {
+        if( scope.IsNull == false ) {
 
             // 填充 HTTP 相关信息
             OprLog log = scope.OprLog;

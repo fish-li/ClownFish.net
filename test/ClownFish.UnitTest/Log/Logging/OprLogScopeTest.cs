@@ -165,7 +165,7 @@ namespace ClownFish.UnitTest.Log.Logging
             Thread.Sleep(1);
             mock.PipelineContext.PerformanceThresholdMs = 1;
             mock.PipelineContext.End();
-            scope.EndSet(mock.PipelineContext);
+            scope.EndSet0(mock.PipelineContext);
 
             int ret = scope.SaveOprLog(mock.PipelineContext);
             Assert.AreEqual(0, ret);
@@ -195,7 +195,7 @@ namespace ClownFish.UnitTest.Log.Logging
             }
 
             mock.PipelineContext.End();
-            scope.EndSet(mock.PipelineContext);
+            scope.EndSet0(mock.PipelineContext);
 
             Assert.AreEqual(0, scope.OprLog.HasError);
             Assert.AreEqual(200, scope.OprLog.Status);
@@ -230,7 +230,7 @@ namespace ClownFish.UnitTest.Log.Logging
             Thread.Sleep(1);
             mock.PipelineContext.PerformanceThresholdMs = 1;
             mock.PipelineContext.End();
-            scope.EndSet(mock.PipelineContext);
+            scope.EndSet0(mock.PipelineContext);
 
             int ret = scope.SaveOprLog(mock.PipelineContext);
             Assert.AreEqual(0, ret);
