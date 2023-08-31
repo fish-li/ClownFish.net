@@ -1,7 +1,9 @@
 ﻿namespace ClownFish.Web.Utils;
 
-
-internal static class HttpHeaderUtils
+/// <summary>
+/// 框架内部使用的扩展方法
+/// </summary>
+public static class HttpHeaderUtils
 {
     public static void DeleteUselessHeaders(HttpRequest httpRequest)
     {

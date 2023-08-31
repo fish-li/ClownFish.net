@@ -140,22 +140,22 @@ public static class EnvUtils
 
 
 
-    internal static string GetApplicationName()
+    public static string GetApplicationName()
     {
         return ClownFishBehavior.Instance.GetApplicationName();
     }
 
-    internal static string GetHostName()
+    public static string GetHostName()
     {
         return ClownFishBehavior.Instance.GetHostName();
     }
 
-    internal static string GetEnvName()
+    public static string GetEnvName()
     {
         return ClownFishBehavior.Instance.GetEnvName();
     }
 
-    internal static string GetTempPath()
+    public static string GetTempPath()
     {
         return ClownFishBehavior.Instance.GetTempPath();
     }

@@ -1,4 +1,7 @@
 ﻿#if NET6_0_OR_GREATER
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+
 namespace ClownFish.Web.Aspnetcore;
 
 
@@ -22,6 +25,9 @@ public class WebApplicationStartup
         services.Configure<IISServerOptions>(options => {
             options.AllowSynchronousIO = true;
         });
+
+        //解决UrlEncode中文被编码
+        services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
     }
 
 

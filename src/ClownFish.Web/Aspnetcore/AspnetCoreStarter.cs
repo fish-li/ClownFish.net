@@ -10,7 +10,6 @@ public static class AspnetCoreStarter
 
     internal static NHttpApplication NApplication { get; private set; }
 
-    
     /// <summary>
     /// 创建WebApplication实例
     /// </summary>
@@ -20,6 +19,9 @@ public static class AspnetCoreStarter
     {
         if( startup == null )
             startup = new WebApplicationStartup();
+
+        // 供 ClownFish.Tracing 判断
+        MemoryConfig.AddSetting(ConstNames.AspnetCoreStarterName, typeof(AspnetCoreStarter).FullName);
 
         WebApplicationBuilder appBuilder = WebApplication.CreateBuilder();
 
@@ -35,7 +37,7 @@ public static class AspnetCoreStarter
 
         startup.RegisterHttpModules();
 
-        WebApplication = app;
+        WebApplication = app;        
         return app;
     }
 
@@ -53,11 +55,23 @@ public static class AspnetCoreStarter
             }
         }
 
+
+        // 为什么要在这里修改 Console2.InfoEnabled 的设置？
+        // 因为：如果直接在 Console2的静态构造方法中就读取 LocalSettings，会导致这个开关一直关闭，
+        // 那么程序在启动时的调用就会被忽略，一些重要的初始化消息就看不到了~~~
+        // 所以这里放在这里在关闭开关，可以确保初始过程中的消息能被输出。
+
+        if( LocalSettings.GetInt("ClownFish_Console2_Info_Enabled", 1) == 0 ) {
+            Console2.Info("##### 由于设置了 ClownFish_Console2_Info_Enabled=0，Console2.Info() 方法的调用即将被禁用！");
+            Console2.InfoEnabled = false;
+        }
+
+
         Console2.WriteSeparatedLine();
         Console2.WriteLine("EnvironmentName: " + EnvUtils.EnvName);
         Console2.WriteLine("ApplicationName: " + EnvUtils.ApplicationName);
+        Console2.WriteLine("ClownFish.Web Ver: " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
         Console2.WriteLine("FrameworkDescription: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        //Console2.WriteLine("Hosting environment: " + EnvironmentVariables.Get("ASPNETCORE_ENVIRONMENT"));
         Console2.WriteLine("Now listening on: " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "http://0.0.0.0:80");
 
 

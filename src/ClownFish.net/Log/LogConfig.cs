@@ -7,7 +7,7 @@ namespace ClownFish.Log;
 /// </summary>
 public static class LogConfig
 {
-    internal static readonly string ConfigFileName = "ClownFish.Log.config";
+    public static readonly string ConfigFileName = "ClownFish.Log.config";
 
     /// <summary>
     /// 配置对象的静态引用

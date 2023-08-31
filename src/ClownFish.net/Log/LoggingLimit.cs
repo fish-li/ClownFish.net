@@ -3,7 +3,7 @@
 /// <summary>
 /// 日志相关的一些限制阀值，用于控制产生日志的长度
 /// </summary>
-internal static class LoggingLimit
+public static class LoggingLimit
 {
     /// <summary>
     /// 调用Redis API时，每个参数值的最大长度
@@ -17,7 +17,7 @@ internal static class LoggingLimit
 
 
 
-    internal static class OprLog
+    public static class OprLog
     {
         /// <summary>
         /// OprLog.Text, Text2, Text3, Text4, Text5, CtxData, Addition 字段 允许的最大长度。
@@ -55,7 +55,7 @@ internal static class LoggingLimit
     /// <summary>
     /// SQL相关的限制值
     /// </summary>
-    internal static class SQL
+    public static class SQL
     {
         /// <summary>
         /// 每条SQL语句最大允许的长度

@@ -8,16 +8,22 @@ namespace ClownFish.Base;
 /// </summary>
 public static class ClownFishInit
 {
+    private static bool s_baseInited = false;
+    private static bool s_dalInited = false;
+
     /// <summary>
     /// 执行一些最基础的初始化，不包含 Data/Log 部分
     /// </summary>
     public static void InitBase()
     {
-        EnvironmentVariables.Init();
-        AppConfig.Init();
-        SetDefaultCulture();
-        SetThreadPool();
-        ConfigMisc();
+        if( s_baseInited == false ) {
+            EnvironmentVariables.Init();
+            AppConfig.Init();
+            SetDefaultCulture();
+            SetThreadPool();
+            ConfigMisc();
+            s_baseInited = true;
+        }
     }
 
     private static void SetDefaultCulture()
@@ -102,15 +108,18 @@ public static class ClownFishInit
     /// </summary>
     public static void InitDAL()
     {
-        AutoRegisterDbProviders();
+        if( s_dalInited == false ) {
+            AutoRegisterDbProviders();
 
-        ClownFish.Data.Initializer.Instance.LoadXmlCommandFromDirectory();
+            ClownFish.Data.Initializer.Instance.LoadXmlCommandFromDirectory();
 
-        string exePath = AsmHelper.GetEntryAssembly().Location;
-        string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
-        string dllOutPath = Path.Combine(ClownFishBehavior.Instance.GetTempPath(), newName);
+            string exePath = AsmHelper.GetEntryAssembly().Location;
+            string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
+            string dllOutPath = Path.Combine(ClownFishBehavior.Instance.GetTempPath(), newName);
 
-        ClownFish.Data.Initializer.Instance.CompileAllEntityProxy(dllOutPath);
+            ClownFish.Data.Initializer.Instance.CompileAllEntityProxy(dllOutPath);
+            s_dalInited = true;
+        }
     }
 
 

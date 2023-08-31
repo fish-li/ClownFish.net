@@ -3,7 +3,7 @@
 /// <summary>
 /// 处理与配置相关操作的工具类
 /// </summary>
-internal static class ConfigHelper
+public static class ConfigHelper
 {
     private static readonly bool s_isSame = AppDomain.CurrentDomain.BaseDirectory.Is(Environment.CurrentDirectory);
 

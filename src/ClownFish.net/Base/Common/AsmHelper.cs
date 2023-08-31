@@ -22,7 +22,7 @@ public static class AsmHelper
         EntryAssembly = entryAssembly;
     }
 
-    internal static Assembly GetEntryAssembly()
+    public static Assembly GetEntryAssembly()
     {
         return EntryAssembly ?? Assembly.GetEntryAssembly();
     }
@@ -119,6 +119,26 @@ public static class AsmHelper
     }
 
 
+    /// <summary>
+    /// 处理所有程序集的XML文件
+    /// </summary>
+    /// <param name="xmlFileAction"></param>
+    public static void ForeachXmlFiles(Action<string> xmlFileAction)
+    {
+        string binPath = Path.GetDirectoryName(AsmHelper.GetEntryAssembly().Location);
+        string[] files = Directory.GetFiles(binPath, "*.xml", SearchOption.TopDirectoryOnly);
 
+        foreach( var file in files ) {
+            string dllPath = file.Substring(0, file.Length - 4) + ".dll";
+            if( File.Exists(dllPath) ) {
+                try {
+                    xmlFileAction(file);
+                }
+                catch( Exception ex ) {
+                    Console2.Warnning($"加载XML文件 [{file}] 失败：" + ex.Message);
+                }
+            }
+        }
+    }
 
 }

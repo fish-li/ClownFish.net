@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <RootNamespace>ClownFish.Tracing</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.828.100</Version>
+        <FileVersion>7.23.828.100</FileVersion>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <ApplicationIcon />
+        <OutputType>Library</OutputType>
+        <StartupObject />
+        <AssemblyName>ClownFish.Tracing</AssemblyName>
+        <IsPackable>true</IsPackable>
+        <Authors>Fish Li</Authors>
+        <Description>支持其它框架的Web应用程序接入Nebula日志监控体系</Description>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' ">
+        <LangVersion>11.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.Nebula.Tracing</PackageId>
+        <RepositoryUrl></RepositoryUrl>
+        <PackageProjectUrl>https://dev.fdcyun.com/</PackageProjectUrl>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Remove="ClownFish.Log.config" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <EmbeddedResource Include="ClownFish.Log.config">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Castle.Core" Version="5.0.0" />
+        <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+        <PackageReference Include="StackExchange.Redis" Version="2.0.571" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ClownFish.Web\ClownFish.Web.csproj" />
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+
+
+</Project>
