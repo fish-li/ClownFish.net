@@ -4,8 +4,8 @@
         <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.828.100</Version>
-        <FileVersion>7.23.828.100</FileVersion>
+        <Version>7.23.830.100</Version>
+        <FileVersion>7.23.830.100</FileVersion>
         <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
