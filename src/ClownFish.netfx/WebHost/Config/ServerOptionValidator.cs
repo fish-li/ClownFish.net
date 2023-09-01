@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ClownFish.Base;
 using ClownFish.WebHost.Utils;
 using ClownFish.Http.Pipleline;
+using ClownFish.Base.Exceptions;
 
 namespace ClownFish.WebHost.Config
 {

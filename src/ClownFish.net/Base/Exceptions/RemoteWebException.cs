@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Exceptions;
 
 /// <summary>
 /// 表示在HTTP调用时发生的远程服务端异常。例如：HTTP 404, HTTP500 之类的异常。

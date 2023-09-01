@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 /// <summary>
 /// 读取环境变量的工具类

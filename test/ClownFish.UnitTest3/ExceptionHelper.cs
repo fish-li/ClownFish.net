@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Base;
+using ClownFish.Base.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

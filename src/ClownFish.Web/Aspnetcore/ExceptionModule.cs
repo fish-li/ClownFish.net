@@ -32,7 +32,7 @@ public sealed class ExceptionModule : NHttpModule
 
         httpContext.TimeEvents?.Add(new NameTime("ExceptionModule.OnError begin"));
 
-        if( ex is ClownFish.Base.HttpException ex2 ) {
+        if( ex is HttpException ex2 ) {
             httpContext.Response.StatusCode = ex.GetErrorCode();
             httpContext.Response.ContentType = ResponseContentType.TextUtf8;
             httpContext.Response.WriteAll(ex2.Message.GetBytes());

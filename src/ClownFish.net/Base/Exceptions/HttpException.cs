@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Exceptions;
 
 /// <summary>
 /// 

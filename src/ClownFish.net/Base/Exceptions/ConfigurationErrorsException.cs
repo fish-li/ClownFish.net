@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Exceptions;
 
 /// <summary>
 /// 表示一个配置相关的错误

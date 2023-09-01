@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Exceptions;
 
 /// <summary>
 /// 表示数据库的重复插入异常

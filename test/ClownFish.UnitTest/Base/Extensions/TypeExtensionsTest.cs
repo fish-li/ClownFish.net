@@ -110,7 +110,7 @@ namespace ClownFish.UnitTest.Base.Extensions
 
 
             MyAssert.IsError<ArgumentNullException>(() => {
-                _= ClownFish.Base.TypeExtensionsCF.GetFullName(null);
+                _= TypeExtensionsCF.GetFullName(null);
             });
         }
 
@@ -126,7 +126,7 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.AreEqual("ClownFish.Base.CacheItem<ClownFish.Data.CPQuery[]>", typeof(CacheItem<CPQuery[]>).GetTypeCodeText());
 
             MyAssert.IsError<ArgumentNullException>(() => {
-                _ = ClownFish.Base.TypeExtensionsCF.GetTypeCodeText(null);
+                _ = TypeExtensionsCF.GetTypeCodeText(null);
             });
         }
     }

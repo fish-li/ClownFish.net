@@ -3,7 +3,7 @@
 /// <summary>
 /// 验证参数时产生的异常
 /// </summary>
-public sealed class ValidationException : Exception, IErrorCode
+public sealed class ValidationException2 : Exception, IErrorCode
 {
     /// <summary>
     /// StatusCode, default value: 400
@@ -16,7 +16,7 @@ public sealed class ValidationException : Exception, IErrorCode
     /// 构造方法
     /// </summary>
     /// <param name="message"></param>
-    public ValidationException(string message) : base(message)
+    public ValidationException2(string message) : base(message)
     {
     }
 
@@ -25,7 +25,7 @@ public sealed class ValidationException : Exception, IErrorCode
     /// </summary>
     /// <param name="message"></param>
     /// <param name="innerException"></param>
-    public ValidationException(string message, Exception innerException) : base(message, innerException)
+    public ValidationException2(string message, Exception innerException) : base(message, innerException)
     {
     }
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ClownFish.Base;
+using ClownFish.Base.Exceptions;
 using ClownFish.Base.Xml;
 
 namespace ClownFish.WebHost.Config

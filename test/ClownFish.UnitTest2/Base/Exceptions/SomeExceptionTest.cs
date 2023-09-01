@@ -137,13 +137,13 @@ public class SomeExceptionTest
     [TestMethod]
     public void Test_ValidationException()
     {
-        ValidationException ex1 = new ValidationException("SomeExceptionTest") { StatusCode = 567 };
+        ValidationException2 ex1 = new ValidationException2("SomeExceptionTest") { StatusCode = 567 };
         Assert.AreEqual("SomeExceptionTest", ex1.Message);
         Assert.AreEqual(567, ex1.StatusCode);
         Assert.AreEqual(567, (ex1 as IErrorCode).GetErrorCode());
 
         Exception innerEx = ExceptionHelper.CreateException();
-        ValidationException ex2 = new ValidationException("SomeExceptionTest", innerEx) { StatusCode = 567 };
+        ValidationException2 ex2 = new ValidationException2("SomeExceptionTest", innerEx) { StatusCode = 567 };
         Assert.IsNotNull(ex2.InnerException);
     }
 }

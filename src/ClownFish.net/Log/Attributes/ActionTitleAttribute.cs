@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Log;
+﻿namespace ClownFish.Log.Attributes;
 
 /// <summary>
 /// 定义Action的功能性描述

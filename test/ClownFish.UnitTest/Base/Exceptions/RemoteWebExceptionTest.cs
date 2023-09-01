@@ -51,7 +51,7 @@ Server: Kestrel";
         //Console.WriteLine(text);
 
         string[] lines = text.ToLines();
-        Assert.IsTrue(lines.Contains("ClownFish.Base.RemoteWebException: error5"));
+        Assert.IsTrue(lines.Contains("ClownFish.Base.Exceptions.RemoteWebException: error5"));
         Assert.IsTrue(lines.Contains("HTTP/1.1 503 ServiceUnavailable"));
         Assert.IsTrue(lines.Contains("testxxx"));
         Assert.IsTrue(lines.Contains("-------------------------Response-------------------------"));
@@ -240,10 +240,10 @@ xx_<title>服务端异常XXX</title>", text);
 
         //Console.WriteLine(ex2.ToLoggingText());
 
-        string outText = @"ClownFish.Base.RemoteWebException: 服务端异常XXX
+        string outText = @"ClownFish.Base.Exceptions.RemoteWebException: 服务端异常XXX
 =)本次调用的目标地址：http://www.abc.com/aa/bb.aspx
  ---> System.Net.WebException: 服务端异常XXX
- ---> ClownFish.Base.MessageException: 一个用于测试的异常
+ ---> ClownFish.Base.Exceptions.MessageException: 一个用于测试的异常
    at ClownFish.UnitTest.ExceptionHelper.CreateException() in x:\xxxxxx\test\ClownFish.UnitTest\ExceptionHelper.cs:line 9999999999999
    --- End of inner exception stack trace ---
    --- End of inner exception stack trace ---

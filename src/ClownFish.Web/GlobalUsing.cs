@@ -23,6 +23,8 @@ global using System.Threading.Tasks;
 global using System.Xml.Serialization;
 
 global using ClownFish.Base;
+global using ClownFish.Base.Exceptions;
+global using ClownFish.Base.Reflection;
 global using ClownFish.Base.WebClient;
 global using ClownFish.Data;
 global using ClownFish.Http.Pipleline;
@@ -30,6 +32,7 @@ global using ClownFish.Http.Proxy;
 global using ClownFish.Log;
 global using ClownFish.Log.Logging;
 global using ClownFish.Log.Models;
+global using ClownFish.Log.Attributes;
 
 global using ClownFish.Web.Aspnetcore;
 global using ClownFish.Web.AspnetCore.Objects;

@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Log;
+﻿namespace ClownFish.Log.Attributes;
 
 /// <summary>
 /// 指标某个消息类型在日志写入时【可以】做批次操作。

@@ -42,7 +42,7 @@ public sealed class StatusCodeFilter : IResultFilter
 
         ErrorPageModel model = new ErrorPageModel {
             Message = message,
-            ExceptionType = typeof(ValidationException).FullName,
+            ExceptionType = typeof(System.ComponentModel.DataAnnotations.ValidationException).FullName,
             RequestId = HttpPipelineContext.Get()?.ProcessId,
             StatusCode = 400
         };

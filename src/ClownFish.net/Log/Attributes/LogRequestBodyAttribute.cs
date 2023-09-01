@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Log;
+﻿namespace ClownFish.Log.Attributes;
 
 /// <summary>
 /// 标记当前请求在记录日志时，将请求体也记录到日志中

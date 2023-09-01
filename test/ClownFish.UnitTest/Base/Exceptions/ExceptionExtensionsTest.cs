@@ -15,7 +15,7 @@ namespace ClownFish.UnitTest.Base.Exceptions
         {
             Assert.AreEqual(200, ExceptionExtensions.GetErrorCode(null));
 
-            ClownFish.Base.Exceptions.ValidationException ex1 = new ClownFish.Base.Exceptions.ValidationException("xxxxx");
+            ClownFish.Base.Exceptions.ValidationException2 ex1 = new ClownFish.Base.Exceptions.ValidationException2("xxxxx");
             Assert.AreEqual(400, ExceptionExtensions.GetErrorCode(ex1));
 
             System.ComponentModel.DataAnnotations.ValidationException ex2 = new System.ComponentModel.DataAnnotations.ValidationException();
@@ -98,10 +98,10 @@ namespace ClownFish.UnitTest.Base.Exceptions
             TenantNotFoundException ex10b = new TenantNotFoundException("xxx") { StatusCode = 666 };
             Assert.AreEqual(666, ExceptionExtensions.GetErrorCode(ex10b));
 
-            ValidationException ex11 = new ValidationException("xxx");
+            ValidationException2 ex11 = new ValidationException2("xxx");
             Assert.AreEqual(400, ExceptionExtensions.GetErrorCode(ex11));
 
-            ValidationException ex11b = new ValidationException("xxx") { StatusCode = 666 };
+            ValidationException2 ex11b = new ValidationException2("xxx") { StatusCode = 666 };
             Assert.AreEqual(666, ExceptionExtensions.GetErrorCode(ex11b));
         }
 
@@ -119,7 +119,7 @@ namespace ClownFish.UnitTest.Base.Exceptions
             string[] lines = message.ToLines();
             Assert.AreEqual(2, lines.Length);
             Assert.AreEqual("(System.InvalidOperationException) x1234567890", lines[0]);
-            Assert.AreEqual("==>(ClownFish.Base.MessageException) 这是个内部异常", lines[1]);
+            Assert.AreEqual("==>(ClownFish.Base.Exceptions.MessageException) 这是个内部异常", lines[1]);
         }
 
         //[TestMethod]
