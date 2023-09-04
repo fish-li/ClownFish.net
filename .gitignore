@@ -3,7 +3,6 @@ ehthumbs.db
 ErrorLog.txt
 Desktop.ini
 $RECYCLE.BIN/
-nuget-pack.cmd
 
 *.cab
 *.msi

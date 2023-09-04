@@ -8,8 +8,6 @@ public static class AspnetCoreStarter
 {
     internal static WebApplication WebApplication { get; private set; }
 
-    internal static NHttpApplication NApplication { get; private set; }
-
     /// <summary>
     /// 创建WebApplication实例
     /// </summary>
@@ -92,7 +90,7 @@ public static class AspnetCoreStarter
         LoadModules();
 
         // 启动 HTTP管线
-        NApplication = NHttpApplication.Start(WorkMode.AspnetCore);
+        NHttpApplication.Start(WorkMode.AspnetCore);
     }
 
 

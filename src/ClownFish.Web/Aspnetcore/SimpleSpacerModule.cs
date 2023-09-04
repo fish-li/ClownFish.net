@@ -35,7 +35,7 @@ internal sealed class SimpleSpacerModule
         // 设置一些上下文及日志作用域
         using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore) ) {
 
-            NHttpApplication app = AspnetCoreStarter.NApplication;
+            NHttpApplication app = NHttpApplication.Instance;
 
             try {
                 app.InitResponse(httpContextNetCore);

@@ -40,7 +40,7 @@ public sealed class SimpleMvcLogFilter : IAsyncActionFilter
         }
 
 
-        NHttpApplication app = AspnetCoreStarter.NApplication;
+        NHttpApplication app = NHttpApplication.Instance;
         app.PostFindAction(httpContext);
         app.AuthorizeRequest(httpContext);
 

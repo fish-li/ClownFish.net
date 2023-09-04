@@ -20,7 +20,8 @@ internal sealed class NHttpApplication
 
     // 说明：基本上 HttpModule 可以设计成单例模式，即使在多个阶段间需要维持状态，也可以放在 HttpContext.Items 中
     // 因此，这里将 HttpApplication 设计成单例模式，可以减少一些不必要的对象被创建出来。
-    //private static HttpApplication s_Instance = null;
+    
+    public static NHttpApplication Instance { get; private set; }
 
     private NHttpApplication(WorkMode mode)
     {
@@ -34,7 +35,11 @@ internal sealed class NHttpApplication
 
     public static NHttpApplication Start(WorkMode mode)
     {
-        return new NHttpApplication(mode);
+        if( Instance != null )
+            throw new InvalidOperationException("此方法不允许多次调用！");
+
+        Instance = new NHttpApplication(mode);
+        return Instance;
     }
 
 
