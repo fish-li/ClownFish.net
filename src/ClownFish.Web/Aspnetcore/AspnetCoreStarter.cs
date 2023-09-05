@@ -8,12 +8,42 @@ public static class AspnetCoreStarter
 {
     internal static WebApplication WebApplication { get; private set; }
 
+
+    public static void Run(WebApplicationStartup startup = null)
+    {
+        if( startup == null )
+            startup = new WebApplicationStartup();
+
+        ClownFishInit.InitBase();
+
+        startup.BeforeFrameworkInit();
+
+        if( startup.EnableDAL )
+            ClownFishInit.InitDAL();
+
+        if( startup.EnableLog )
+            ClownFishInit.InitLogAsDefault();
+
+        if( startup.EnableAuth)
+            AuthenticationManager.InitAsDefault();
+
+        CreateWebApp(startup);
+
+        startup.RegisterHttpModules();
+        startup.AppInit();
+
+        //TracingInitializer.Init();   // 这个方法放在 startup.AppInit() 中调用
+
+        InitNHttpApplication();
+        RunAspnetcore();
+    }
+
     /// <summary>
     /// 创建WebApplication实例
     /// </summary>
     /// <param name="startup"></param>
     /// <returns></returns>
-    public static WebApplication CreateWebApp(WebApplicationStartup startup = null)
+    internal static WebApplication CreateWebApp(WebApplicationStartup startup = null)
     {
         if( startup == null )
             startup = new WebApplicationStartup();
@@ -30,22 +60,18 @@ public static class AspnetCoreStarter
         WebApplication app = appBuilder.Build();
 
         // 配置ASP.NET管道
-        app.UseMiddleware<SimpleSpacerModule>();   // 这个太重要，必须固定下来!
+        app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来!
         startup.ConfigureWeb(app);
 
-        startup.RegisterHttpModules();
-
-        WebApplication = app;        
+        WebApplication = app;
         return app;
     }
 
     /// <summary>
     /// 启动asp.netcore的监听，接受HTTP请求
     /// </summary>
-    public static void Run()
+    internal static void RunAspnetcore()
     {
-        InitHttpApplication();
-
         if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules") ) {
             Console2.WriteSeparatedLine();
             foreach( Type t in NHttpModuleFactory.GetList() ) {
@@ -84,13 +110,13 @@ public static class AspnetCoreStarter
         // 注意：这后面的代码将不会立即执行！
     }
 
-    private static void InitHttpApplication()
+    private static void InitNHttpApplication()
     {
         // 加载HTTP模块
         LoadModules();
 
         // 启动 HTTP管线
-        NHttpApplication.Start(WorkMode.AspnetCore);
+        NHttpApplication.Start();
     }
 
 
@@ -103,6 +129,10 @@ public static class AspnetCoreStarter
 
         NHttpModuleFactory.RegisterModule<ExceptionModule>();
 
+        if( AuthenticationManager.Inited ) {
+            NHttpModuleFactory.RegisterModule<ClownFish.Web.Modules.AuthenticateModule>();
+            NHttpModuleFactory.RegisterModule<ClownFish.Web.Modules.AuthorizeModule>();
+        }
 
         // 搜索当前应用中的Http模块并注册
         Type[] types = (from x in Assembly.GetEntryAssembly().GetPublicTypes()

@@ -2,5 +2,5 @@
 
 public interface IControllerInit
 {
-    void ControllerInit(NHttpContext httpContext);
+    void Init(NHttpContext httpContext);
 }

@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ClownFish.Web.Aspnetcore.Filters;
 
-public sealed class SimpleMvcLogFilter : IAsyncActionFilter
+public sealed class MvcLogFilter : IAsyncActionFilter
 {
     private static readonly int s_frameworkBeforePerformanceThresholdMs = LocalSettings.GetInt("MVC_FrameworkBefore_PerformanceThresholdMs", 10);
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        HttpPipelineContext pipelineContext = HttpPipelineContext.Get();
-        if( pipelineContext == null )
-            throw new InvalidOperationException("当前请求没有关联到一个PipelineContext实例。");
-
+        HttpPipelineContext pipelineContext = HttpPipelineContext.Get2();
         NHttpContext httpContext = pipelineContext.HttpContext;
 
         Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor actionDescriptor
@@ -26,6 +23,17 @@ public sealed class SimpleMvcLogFilter : IAsyncActionFilter
         // 检查当前Action是否与登录有关，如果是，则做个标记，避免日志时记录敏感信息
         bool isLogin = LoginActionAttribute.CurrentIsLogin(action);
         pipelineContext.SetAction(action, isLogin);
+
+        // 在Oprlog中记录当前用户信息
+        IUserInfo user = httpContext.GetUserInfo();
+        httpContext.SetUserInfoToOprLog(user);
+
+
+        bool allowed = OnlyTestEnvAttribute.CurrentIsAllow(action);
+        if( allowed == false ) {
+            context.Result = new NotFoundResult();
+            return;
+        }
 
 
         // 登录请求一定不允许记录请求体，不管有没有 [LogRequestBody] 标记！
@@ -68,7 +76,7 @@ public sealed class SimpleMvcLogFilter : IAsyncActionFilter
 
         IControllerInit controller = action.Controller as IControllerInit;
         if( controller != null ) {
-            controller.ControllerInit(httpContext);
+            controller.Init(httpContext);
         }
 
         IDisposable disposable = action.Controller as IDisposable;

@@ -1,7 +1,4 @@
-﻿using ClownFish.Base.Xml;
-using ClownFish.Log.Configuration;
-
-namespace ClownFish.Tracing;
+﻿namespace ClownFish.Tracing;
 
 public static class TracingInitializer
 {
@@ -27,7 +24,12 @@ public static class TracingInitializer
     private static void Init0()
     {
         ClownFishInit.InitBase();
-        InitLog();
+
+        string writesMap = LocalSettings.GetSetting("ClownFish_Log_WritersMap");
+        if( writesMap.IsNullOrEmpty() )
+            MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=Http");
+
+        ClownFishInit.InitLogAsDefault();
 
         DbLogger.Init();
         EFLogger.Init();
@@ -39,17 +41,7 @@ public static class TracingInitializer
     }
 
 
-    private static void InitLog()
-    {
-        if( ClownFish.Log.LogConfig.IsInited )
-            return;
-
-        // 从程序集中加载默认配置文件
-        string xml = typeof(TracingInitializer).Assembly.ReadResAsText("ClownFish.Tracing.ClownFish.Log.config");
-        LogConfiguration config = XmlHelper.XmlDeserialize<LogConfiguration>(xml);
-
-        ClownFishInit.InitLog(config);
-    }
+    
 
 
 }

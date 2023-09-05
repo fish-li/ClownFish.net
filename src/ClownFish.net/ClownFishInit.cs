@@ -169,6 +169,20 @@ public static class ClownFishInit
         }
     }
 
+    public static void InitLogAsDefault()
+    {
+        if( ClownFish.Log.LogConfig.IsInited )
+            return;
+
+        // 从程序集中加载默认配置文件
+        string xml = typeof(LogHelper).Assembly.ReadResAsText("ClownFish.ClownFish.Log.config");
+        LogConfiguration config = XmlHelper.XmlDeserialize<LogConfiguration>(xml);
+
+        ClownFishInit.InitLog(config);
+    }
+
+
+
     /// <summary>
     /// 初始化 ClownFish.Log
     /// </summary>
@@ -182,9 +196,9 @@ public static class ClownFishInit
         config.TryUpdateFromLocalSetting();
 
         // 允许重新指定写入器类型，例如：开发时写到XML文件，生产环境部署时统一写到ES
-        string logWriterNames = Settings.GetSetting("Nebula_Log_WritersMap") ?? Settings.GetSetting("ClownFish_Log_WritersMap");
+        string logWriterNames = Settings.GetSetting("ClownFish_Log_WritersMap") ?? Settings.GetSetting("Nebula_Log_WritersMap");
         if( logWriterNames.HasValue() ) {
-            Console2.Info("OverrideWriters: " + logWriterNames);
+            Console2.Info("ClownFish_Log_WritersMap: " + logWriterNames);
             config.OverrideWriters(logWriterNames);
         }
 
@@ -209,7 +223,7 @@ public static class ClownFishInit
             throw new ArgumentNullException(nameof(filePath));
 
         LogConfiguration config = LogConfiguration.LoadFromFile(filePath, true);
-        ClownFish.Log.LogConfig.Init(config);
+        ClownFishInit.InitLog(config);
     }
 
 }

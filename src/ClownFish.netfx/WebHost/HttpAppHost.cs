@@ -36,7 +36,7 @@ namespace ClownFish.WebHost
 						LoadModules();
 
 						// 启动 HTTP管线
-						s_httpApplication = NHttpApplication.Start(WorkMode.WebHost);
+						s_httpApplication = NHttpApplication.Start();
 
 						s_inited = true;
 					}

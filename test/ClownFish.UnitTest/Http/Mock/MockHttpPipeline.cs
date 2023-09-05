@@ -37,7 +37,7 @@ namespace ClownFish.UnitTest.Http.Mock
         public void Init()
         {
             if( this.Application == null )
-                Application = NHttpApplication.Start(WorkMode.WebHost);
+                Application = NHttpApplication.Start(false);
         }
 
         public async Task ProcessRequest()

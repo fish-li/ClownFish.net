@@ -1,5 +1,4 @@
 ﻿using ClownFish.Web.AspnetCore.ActionResults;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ClownFish.Web.AspnetCore.Filters;

@@ -40,7 +40,7 @@ public static class NHttpModuleFactory
     internal static bool ModuleIsEnable(Type moduleType)
     {
         string configName = moduleType.FullName.Replace('.', '_') + "_Enable";
-        return LocalSettings.GetSetting(configName, "1") == "1";
+        return LocalSettings.GetBool(configName, 1);
     }
 
     /// <summary>

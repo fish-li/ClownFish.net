@@ -100,4 +100,52 @@ public static class HttpContextUtils
         httpContext.Response.ContentType = ResponseContentType.TextUtf8;
         await httpContext.Response.WriteAsync(text);
     }
+
+
+    /// <summary>
+    /// 获取当前请求相关的用户信息，结果可能为NULL
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <returns></returns>
+    public static IUserInfo GetUserInfo(this NHttpContext httpContext)
+    {
+        return (httpContext?.User?.Identity as INbIdentity)?.UserInfo;
+    }
+
+    /// <summary>
+    /// 将用户信息设置到与当前请求关联的OprLog对象上
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="user"></param>
+    public static void SetUserInfoToOprLog(this NHttpContext httpContext, IUserInfo user)
+    {
+        if( user == null || httpContext == null || httpContext.PipelineContext.OprLogScope.IsNull )
+            return;
+
+        OprLog log = httpContext.PipelineContext.OprLogScope.OprLog;
+
+        if( log.TenantId == null )
+            log.TenantId = user.TenantId;
+
+        if( log.UserId == null )
+            log.UserId = user.UserId;
+
+        if( log.UserName == null )
+            log.UserName = user.UserName;
+
+        if( log.UserRole == null )
+            log.UserRole = user.UserRole;
+    }
+
+
+    public static string GetToken(this NHttpContext httpContext, LoginTicketSource source)
+    {
+        if( source == LoginTicketSource.Header )
+            return httpContext.Request.Header(AuthOptions.HeaderName);
+
+        if( source == LoginTicketSource.Cookie )
+            return httpContext.Request.Cookie(AuthOptions.CookieName);
+
+        return null;
+    }
 }

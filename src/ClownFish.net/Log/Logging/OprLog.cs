@@ -255,7 +255,7 @@ public partial class OprLog : IMsgObject
     public string AppName { get; set; }
 
     /// <summary>
-    /// 应用程序类别，取 (AppStartup.RuntimeStatus.StartupMode + 10)
+    /// 应用程序类别。一个数字，用于日志过滤。
     /// </summary>
     public int AppKind { get; set; }
 

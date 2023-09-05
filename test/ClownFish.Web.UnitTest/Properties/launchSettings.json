@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Nebula.UnitTest": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Nebula.Log.xxxxxx": "x1=xx"
+      }
+    }
+  }
+}

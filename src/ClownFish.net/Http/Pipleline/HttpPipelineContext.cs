@@ -70,6 +70,20 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
 
 
     /// <summary>
+    /// 获取一个与当前线程关联的HttpPipelineContext对象，如果没有关联的实例则抛出异常
+    /// </summary>
+    /// <returns></returns>
+    internal static HttpPipelineContext Get2()
+    {
+        HttpPipelineContext pipelineContext = HttpPipelineContext.Get();
+        if( pipelineContext == null )
+            throw new InvalidOperationException("当前请求没有关联到一个PipelineContext实例。");
+
+        return pipelineContext;
+    }
+
+
+    /// <summary>
     /// 当前请求映射到的Action对象
     /// </summary>
     public ActionDescription Action { get; private set; }

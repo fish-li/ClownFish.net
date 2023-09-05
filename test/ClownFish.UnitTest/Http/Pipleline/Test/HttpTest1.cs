@@ -236,7 +236,6 @@ namespace ClownFish.UnitTest.Http.Pipleline.Test
                 string[] lines = block.ToString2().ToLines();
 
                 //Console.WriteLine(text);
-                Assert.IsTrue(lines.Contains("WorkMode: WebHost"));
                 Assert.IsTrue(lines.Count(x=>x.StartsWith0( "1: ClownFish.UnitTest.Http.Pipleline.Test.TestModule1")) == 1);
 
                 //----------------------------------

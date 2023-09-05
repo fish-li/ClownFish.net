@@ -13,19 +13,17 @@ namespace ClownFish.Http.Pipleline;
 /// <summary>
 /// 表示用于执行HTTP请求的任务过程
 /// </summary>
-internal sealed class NHttpApplication
+public sealed class NHttpApplication
 {
-    private readonly WorkMode _mode;
     private readonly List<NHttpModule> _modules = null;
 
     // 说明：基本上 HttpModule 可以设计成单例模式，即使在多个阶段间需要维持状态，也可以放在 HttpContext.Items 中
     // 因此，这里将 HttpApplication 设计成单例模式，可以减少一些不必要的对象被创建出来。
-    
+
     public static NHttpApplication Instance { get; private set; }
 
-    private NHttpApplication(WorkMode mode)
+    private NHttpApplication()
     {
-        _mode = mode;
         _modules = NHttpModuleFactory.CreateModuleList();
 
         foreach( NHttpModule module in _modules ) {
@@ -33,20 +31,23 @@ internal sealed class NHttpApplication
         }
     }
 
-    public static NHttpApplication Start(WorkMode mode)
+    public static NHttpApplication Start(bool onlyOnce = true)
     {
         if( Instance != null )
             throw new InvalidOperationException("此方法不允许多次调用！");
 
-        Instance = new NHttpApplication(mode);
-        return Instance;
+        NHttpApplication app = new NHttpApplication();
+
+        if( onlyOnce ) {
+            Instance = app;
+        }
+        return app;
     }
 
 
     internal DebugReportBlock GetDebugReportBlock()
     {
         DebugReportBlock block = new DebugReportBlock { Category = nameof(NHttpApplication), Order = 100 };
-        block.AppendLine($"WorkMode: {_mode}");
         block.AppendLine($"Modules:");
 
         int i = 1;

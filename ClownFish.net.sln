@@ -48,6 +48,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "TestWebSite1", "test\TestWe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.Tracing", "src\ClownFish.Tracing\ClownFish.Tracing.csproj", "{F91A6778-06FE-4F6D-B29E-B7D35BDF8928}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.Web.UnitTest", "test\ClownFish.Web.UnitTest\ClownFish.Web.UnitTest.csproj", "{994E9A5F-07C2-416F-9461-2ADAE9F58E64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{F91A6778-06FE-4F6D-B29E-B7D35BDF8928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F91A6778-06FE-4F6D-B29E-B7D35BDF8928}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F91A6778-06FE-4F6D-B29E-B7D35BDF8928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{994E9A5F-07C2-416F-9461-2ADAE9F58E64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{994E9A5F-07C2-416F-9461-2ADAE9F58E64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{994E9A5F-07C2-416F-9461-2ADAE9F58E64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{994E9A5F-07C2-416F-9461-2ADAE9F58E64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +115,7 @@ Global
 		{6444BD8E-05E0-463C-8586-F3C0A9397B7D} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{7CE6AC9D-272E-4472-A66F-F1447B340620} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 		{F91A6778-06FE-4F6D-B29E-B7D35BDF8928} = {C811087E-5154-4F54-9888-22196E145D2B}
+		{994E9A5F-07C2-416F-9461-2ADAE9F58E64} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A03DB219-9FFE-470E-9974-062E69976B29}
