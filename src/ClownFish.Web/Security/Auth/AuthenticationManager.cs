@@ -33,7 +33,7 @@ public static class AuthenticationManager
         JwtOptions jwtOptions = new JwtOptions {
             SecretKeyBytes = Encoding.UTF8.GetBytes(secretKey),
             HashAlgorithmName = LocalSettings.GetSetting("ClownFish_JwtToken_AlgorithmName").IfEmpty(JwtUtils.DefaultHashAlgorithmName),
-            IssuerName = EnvUtils.GetApplicationName(),
+            IssuerName = EnvUtils.GetAppName(),
             ShortTime = LocalSettings.GetBool("ClownFish_JwtToken_ShortTimeFormat", 1),
             ShortTypeName = LocalSettings.GetBool("ClownFish_JwtToken_ShortTypeName", 1),
             LoadUnknownUser = LocalSettings.GetBool("ClownFish_Authentication_LoadUnknownUserType", 0),

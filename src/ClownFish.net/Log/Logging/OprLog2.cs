@@ -26,7 +26,7 @@ public partial class OprLog
         }
 
         this.Status = 200;
-        this.AppName = EnvUtils.GetApplicationName();
+        this.AppName = EnvUtils.GetAppName();
         this.HostName = EnvUtils.GetHostName();
         this.EnvName = EnvUtils.GetEnvName();
     }
@@ -101,7 +101,7 @@ public partial class OprLog
         }
 
         if( this.OprName.IsNullOrEmpty() ) {
-            this.OprName = GetHttpOprName(httpContext.Request);
+            this.OprName = "HttpRequest";
         }
     }
 
@@ -143,21 +143,6 @@ public partial class OprLog
         }
         if( this.Action == null ) {
             this.Action = httpContext.Items.TryGet("Biz-Action") as string;
-        }
-    }
-
-    private static string GetHttpOprName(NHttpRequest request)
-    {
-        string path = request.Path;
-        if( path.Length > 50 ) {
-#if NETFRAMEWORK
-            return request.HttpMethod + request.Path.Substring(0, 50);
-#else
-            return string.Concat(request.HttpMethod, request.Path.AsSpan(0, 50));
-#endif
-        }
-        else {
-            return request.HttpMethod + request.Path;
         }
     }
 

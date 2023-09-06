@@ -112,7 +112,7 @@ public static class DbConfigExtensions
 
             sb.Append(";Uid=").Append(db.UserName)
                 .Append(";Pwd=").Append(db.Password)
-                .Append(";Application Name=").Append(ClownFishBehavior.Instance.GetApplicationName())
+                .Append(";Application Name=").Append(EnvUtils.GetAppName())
                 .Append(';').Append(db.Args);
 
             return sb.ToString();
@@ -165,7 +165,7 @@ public static class DbConfigExtensions
 
             sb.Append(";Username=").Append(db.UserName)
                 .Append(";Password=").Append(db.Password)
-                .Append(";Application Name=").Append(ClownFishBehavior.Instance.GetApplicationName())
+                .Append(";Application Name=").Append(EnvUtils.GetAppName())
                 .Append(';').Append(db.Args);
 
             return sb.ToString();

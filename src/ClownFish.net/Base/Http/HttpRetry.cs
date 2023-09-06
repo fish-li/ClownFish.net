@@ -38,10 +38,15 @@ public static class HttpRetry
         if( status == 500 || status == 502 || status == 503 || status == 504 )
             return true;
 
-        if( ex.InnerException != null ) {
-            if( ex.InnerException is SocketException || ex.InnerException.GetBaseException() is SocketException )
-                return true;
-        }
+        Exception baseException = ex.GetBaseException();
+
+        if( baseException is SocketException || baseException is IOException )
+            return true;
+
+#if NETCOREAPP
+        if( baseException is System.Net.Http.HttpRequestException )
+            return true;
+#endif
 
         return false;
     }

@@ -35,9 +35,9 @@ internal class TracingHostingStartup : IHostingStartup
     private static void ShowStartInfo()
     {
         Console2.WriteLine("==================================================================");
-        Console2.WriteLine("ApplicationName: ".PadRight(28) + ClownFishBehavior.Instance.GetApplicationName());
-        Console2.WriteLine("HostName: ".PadRight(28) + ClownFishBehavior.Instance.GetHostName());
-        Console2.WriteLine("EnvName: ".PadRight(28) + ClownFishBehavior.Instance.GetEnvName());
+        Console2.WriteLine("ApplicationName: ".PadRight(28) + EnvUtils.GetAppName());
+        Console2.WriteLine("HostName: ".PadRight(28) + EnvUtils.GetHostName());
+        Console2.WriteLine("EnvName: ".PadRight(28) + EnvUtils.EnvName + "/" + EnvUtils.ClusterName);
         Console2.WriteLine("Version: ".PadRight(28) + FileVersionInfo.GetVersionInfo(typeof(TracingInitializer).Assembly.Location).FileVersion);
         Console2.WriteLine("##### ClownFish.Tracing 初始化成功!");
         Console2.WriteLine("==================================================================");

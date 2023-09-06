@@ -25,9 +25,15 @@ public enum EvnKind
 public static class EnvUtils
 {
     /// <summary>
-    /// 当前环境标识名称
+    /// 应用程序运行时产生的动态ID
     /// </summary>
-    public static readonly string EnvName;
+    public static readonly string AppRuntimeId = Guid.NewGuid().ToString("N");
+
+    /// <summary>
+    /// 应用程序的启动时间
+    /// </summary>
+    public static readonly DateTime AppStartTime = DateTime.Now;
+
 
     /// <summary>
     /// 当前环境类别
@@ -48,31 +54,49 @@ public static class EnvUtils
     /// 当前环境是否为【生产】环境
     /// </summary>
     public static bool IsProdEnv => CurEvnKind == EvnKind.Prod;
+    
 
+    /// <summary>
+    /// 进程运行环境标识名称
+    /// </summary>
+    public static readonly string EnvName;
 
     internal static readonly string ApplicationName;
+    internal static readonly string ClusterName;
     internal static readonly string HostName;
     internal static readonly string TempPath;
 
 
+    // EnvName, ClusterName 的说明
+    // EnvName 等同于/取值于  微软定义的 RUNTIME_ENVIRONMENT, ASPNETCORE_ENVIRONMENT
+    // 用于控制进程的运行时行为，例如：if( app.Environment.IsDevelopment() ) xxxxxxxxxxx;
+    // 因此，变量 EvnKind 由 EnvName 来决定。
+
+    // 而 ClusterName 是指 集群名称，它由多个进程构成的部署环境，它不用来控制程序的行为，仅仅只是一个名称。
+    // PROD, TEST, DEV 这些看起来也称为环境名称，但是它们更像是“类别”，现在被用于控制运行时行为，无法标识“集群”这个概念。
+    // 如果线上有多个生产集群，如果都用 PROD 这个名称就无法区分了，
+    // 而且线上有时候为了方便排查问题，是希望某个进程以 DEV/DEBUG 模式运行的，
+    // 这种这种场景下（DEBUG模式），用1个 “名称” 就无法实现，必须使用2个名称！ 
+
+    // 单独出来一个 ClusterName，它还有一个好处：便于统一日志中记录当前的部署环境，
+    // 因为日志【通常】需要区分来源（集群名称），而不关心进程使用哪种 “运行模式” 
+    // 因此，GetEnvName() 这个方法会优先返回 “集群名称”
+
+
     static EnvUtils()
     {
-        string env = GetEvnName();
-        EnvName = env;
-        CurEvnKind = GetEvnKind(env);
+        EnvName = GetEvnName();
+        CurEvnKind = GetEvnKind(EnvName);
 
-
-        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? Path.Combine(AppContext.BaseDirectory, "temp");   // Path.GetTempPath();
         ApplicationName = GetApplicationName0();
-        HostName = GetMachineName();        
+        HostName = GetMachineName();
+        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "ClownFish.TEST";
+        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? Path.Combine(AppContext.BaseDirectory, "temp");   // Path.GetTempPath();
     }
 
     private static string GetEvnName()
     {
-        string env = EnvironmentVariables.Get("ASPNETCORE_ENVIRONMENT");
-
-        if( env.IsNullOrEmpty() )
-            env = EnvironmentVariables.Get("RUNTIME_ENVIRONMENT");
+        string env = EnvironmentVariables.Get("ASPNETCORE_ENVIRONMENT") ?? EnvironmentVariables.Get("RUNTIME_ENVIRONMENT");
 
         // 如果不明确指定，就认为是【生产环境】
         if( env.IsNullOrEmpty() )
@@ -94,7 +118,7 @@ public static class EnvUtils
     }
 
 
-    internal static string GetMachineName()
+    private static string GetMachineName()
     {
         try {
             return Environment.MachineName;
@@ -140,24 +164,53 @@ public static class EnvUtils
 
 
 
-    public static string GetApplicationName()
-    {
-        return ClownFishBehavior.Instance.GetApplicationName();
-    }
+    /// <summary>
+    /// 获取进程能使用的临时目录
+    /// </summary>
+    /// <returns></returns>
+    public static string GetTempPath() => EnvUtils.TempPath;
 
-    public static string GetHostName()
-    {
-        return ClownFishBehavior.Instance.GetHostName();
-    }
 
-    public static string GetEnvName()
-    {
-        return ClownFishBehavior.Instance.GetEnvName();
-    }
+    internal static IEnvFlagProvider EnvFlagProvider = new DefaultEnvFlagProvider();   // 允许外部修改它
 
-    public static string GetTempPath()
-    {
-        return ClownFishBehavior.Instance.GetTempPath();
-    }
+    /// <summary>
+    /// 获取当前应用程序的名称
+    /// </summary>
+    /// <returns></returns>
+    public static string GetAppName() => EnvFlagProvider.GetAppName();
+
+    /// <summary>
+    /// 获取当前进程所在的(集群)部署环境名称。
+    /// 为了能让日志取值统一，所以这里使用【集群名称】
+    /// </summary>
+    /// <returns></returns>
+    public static string GetEnvName() => EnvFlagProvider.GetEnvName();
+
+    /// <summary>
+    /// 获取当前进程所在的机器名称
+    /// </summary>
+    /// <returns></returns>
+    public static string GetHostName() => EnvFlagProvider.GetHostName();    
 
 }
+
+
+// 真实使用时，部署条件会比较复杂，不能直接依赖于 进程自身的环境变量 参数来决定，
+// 所以，这里提供一个参数，允许特殊场景下调整几个与 【环境】相关参数的取值过程。
+
+internal interface IEnvFlagProvider
+{
+    string GetAppName();
+    string GetEnvName();
+    string GetHostName();
+}
+
+internal sealed class DefaultEnvFlagProvider : IEnvFlagProvider
+{
+    public string GetAppName() => EnvUtils.ApplicationName;
+
+    public string GetEnvName() => EnvUtils.ClusterName;
+
+    public string GetHostName() => EnvUtils.HostName;
+}
+

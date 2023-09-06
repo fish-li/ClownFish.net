@@ -44,12 +44,12 @@ namespace ClownFish.UnitTest.Log.Logging
 
                 OprLog log = oprLogScope.OprLog;
                 Assert.AreEqual("httpin", log.OprKind);
-                Assert.AreEqual("GET/aaa/bb/ccc.aspx", log.OprName);
+                Assert.AreEqual("HttpRequest", log.OprName);
                 Assert.AreEqual(1, log.HasError);
                 Assert.AreEqual(1, log.IsSlow);
                 Assert.AreEqual("ClownFish.Data.DbExceuteException", log.ExType);
                 Assert.AreEqual("ClownFish.UnitTest", log.AppName);
-                Assert.AreEqual("FishDev", log.EnvName);
+                Assert.AreEqual("ClownFish.TEST", log.EnvName);
 
                 Assert.AreEqual("x_TenantId", log.TenantId);
                 Assert.AreEqual("x_UserId", log.UserId);

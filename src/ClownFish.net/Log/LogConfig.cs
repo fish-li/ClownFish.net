@@ -60,12 +60,21 @@ public static class LogConfig
         var list = loader.Load(config);
 
         WriterFactory.Init(list);
-
         
         LogConfig.Instance = config;
 
         // 创建后台写入线程
         CacheQueueManager.Start(list);
+
+        int count = (from d in config.Types
+                     let ws = WriterFactory.GetWriters(d.TypeObject)
+                     where ws.Length > 0 && ws.Any(x => (x is NullWriter) == false)
+                     select d).Count();
+
+        if( count == 0 ) {
+            Console2.WriteLine("### 所有日志数据类型没有配置写入器，日志组件将不会执行写入动作！可尝试配置ClownFish_Log_WritersMap参数。");
+            config.Enable = false;
+        }
     }
 
 

@@ -5,9 +5,9 @@
 /// </summary>
 public static class ConfigFile
 {
-    internal static readonly string AppConfigFileName = ClownFishBehavior.Instance.GetApplicationName() + ".App.Config";
+    internal static readonly string AppConfigFileName = EnvUtils.GetAppName() + ".App.Config";
 
-    internal static readonly string LogConfigFileName = ClownFishBehavior.Instance.GetApplicationName() + ".Log.Config";
+    internal static readonly string LogConfigFileName = EnvUtils.GetAppName() + ".Log.Config";
 
     /// <summary>
     /// 从配置服务或者本地目录中获取指定的配置文件内容
@@ -37,7 +37,7 @@ public static class ConfigFile
 
         // 按简化的文件名再查找一次
         // 注意：由于ApplicationName允许用环境变量重新指定，那么在开发服务时，不可能指定一个完整的文件名，此时的查找会非常有用
-        string prefix = ClownFishBehavior.Instance.GetApplicationName() + ".";
+        string prefix = EnvUtils.GetAppName() + ".";
         if( filename.StartsWithIgnoreCase(prefix) ) {
             string filename2 = filename.Substring(prefix.Length);
 

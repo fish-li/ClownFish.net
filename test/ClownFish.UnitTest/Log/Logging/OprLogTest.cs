@@ -174,7 +174,7 @@ namespace ClownFish.UnitTest.Log.Logging
                 await mock.ProcessRequest();
 
                 OprLog log = mock.PipelineContext.OprLogScope.OprLog;
-                Assert.AreEqual($"DELETE/{a20}/{b20}/{c7}", log.OprName);  // url被截断，只保留50个字符
+                Assert.AreEqual("HttpRequest", log.OprName);
             }
         }
 
@@ -231,7 +231,7 @@ namespace ClownFish.UnitTest.Log.Logging
             Assert.AreEqual(thisType.Name, log.Controller);
             Assert.AreEqual(method.Name, log.Action);
             //Assert.AreEqual($"{thisType.Name}/{method.Name}", log.OprName);
-            Assert.AreEqual("GET/aa/bb/cc.aspx", log.OprName);
+            Assert.AreEqual("HttpRequest", log.OprName);
         }
 
 
@@ -264,7 +264,7 @@ namespace ClownFish.UnitTest.Log.Logging
             Assert.AreEqual("测试类型B1", log.Controller);
             Assert.AreEqual("功能点C1", log.Action);
             //Assert.AreEqual($"{thisType.Name}/{method.Name}", log.OprName);
-            Assert.AreEqual("GET/aa/bb/cc.aspx", log.OprName);
+            Assert.AreEqual("HttpRequest", log.OprName);
         }
 
 
@@ -288,7 +288,7 @@ namespace ClownFish.UnitTest.Log.Logging
             Assert.IsNull(log.Module);
             Assert.IsNull(log.Controller);
             Assert.IsNull(log.Action);
-            Assert.AreEqual("GET/aa/bb/cc.aspx", log.OprName);
+            Assert.AreEqual("HttpRequest", log.OprName);
         }
 
 

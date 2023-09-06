@@ -18,13 +18,13 @@ public static class AspnetCoreStarter
 
         startup.BeforeFrameworkInit();
 
-        if( startup.EnableDAL )
+        if( startup.AutoInitDAL )
             ClownFishInit.InitDAL();
 
-        if( startup.EnableLog )
+        if( startup.AutoInitLog )
             ClownFishInit.InitLogAsDefault();
 
-        if( startup.EnableAuth)
+        if( startup.AutoInitAuth )
             AuthenticationManager.InitAsDefault();
 
         CreateWebApp(startup);
@@ -34,7 +34,6 @@ public static class AspnetCoreStarter
 
         //TracingInitializer.Init();   // 这个方法放在 startup.AppInit() 中调用
 
-        InitNHttpApplication();
         RunAspnetcore();
     }
 
@@ -72,6 +71,10 @@ public static class AspnetCoreStarter
     /// </summary>
     internal static void RunAspnetcore()
     {
+        // 初始化经典风格的ASP.NET管道
+        InitNHttpApplication();
+
+
         if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules") ) {
             Console2.WriteSeparatedLine();
             foreach( Type t in NHttpModuleFactory.GetList() ) {
@@ -92,11 +95,11 @@ public static class AspnetCoreStarter
 
 
         Console2.WriteSeparatedLine();
-        Console2.WriteLine("EnvironmentName: " + EnvUtils.EnvName);
-        Console2.WriteLine("ApplicationName: " + EnvUtils.ApplicationName);
-        Console2.WriteLine("ClownFish.Web Ver: " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
-        Console2.WriteLine("FrameworkDescription: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        Console2.WriteLine("Now listening on: " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "http://0.0.0.0:80");
+        Console2.WriteLine("ApplicationName: " + EnvUtils.GetAppName());
+        Console2.WriteLine("EnvironmentName: " + EnvUtils.EnvName + "/" + EnvUtils.ClusterName);        
+        Console2.WriteLine("ClownFishWebVer: " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
+        Console2.WriteLine("Framework  Name: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+        Console2.WriteLine("Listening  Addr: " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "http://0.0.0.0:80");
 
 
         Console2.WriteLine("Application started. Press Ctrl+C to shut down.");

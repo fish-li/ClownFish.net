@@ -16,24 +16,43 @@ public class EnvUtilsTest
         Assert.IsTrue(EnvUtils.IsDevEnv);
         Assert.IsFalse(EnvUtils.IsProdEnv);
         Assert.IsFalse(EnvUtils.IsTestEnv);
-
     }
 
     [TestMethod]
-    public void Test_GetEvnKind()
+    public void Test_2()
+    {
+        Assert.IsTrue(EnvUtils.IsDevEnv);
+
+        Assert.AreEqual("ClownFish.UnitTest", EnvUtils.GetAppName());
+        Assert.AreEqual("FishDev", EnvUtils.EnvName);
+        Assert.AreEqual("ClownFish.TEST", EnvUtils.ClusterName);
+        Assert.AreEqual("ClownFish.TEST", EnvUtils.GetEnvName());
+
+        // 下面2个结果没有写断言
+        Console.WriteLine(EnvUtils.GetHostName());
+        Console.WriteLine(EnvUtils.GetTempPath());
+    }
+
+    [TestMethod]
+    public void Test_EvnKind()
     {
         Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind(""));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("prod"));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("PROD"));
+        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Prod"));
         Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Product"));
+        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("production"));
         Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Product_2"));
 
         Assert.AreEqual(EvnKind.Test, EnvUtils.GetEvnKind("Test"));
-        Assert.AreEqual(EvnKind.Test, EnvUtils.GetEvnKind("Test_2"));
+        Assert.AreEqual(EvnKind.Test, EnvUtils.GetEvnKind("Test2"));
 
         Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("dev"));
         Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("xxx"));
+        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("DEV"));
+        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("Development"));
+        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("FishDev"));
+        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("xxxxxxxx"));
     }
+
 
     [TestMethod]
     public void Test_CheckApplicationName()

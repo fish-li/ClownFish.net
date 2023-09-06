@@ -22,7 +22,7 @@ internal class HttpJsonWriter : ILogWriter
             return;
         }
 
-        _url = url.AddUrlQueryArgs("app", EnvUtils.GetApplicationName());
+        _url = url.AddUrlQueryArgs("app", EnvUtils.GetAppName());
         Console2.Info(this.GetType().FullName + " Init OK.");
     }
 

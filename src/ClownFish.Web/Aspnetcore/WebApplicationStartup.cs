@@ -13,11 +13,11 @@ namespace ClownFish.Web.Aspnetcore;
 /// </summary>
 public class WebApplicationStartup
 {
-    public virtual bool EnableDAL => false;
+    public virtual bool AutoInitDAL => false;
 
-    public virtual bool EnableLog => false;
+    public virtual bool AutoInitLog => false;
 
-    public virtual bool EnableAuth => false;
+    public virtual bool AutoInitAuth => false;
 
     /// <summary>
     /// 在执行框架初始化的一些自定义逻辑。 默认行为：什么也不做。

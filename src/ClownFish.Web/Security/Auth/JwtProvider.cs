@@ -38,7 +38,7 @@ public sealed class JwtProvider
 
         LoginTicket ticket = new LoginTicket {
             User = data,
-            Issuer = _options.IssuerName.IfEmpty(EnvUtils.GetApplicationName()),
+            Issuer = _options.IssuerName.IfEmpty(EnvUtils.GetAppName()),
             IssueTime = _options.ShortTime ? issueTime.ToNumber() : issueTime.Ticks,
             Expiration = _options.ShortTime ? expiration.ToNumber() : expiration.Ticks,
         };

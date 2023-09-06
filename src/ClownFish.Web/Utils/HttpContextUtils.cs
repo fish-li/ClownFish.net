@@ -95,7 +95,7 @@ public static class HttpContextUtils
 
     public static async Task ShowHomePage(HttpContext httpContext)
     {
-        string text = $"This is {EnvUtils.GetApplicationName()}, It's worked! \nServer time: {DateTime.Now.ToTime23String()}";
+        string text = $"This is {EnvUtils.GetAppName()}, It's worked! \nServer time: {DateTime.Now.ToTime23String()}";
 
         httpContext.Response.ContentType = ResponseContentType.TextUtf8;
         await httpContext.Response.WriteAsync(text);

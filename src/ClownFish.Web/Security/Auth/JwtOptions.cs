@@ -41,7 +41,7 @@ public sealed class JwtOptions
             throw new ArgumentNullException(nameof(SecretKeyBytes));
 
         if( this.IssuerName.IsNullOrEmpty() )
-            this.IssuerName = EnvUtils.GetApplicationName();
+            this.IssuerName = EnvUtils.GetAppName();
     }
 
 }

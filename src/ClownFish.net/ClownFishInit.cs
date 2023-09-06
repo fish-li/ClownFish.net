@@ -115,7 +115,7 @@ public static class ClownFishInit
 
             string exePath = AsmHelper.GetEntryAssembly().Location;
             string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
-            string dllOutPath = Path.Combine(ClownFishBehavior.Instance.GetTempPath(), newName);
+            string dllOutPath = Path.Combine(EnvUtils.GetTempPath(), newName);
 
             ClownFish.Data.Initializer.Instance.CompileAllEntityProxy(dllOutPath);
             s_dalInited = true;
@@ -174,6 +174,7 @@ public static class ClownFishInit
         if( ClownFish.Log.LogConfig.IsInited )
             return;
 
+
         // 从程序集中加载默认配置文件
         string xml = typeof(LogHelper).Assembly.ReadResAsText("ClownFish.ClownFish.Log.config");
         LogConfiguration config = XmlHelper.XmlDeserialize<LogConfiguration>(xml);
@@ -192,15 +193,16 @@ public static class ClownFishInit
         if( config == null )
             throw new ArgumentNullException(nameof(config));
 
-        // 尝试本地参数中更新日志配置
-        config.TryUpdateFromLocalSetting();
 
         // 允许重新指定写入器类型，例如：开发时写到XML文件，生产环境部署时统一写到ES
-        string logWriterNames = Settings.GetSetting("ClownFish_Log_WritersMap") ?? Settings.GetSetting("Nebula_Log_WritersMap");
+        string logWriterNames = Settings.GetSetting("ClownFish_Log_WritersMap");
         if( logWriterNames.HasValue() ) {
             Console2.Info("ClownFish_Log_WritersMap: " + logWriterNames);
             config.OverrideWriters(logWriterNames);
         }
+
+        // 尝试本地参数中更新日志配置
+        config.TryUpdateFromLocalSetting();
 
         if( LocalSettings.GetBool("Show_ClownFish_Log_Config") ) {
             string configXml = XmlHelper.XmlSerialize(config, Encoding.UTF8);
