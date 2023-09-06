@@ -17,15 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Base\Reflection\_test1.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Include="..\..\src\ClownFish.net\GlobalUsing.cs" Link="GlobalUsing.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Base\Reflection\_test1.txt" />
     </ItemGroup>
 
 
