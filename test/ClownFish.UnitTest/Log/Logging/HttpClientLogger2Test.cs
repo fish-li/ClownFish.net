@@ -1,16 +1,7 @@
 ﻿#if NETCOREAPP
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+
 using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ClownFish.Base.Http;
-using ClownFish.Base.WebClient.V2;
-using ClownFish.Log.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ClownFish.WebClient.V2;
 
 namespace ClownFish.UnitTest.Log.Logging;
 [TestClass]

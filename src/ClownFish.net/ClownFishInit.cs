@@ -84,7 +84,7 @@ public static class ClownFishInit
         }
 
         if( LocalSettings.GetBool("ClownFish_ShowHttpClientEvent") ) {
-            ClownFish.Base.WebClient.HttpClientEvent.OnBeforeSendRequest += HttpClientEventOnBeforeSendRequest;
+            ClownFish.WebClient.HttpClientEvent.OnBeforeSendRequest += HttpClientEventOnBeforeSendRequest;
         }
     }
 

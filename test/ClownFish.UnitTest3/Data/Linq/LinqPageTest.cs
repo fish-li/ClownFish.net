@@ -1,10 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ClownFish.Data;
-using ClownFish.UnitTest.Data.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Data.Linq;
+﻿namespace ClownFish.UnitTest.Data.Linq;
 
 [TestClass]
 public class LinqPageTest : BaseTest

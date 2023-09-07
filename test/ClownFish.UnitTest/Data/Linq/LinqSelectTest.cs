@@ -1,14 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using ClownFish.Data;
-using ClownFish.UnitTest.Data.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ClownFish.UnitTest.Data.Models;
 
-namespace ClownFish.UnitTest.Data.Linq
-{
+namespace ClownFish.UnitTest.Data.Linq;
 
-    [TestClass]
+
+[TestClass]
 	public class LinqSelectTest : BaseTest
 	{
 
@@ -34,21 +29,21 @@ WHERE (ProductID > @p1) AND ((ProductID = @p2) OR (CategoryID < @p3))
 ");
 		}
 
-        [TestMethod]
-        public void Test_LINQ_Select_2个字段_内嵌WHERE_2()
-        {
-            using( DbContext dbContext = DbContext.Create() ) {
-                dbContext.EnableDelimiter = true;
+    [TestMethod]
+    public void Test_LINQ_Select_2个字段_内嵌WHERE_2()
+    {
+        using( DbContext dbContext = DbContext.Create() ) {
+            dbContext.EnableDelimiter = true;
 
-                var query = from t in dbContext.Entity.Query<Product>()
-                            where t.ProductID == 5 || t.CategoryID < 3
-                            select new Product { ProductID = t.ProductID, ProductName = t.ProductName };
+            var query = from t in dbContext.Entity.Query<Product>()
+                        where t.ProductID == 5 || t.CategoryID < 3
+                        select new Product { ProductID = t.ProductID, ProductName = t.ProductName };
 
-                query = query.Where(x => x.ProductID > 3);
+            query = query.Where(x => x.ProductID > 3);
 
-                var list = query.ToList();
-            }
-            AssertLastExecuteSQL(@"
+            var list = query.ToList();
+        }
+        AssertLastExecuteSQL(@"
 SELECT [ProductID],[ProductName]
 FROM [Products]
 WHERE ([ProductID] > @p1) AND (([ProductID] = @p2) OR ([CategoryID] < @p3))
@@ -56,19 +51,19 @@ WHERE ([ProductID] > @p1) AND (([ProductID] = @p2) OR ([CategoryID] < @p3))
 @p2: (Int32), 5
 @p3: (Int32), 3
 ");
-        }
+    }
 
 
-        [TestMethod]
+    [TestMethod]
 		public async Task Test_LINQ_Select_2个字段_内嵌WHERE_Async()
 		{
 			using( DbContext db = DbContext.Create() ) {
 
 				var query = from t in db.Entity.Query<Product>()
 							where t.ProductID == 5 || t.CategoryID < 3
-                            select new Product { ProductID = 0, ProductName = "" };
+                        select new Product { ProductID = 0, ProductName = "" };
 
-                query = query.Where(x => x.ProductID > 3);
+            query = query.Where(x => x.ProductID > 3);
 
 				var list = await query.ToListAsync();
 			}
@@ -89,9 +84,9 @@ WHERE (ProductID > @p1) AND ((ProductID = @p2) OR (CategoryID < @p3))
 		{
 			using( DbContext db = DbContext.Create() ) {
 				var query = from t in db.Entity.Query<Product>()
-                            select new Product { ProductID = 0, ProductName = "" };
+                        select new Product { ProductID = 0, ProductName = "" };
 
-                query = query.Where(x => x.ProductID > 3);
+            query = query.Where(x => x.ProductID > 3);
 
 				var list = query.ToList();
 			}
@@ -109,9 +104,9 @@ WHERE (ProductID > @p1)
 		{
 			using( DbContext db = DbContext.Create() ) {
 				var query = from t in db.Entity.Query<Product>()
-                            select new Product { ProductID = 100, ProductName = "xx" };
+                        select new Product { ProductID = 100, ProductName = "xx" };
 
-                query = query.Where(x => x.ProductID > 3);
+            query = query.Where(x => x.ProductID > 3);
 
 				var list = await query.ToListAsync();
 			}
@@ -166,4 +161,3 @@ WHERE (ProductID > @p1)
 
 		public string Name { get; set; }
 	}
-}

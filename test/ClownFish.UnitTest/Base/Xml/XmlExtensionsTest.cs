@@ -1,38 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ClownFish.Base;
+﻿namespace ClownFish.UnitTest.Base.Xml;
 
-namespace ClownFish.UnitTest.Base.Xml
+[TestClass]
+public class XmlExtensionsTest
 {
-	[TestClass]
-	public class XmlExtensionsTest
-	{
-		[TestMethod]
-		public void Test_ToXml_FromXml()
-		{
-			Product p = Product.CreateByRandomData();
+    [TestMethod]
+    public void Test_ToXml_FromXml()
+    {
+        Product2 p = Product2.CreateByRandomData();
 
-			string xml = p.ToXml();
-			Product p2 = xml.FromXml<Product>();
+        string xml = p.ToXml();
+        Product2 p2 = xml.FromXml<Product2>();
 
-			Assert.IsTrue(p.IsEqual(p2));
-		}
+        Assert.IsTrue(p.IsEqual(p2));
+    }
 
 
 
-		[TestMethod]
-		public void Test_FromXml_ObjectType()
-		{
-			Product p = Product.CreateByRandomData();
+    [TestMethod]
+    public void Test_FromXml_ObjectType()
+    {
+        Product2 p = Product2.CreateByRandomData();
 
-			string xml = p.ToXml();
-			Product p2 = xml.FromXml(typeof(Product)) as Product;
+        string xml = p.ToXml();
+        Product2 p2 = xml.FromXml(typeof(Product2)) as Product2;
 
-			Assert.IsTrue(p.IsEqual(p2));
-		}
-	}
+        Assert.IsTrue(p.IsEqual(p2));
+    }
 }

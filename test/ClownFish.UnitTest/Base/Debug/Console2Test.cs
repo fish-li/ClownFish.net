@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using ClownFish.Base;
-using ClownFish.Base.WebClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.UnitTest.Base.Debug
@@ -89,7 +88,7 @@ namespace ClownFish.UnitTest.Base.Debug
                     x_header1 = "123",
                     x_header2 = "abc"
                 },
-                Format = ClownFish.Base.Http.SerializeFormat.Form,
+                Format = SerializeFormat.Form,
                 Data = new {
                     id = 2,
                     name = "1qaz"

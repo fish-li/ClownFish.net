@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data.Cleaning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ClownFish.Data.Cleaning;
 
 namespace ClownFish.UnitTest.Data.Cleaning;
 [TestClass]

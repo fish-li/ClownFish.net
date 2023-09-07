@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace ClownFish.UnitTest.Base.Common;
 
-namespace ClownFish.UnitTest.Base.Common
+[TestClass]
+public class BinSerializerTest
 {
-    [TestClass]
-    public class BinSerializerTest
-    {
 		[TestMethod]
 		public void Test_BytesIsEqual()
 		{
 			for( int i = 0; i < 10; i++ ) {
-				Product p = Product.CreateByRandomData();
-				Product p2 = p.CloneObject();
+				Product2 p = Product2.CreateByRandomData();
+				Product2 p2 = p.CloneObject();
 
 				byte[] b1 = BinSerializer.Serialize(p);
 				byte[] b2 = BinSerializer.Serialize(p2);
@@ -49,4 +41,3 @@ namespace ClownFish.UnitTest.Base.Common
 
 
 	}
-}

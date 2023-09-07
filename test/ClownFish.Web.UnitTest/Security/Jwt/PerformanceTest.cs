@@ -4,7 +4,6 @@ using JWT;
 using JWT.Algorithms;
 using JWT.Builder;
 using JWT.Serializers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #pragma warning disable CS0618
 namespace ClownFish.Web.UnitTest.Security.Jwt;

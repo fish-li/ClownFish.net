@@ -16,6 +16,9 @@
         <OutputPath>bin</OutputPath>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Compile Include="..\..\src\ClownFish.net\GlobalUsing.cs" Link="GlobalUsing.cs" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />

@@ -1,9 +1,5 @@
-﻿using System;
-using ClownFish.Base;
-using ClownFish.Base.Jwt;
+﻿using ClownFish.Base.Jwt;
 using ClownFish.Base.Jwt.Impl;
-using ClownFish.UnitTest;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.UnitTest.Base.Jwt;
 

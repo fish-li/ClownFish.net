@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Base.WebClient;
-using ClownFish.Data;
-using ClownFish.Log;
-using ClownFish.Log.Logging;
-using ClownFish.UnitTest.Base;
-using ClownFish.UnitTest.Data.EntityX;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ClownFish.UnitTest.Data.EntityX;
 
 namespace ClownFish.UnitTest.Log.Serialization;
 [TestClass]

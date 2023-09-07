@@ -1,11 +1,6 @@
-﻿using System;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ClownFish.Base;
-using System.Data.Common;
+﻿global using ClownFish.UnitTest.Data.Models;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClownFish.UnitTest.Data.Events;
-using System.Threading;
-using ClownFish.UnitTest.Data.MultiDB;
 
 
 // 这个项目只有一个用途：测试ClownFish.net是否支持 Microsoft.Data.SqlClient

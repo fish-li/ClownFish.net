@@ -24,8 +24,8 @@ internal static class MsHttpClientCache2
                     // 创建新实例
                     client = CreateClient();
 
-                    if( HttpDefaults.HttpClientCacheSeconds > 0 )
-                        s_httpClients.Set(cacheKey, client, DateTime.Now.AddSeconds(HttpDefaults.HttpClientCacheSeconds));
+                    if( HttpClientDefaults.HttpClientCacheSeconds > 0 )
+                        s_httpClients.Set(cacheKey, client, DateTime.Now.AddSeconds(HttpClientDefaults.HttpClientCacheSeconds));
                     else
                         s_httpClients.Set(cacheKey, client);
                 }
@@ -43,7 +43,7 @@ internal static class MsHttpClientCache2
         clientHandler.AllowAutoRedirect = false;
 
         HttpClient client = new HttpClient(clientHandler);
-        client.Timeout = TimeSpan.FromMilliseconds(HttpDefaults.ProxyHttpTimeout);
+        client.Timeout = TimeSpan.FromMilliseconds(HttpClientDefaults.ProxyHttpTimeout);
         return client;
     }
 

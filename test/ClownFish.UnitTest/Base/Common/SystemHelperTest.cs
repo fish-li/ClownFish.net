@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ClownFish.Base;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace ClownFish.UnitTest.Base.Common;
 
-namespace ClownFish.UnitTest.Base.Common
+[TestClass]
+public class SystemHelperTest
 {
-    [TestClass]
-    public class SystemHelperTest
+    [TestMethod]
+    public void Test()
     {
-        [TestMethod]
-        public void Test()
-        {
-            // 这几个方法能调用就行了，不用检查结果
-            Console.WriteLine(SystemHelper.GetComputerName());
-            Assert.AreEqual("Windows", SystemHelper.GetOsName());
+        // 这几个方法能调用就行了，不用检查结果
+        Console.WriteLine(SystemHelper.GetComputerName());
+        Assert.AreEqual("Windows", SystemHelper.GetOsName());
 
-            var x = SystemHelper.GetCurrentNetworkInfo();
-            Console.WriteLine(x.GetMac());
-            Console.WriteLine(x.GetIPv4());
-            
+        var x = SystemHelper.GetCurrentNetworkInfo();
+        Console.WriteLine(x.GetMac());
+        Console.WriteLine(x.GetIPv4());
+        
 
-        }
     }
 }

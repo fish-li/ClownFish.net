@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ClownFish.Base;
-using ClownFish.Http.Pipleline;
-
-namespace ClownFish.UnitTest.Http.Proxy;
+﻿namespace ClownFish.UnitTest.Http.Proxy;
 
 internal static class UrlRoutingManager
 {

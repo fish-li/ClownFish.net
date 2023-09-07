@@ -7,5 +7,5 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class BatchWritableAttribute : Attribute
 {
-
+    public int BatchSize { get; set; } = 10;
 }

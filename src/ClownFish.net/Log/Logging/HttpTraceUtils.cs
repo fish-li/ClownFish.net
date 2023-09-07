@@ -35,7 +35,7 @@ public static class HttpTraceUtils
 #if NETFRAMEWORK
     internal static void SetTraceHeader(BaseHttpClient client)
     {
-        System.Net.HttpWebRequest request = (client as ClownFish.Base.WebClient.V1.HttpClient).Request;
+        System.Net.HttpWebRequest request = (client as ClownFish.WebClient.V1.HttpClient).Request;
 
         OprLogScope scope = OprLogScope.Get();
         if( scope.IsNull == false  ) {
@@ -54,7 +54,7 @@ public static class HttpTraceUtils
     /// <param name="client"></param>
     internal static void SetTraceHeader(BaseHttpClient client)
     {
-        System.Net.Http.HttpRequestMessage request = (client as ClownFish.Base.WebClient.V2.HttpClient2).Request;
+        System.Net.Http.HttpRequestMessage request = (client as ClownFish.WebClient.V2.HttpClient2).Request;
 
         OprLogScope scope = OprLogScope.Get();
         if( scope.IsNull == false ) {

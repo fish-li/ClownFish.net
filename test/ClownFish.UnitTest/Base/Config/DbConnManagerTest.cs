@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Base.Config;
+﻿namespace ClownFish.UnitTest.Base.Config;
 [TestClass]
 public class DbConnManagerTest
 {

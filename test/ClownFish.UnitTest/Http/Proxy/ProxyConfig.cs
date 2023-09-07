@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using ClownFish.Base;
-
-namespace ClownFish.UnitTest.Http.Proxy;
+﻿namespace ClownFish.UnitTest.Http.Proxy;
 
 /// <summary>
 /// 

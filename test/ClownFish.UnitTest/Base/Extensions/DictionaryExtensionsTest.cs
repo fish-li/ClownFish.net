@@ -175,7 +175,7 @@ namespace ClownFish.UnitTest.Base.Extensions
         [TestMethod]
         public void Test_Object_To_Dictionary()
         {
-            Product p = new Product {
+            Product2 p = new Product2 {
                 CategoryID = 2,
                 ProductID = 123,
                 ProductName = Guid.NewGuid().ToString(),
@@ -187,7 +187,7 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             var dict = p.ToDictionary();
 
-            Product p2 = (Product)dict.ToObject(typeof(Product));
+            Product2 p2 = (Product2)dict.ToObject(typeof(Product2));
 
             string json1 = p.ToJson();
             string json2 = p2.ToJson();
@@ -199,7 +199,7 @@ namespace ClownFish.UnitTest.Base.Extensions
             });
 
             MyAssert.IsError<ArgumentNullException>(() => {
-                _ = DictionaryExtensions.ToObject(null, typeof(Product));
+                _ = DictionaryExtensions.ToObject(null, typeof(Product2));
             });
         }
 
@@ -223,7 +223,7 @@ namespace ClownFish.UnitTest.Base.Extensions
         [TestMethod]
         public void Test_ToStringDictionary()
         {
-            Product p = new Product {
+            Product2 p = new Product2 {
                 CategoryID = 2,
                 ProductID = 123,
                 ProductName = Guid.NewGuid().ToString(),

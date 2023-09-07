@@ -1,13 +1,5 @@
 ﻿#if NETCOREAPP
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base.WebClient;
-using ClownFish.Log;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.UnitTest.Log.Serialization;
 [TestClass]
@@ -30,13 +22,13 @@ public class HttpRequestSerializerTest
         HttpOption http = new HttpOption {
             Method = "POST",
             Url = "http://www.abc.com/aa/bb.aspx",
-            Format = ClownFish.Base.Http.SerializeFormat.Form,
+            Format = SerializeFormat.Form,
             Data = new { a = 2, b = 3, c = "abc" },
             Header = new {
                 Content_Length = 100, // 随便写个数字
             }
         };
-        HttpRequestMessage request = ClownFish.Base.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
+        HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
         string text = TextUtils.GetLogText(request);
         Console.WriteLine(text);
@@ -53,13 +45,13 @@ public class HttpRequestSerializerTest
         HttpOption http = new HttpOption {
             Method = "POST",
             Url = "http://www.abc.com/aa/bb.aspx",
-            Format = ClownFish.Base.Http.SerializeFormat.Form,
+            Format = SerializeFormat.Form,
             Data = new { a = 2, b = 3, c = "abc" },
             Header = new {
                 Content_Length = 100, // 随便写个数字
             }
         };
-        HttpRequestMessage request = ClownFish.Base.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
+        HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
         request.Dispose();    // 注意这里！ ##################
 
@@ -78,13 +70,13 @@ public class HttpRequestSerializerTest
         HttpOption http = new HttpOption {
             Method = "POST",
             Url = "http://www.abc.com/aa/bb.aspx",
-            Format = ClownFish.Base.Http.SerializeFormat.Form,
+            Format = SerializeFormat.Form,
             Data = new { a = 2, b = 3, c = "abc" },
             //Header = new {             // 没有指定头，将不会读取 Body ######################
             //    Content_Length = 100, // 随便写个数字
             //}
         };
-        HttpRequestMessage request = ClownFish.Base.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
+        HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
         string text = TextUtils.GetLogText(request);
         Console.WriteLine(text);
@@ -100,13 +92,13 @@ public class HttpRequestSerializerTest
         HttpOption http = new HttpOption {
             Method = "POST",
             Url = "http://www.abc.com/aa/bb.aspx",
-            Format = ClownFish.Base.Http.SerializeFormat.None,    // 内容格式不是文本，将不会读取 Body ######################
+            Format = SerializeFormat.None,    // 内容格式不是文本，将不会读取 Body ######################
             Data = "a=2&b=3&c=abc",
             Header = new {
                 Content_Length = 100, // 随便写个数字
             }
         };
-        HttpRequestMessage request = ClownFish.Base.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
+        HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
         string text = TextUtils.GetLogText(request);
         Console.WriteLine(text);

@@ -1,59 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
-using ClownFish.Data.MultiDB.MySQL;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ClownFish.Data.MultiDB.MySQL;
 
-namespace ClownFish.UnitTest.Data.MultiDB
+namespace ClownFish.UnitTest.Data.MultiDB;
+
+[TestClass]
+public class DbClientFactoryTest
 {
-    [TestClass]
-    public class DbClientFactoryTest
+    [TestMethod]
+    public void Test()
     {
-        [TestMethod]
-        public void Test()
-        {
 
-            DbProviderFactory factory4 = DbClientFactory.GetDbProviderFactory("MySql.Data.MySqlClient");
-            Assert.AreEqual(MySql.Data.MySqlClient.MySqlClientFactory.Instance, factory4);
+        DbProviderFactory factory4 = DbClientFactory.GetDbProviderFactory("MySql.Data.MySqlClient");
+        Assert.AreEqual(MySql.Data.MySqlClient.MySqlClientFactory.Instance, factory4);
 
 
-        }
+    }
 
 
-        [TestMethod]
-        public void Test2()
-        {
-            using( DbContext dbContext = DbContext.Create("mysql") ) {
+    [TestMethod]
+    public void Test2()
+    {
+        using( DbContext dbContext = DbContext.Create("mysql") ) {
 
-                string value1 = dbContext.CPQuery.Create("select now();").ExecuteScalar<string>();
+            string value1 = dbContext.CPQuery.Create("select now();").ExecuteScalar<string>();
 
-                Assert.IsTrue(dbContext.Connection.GetType().FullName.StartsWith("MySql.Data.MySqlClient.MySqlConnection"));
-            }
-
-        }
-
-
-
-        [TestMethod]
-        public void Test_Error()
-        {
-            MyAssert.IsError<NotSupportedException>(() => {
-                _ = DbClientFactory.GetDbProviderFactory("xxx");
-            });
-
-
-            MyAssert.IsError<ArgumentNullException>(() => {
-                DbClientFactory.RegisterProvider(null, MySqlConnectorClientProvider.Instance);
-            });
-
-            MyAssert.IsError<ArgumentNullException>(() => {
-                DbClientFactory.RegisterProvider("xxx", null);
-            });
+            Assert.IsTrue(dbContext.Connection.GetType().FullName.StartsWith("MySql.Data.MySqlClient.MySqlConnection"));
         }
 
     }
+
+
+
+    [TestMethod]
+    public void Test_Error()
+    {
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = DbClientFactory.GetDbProviderFactory("xxx");
+        });
+
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            DbClientFactory.RegisterProvider(null, MySqlConnectorClientProvider.Instance);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            DbClientFactory.RegisterProvider("xxx", null);
+        });
+    }
+
 }

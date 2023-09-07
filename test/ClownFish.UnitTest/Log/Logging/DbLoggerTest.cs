@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Log.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Log.Logging;
+﻿namespace ClownFish.UnitTest.Log.Logging;
 [TestClass]
 public class DbLoggerTest
 {

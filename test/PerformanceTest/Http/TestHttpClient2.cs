@@ -25,7 +25,7 @@ public static class TestHttpClient2
                 time = DateTime.Now,
                 num = DateTime.Now.Ticks,
             },
-            Format = ClownFish.Base.Http.SerializeFormat.Text,
+            Format = SerializeFormat.Text,
         };
     }
 
@@ -47,7 +47,7 @@ public static class TestHttpClient2
                 time = DateTime.Now,
                 num = DateTime.Now.Ticks,
             },
-            Format = ClownFish.Base.Http.SerializeFormat.Text
+            Format = SerializeFormat.Text
         };
     }
 
@@ -141,7 +141,7 @@ public static class TestHttpClient2
 
     private static string SendRequest2(HttpOption option)
     {
-        var httpClient = new ClownFish.Base.WebClient.V2.HttpClient2(option);
+        var httpClient = new ClownFish.WebClient.V2.HttpClient2(option);
         return httpClient.Send<string>();
     }
 

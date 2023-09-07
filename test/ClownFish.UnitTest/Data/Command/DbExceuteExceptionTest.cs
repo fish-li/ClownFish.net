@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Data.Command;
+﻿namespace ClownFish.UnitTest.Data.Command;
 [TestClass]
 public class DbExceuteExceptionTest
 {

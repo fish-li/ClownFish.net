@@ -25,7 +25,7 @@ global using System.Data.SqlClient;
 
 global using ClownFish.Base;
 global using ClownFish.Base.Reflection;
-global using ClownFish.Base.WebClient;
+global using ClownFish.WebClient;
 global using ClownFish.Data;
 global using ClownFish.Http.Pipleline;
 global using ClownFish.Http.Proxy;

@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Data.MultiDB;
+﻿namespace ClownFish.UnitTest.Data.MultiDB;
 
 [TestClass]
 public class SequentialGuidTest

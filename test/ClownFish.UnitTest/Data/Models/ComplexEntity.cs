@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Data;
-
-namespace ClownFish.UnitTest.Data.Models;
+﻿namespace ClownFish.UnitTest.Data.Models;
 
 
 [DbEntity(Alias = "complex_entity")]

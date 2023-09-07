@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Log.Writers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using ClownFish.Log.Writers;
 
 namespace ClownFish.UnitTest.Log.Writers;
 

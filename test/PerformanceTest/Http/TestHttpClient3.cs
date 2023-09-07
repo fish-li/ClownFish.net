@@ -49,14 +49,14 @@ public static class TestHttpClient3
                 time = DateTime.Now,
                 num = DateTime.Now.Ticks,
             },
-            Format = ClownFish.Base.Http.SerializeFormat.Json,
+            Format = SerializeFormat.Json,
             Timeout = 2000
         };
     }
 
     private static string SendRequest2(HttpOption option)
     {
-        var httpClient = new ClownFish.Base.WebClient.V2.HttpClient2(option);
+        var httpClient = new ClownFish.WebClient.V2.HttpClient2(option);
         return httpClient.Send<string>();
     }
 

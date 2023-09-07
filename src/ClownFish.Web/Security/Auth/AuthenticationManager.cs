@@ -28,7 +28,7 @@ public static class AuthenticationManager
         AuthOptions.CookieName = LocalSettings.GetSetting("ClownFish_Authentication_CookieName", "x-token");
         AuthOptions.HeaderName = LocalSettings.GetSetting("ClownFish_Authentication_HeaderName", "xtoken");
 
-        string secretKey = Settings.GetSetting("ClownFish_Authentication_SecretKey", "defaultkey_ed5aa823f9b546e78c2ac10915549326");
+        string secretKey = LocalSettings.GetSetting("ClownFish_Authentication_SecretKey", "defaultkey_ed5aa823f9b546e78c2ac10915549326");
 
         JwtOptions jwtOptions = new JwtOptions {
             SecretKeyBytes = Encoding.UTF8.GetBytes(secretKey),

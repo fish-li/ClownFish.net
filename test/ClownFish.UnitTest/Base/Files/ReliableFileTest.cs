@@ -149,7 +149,7 @@ namespace ClownFish.UnitTest.Base.Files
 
             using( TempFile file = TempFile.CreateFile(Empty.Array<byte>()) ) {
 
-                Product value = ReliableFile.ReadObject<Product>(file.FilePath);
+                Product2 value = ReliableFile.ReadObject<Product2>(file.FilePath);
                 Assert.IsNull(value);
             }
 

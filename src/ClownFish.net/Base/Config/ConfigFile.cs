@@ -5,9 +5,11 @@
 /// </summary>
 public static class ConfigFile
 {
-    internal static readonly string AppConfigFileName = EnvUtils.GetAppName() + ".App.Config";
+    internal static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
 
-    internal static readonly string LogConfigFileName = EnvUtils.GetAppName() + ".Log.Config";
+    internal static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
+
+
 
     /// <summary>
     /// 从配置服务或者本地目录中获取指定的配置文件内容

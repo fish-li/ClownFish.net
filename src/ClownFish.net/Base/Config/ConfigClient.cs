@@ -10,7 +10,7 @@ public sealed class ConfigClient
     /// </summary>
     public static readonly ConfigClient Instance = new ConfigClient();
 
-    private IConfigClient _client = NullValueClient.Instance;
+    private IConfigClient _client = NullValueConfigClient.Instance;
 
     private IConfigClient GetClient() => _client;
 
@@ -30,7 +30,7 @@ public sealed class ConfigClient
 
     internal void ResetNull()
     {
-        _client = NullValueClient.Instance;
+        _client = NullValueConfigClient.Instance;
     }
 
 

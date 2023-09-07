@@ -96,9 +96,9 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.IsFalse(typeof(F1).IsCompatible(typeof(ClassX)));
 
 #if NETFRAMEWORK
-            Assert.IsTrue(typeof(ClownFish.Base.WebClient.V1.HttpClient).IsCompatible(typeof(ClownFish.Base.WebClient.BaseHttpClient)));
+            Assert.IsTrue(typeof(ClownFish.WebClient.V1.HttpClient).IsCompatible(typeof(ClownFish.WebClient.BaseHttpClient)));
 #else
-            Assert.IsTrue(typeof(ClownFish.Base.WebClient.V2.HttpClient2).IsCompatible(typeof(ClownFish.Base.WebClient.BaseHttpClient)));
+            Assert.IsTrue(typeof(ClownFish.WebClient.V2.HttpClient2).IsCompatible(typeof(ClownFish.WebClient.BaseHttpClient)));
 #endif
         }
 

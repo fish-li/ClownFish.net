@@ -1,7 +1,7 @@
 ﻿#if NETCOREAPP
 
 using System.Net.Http;
-using ClownFish.Base.WebClient.V2;
+using ClownFish.WebClient.V2;
 
 namespace ClownFish.Http.Proxy;
 

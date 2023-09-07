@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base;
-using ClownFish.Log.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest.Log.Configuration;
+﻿namespace ClownFish.UnitTest.Log.Configuration;
 [TestClass]
 public class LogConfigurationTest
 {

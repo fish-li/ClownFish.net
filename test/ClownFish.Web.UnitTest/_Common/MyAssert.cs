@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Base;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ClownFish.UnitTest._Common;
+﻿namespace ClownFish.UnitTest._Common;
 
 public static class MyAssert
 {

@@ -61,10 +61,11 @@ public static class EnvUtils
     /// </summary>
     public static readonly string EnvName;
 
-    internal static readonly string ApplicationName;
-    internal static readonly string ClusterName;
     internal static readonly string HostName;
     internal static readonly string TempPath;
+
+    internal static string ApplicationName;
+    internal static string ClusterName;    
 
 
     // EnvName, ClusterName 的说明
@@ -87,11 +88,19 @@ public static class EnvUtils
     {
         EnvName = GetEvnName();
         CurEvnKind = GetEvnKind(EnvName);
+        HostName = GetMachineName();
+        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? Path.Combine(AppContext.BaseDirectory, "temp");   // Path.GetTempPath();
+
+        ReLoad();
+    }
+
+    internal static void ReLoad()
+    {
+        // 真实使用时，部署条件会比较复杂，不能直接依赖于 进程自身的环境变量 参数来决定，
+        // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
 
         ApplicationName = GetApplicationName0();
-        HostName = GetMachineName();
         ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "ClownFish.TEST";
-        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? Path.Combine(AppContext.BaseDirectory, "temp");   // Path.GetTempPath();
     }
 
     private static string GetEvnName()
@@ -171,46 +180,25 @@ public static class EnvUtils
     public static string GetTempPath() => EnvUtils.TempPath;
 
 
-    internal static IEnvFlagProvider EnvFlagProvider = new DefaultEnvFlagProvider();   // 允许外部修改它
-
     /// <summary>
     /// 获取当前应用程序的名称
     /// </summary>
     /// <returns></returns>
-    public static string GetAppName() => EnvFlagProvider.GetAppName();
+    public static string GetAppName() => EnvUtils.ApplicationName;
 
     /// <summary>
     /// 获取当前进程所在的(集群)部署环境名称。
     /// 为了能让日志取值统一，所以这里使用【集群名称】
     /// </summary>
     /// <returns></returns>
-    public static string GetEnvName() => EnvFlagProvider.GetEnvName();
+    public static string GetEnvName() => EnvUtils.ClusterName;
 
     /// <summary>
     /// 获取当前进程所在的机器名称
     /// </summary>
     /// <returns></returns>
-    public static string GetHostName() => EnvFlagProvider.GetHostName();    
+    public static string GetHostName() => EnvUtils.HostName;
 
 }
 
-
-// 真实使用时，部署条件会比较复杂，不能直接依赖于 进程自身的环境变量 参数来决定，
-// 所以，这里提供一个参数，允许特殊场景下调整几个与 【环境】相关参数的取值过程。
-
-internal interface IEnvFlagProvider
-{
-    string GetAppName();
-    string GetEnvName();
-    string GetHostName();
-}
-
-internal sealed class DefaultEnvFlagProvider : IEnvFlagProvider
-{
-    public string GetAppName() => EnvUtils.ApplicationName;
-
-    public string GetEnvName() => EnvUtils.ClusterName;
-
-    public string GetHostName() => EnvUtils.HostName;
-}
 
