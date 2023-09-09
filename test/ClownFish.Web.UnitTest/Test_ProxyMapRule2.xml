@@ -1,0 +1,15 @@
+﻿<ProxyMapRule>
+    <Rules>
+        <rule src="/new/api/test/add"           dest="{Demo.WebSiteApp.Url}/v20/api/WebSiteApp/test/Add.aspx" />
+        <rule src="/new/api/test/ShowRequest"   dest="{Demo.WebSiteApp.Url}/v20/api/WebSiteApp/test/ShowRequest.aspx" />
+        <rule src="/new/api/test/login"         dest="{Demo.WebSiteApp.Url}/v20/api/WebSiteApp/auth/login.aspx" />
+        <rule src="/new/api/test/findByTel"     dest="{Demo.WebSiteApp.Url}/v20/api/WebSiteApp/Customer/findByTel.aspx" />
+        
+        <rule src="/v20/api/moon/[any]"         dest="{configServiceUrl}/[any]" />
+
+        <rule src="/v30/[any]"   dest="http://localhost:30000/v30/[any]" />
+        <rule src="/v40/[any]"   dest="http://localhost:40000/[any]" />
+        <rule src="*"            dest="http://localhost:50000/" />
+        
+    </Rules>
+</ProxyMapRule>

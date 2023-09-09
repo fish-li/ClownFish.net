@@ -31,6 +31,8 @@ public sealed class NHttpApplication
         }
     }
 
+    internal List<NHttpModule> GetModules() => _modules.ToList(); // 克隆一份副本
+
     public static NHttpApplication Start(bool onlyOnce = true)
     {
         if( Instance != null )

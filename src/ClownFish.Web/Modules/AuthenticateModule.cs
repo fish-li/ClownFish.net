@@ -4,7 +4,7 @@ namespace ClownFish.Web.Modules;
 
 public sealed class AuthenticateModule : NHttpModule
 {
-    public override int Order => -1;
+    public override int Order => -10;
 
     public override void AuthenticateRequest(NHttpContext httpContext)
     {

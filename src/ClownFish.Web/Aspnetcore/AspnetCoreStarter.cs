@@ -75,10 +75,10 @@ public static class AspnetCoreStarter
         InitNHttpApplication();
 
 
-        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules") ) {
+        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", 1) ) {
             Console2.WriteSeparatedLine();
-            foreach( Type t in NHttpModuleFactory.GetList() ) {
-                Console2.WriteLine("NHttpModule: " + t.FullName);
+            foreach( var module in NHttpApplication.Instance.GetModules() ) {
+                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
             }
         }
 
@@ -130,11 +130,15 @@ public static class AspnetCoreStarter
             NHttpModuleFactory.RegisterModule<OprLogModule>();
         }
 
+        if( TransferModule.IsEnable() ) {
+            NHttpModuleFactory.RegisterModule<TransferModule>();
+        }
+
         NHttpModuleFactory.RegisterModule<ExceptionModule>();
 
         if( AuthenticationManager.Inited ) {
-            NHttpModuleFactory.RegisterModule<ClownFish.Web.Modules.AuthenticateModule>();
-            NHttpModuleFactory.RegisterModule<ClownFish.Web.Modules.AuthorizeModule>();
+            NHttpModuleFactory.RegisterModule<AuthenticateModule>();
+            NHttpModuleFactory.RegisterModule<AuthorizeModule>();
         }
 
         // 搜索当前应用中的Http模块并注册

@@ -2,7 +2,7 @@
 
 public sealed class AuthorizeModule : NHttpModule
 {
-    public override int Order => -1;
+    public override int Order => -10;
 
     public override void AuthorizeRequest(NHttpContext httpContext)
     {

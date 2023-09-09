@@ -1,0 +1,27 @@
+﻿<ProxyMapRule>
+    <Rules>
+        <rule src="http://datains.test.com/v20/datains/[any]" dest="http://datainsapp/v20/datains/[any]" />  <!-- 后端服务 -->
+        <rule src="http://datains.test.com/[any]"   dest="http://ui-datains/[any]" /> <!-- 前端站点 -->
+        <rule src="http://*.datains.test.com/[any]" dest="http://ui-datains/[any]" /> <!-- 前端站点 -->
+        
+        <rule src="http://appins.test.com/v20/appins/[any]"   dest="http://appinsapp/v20/appins/[any]" />    <!-- 后端服务 -->
+        <rule src="http://appins.test.com/[any]"   dest="http://ui-appins/[any]" /> <!-- 前端站点 -->
+        <rule src="http://*.appins.test.com/[any]" dest="http://ui-appins/[any]" /> <!-- 前端站点 -->
+        
+        
+        <rule src="http://*.auth.test.com/connetcion/[any]" dest="http://identityservice/connetcion/[any]" />  <!-- identityservice后端服务 -->
+        <rule src="http://auth.test.com/.wellknow/[any]"    dest="http://identityservice/.wellknow/[any]" />   <!-- identityservice后端服务 -->
+        <rule src="http://*.auth.test.com/[any]" dest="http://ui-identityservice/[any]" />  <!-- 前端站点 -->
+        <rule src="http://auth.test.com/[any]"   dest="http://ui-identityservice/[any]" />  <!-- 前端站点 -->
+
+
+        <rule src="http://www.fish-tucao.com/service1/[any]"    dest="http://localhost:20020/service1/[any]" />
+        <rule src="http://www.fish-tucao.com/service2/[any]"    dest="http://localhost:20030/service2/[any]" />
+        <rule src="http://www.fish-tucao.com/site/[any]"        dest="http://localhost:20040/[any]" />  <!-- Path 不对称 -->
+        <rule src="http://www.fish-tucao.com/[any]"             dest="http://localhost:20050/[any]" />
+        
+        <rule src="http://nebula.website1.com/[any]"   dest="http://localhost:30010/[any]" />
+        <rule src="http://nebula.service1.com/[any]"   dest="http://localhost:30020/[any]" />
+        <rule src="http://nebula.service2.com/[any]"   dest="http://localhost:30030/[any]" />
+    </Rules>
+</ProxyMapRule>

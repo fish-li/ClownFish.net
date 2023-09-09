@@ -71,11 +71,6 @@ public static class NHttpModuleFactory
     }
 
 
-    internal static List<Type> GetList()
-    {
-        return s_moduleTypeList;
-    }
-
     [MethodImpl(MethodImplOptions.Synchronized)]
     internal static void Clear()  // 用于单元测试
     {
