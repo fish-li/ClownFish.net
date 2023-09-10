@@ -192,7 +192,11 @@ public partial class OprLog
         }
     }
 
-
+    /// <summary>
+    /// 保存异常数据到日志数据中
+    /// </summary>
+    /// <param name="ex"></param>
+    /// <returns></returns>
     public int SetException(Exception ex)
     {
         if( ex != null ) {

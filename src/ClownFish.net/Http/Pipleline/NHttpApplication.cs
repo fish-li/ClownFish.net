@@ -20,6 +20,9 @@ public sealed class NHttpApplication
     // 说明：基本上 HttpModule 可以设计成单例模式，即使在多个阶段间需要维持状态，也可以放在 HttpContext.Items 中
     // 因此，这里将 HttpApplication 设计成单例模式，可以减少一些不必要的对象被创建出来。
 
+    /// <summary>
+    /// 单例对象引用
+    /// </summary>
     public static NHttpApplication Instance { get; private set; }
 
     private NHttpApplication()
@@ -33,6 +36,12 @@ public sealed class NHttpApplication
 
     internal List<NHttpModule> GetModules() => _modules.ToList(); // 克隆一份副本
 
+    /// <summary>
+    /// 启动HTTP处理管道
+    /// </summary>
+    /// <param name="onlyOnce"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static NHttpApplication Start(bool onlyOnce = true)
     {
         if( Instance != null )
@@ -60,12 +69,21 @@ public sealed class NHttpApplication
         return block;
     }
 
+    /// <summary>
+    /// EnableCors
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void EnableCors(NHttpContext httpContext)
     {
         string origin = httpContext.Request.Header("Origin");
         EnableCors(httpContext, origin);
     }
 
+    /// <summary>
+    /// EnableCors
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="origin"></param>
     public void EnableCors(NHttpContext httpContext, string origin)
     {
         //string origin = httpContext.Request.Header("Origin");
@@ -88,7 +106,10 @@ public sealed class NHttpApplication
         //httpContext.Response.SetHeader("p3p", "CP=\"CAO PSA OUR\"");
     }
 
-
+    /// <summary>
+    /// InitResponse
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void InitResponse(NHttpContext httpContext)
     {
         NHttpResponse response = httpContext.Response;
@@ -97,6 +118,10 @@ public sealed class NHttpApplication
         response.ContentEncoding = Encoding.UTF8;
     }
 
+    /// <summary>
+    /// BeginRequest
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void BeginRequest(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(BeginRequest)));
@@ -106,6 +131,11 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// ExecuteHttpHandlerAsync
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <returns></returns>
     public async Task<bool> ExecuteHttpHandlerAsync(NHttpContext httpContext)
     {
         IAsyncNHttpHandler handler = httpContext.PipelineContext.Action?.Controller as IAsyncNHttpHandler;
@@ -125,6 +155,10 @@ public sealed class NHttpApplication
         return false;
     }
 
+    /// <summary>
+    /// AuthenticateRequest
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void AuthenticateRequest(NHttpContext httpContext)
     {
         if( httpContext.SkipAuthorization )
@@ -137,6 +171,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// PostAuthenticateRequest
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void PostAuthenticateRequest(NHttpContext httpContext)
     {
         if( httpContext.SkipAuthorization )
@@ -149,6 +187,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// AuthorizeRequest
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void AuthorizeRequest(NHttpContext httpContext)
     {
         if( httpContext.SkipAuthorization )
@@ -162,6 +204,10 @@ public sealed class NHttpApplication
     }
 
 
+    /// <summary>
+    /// ResolveRequestCache
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void ResolveRequestCache(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(ResolveRequestCache)));
@@ -171,7 +217,10 @@ public sealed class NHttpApplication
         }
     }
 
-
+    /// <summary>
+    /// PreFindAction
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void PreFindAction(NHttpContext httpContext)
     {
         if( httpContext.PipelineContext.Action != null )
@@ -184,6 +233,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// PostFindAction
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void PostFindAction(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(PostFindAction)));
@@ -193,6 +246,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// PreRequestExecute
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void PreRequestExecute(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(PreRequestExecute)));
@@ -202,6 +259,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// PostRequestExecute
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void PostRequestExecute(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(PostRequestExecute)));
@@ -211,6 +272,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// UpdateRequestCache
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void UpdateRequestCache(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime(nameof(UpdateRequestCache)));
@@ -220,6 +285,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// EndRequest
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void EndRequest(NHttpContext httpContext)
     {
         httpContext.TimeEvents?.Add(new NameTime("EndRequest"));
@@ -249,6 +318,10 @@ public sealed class NHttpApplication
         }
     }
 
+    /// <summary>
+    /// 处理异常
+    /// </summary>
+    /// <param name="httpContext"></param>
     public void OnError(NHttpContext httpContext)
     {
         if( httpContext == null || httpContext.PipelineContext == null )

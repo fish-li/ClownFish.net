@@ -27,7 +27,4 @@ public static class HttpClientDefaults
     //public static readonly int LogMaxRequestBodyLen = LocalSettings.GetInt("ClownFish_HttpClient_LogMaxRequestBodyLen", 4 * 1024);
 
 
-    public static CancellationToken DefaultCancellationToken = CancellationToken.None;
-
-
 }

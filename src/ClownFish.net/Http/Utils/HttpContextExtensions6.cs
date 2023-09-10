@@ -4,6 +4,9 @@ using ClownFish.Http.Proxy;
 
 namespace ClownFish.Http.Utils;
 
+/// <summary>
+/// HttpContext 相关的扩展方法工具类
+/// </summary>
 public static partial class HttpContextExtensions6
 {
     /// <summary>

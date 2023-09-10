@@ -12,7 +12,6 @@ public class RemoteWebExceptionTest
 x-HostName: 1b5b8b3075a2
 x-AppName: XDemo.WebSiteApp
 x-dotnet: .NET 6.0.5
-x-Nebula: 6.22.615.100
 x-req-url: /v20/api/WebSiteApp/perftest/database2?provider=MySqlConnector&tenantId=596c871f21722
 x-ReuestCount: 2439508
 x-PreRequestExecute-ThreadId: 41

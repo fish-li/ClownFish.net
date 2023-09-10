@@ -44,8 +44,8 @@ public class AppConfigTest
         Assert.IsNotNull(db2);
         Assert.AreEqual(db1.ToJson(), db2.ToJson());
 
-        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Nebula.Environment.Key"));
-        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Nebula_Environment_Key"));
+        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment.Key"));
+        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment_Key"));
 
         Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish.CacheDictionary.ExpirationScanFrequency"));
         Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish_CacheDictionary_ExpirationScanFrequency"));

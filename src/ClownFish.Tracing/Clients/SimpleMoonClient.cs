@@ -3,7 +3,7 @@
 //internal class SimpleMoonClient : IConfigClient
 //{
 //    private static string s_configServiceUrl;
-//    private static readonly int s_httpTimeout = LocalSettings.GetUInt("Nebula_ConfigClient_HttpTimeout", 15_000);
+//    private static readonly int s_httpTimeout = LocalSettings.GetUInt("ClownFish_ConfigClient_HttpTimeout", 15_000);
 
 //    public static readonly SimpleMoonClient Instance = new SimpleMoonClient();
 

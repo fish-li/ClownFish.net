@@ -19,7 +19,7 @@ public sealed class ProxyRuleManager
         if( rule == null )
             return false;
 
-        if( LocalSettings.GetBool("ProxyRuleManager_ShowConfig") ) {
+        if( LocalSettings.GetBool("ProxyRuleManager_ShowConfig", 1) ) {
             Console2.WriteSeparatedLine();
             Console2.WriteLine(rule.ToXml2());
             Console2.WriteSeparatedLine();

@@ -4,13 +4,12 @@
         <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.909.100</Version>
-        <FileVersion>7.23.909.100</FileVersion>
+        <Version>7.23.910.200</Version>
+        <FileVersion>7.23.910.200</FileVersion>
         <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
-        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net48' or '$(TargetFramework)'=='netcoreapp3.1' ">
@@ -33,6 +32,7 @@
         <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
     </PropertyGroup>
 
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <Reference Include="System.IO.Compression" />
         <Reference Include="System.Web" />
@@ -52,6 +52,7 @@
     </ItemGroup>
    
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' ">
+        <PackageReference Include="Cronos" Version="0.7.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.CodeDom" Version="7.0.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />

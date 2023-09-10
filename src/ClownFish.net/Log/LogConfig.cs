@@ -7,6 +7,9 @@ namespace ClownFish.Log;
 /// </summary>
 public static class LogConfig
 {
+    /// <summary>
+    /// 默认的配置文件名称："ClownFish.Log.config"
+    /// </summary>
     public static readonly string ConfigFileName = "ClownFish.Log.config";
 
     /// <summary>

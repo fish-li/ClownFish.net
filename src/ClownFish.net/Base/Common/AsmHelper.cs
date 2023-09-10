@@ -22,6 +22,10 @@ public static class AsmHelper
         EntryAssembly = entryAssembly;
     }
 
+    /// <summary>
+    /// 获取当前进程的入口程序集
+    /// </summary>
+    /// <returns></returns>
     public static Assembly GetEntryAssembly()
     {
         return EntryAssembly ?? Assembly.GetEntryAssembly();

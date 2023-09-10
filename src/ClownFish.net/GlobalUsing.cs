@@ -40,3 +40,8 @@ global using ClownFish.Log.Logging;
 global using ClownFish.Log.Models;
 
 global using Newtonsoft.Json;
+
+
+#if NET6_0_OR_GREATER
+global using ClownFish.MQ.Pipeline;
+#endif

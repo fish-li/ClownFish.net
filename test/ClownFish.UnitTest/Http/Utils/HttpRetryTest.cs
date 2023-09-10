@@ -8,7 +8,7 @@ public class HttpRetryTest
     {
         HttpOption httpOption = new HttpOption {
             // 一个错误的URL（端口），它会触发重试策略
-            Url = "http://localhost:18205/nebula/debug/heartbeat.aspx",
+            Url = "http://localhost:18205/xxxxx/debug/heartbeat.aspx",
             Timeout = 100
         };
 

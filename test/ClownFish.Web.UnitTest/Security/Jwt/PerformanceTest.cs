@@ -82,7 +82,7 @@ public class PerformanceTest
 
     private static readonly LoginTicket2 s_ticket = new LoginTicket2 {
         User = JwtTest.WebUser,
-        Issuer = "Nebula.UnitTest",
+        Issuer = "ClownFish.Web.UnitTest",
         IssueTime = (new DateTime(2000, 1, 1)).Ticks,
         Expiration = DateTime.MaxValue.Ticks,
     };

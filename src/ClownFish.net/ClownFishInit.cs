@@ -11,6 +11,9 @@ public static class ClownFishInit
     private static bool s_baseInited = false;
     private static bool s_dalInited = false;
 
+    internal static CancellationToken AppExitToken = CancellationToken.None;
+
+
     /// <summary>
     /// 执行一些最基础的初始化，不包含 Data/Log 部分
     /// </summary>
@@ -169,6 +172,9 @@ public static class ClownFishInit
         }
     }
 
+    /// <summary>
+    /// 按照默认方式初始化日志组件
+    /// </summary>
     public static void InitLogAsDefault()
     {
         if( ClownFish.Log.LogConfig.IsInited )

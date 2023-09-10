@@ -20,7 +20,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         Timeout = HttpClientDefaults.HttpTimeout;
 
 #if NETCOREAPP
-        CancellationToken = HttpClientDefaults.DefaultCancellationToken;
+        CancellationToken = ClownFishInit.AppExitToken;
 #endif
     }
 

@@ -7,5 +7,8 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class BatchWritableAttribute : Attribute
 {
+    /// <summary>
+    /// 每个批次的大小
+    /// </summary>
     public int BatchSize { get; set; } = 10;
 }

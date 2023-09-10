@@ -16,7 +16,9 @@ public static class LoggingLimit
     public static int HttpBodyMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_HttpBodyMaxLen", 1024 * 4);
 
 
-
+    /// <summary>
+    /// OprLog相关限制参数
+    /// </summary>
     public static class OprLog
     {
         /// <summary>

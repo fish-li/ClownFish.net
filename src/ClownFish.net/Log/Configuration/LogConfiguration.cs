@@ -171,6 +171,10 @@ public sealed class LogConfiguration
     }
 
 
+    /// <summary>
+    /// 重新设置消息对象的写入器
+    /// </summary>
+    /// <param name="logWriterNames">配置参数示例：InvokeLog=Rabbit;*=es;xx=NULL</param>
     public void OverrideWriters(string logWriterNames)
     {
         // 配置参数示例：InvokeLog=Rabbit,ES;*=ES;xx=NULL
@@ -200,7 +204,9 @@ public sealed class LogConfiguration
         }
     }
 
-
+    /// <summary>
+    /// 尝试从本地setting参数中更新日志配置
+    /// </summary>
     public void TryUpdateFromLocalSetting()
     {
         // 下面这几个参数的调整概念比较大

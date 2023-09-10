@@ -1,7 +1,7 @@
 ﻿global using ClownFish.UnitTest._Common;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Nebula.UnitTest;
+namespace ClownFish.Web.UnitTest;
 
 [TestClass]
 public class Initializer
@@ -12,7 +12,6 @@ public class Initializer
         AsmHelper.SetEntryAssembly(typeof(Initializer).Assembly);
         EnvironmentVariables.Set("MySqlClientProviderSupport", "3");
         EnvironmentVariables.Set("ASPNETCORE_ENVIRONMENT", "Development");
-        EnvironmentVariables.Set("Nebula.Log.WritersMap", "OprLog=Xml,Json;*=Xml");            
 
         System.Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Initializer).Assembly.Location);
 

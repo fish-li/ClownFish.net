@@ -4,6 +4,7 @@ internal static class ClownFishCounters
 {
     public static void ResetAll()
     {
+        ResetAllCounter(typeof(ClownFishCounters.ExecuteTimes));
         ResetAllCounter(typeof(ClownFishCounters.Console2));
         ResetAllCounter(typeof(ClownFishCounters.Logging));
     }
@@ -16,6 +17,60 @@ internal static class ClownFishCounters
             ValueCounter counter = (ValueCounter)x.GetValue(null);
             counter.Reset();
         }
+    }
+
+
+    public static class ExecuteTimes
+    {
+        /// <summary>
+        /// 处理HTTP请求的次数
+        /// </summary>
+        public static readonly ValueCounter HttpCount = new ValueCounter("HttpCount");
+
+        /// <summary>
+        /// 处理HTTP请求过程中失败的次数
+        /// </summary>
+        public static readonly ValueCounter HttpError = new ValueCounter("HttpError");
+
+        /// <summary>
+        /// 处理MQ消息的次数
+        /// </summary>
+        public static readonly ValueCounter MessageCount = new ValueCounter("MessageCount");
+
+        /// <summary>
+        /// 处理MQ消息时失败的次数
+        /// </summary>
+        public static readonly ValueCounter MessageError = new ValueCounter("MessageError");
+
+        /// <summary>
+        /// 执行后台任务的次数
+        /// </summary>
+        public static readonly ValueCounter BgTaskCount = new ValueCounter("BgTaskCount");
+
+        /// <summary>
+        /// 执行后台任务时失败的次数
+        /// </summary>
+        public static readonly ValueCounter BgTaskError = new ValueCounter("BgTaskError");
+
+    }
+
+
+    public static class Concurrents
+    {
+        /// <summary>
+        /// 正在执行的HTTP请求数量
+        /// </summary>
+        public static readonly ValueCounter HttpConcurrent = new ValueCounter("HttpConcurrent");
+
+        /// <summary>
+        /// 正在执行的MQ请求数量
+        /// </summary>
+        public static readonly ValueCounter MessageConcurrent = new ValueCounter("MessageConcurrent");
+
+        /// <summary>
+        /// 正在执行的后台任务数量
+        /// </summary>
+        public static readonly ValueCounter BgTaskConcurrent = new ValueCounter("BgTaskConcurrent");
     }
 
     public static class Console2
