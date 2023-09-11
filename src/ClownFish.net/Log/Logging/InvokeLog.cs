@@ -70,7 +70,7 @@ public sealed class InvokeLog : IMsgObject
     /// <returns></returns>
     public override string ToString()
     {
-        return this.Title;
+        return "Title=" + this.Title;
     }
 
 

@@ -27,6 +27,6 @@ public class InvokeLogTest
         Assert.IsTrue(log.IsSlow ==1);
         Assert.AreEqual(200, log.Status);
         Assert.AreEqual("39eee30f9fe84372910cebcbbed30515", log.Title);
-        Assert.AreEqual("39eee30f9fe84372910cebcbbed30515", log.ToString());
+        Assert.AreEqual("Title=39eee30f9fe84372910cebcbbed30515", log.ToString());
     }
 }

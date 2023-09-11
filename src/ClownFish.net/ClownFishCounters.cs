@@ -4,18 +4,44 @@ internal static class ClownFishCounters
 {
     public static void ResetAll()
     {
-        ResetAllCounter(typeof(ClownFishCounters.ExecuteTimes));
-        ResetAllCounter(typeof(ClownFishCounters.Console2));
-        ResetAllCounter(typeof(ClownFishCounters.Logging));
+        ResetCounters(typeof(ClownFishCounters.ExecuteTimes));
+        ResetCounters(typeof(ClownFishCounters.Console2));
+        ResetCounters(typeof(ClownFishCounters.Logging));
     }
 
-    internal static void ResetAllCounter(Type type)
+    internal static void ResetCounters(Type type)
     {
         FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
         fields = fields.Where(x => x.FieldType == typeof(ValueCounter)).ToArray();
         foreach( var x in fields ) {
             ValueCounter counter = (ValueCounter)x.GetValue(null);
             counter.Reset();
+        }
+    }
+
+
+    public static List<NameInt64> GetAllValues()
+    {
+        List<NameInt64> list = new List<NameInt64>(64);
+
+        FillValues(typeof(ClownFishCounters.ExecuteTimes), list);
+        FillValues(typeof(ClownFishCounters.Console2), list);
+        FillValues(typeof(ClownFishCounters.Logging), list);
+
+        return list;
+    }
+
+    internal static void FillValues(Type type, List<NameInt64> list)
+    {
+        FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
+        fields = fields.Where(x => x.FieldType == typeof(ValueCounter)).ToArray();
+        foreach( var x in fields ) {
+            
+            string name = type.Name + "." + x.Name;
+
+            ValueCounter counter = (ValueCounter)x.GetValue(null);
+            NameInt64 kv = new NameInt64(name, counter.Get());
+            list.Add(kv);
         }
     }
 
@@ -102,6 +128,9 @@ internal static class ClownFishCounters
         public static readonly ValueCounter JsonWriterCount = new ValueCounter("JsonWriterCount");
         public static readonly ValueCounter Json2WriterCount = new ValueCounter("Json2WriterCount");
         public static readonly ValueCounter HttpJsonWriterCount = new ValueCounter("HttpJsonWriterCount");
+
+        public static readonly ValueCounter RabbitCount = new ValueCounter("RabbitCount");
+        public static readonly ValueCounter EsCount = new ValueCounter("EsCount");
     }
 
     public static class RealtimeStatus

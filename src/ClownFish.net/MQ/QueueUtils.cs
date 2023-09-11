@@ -1,5 +1,4 @@
 ﻿namespace ClownFish.MQ;
-#if NET6_0_OR_GREATER
 
 /// <summary>
 /// Queue相关工具类
@@ -32,4 +31,4 @@ public static class QueueUtils
     }
 
 }
-#endif
+
