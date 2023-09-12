@@ -1,8 +1,14 @@
-﻿namespace ClownFish.Tracing;
+﻿namespace ClownFish.NRedis;
 
-internal static class RedisLogger
+/// <summary>
+/// Redis日志工具类
+/// </summary>
+public static class RedisLogger
 {
-    internal static void Init()
+    /// <summary>
+    /// Init
+    /// </summary>
+    public static void Init()
     {
         RedisClientEvent.OnExecuteFinished += RedisClientEventOnExecuteFinished;
     }

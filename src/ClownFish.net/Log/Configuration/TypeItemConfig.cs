@@ -33,4 +33,10 @@ public sealed class TypeItemConfig
     {
         return this.DataType + " => " + this.Writers;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public Type GetDataTypeTypeObject() => this.TypeObject;
 }

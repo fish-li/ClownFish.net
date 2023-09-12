@@ -49,7 +49,11 @@ public sealed class EsConnOption
         return $"Server={Server};UserName={UserName}";
     }
 
-    internal void Validate()
+    /// <summary>
+    /// 验证数据成员
+    /// </summary>
+    /// <exception cref="ConfigurationErrorsException"></exception>
+    public void Validate()
     {
         if( this.Server.IsNullOrEmpty() )
             throw new ConfigurationErrorsException("Elasticsearch连接配置中没有指定 Server 参数。");

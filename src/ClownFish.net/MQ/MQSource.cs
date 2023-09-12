@@ -1,5 +1,6 @@
 ﻿namespace ClownFish.MQ;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
+
 /// <summary>
 /// 消息队列源的常量定义
 /// </summary>

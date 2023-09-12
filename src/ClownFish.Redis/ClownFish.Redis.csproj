@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <RootNamespace>ClownFish.NRedis</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.912.100</Version>
+        <FileVersion>7.23.912.100</FileVersion>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <DocumentationFile>bin\ClownFish.Redis.xml</DocumentationFile>
+        <LangVersion>11.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>        
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.Redis</PackageId>
+        <Authors>Fish Li</Authors>
+        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+        <Description>基于ClownFish.net的Redis工具类库</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Castle.Core" Version="5.0.0" />
+        <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+        <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+</Project>

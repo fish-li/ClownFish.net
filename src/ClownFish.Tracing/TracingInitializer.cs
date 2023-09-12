@@ -12,7 +12,7 @@ public static class TracingInitializer
         if( s_inited == false ) {
             lock( s_lock ) {
                 if( s_inited == false ) {
-                    
+
                     Init0();
                     s_inited = true;
                 }
@@ -33,15 +33,24 @@ public static class TracingInitializer
 
         DbLogger.Init();
         EFLogger.Init();
-
         HttpClientLogger2.Init();
-        RedisLogger.Init();
-        
+
+        InitXLog("ClownFish.NRedis.RedisLogger, ClownFish.Redis", "Init");
+        InitXLog("ClownFish.Rabbit.RabbitLogger, ClownFish.Rabbit", "Init");
+
         AspnetcoreLogger.Init();
     }
 
+    private static void InitXLog(string typeName, string methodName)
+    {
+        Type type = Type.GetType(typeName, false, true);
+        if( type == null )
+            return;
 
-    
+        MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        if( method == null )
+            return;
 
-
+        method.Invoke(null, null);
+    }
 }

@@ -90,7 +90,7 @@ public static class HttpOptionExtensions
             throw new InvalidOperationException("ClownFish/HttpOption实例不允许重用！");
 
         
-        ClownFishCounters.RealtimeStatus.HttpCallCount.Increment();
+        ClownFishCounters.Concurrents.HttpCallCount.Increment();
         try {
             if( retry == null ) {
                 return Send0<T>(option);
@@ -103,7 +103,7 @@ public static class HttpOptionExtensions
         }
         finally {
             option.Finished = true;
-            ClownFishCounters.RealtimeStatus.HttpCallCount.Decrement();
+            ClownFishCounters.Concurrents.HttpCallCount.Decrement();
         }
     }
 
@@ -132,7 +132,7 @@ public static class HttpOptionExtensions
             throw new InvalidOperationException("ClownFish/HttpOption实例不允许重用！");
 
 
-        ClownFishCounters.RealtimeStatus.HttpCallCount.Increment();
+        ClownFishCounters.Concurrents.HttpCallCount.Increment();
         try {
             if( retry == null ) {
                 return await SendAsync0<T>(option);
@@ -145,7 +145,7 @@ public static class HttpOptionExtensions
         }
         finally {
             option.Finished = true;
-            ClownFishCounters.RealtimeStatus.HttpCallCount.Decrement();
+            ClownFishCounters.Concurrents.HttpCallCount.Decrement();
         }
     }
 

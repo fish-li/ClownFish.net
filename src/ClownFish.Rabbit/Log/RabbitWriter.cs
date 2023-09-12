@@ -1,41 +1,37 @@
-﻿using ClownFish.Http.Clients.RabbitMQ;
-using ClownFish.MQ;
+﻿using ClownFish.Log.Writers;
 
-namespace ClownFish.Log.Writers;
-
+namespace ClownFish.Rabbit.Log;
 /// <summary>
-/// 将RabbitMQ做为持久化目标的写入器
+/// 将日志记录到RabbitMQ的写入器
 /// </summary>
 internal sealed class RabbitWriter : ILogWriter
 {
-    private RabbitHttpClient _client;
-
-    internal static string RabbitSettingName = "ClownFish_Log_Rabbit";
+    private bool _inited;
+    private RabbitClient _client;
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
         InternalInit(config);
     }
 
-
     private void InternalInit(LogConfiguration config)
     {
-        string configValue = Settings.GetSetting(RabbitSettingName);
+        string configValue = Settings.GetSetting(RabbitOption.DefaultSettingName);
 
         if( configValue.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitWriter 不能初始化，因为没有找到 {RabbitSettingName} 的连接配置参数。");
+            Console2.Info($"RabbitWriter 不能初始化，因为没有找到 {RabbitOption.DefaultSettingName} 的连接配置参数。");
             return;
         }
 
         RabbitOption option = configValue.ToObject<RabbitOption>();
         if( option.Server.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitWriter 不能初始化，因为连接配置参数 {RabbitSettingName} 的 Server 为空。");
+            Console2.Info($"RabbitWriter 不能初始化，因为连接配置参数 {RabbitOption.DefaultSettingName} 的 Server 为空。");
             return;
         }
 
 
         // 创建客户端连接
-        _client = new RabbitHttpClient(option);
+        _client = new RabbitClient(option, "Nebula.Log.RabbitWriter");
 
         // 触发连接打开
         _client.TestConnection();
@@ -44,6 +40,7 @@ internal sealed class RabbitWriter : ILogWriter
         AutoCreateQueue(config);
 
         Console2.Info(this.GetType().FullName + " Init OK.");
+        _inited = true;
     }
 
 
@@ -53,11 +50,8 @@ internal sealed class RabbitWriter : ILogWriter
         foreach( var item in config.Types ) {
 
             // for example:  <Type DataType="xxxxxx" Writers="Json,Rabbit" />
-            if( item.Writers.ToArray2().Contains("Rabbit2", StringComparer.OrdinalIgnoreCase) ) {
-
-                string queue = item.TypeObject.GetQueueName();
-                string bindingKey = queue;
-                _client.CreateQueueBind(queue, null, bindingKey, null);
+            if( item.Writers.ToArray2().Contains("Rabbit", StringComparer.OrdinalIgnoreCase) ) {
+                _client.CreateQueueBind(item.GetDataTypeTypeObject());
             }
         }
     }
@@ -71,13 +65,13 @@ internal sealed class RabbitWriter : ILogWriter
     /// <param name="list"></param>
     public void Write<T>(List<T> list) where T : class, IMsgObject
     {
-        if( _client == null )
+        if( _inited == false )
             return;
 
         // 将10条InvokeLog合并在一起发到队列，以LIST方式发送
         BatchWritableAttribute attr = typeof(T).GetMyAttribute<BatchWritableAttribute>();
         if( attr != null ) {
-            BatchWrite(list, attr.BatchSize.Min(10));
+            BatchWrite(list, _client, attr.BatchSize.Min(10));
         }
         else {
             foreach( T x in list ) {
@@ -85,24 +79,25 @@ internal sealed class RabbitWriter : ILogWriter
             }
         }
 
-        ClownFishCounters.Logging.RabbitCount.Add(list.Count);
+        ClownFishCounters.Logging.RabbitWriteCount.Add(list.Count);
     }
 
 
-    private void BatchWrite<T>(List<T> list, int batchSize)
+    private void BatchWrite<T>(List<T> list, RabbitClient client, int batchSize)
     {
         string routingKey = typeof(T).GetQueueName();
 
         if( list.Count <= batchSize ) {
-            _client.SendMessage(list, null, routingKey);
+            client.SendMessage(list.ToJson(), null, routingKey);
         }
         else {
             List<List<T>> listlist = list.SplitList(int.MaxValue, batchSize);
 
             foreach( List<T> listX in listlist ) {
-                _client.SendMessage(listX, null, routingKey);
+                client.SendMessage(listX.ToJson(), null, routingKey);
             }
         }
     }
+
 
 }

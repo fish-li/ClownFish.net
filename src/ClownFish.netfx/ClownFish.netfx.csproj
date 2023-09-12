@@ -3,34 +3,26 @@
     <PropertyGroup>
         <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>4.0.0.0</AssemblyVersion>
+        <AssemblyVersion>6.0.0.0</AssemblyVersion>
         <Version>6.22.805.100</Version>
         <FileVersion>6.22.805.100</FileVersion>
-        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-        <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>        
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <DocumentationFile>bin\ClownFish.netfx.xml</DocumentationFile>
+        <LangVersion>11.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>        
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.netfx</PackageId>
         <Authors>Fish Li</Authors>
         <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
         <Description>一个“小而美”的.NET工具类库</Description>
-        <NeutralLanguage />
-        <LangVersion>11.0</LangVersion>
-        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <DocumentationFile>bin\ClownFish.netfx.xml</DocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <DocumentationFile>bin\ClownFish.netfx.xml</DocumentationFile>
-    </PropertyGroup>
 
     <ItemGroup>
         <None Remove="WebApi\Controllers\FileListTemplate.html" />

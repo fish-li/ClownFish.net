@@ -2,9 +2,15 @@
 
 namespace ClownFish.Log.Logging;
 
-internal static class EFLogger
+/// <summary>
+/// 
+/// </summary>
+public static class EFLogger
 {
-    internal static void Init()
+    /// <summary>
+    /// 
+    /// </summary>
+    public static void Init()
     {
         DiagnosticListener.AllListeners.Subscribe(new EFEventSubscriber());
     }

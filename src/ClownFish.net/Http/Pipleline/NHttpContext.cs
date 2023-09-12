@@ -73,17 +73,17 @@ public abstract class NHttpContext
     /// 记录一些时间序列，描述在什么时候开始执行什么操作，用于性能监控。
     /// 此属性需要在要请求入口时赋值，如果属性为NULL表示不启用。
     /// </summary>
-    internal List<NameTime> TimeEvents { get; set; } // = new List<NameTime>(20);
+    public List<NameTime> TimeEvents { get; set; } // = new List<NameTime>(20);
 
     /// <summary>
     /// Action代码的开始执行时间
     /// </summary>
-    internal DateTime BeginExecuteTime { get; set; }
+    public DateTime BeginExecuteTime { get; set; }
 
     /// <summary>
     /// Action代码的结束执行时间
     /// </summary>
-    internal DateTime EndExecuteTime { get; set; }
+    public DateTime EndExecuteTime { get; set; }
 
 
     /// <summary>

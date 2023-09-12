@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.MQ.MMQ;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 /// <summary>
 /// MMQ（内存队列）消息订阅工具类

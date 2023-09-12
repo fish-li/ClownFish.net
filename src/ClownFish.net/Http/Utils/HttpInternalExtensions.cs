@@ -1,6 +1,9 @@
 ﻿namespace ClownFish.Http.Utils;
 
-internal static class HttpInternalExtensions
+/// <summary>
+/// 框架内部使用的工具类
+/// </summary>
+public static class HttpInternalExtensions
 {
 #pragma warning disable IDE1006 // 命名样式
     private static readonly ActionWrapper<WebHeaderCollection, string, string> s_AddWithoutValidateInvoker;
@@ -19,7 +22,13 @@ internal static class HttpInternalExtensions
         s_AddWithoutValidateInvoker.BindMethod(method);
     }
 
-    internal static void InternalAdd(this WebHeaderCollection headers, string name, string value)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="headers"></param>
+    /// <param name="name"></param>
+    /// <param name="value"></param>
+    public static void InternalAdd(this WebHeaderCollection headers, string name, string value)
     {
         try {
             s_AddWithoutValidateInvoker.Call(headers, name, value);

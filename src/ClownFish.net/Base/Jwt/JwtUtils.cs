@@ -8,7 +8,10 @@ namespace ClownFish.Base.Jwt;
 /// </summary>
 public static class JwtUtils
 {
-    internal static readonly string DefaultHashAlgorithmName = "HS256";
+    /// <summary>
+    /// 默认的Hash算法名称
+    /// </summary>
+    public static readonly string DefaultHashAlgorithmName = "HS256";
 
     internal static readonly JwtBase JwtHs256 = new JwtHMACSHA256();
     internal static readonly JwtBase JwtHs512 = new JwtHMACSHA512();

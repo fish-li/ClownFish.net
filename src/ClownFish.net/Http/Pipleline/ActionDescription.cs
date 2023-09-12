@@ -70,7 +70,7 @@ public sealed class ActionDescription
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    internal T GetActionAttribute<T>() where T : Attribute
+    public T GetActionAttribute<T>() where T : Attribute
     {
         T attr = this.MethodInfo.GetMyAttribute<T>();
 

@@ -3,10 +3,12 @@
 /// <summary>
 /// DbLogger
 /// </summary>
-//[Init]
-internal static class DbLogger
+public static class DbLogger
 {
-    internal static void Init()
+    /// <summary>
+    /// 
+    /// </summary>
+    public static void Init()
     {
         DbContextEvent.OnConnectionOpened += ConnectionOpened;
         DbContextEvent.OnAfterExecute += CommandAfterExecute;

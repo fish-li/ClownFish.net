@@ -1,6 +1,6 @@
 ﻿using Castle.DynamicProxy;
 
-namespace ClownFish.Tracing;
+namespace ClownFish.NRedis;
 internal class DatabaseInterceptor : IAsyncInterceptor // IInterceptor
 {
     /// <summary>

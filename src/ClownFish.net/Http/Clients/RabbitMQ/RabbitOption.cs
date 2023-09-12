@@ -6,6 +6,12 @@
 public sealed class RabbitOption
 {
     /// <summary>
+    /// 默认连接配置名称
+    /// </summary>
+    public static string DefaultSettingName = "ClownFish_Log_Rabbit";
+
+
+    /// <summary>
     /// VHost，默认值："/"
     /// </summary>
     public string VHost { get; set; } = "/";
@@ -46,7 +52,7 @@ public sealed class RabbitOption
     /// </summary>
     /// <param name="urlPath"></param>
     /// <returns></returns>
-    internal HttpOption GetHttpOption(string urlPath)
+    public HttpOption GetHttpOption(string urlPath)
     {
         HttpOption httpOption = new HttpOption {
             Url = $"http://{this.Server}:{(this.HttpPort > 0 ? this.HttpPort : 15672)}{urlPath}",
@@ -62,7 +68,7 @@ public sealed class RabbitOption
     /// <summary>
     /// 验证数据成员
     /// </summary>
-    internal void Validate()
+    public void Validate()
     {
         if( this.VHost.IsNullOrEmpty() )
             this.VHost = "/";

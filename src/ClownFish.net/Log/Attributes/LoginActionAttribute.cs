@@ -15,7 +15,12 @@
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public sealed class LoginActionAttribute : Attribute
 {
-    internal static bool CurrentIsLogin(ActionDescription action)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static bool CurrentIsLogin(ActionDescription action)
     {
         return action.MethodInfo.GetMyAttribute<LoginActionAttribute>() != null;
     }

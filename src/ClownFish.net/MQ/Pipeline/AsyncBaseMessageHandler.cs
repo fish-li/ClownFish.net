@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.MQ.Pipeline;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 /// <summary>
 /// 消息处理器基类。

@@ -1,7 +1,10 @@
 ﻿namespace ClownFish.Http.Pipleline;
 
 //[Serializable]
-internal class AbortRequestException : Exception
+/// <summary>
+/// 
+/// </summary>
+public class AbortRequestException : Exception
 {
     //public AbortRequestException()
     //{

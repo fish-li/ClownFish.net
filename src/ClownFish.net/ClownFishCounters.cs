@@ -1,7 +1,13 @@
 ﻿namespace ClownFish.Base;
 
-internal static class ClownFishCounters
+/// <summary>
+/// ClownFish定义的一些计数器
+/// </summary>
+public static class ClownFishCounters
 {
+    /// <summary>
+    /// 重置所有计数器
+    /// </summary>
     public static void ResetAll()
     {
         ResetCounters(typeof(ClownFishCounters.ExecuteTimes));
@@ -19,7 +25,10 @@ internal static class ClownFishCounters
         }
     }
 
-
+    /// <summary>
+    /// 获取所有计数器的数据
+    /// </summary>
+    /// <returns></returns>
     public static List<NameInt64> GetAllValues()
     {
         List<NameInt64> list = new List<NameInt64>(64);
@@ -46,6 +55,34 @@ internal static class ClownFishCounters
     }
 
 
+    internal static DebugReportBlock GetReportBlock()
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = "Logging Counters" };
+
+        block.AppendLine("MaxCacheQueueLength: " + ClownFish.Log.LoggingOptions.MaxCacheQueueLength.ToString());
+
+        block.AppendLine("WriteCount: " + ClownFishCounters.Logging.WriteCount.Get().ToWString());
+        block.AppendLine("InQueueCount: " + ClownFishCounters.Logging.InQueueCount.Get().ToWString());
+        block.AppendLine("GiveupCount: " + ClownFishCounters.Logging.GiveupCount.Get().ToWString());
+
+        block.AppendLine("QueueFlushCount: " + ClownFishCounters.Logging.QueueFlushCount.Get().ToWString());
+        block.AppendLine("WriterErrorCount: " + ClownFishCounters.Logging.WriterErrorCount.Get().ToWString());
+        block.AppendLine("FatalErrorCount: " + ClownFishCounters.Logging.FatalErrorCount.Get().ToWString());
+
+        block.AppendLine("XmlWriteCount: " + ClownFishCounters.Logging.XmlWriteCount.Get().ToWString());
+        block.AppendLine("JsonWriteCount: " + ClownFishCounters.Logging.JsonWriteCount.Get().ToWString());
+        block.AppendLine("Json2WriteCount: " + ClownFishCounters.Logging.Json2WriteCount.Get().ToWString());
+        block.AppendLine("EsWriteCount: " + ClownFishCounters.Logging.EsWriteCount.Get().ToWString());
+        block.AppendLine("Rabbit2WriteCount: " + ClownFishCounters.Logging.Rabbit2WriteCount.Get().ToWString());
+        block.AppendLine("RabbitWriteCount: " + ClownFishCounters.Logging.RabbitWriteCount.Get().ToWString());
+        block.AppendLine("KafkaWriteCount: " + ClownFishCounters.Logging.KafkaWriteCount.Get().ToWString());
+
+        return block;
+    }
+
+    /// <summary>
+    /// 运行次数相关的计数器
+    /// </summary>
     public static class ExecuteTimes
     {
         /// <summary>
@@ -81,6 +118,9 @@ internal static class ClownFishCounters
     }
 
 
+    /// <summary>
+    /// 并发执行相关的计数器
+    /// </summary>
     public static class Concurrents
     {
         /// <summary>
@@ -97,8 +137,21 @@ internal static class ClownFishCounters
         /// 正在执行的后台任务数量
         /// </summary>
         public static readonly ValueCounter BgTaskConcurrent = new ValueCounter("BgTaskConcurrent");
+
+        /// <summary>
+        /// 正在执行的HttpClient调用次数
+        /// </summary>
+        public static readonly ValueCounter HttpCallCount = new ValueCounter("HttpCallCount");
+
+        /// <summary>
+        /// 已打开的SQL连接数量
+        /// </summary>
+        public static readonly ValueCounter SqlConnCount = new ValueCounter("SqlConnCount");
     }
 
+    /// <summary>
+    /// Console2专属的计数器
+    /// </summary>
     public static class Console2
     {
         /// <summary>
@@ -113,30 +166,76 @@ internal static class ClownFishCounters
     }
 
 
+    /// <summary>
+    /// 日志相关计数器
+    /// </summary>
     public static class Logging
     {
+        /// <summary>
+        /// 写入总次数，即调用  LogHelper.Write 的次数
+        /// </summary>
         public static readonly ValueCounter WriteCount = new ValueCounter("WriteCount");
+
+        /// <summary>
+        /// 日志数据进入队列的总次数
+        /// </summary>
         public static readonly ValueCounter InQueueCount = new ValueCounter("InQueueCount");
+        /// <summary>
+        /// 无法进入队列而被丢弃的日志数量，丢弃原因：队列超过最大长度。
+        /// </summary>
         public static readonly ValueCounter GiveupCount = new ValueCounter("GiveupCount");
+        /// <summary>
+        /// 日志写入时，一个批次要写入的最大长度
+        /// </summary>
         public static readonly ValueCounter MaxBatchSize = new ValueCounter("MaxBatchSize");
 
+        /// <summary>
+        /// 日志批次写入的次数
+        /// </summary>
         public static readonly ValueCounter QueueFlushCount = new ValueCounter("QueueFlushCount");
+        /// <summary>
+        /// 写日志时遇到的异常次数
+        /// </summary>
         public static readonly ValueCounter WriterErrorCount = new ValueCounter("WriterErrorCount");
+        /// <summary>
+        /// 记录“致命异常”的次数
+        /// </summary>
         public static readonly ValueCounter FatalErrorCount = new ValueCounter("FatalErrorCount");
 
-        public static readonly ValueCounter XmlWriterCount = new ValueCounter("XmlWriterCount");
-        public static readonly ValueCounter JsonWriterCount = new ValueCounter("JsonWriterCount");
-        public static readonly ValueCounter Json2WriterCount = new ValueCounter("Json2WriterCount");
-        public static readonly ValueCounter HttpJsonWriterCount = new ValueCounter("HttpJsonWriterCount");
+        /// <summary>
+        /// XmlWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter XmlWriteCount = new ValueCounter("XmlWriteCount");
+        /// <summary>
+        /// JsonWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter JsonWriteCount = new ValueCounter("JsonWriteCount");
+        /// <summary>
+        /// Json2Writer 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter Json2WriteCount = new ValueCounter("Json2WriteCount");
+        /// <summary>
+        /// HttpJsonWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter HttpJsonWriteCount = new ValueCounter("HttpJsonWriteCount");
+        /// <summary>
+        /// RabbitHttpWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter Rabbit2WriteCount = new ValueCounter("Rabbit2WriteCount");
+        /// <summary>
+        /// ElasticsearchWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter EsWriteCount = new ValueCounter("ElasticsearchWriterCount");
 
-        public static readonly ValueCounter RabbitCount = new ValueCounter("RabbitCount");
-        public static readonly ValueCounter EsCount = new ValueCounter("EsCount");
+        /// <summary>
+        /// RabbitWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter RabbitWriteCount = new ValueCounter("RabbitWriteCount");
+        /// <summary>
+        /// KafkaWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter KafkaWriteCount = new ValueCounter("KafkaWriteCount");
     }
 
-    public static class RealtimeStatus
-    {
-        public static readonly ValueCounter HttpCallCount = new ValueCounter("HttpCallCount");
-        public static readonly ValueCounter SqlConnCount = new ValueCounter("SqlConnCount");
-    }
 
 }

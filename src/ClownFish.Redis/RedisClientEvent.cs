@@ -1,7 +1,10 @@
 ﻿using Castle.DynamicProxy;
 
-namespace ClownFish.Tracing;
+namespace ClownFish.NRedis;
 
+/// <summary>
+/// 
+/// </summary>
 public static class RedisClientEvent
 {
     //private static readonly DiagnosticListener s_diagnosticSource = new DiagnosticListener("ClownFish.RedisClientEvent");

@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-
+﻿#if NETCOREAPP
 using System.Threading.Channels;
 
 namespace ClownFish.MQ.MMQ;

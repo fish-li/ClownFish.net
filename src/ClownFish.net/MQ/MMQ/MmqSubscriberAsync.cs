@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.MQ.MMQ;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 internal class MmqSubscriberAsync<T> where T : class
 {

@@ -4,13 +4,14 @@
         <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.911.100</Version>
-        <FileVersion>7.23.911.100</FileVersion>
-        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Version>7.23.912.100</Version>
+        <FileVersion>7.23.912.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
+        <LangVersion>11.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -22,23 +23,13 @@
         <Description>一个“小而美”的.NET工具类库</Description>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' ">
-        <LangVersion>11.0</LangVersion>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
-    </PropertyGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
     </ItemGroup>
 
 </Project>

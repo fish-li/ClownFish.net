@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.MQ.Pipeline;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 /// <summary>
 /// 支持异步操作的消息管道

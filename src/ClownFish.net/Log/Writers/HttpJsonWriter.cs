@@ -49,7 +49,7 @@ internal class HttpJsonWriter : ILogWriter
                 SendBatch<T>(jsonlPart, url);
             }
 
-            ClownFishCounters.Logging.HttpJsonWriterCount.Add(list.Count);
+            ClownFishCounters.Logging.HttpJsonWriteCount.Add(list.Count);
         }
         catch( Exception ex ) {
             Console2.Warnning(ex.ToString2());

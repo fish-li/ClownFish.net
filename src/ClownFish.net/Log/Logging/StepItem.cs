@@ -82,7 +82,9 @@ public sealed class StepItem
     /// 一个执行步骤，例如：SqlCommand, HttpOption 之类的对象。
     /// 它将在整个操作结束时被序列化到 Text 属性上。
     /// </summary>
-    internal object Cmdx { get; set; }
+    [XmlIgnore]
+    [JsonIgnore]
+    public object Cmdx { get; set; }
 
     /// <summary>
     /// SQL事务隔离级别

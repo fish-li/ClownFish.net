@@ -14,4 +14,20 @@ public sealed class RabbitHttpException : Exception
     {
     }
 
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public override string Message {
+        get {
+            RemoteWebException ex2 = this.InnerException as RemoteWebException;
+            if( ex2 == null )
+                return base.Message;
+
+            if( ex2.ResponseText.IsNullOrEmpty() )
+                return base.Message;
+
+            return base.Message + ", " + ex2.ResponseText;
+        }
+    }
 }

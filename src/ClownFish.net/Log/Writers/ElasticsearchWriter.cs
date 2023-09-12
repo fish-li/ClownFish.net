@@ -60,7 +60,7 @@ internal sealed class ElasticsearchWriter : ILogWriter
         if( _client == null )
             return;
 
-        ClownFishCounters.Logging.EsCount.Add(list.Count);
+        ClownFishCounters.Logging.EsWriteCount.Add(list.Count);
 
         _client.WriteList(list);
     }

@@ -38,10 +38,10 @@ global using ClownFish.Log.Attributes;
 global using ClownFish.Log.Configuration;
 global using ClownFish.Log.Logging;
 global using ClownFish.Log.Models;
-
 global using Newtonsoft.Json;
 
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
+global using ClownFish.MQ.Messages;
 global using ClownFish.MQ.Pipeline;
 #endif

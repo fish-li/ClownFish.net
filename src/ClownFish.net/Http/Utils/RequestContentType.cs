@@ -41,7 +41,7 @@ public static class RequestContentType
     /// </summary>
     /// <param name="contentType"></param>
     /// <returns></returns>
-    internal static SerializeFormat GetFormat(string contentType)
+    public static SerializeFormat GetFormat(string contentType)
     {
         if( string.IsNullOrEmpty(contentType) )
             return SerializeFormat.None;

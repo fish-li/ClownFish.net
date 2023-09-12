@@ -4,34 +4,25 @@
         <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.911.100</Version>
-        <FileVersion>7.23.911.100</FileVersion>
-        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+        <Version>7.23.912.100</Version>
+        <FileVersion>7.23.912.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)'=='net48' or '$(TargetFramework)'=='netcoreapp3.1' ">
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
         <LangVersion>11.0</LangVersion>
     </PropertyGroup>
 
-    <PropertyGroup>
+    <PropertyGroup>        
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageId>ClownFish.net</PackageId>
         <Authors>Fish Li</Authors>
         <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
         <Description>一个“小而美”的.NET工具类库</Description>
+        
     </PropertyGroup>
-
-    <PropertyGroup>
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
-    </PropertyGroup>
-
     
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <Reference Include="System.IO.Compression" />

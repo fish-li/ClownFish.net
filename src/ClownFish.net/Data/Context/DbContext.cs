@@ -258,7 +258,7 @@ public sealed class DbContext : IDisposable
         }
 
         if( _isOpened ) {
-            ClownFish.Base.ClownFishCounters.RealtimeStatus.SqlConnCount.Decrement();
+            ClownFish.Base.ClownFishCounters.Concurrents.SqlConnCount.Decrement();
             _isOpened = false;
         }
     }
@@ -277,7 +277,7 @@ public sealed class DbContext : IDisposable
             this.Connection.Open();
 
             _isOpened = true;
-            ClownFish.Base.ClownFishCounters.RealtimeStatus.SqlConnCount.Increment();
+            ClownFish.Base.ClownFishCounters.Concurrents.SqlConnCount.Increment();
 
             DbContextEvent.ConnectionOpened(this, now, false, null);
         }
@@ -303,7 +303,7 @@ public sealed class DbContext : IDisposable
             await this.Connection.OpenAsync();
 
             _isOpened = true;
-            ClownFish.Base.ClownFishCounters.RealtimeStatus.SqlConnCount.Increment();
+            ClownFish.Base.ClownFishCounters.Concurrents.SqlConnCount.Increment();
 
             DbContextEvent.ConnectionOpened(this, now, true, null);
         }

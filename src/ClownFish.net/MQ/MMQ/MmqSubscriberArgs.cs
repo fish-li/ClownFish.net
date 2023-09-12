@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.MQ.MMQ;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 /// <summary>
 /// 订阅者参数

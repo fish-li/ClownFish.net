@@ -34,7 +34,11 @@ public sealed class NHttpApplication
         }
     }
 
-    internal List<NHttpModule> GetModules() => _modules.ToList(); // 克隆一份副本
+    /// <summary>
+    /// 获取当前加载的所有module清单，克隆一份副本。
+    /// </summary>
+    /// <returns></returns>
+    public List<NHttpModule> GetModules() => _modules.ToList();
 
     /// <summary>
     /// 启动HTTP处理管道

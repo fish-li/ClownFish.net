@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Tracing;
+﻿namespace ClownFish.NRedis;
 
 /// <summary>
 /// Redis客户端执行时的事件参数

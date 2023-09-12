@@ -58,8 +58,12 @@ public static class TextUtils
         }
     }
 
-
-    internal static string GetErrorLogText(this Exception ex)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ex"></param>
+    /// <returns></returns>
+    public static string GetErrorLogText(this Exception ex)
     {
         if( ex == null )
             return string.Empty;

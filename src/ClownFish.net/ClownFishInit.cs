@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Runtime.InteropServices;
 
 namespace ClownFish.Base;
 
@@ -11,7 +10,10 @@ public static class ClownFishInit
     private static bool s_baseInited = false;
     private static bool s_dalInited = false;
 
-    internal static CancellationToken AppExitToken = CancellationToken.None;
+    /// <summary>
+    /// 
+    /// </summary>
+    public static CancellationToken AppExitToken { get; internal set; } = CancellationToken.None;
 
 
     /// <summary>

@@ -64,8 +64,12 @@ public static class EnvUtils
     internal static readonly string HostName;
     internal static readonly string TempPath;
 
-    internal static string ApplicationName;
-    internal static string ClusterName;    
+    internal static string ApplicationName { get; private set; }
+
+    /// <summary>
+    /// 当前进程所在的(集群)部署环境名称。
+    /// </summary>
+    public static string ClusterName { get; private set; }
 
 
     // EnvName, ClusterName 的说明

@@ -77,7 +77,7 @@ public sealed class RabbitHttpClient : IDisposable
             auto_delete = autoDelete,
             arguments = (arguments ?? s_emptyArguments)
         };
-        httpOption.GetResult();
+        httpOption.Send();
     }
 
     private void QueueBind(string queue, string exchange, string routingKey)
@@ -91,7 +91,7 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Data = new {
             routing_key = routingKey
         };
-        httpOption.GetResult();
+        httpOption.Send();
     }
 
 
@@ -155,7 +155,7 @@ public sealed class RabbitHttpClient : IDisposable
         HttpOption httpOption = GetPublishHttpOption(data, exchange, routing, basicProperties);
 
         try {
-            httpOption.GetResult();
+            httpOption.Send();
         }
         catch( Exception ex ) {
             throw new RabbitHttpException("执行 SendMessage 失败。", ex);
@@ -177,7 +177,7 @@ public sealed class RabbitHttpClient : IDisposable
         HttpOption httpOption = GetPublishHttpOption(data, exchange, routing, basicProperties);
 
         try {
-            await httpOption.GetResultAsync();
+            await httpOption.SendAsync();
         }
         catch( Exception ex ) {
             throw new RabbitHttpException("执行 SendMessageAsync 失败。", ex);

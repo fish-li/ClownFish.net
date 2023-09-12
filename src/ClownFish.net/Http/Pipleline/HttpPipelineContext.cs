@@ -73,7 +73,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     /// 获取一个与当前线程关联的HttpPipelineContext对象，如果没有关联的实例则抛出异常
     /// </summary>
     /// <returns></returns>
-    internal static HttpPipelineContext Get2()
+    public static HttpPipelineContext Get2()
     {
         HttpPipelineContext pipelineContext = HttpPipelineContext.Get();
         if( pipelineContext == null )
@@ -117,7 +117,12 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     }
 
     
-    internal void SetAction(ActionDescription action, bool isLoginAction = false)
+    /// <summary>
+    /// 设置MVC调用参数
+    /// </summary>
+    /// <param name="action"></param>
+    /// <param name="isLoginAction"></param>
+    public void SetAction(ActionDescription action, bool isLoginAction = false)
     {
         if( action == null )
             throw new ArgumentNullException(nameof(action));

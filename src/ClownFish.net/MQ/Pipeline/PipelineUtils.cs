@@ -1,14 +1,28 @@
 ﻿namespace ClownFish.MQ.Pipeline;
-#if NET6_0_OR_GREATER
-internal static class PipelineUtils
+#if NETCOREAPP
+
+/// <summary>
+/// 消息管道工具类
+/// </summary>
+public static class PipelineUtils
 {
-    internal static void EnsureIsRootCode()
+    /// <summary>
+    /// 确认当前代码是一个顶层的代码主体
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static void EnsureIsRootCode()
     {
         if( OprLogScope.Get().IsNull == false )
             throw new InvalidOperationException("消息订阅只能在程序初始化时启用！");
     }
 
-    internal static void SafeCall<T>(Action<PipelineContext<T>> action, PipelineContext<T> context) where T: class
+    /// <summary>
+    /// 安全的执行某个委托方法，如果出现异常会自动处理
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="action"></param>
+    /// <param name="context"></param>
+    public static void SafeCall<T>(Action<PipelineContext<T>> action, PipelineContext<T> context) where T: class
     {
         try {
             action(context);
@@ -19,7 +33,14 @@ internal static class PipelineUtils
     }
 
 
-    internal static async Task SafeCallAsync<T>(Func<PipelineContext<T>, Task> action, PipelineContext<T> context) where T : class
+    /// <summary>
+    /// 安全的执行某个委托方法，如果出现异常会自动处理
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="action"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public static async Task SafeCallAsync<T>(Func<PipelineContext<T>, Task> action, PipelineContext<T> context) where T : class
     {
         try {
             await action(context);
@@ -30,8 +51,12 @@ internal static class PipelineUtils
     }
 
 
-
-    internal static bool ExceptionIsNeedRetry(Exception lastException)
+    /// <summary>
+    /// 判断某个异常是否需要重试
+    /// </summary>
+    /// <param name="lastException"></param>
+    /// <returns></returns>
+    public static bool ExceptionIsNeedRetry(Exception lastException)
     {
         if( lastException == null )
             return false;

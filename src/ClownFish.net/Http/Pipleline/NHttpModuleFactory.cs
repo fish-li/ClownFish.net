@@ -37,7 +37,12 @@ public static class NHttpModuleFactory
     }
 
 
-    internal static bool ModuleIsEnable(Type moduleType)
+    /// <summary>
+    /// 判断某个module类型是否允许启用
+    /// </summary>
+    /// <param name="moduleType"></param>
+    /// <returns></returns>
+    public static bool ModuleIsEnable(Type moduleType)
     {
         string configName = moduleType.FullName.Replace('.', '_') + "_Enable";
         return LocalSettings.GetBool(configName, 1);

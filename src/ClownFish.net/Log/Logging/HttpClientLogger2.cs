@@ -6,9 +6,15 @@ namespace ClownFish.Log.Logging;
 
 // 参考： System.Net.Http.DiagnosticsHandler.SendAsyncCore
 
-internal static class HttpClientLogger2
+/// <summary>
+/// 
+/// </summary>
+public static class HttpClientLogger2
 {
-    internal static void Init()
+    /// <summary>
+    /// 
+    /// </summary>
+    public static void Init()
     {
         int mode = LocalSettings.GetInt("ClownFish_HttpClient_MonitoringMode", 1);
         if( mode == 1 )

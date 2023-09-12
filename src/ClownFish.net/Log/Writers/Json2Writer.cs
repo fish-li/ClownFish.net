@@ -7,7 +7,7 @@ internal sealed class Json2Writer : FileWriter
 {
     protected override string FileExtName => ".json2.log";
 
-    protected override ValueCounter WriteCounter => ClownFishCounters.Logging.Json2WriterCount;
+    protected override ValueCounter WriteCounter => ClownFishCounters.Logging.Json2WriteCount;
 
     /// <summary>
     /// 将对象转成要保存的文本

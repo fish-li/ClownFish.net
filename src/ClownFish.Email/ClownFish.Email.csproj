@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <RootNamespace>ClownFish.Email</RootNamespace>
+        <AssemblyVersion>7.0.0.0</AssemblyVersion>
+        <Version>7.23.912.100</Version>
+        <FileVersion>7.23.912.100</FileVersion>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <OutputPath>bin</OutputPath>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <DocumentationFile>bin\ClownFish.Email.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>ClownFish.Email</PackageId>
+        <Authors>Fish Li</Authors>
+        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+        <Description>基于ClownFish.net的Email简单封装工具类库</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MailKit" Version="3.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+</Project>

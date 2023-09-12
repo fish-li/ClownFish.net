@@ -137,7 +137,7 @@ public class LogHelperTest
     [TestMethod]
     public void Test_AsyncWrite_Exception()
     {
-        long count1 = ClownFishCounters.Logging.XmlWriterCount.Get();
+        long count1 = ClownFishCounters.Logging.XmlWriteCount.Get();
         long count = ClownFishCounters.Logging.QueueFlushCount.Get();
 
         LogHelper.Write((Exception)null);
@@ -147,7 +147,7 @@ public class LogHelperTest
         while( count == ClownFishCounters.Logging.QueueFlushCount.Get() )
             Thread.Sleep(50);
 
-        long count2 = ClownFishCounters.Logging.XmlWriterCount.Get();
+        long count2 = ClownFishCounters.Logging.XmlWriteCount.Get();
         Assert.AreEqual(2, count2 - count1);
     }
 

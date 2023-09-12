@@ -141,7 +141,7 @@ public static partial class HttpContextExtensions
     /// <param name="httpContext"></param>
     /// <param name="ex"></param>
     /// <returns></returns>
-    internal static async Task Http500Async(this NHttpContext httpContext, Exception ex)
+    public static async Task Http500Async(this NHttpContext httpContext, Exception ex)
     {
         if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
