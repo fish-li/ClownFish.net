@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.Base;
 
 /// <summary>
-/// 环境类别
+/// 进程的运行模式类别
 /// </summary>
 public enum EvnKind
 {
@@ -54,12 +54,13 @@ public static class EnvUtils
     /// 当前环境是否为【生产】环境
     /// </summary>
     public static bool IsProdEnv => CurEvnKind == EvnKind.Prod;
-    
+
 
     /// <summary>
-    /// 进程运行环境标识名称
+    /// 进程运行环境标识名称。
+    /// 可以把它理解为：当前进程的运行模式：DEV/TEST/PROD
     /// </summary>
-    public static readonly string EnvName;
+    internal static readonly string EnvName;
 
     internal static readonly string HostName;
     internal static readonly string TempPath;
@@ -69,13 +70,13 @@ public static class EnvUtils
     /// <summary>
     /// 当前进程所在的(集群)部署环境名称。
     /// </summary>
-    public static string ClusterName { get; private set; }
+    internal static string ClusterName { get; private set; }
 
 
     // EnvName, ClusterName 的说明
     // EnvName 等同于/取值于  微软定义的 RUNTIME_ENVIRONMENT, ASPNETCORE_ENVIRONMENT
     // 用于控制进程的运行时行为，例如：if( app.Environment.IsDevelopment() ) xxxxxxxxxxx;
-    // 因此，变量 EvnKind 由 EnvName 来决定。
+    // 因此，变量 CurEvnKind 由 EnvName 来决定。
 
     // 而 ClusterName 是指 集群名称，它由多个进程构成的部署环境，它不用来控制程序的行为，仅仅只是一个名称。
     // PROD, TEST, DEV 这些看起来也称为环境名称，但是它们更像是“类别”，现在被用于控制运行时行为，无法标识“集群”这个概念。
@@ -85,7 +86,7 @@ public static class EnvUtils
 
     // 单独出来一个 ClusterName，它还有一个好处：便于统一日志中记录当前的部署环境，
     // 因为日志【通常】需要区分来源（集群名称），而不关心进程使用哪种 “运行模式” 
-    // 因此，GetEnvName() 这个方法会优先返回 “集群名称”
+    // 因此，OprLog.EnvName 会使用 “集群名称”
 
 
     static EnvUtils()
@@ -183,7 +184,6 @@ public static class EnvUtils
     /// <returns></returns>
     public static string GetTempPath() => EnvUtils.TempPath;
 
-
     /// <summary>
     /// 获取当前应用程序的名称
     /// </summary>
@@ -195,7 +195,14 @@ public static class EnvUtils
     /// 为了能让日志取值统一，所以这里使用【集群名称】
     /// </summary>
     /// <returns></returns>
-    public static string GetEnvName() => EnvUtils.ClusterName;
+    public static string GetClusterName() => EnvUtils.ClusterName;
+
+    /// <summary>
+    /// 获取 "微软定义的DOTNET环境变量" 的 “环境名称”。
+    /// 可以把它理解为：当前进程的运行模式：DEV/TEST/PROD
+    /// </summary>
+    /// <returns></returns>
+    public static string GetRuntimeEnvName() => EnvUtils.EnvName;
 
     /// <summary>
     /// 获取当前进程所在的机器名称

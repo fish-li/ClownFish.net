@@ -40,6 +40,11 @@ public static class LoggingOptions
     /// </summary>
     public static bool InvokeLogEnable { get; set; } = LocalSettings.GetBool("ClownFish_Log_InvokeLogEnable", 1);
 
+    /// <summary>
+    /// OprLog.AppKind 的默认值
+    /// </summary>
+    public static int AppKindDefaultValue = LocalSettings.GetInt("Default_Oprlog_AppKind", 0);
+
 
     /// <summary>
     /// 

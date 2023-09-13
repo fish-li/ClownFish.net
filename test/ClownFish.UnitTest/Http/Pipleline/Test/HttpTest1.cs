@@ -85,7 +85,6 @@ public class HttpTest1
         MockRequestData requestData = GetRequestData();
 
         using( MockHttpPipeline mock = new MockHttpPipeline(requestData) ) {
-            mock.HttpContext.TimeEvents = new List<NameTime>(30);
 
             NHttpModuleFactory.RegisterModule<TestModule1>();
 
@@ -244,7 +243,6 @@ public class HttpTest1
         long count2 = TestModule4.EndCounter.Get();
 
         using( MockHttpPipeline mock = new MockHttpPipeline(requestData) ) {
-            mock.HttpContext.TimeEvents = new List<NameTime>(30);
 
             NHttpModuleFactory.RegisterModule<TestModule4>();
 

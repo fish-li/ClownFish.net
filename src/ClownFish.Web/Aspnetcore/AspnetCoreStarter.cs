@@ -96,7 +96,7 @@ public static class AspnetCoreStarter
 
         Console2.WriteSeparatedLine();
         Console2.WriteLine("ApplicationName: " + EnvUtils.GetAppName());
-        Console2.WriteLine("EnvironmentName: " + EnvUtils.EnvName + "/" + EnvUtils.ClusterName);        
+        Console2.WriteLine("EnvironmentName: " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
         Console2.WriteLine("ClownFishWebVer: " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
         Console2.WriteLine("Framework  Name: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
         Console2.WriteLine("Listening  Addr: " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "http://0.0.0.0:80");
@@ -139,6 +139,10 @@ public static class AspnetCoreStarter
         if( AuthenticationManager.Inited ) {
             NHttpModuleFactory.RegisterModule<AuthenticateModule>();
             NHttpModuleFactory.RegisterModule<AuthorizeModule>();
+        }
+
+        if( LocalSettings.GetBool("ClownFish_ExecHttpUiModule_Enable") ) {
+            NHttpModuleFactory.RegisterModule<ExecHttpUiModule>();
         }
 
         // 搜索当前应用中的Http模块并注册

@@ -28,7 +28,8 @@ public partial class OprLog
         this.Status = 200;
         this.AppName = EnvUtils.GetAppName();
         this.HostName = EnvUtils.GetHostName();
-        this.EnvName = EnvUtils.GetEnvName();
+        this.EnvName = EnvUtils.GetClusterName();
+        this.AppKind = LoggingOptions.AppKindDefaultValue;
     }
 
     internal void CalcTime(long performanceThresholdMs, DateTime endTime)

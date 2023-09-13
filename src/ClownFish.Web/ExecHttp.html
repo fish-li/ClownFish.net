@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>执行HTTP调用</title>
+
+<style type="text/css">
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Consolas, Verdana, "微软雅黑, PingFang SC,Microsoft Yahei,simsun,Helvetica,sans-serif";
+    font-size: 13px;
+    color: #111111;
+}
+
+body {
+    margin: 0;
+    padding: 10px;
+}
+</style>
+</head>
+<body>
+
+<form style="width: 100%;" action="/clownfish/ui/exechttp/page" method="post" enctype="application/x-www-form-urlencoded">
+<table style="width: 100%;">
+    <tr><td style="width: 80px;">执行密钥</td><td><input name="accesskey" type="text" style="width: 98%; height: 22px;" value='111' /></td></tr>
+    <tr><td>HTTP脚本</td><td><textarea name="httpcode" style="width: 98%; height: 260px;" >value222</textarea></td></tr>
+    <tr><td></td><td><input type="submit" name="submit" value="执行HTTP调用" style="width: 150px;" /></td></tr>
+</table>
+</form>
+
+<table style="width: 100%;">
+    <tr><td style="width: 80px; height: 16px;"></td><td></td></tr>
+    <tr><td style="width: 80px;">响应结果</td><td><textarea id="responseOutput" style="width: 98%; min-height: 350px;" readonly="readonly" >value333</textarea></td></tr>
+</table>
+
+</body>
+</html>

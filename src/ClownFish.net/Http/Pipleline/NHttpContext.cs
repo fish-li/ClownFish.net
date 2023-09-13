@@ -69,11 +69,6 @@ public abstract class NHttpContext
         }
     }
 
-    /// <summary>
-    /// 记录一些时间序列，描述在什么时候开始执行什么操作，用于性能监控。
-    /// 此属性需要在要请求入口时赋值，如果属性为NULL表示不启用。
-    /// </summary>
-    public List<NameTime> TimeEvents { get; set; } // = new List<NameTime>(20);
 
     /// <summary>
     /// Action代码的开始执行时间
@@ -125,6 +120,18 @@ public abstract class NHttpContext
             }
 
             _disposableObjects = null;
+        }
+    }
+
+
+    /// <summary>
+    /// 框架内部使用方法
+    /// </summary>
+    /// <param name="x"></param>
+    public virtual void LogFxEvent(NameTime x)
+    {
+        if( this.PipelineContext.OprLogScope.IsNull == false ) {
+            this.PipelineContext.OprLogScope.AddFxEvent(x);
         }
     }
 

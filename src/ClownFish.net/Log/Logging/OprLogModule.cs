@@ -58,7 +58,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
             httpContext.PipelineContext.SetAsLongTask();
         }
 
-        httpContext.TimeEvents?.Add(new NameTime("OprLogModule.EndRequest begin"));
+        httpContext.LogFxEvent(new NameTime("OprLogModule.EndRequest begin"));
 
 
         OprLogScope scope = httpContext.PipelineContext.OprLogScope;
@@ -84,7 +84,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
             scope.SaveOprLog(httpContext.PipelineContext);
         }
 
-        httpContext.TimeEvents?.Add(new NameTime("OprLogModule.EndRequest end"));
+        httpContext.LogFxEvent(new NameTime("OprLogModule.EndRequest end"));
     }
 
 

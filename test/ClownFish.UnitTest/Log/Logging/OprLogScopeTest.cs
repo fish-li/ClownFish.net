@@ -14,7 +14,6 @@ public class OprLogScopeTest
         };
 
         using( MockHttpPipeline mock = new MockHttpPipeline(requestData) ) {
-            mock.HttpContext.TimeEvents = new List<NameTime>(30);
             NHttpModuleFactory.RegisterModule<OprLogModule>();
 
             TestHandler1 handler1 = new TestHandler1();

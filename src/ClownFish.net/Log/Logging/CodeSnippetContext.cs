@@ -32,7 +32,6 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
         OprLog log = scope.OprLog;
         log.RootId = this.ProcessId;
         log.OprKind = "task";
-        log.AppKind = 1;
 
         log.Module = executorType.Namespace;
         log.Controller = executorType.Name;

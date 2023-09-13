@@ -117,7 +117,6 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
     }
 
     private static readonly OprLogModule s_oprLogModule = new OprLogModule();
-    private static readonly int s_defaultAppKind = LocalSettings.GetInt("Default_Oprlog_AppKind", 1);
 
     private void BeginRequest(object eventData)
     {
@@ -136,8 +135,6 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
         }
 
         s_oprLogModule.BeginRequest(httpContextNetCore);
-
-        pipelineContext.OprLogScope.OprLog.AppKind = s_defaultAppKind;
     }
 
     

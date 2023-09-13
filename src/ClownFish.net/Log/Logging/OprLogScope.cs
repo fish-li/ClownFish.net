@@ -33,6 +33,15 @@ public sealed class OprLogScope : IDisposable
     public bool IsNull { get; private set; }
 
 
+    private List<NameTime> _events;
+    /// <summary>
+    /// 记录一些时间序列，描述在什么时候开始执行什么操作，用于性能监控。
+    /// 此属性需要在要请求入口时赋值，如果属性为NULL表示不启用。
+    /// </summary>
+    public List<NameTime> GetEvents() => _events;
+       
+
+
     /// <summary>
     /// 一个不与任何线程关联的 “空对象”。
     /// 空对象不会做日志持久化。
@@ -183,6 +192,49 @@ public sealed class OprLogScope : IDisposable
             }
         }
     }
+
+
+    /// <summary>
+    /// 启用 “框架级别的事件日志”
+    /// </summary>
+    /// <returns></returns>
+    public int EnableFxEvent()
+    {
+        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+            return -2;
+
+        lock( _lockObject ) {
+            if( _events == null )
+                _events = new List<NameTime>(32);
+        }
+
+        return 1;
+    }
+
+    /// <summary>
+    /// 添加一条 框架级别的事件日志
+    /// </summary>
+    /// <param name="x"></param>
+    public int AddFxEvent(NameTime x)
+    {
+        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+            return -2;
+
+        if( _events == null )
+            return 0;
+
+        lock( _lockObject ) {
+            
+            if( _events.Count < LoggingLimit.OprLog.FxEventsMaxCount ) {
+                _events.Add(x);
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+    }
+
 
     /// <summary>
     /// 填充异常信息

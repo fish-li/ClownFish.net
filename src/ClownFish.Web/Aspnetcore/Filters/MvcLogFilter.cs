@@ -60,10 +60,10 @@ public sealed class MvcLogFilter : IAsyncActionFilter
         }
 
         httpContext.BeginExecuteTime = DateTime.Now;
-        httpContext.TimeEvents?.Add(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
+        httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
         await next();
         httpContext.EndExecuteTime = DateTime.Now;
-        httpContext.TimeEvents?.Add(new NameTime("UserCode end", httpContext.EndExecuteTime));
+        httpContext.LogFxEvent(new NameTime("UserCode end", httpContext.EndExecuteTime));
 
         pipelineContext.ActionResult = context.Result;
 

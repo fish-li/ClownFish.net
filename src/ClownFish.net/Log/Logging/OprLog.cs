@@ -263,8 +263,9 @@ public partial class OprLog : IMsgObject
     /// 机器名称
     /// </summary>
     public string HostName { get; set; }
+
     /// <summary>
-    /// 环境名称
+    /// 部署/集群 环境名称
     /// </summary>
     public string EnvName { get; set; }
 

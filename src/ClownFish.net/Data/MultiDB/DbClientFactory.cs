@@ -26,8 +26,8 @@ public static class DbClientFactory
     /// <summary>
     /// 注册数据客户端提供者实例
     /// </summary>
-    /// <param name="providerName"></param>
-    /// <param name="provider"></param>
+    /// <param name="providerName">客户端提供者名称</param>
+    /// <param name="provider">提供者实例</param>
     public static void RegisterProvider(string providerName, BaseClientProvider provider)
     {
         if( providerName.IsNullOrEmpty() )

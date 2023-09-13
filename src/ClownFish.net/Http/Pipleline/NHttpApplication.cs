@@ -131,7 +131,7 @@ public sealed class NHttpApplication
         ClownFishCounters.Concurrents.HttpConcurrent.Increment();
         ClownFishCounters.ExecuteTimes.HttpCount.Increment();
 
-        httpContext.TimeEvents?.Add(new NameTime(nameof(BeginRequest)));
+        httpContext.LogFxEvent(new NameTime(nameof(BeginRequest)));
 
         foreach( NHttpModule module in _modules ) {
             module.BeginRequest(httpContext);
@@ -149,12 +149,12 @@ public sealed class NHttpApplication
         if( handler != null ) {
 
             httpContext.BeginExecuteTime = DateTime.Now;
-            httpContext.TimeEvents?.Add(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
+            httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
 
             await handler.ProcessRequestAsync(httpContext);
 
             httpContext.EndExecuteTime = DateTime.Now;
-            httpContext.TimeEvents?.Add(new NameTime("UserCode end", httpContext.EndExecuteTime));
+            httpContext.LogFxEvent(new NameTime("UserCode end", httpContext.EndExecuteTime));
             //httpContext.Response.End();
             return true;
         }
@@ -171,7 +171,7 @@ public sealed class NHttpApplication
         if( httpContext.SkipAuthorization )
             return;
 
-        httpContext.TimeEvents?.Add(new NameTime(nameof(AuthenticateRequest)));
+        httpContext.LogFxEvent(new NameTime(nameof(AuthenticateRequest)));
 
         foreach( NHttpModule module in _modules ) {
             module.AuthenticateRequest(httpContext);
@@ -187,7 +187,7 @@ public sealed class NHttpApplication
         if( httpContext.SkipAuthorization )
             return;
 
-        httpContext.TimeEvents?.Add(new NameTime(nameof(PostAuthenticateRequest)));
+        httpContext.LogFxEvent(new NameTime(nameof(PostAuthenticateRequest)));
 
         foreach( NHttpModule module in _modules ) {
             module.PostAuthenticateRequest(httpContext);
@@ -203,7 +203,7 @@ public sealed class NHttpApplication
         if( httpContext.SkipAuthorization )
             return;
 
-        httpContext.TimeEvents?.Add(new NameTime(nameof(AuthorizeRequest)));
+        httpContext.LogFxEvent(new NameTime(nameof(AuthorizeRequest)));
 
         foreach( NHttpModule module in _modules ) {
             module.AuthorizeRequest(httpContext);
@@ -217,7 +217,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void ResolveRequestCache(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime(nameof(ResolveRequestCache)));
+        httpContext.LogFxEvent(new NameTime(nameof(ResolveRequestCache)));
 
         foreach( NHttpModule module in _modules ) {
             module.ResolveRequestCache(httpContext);
@@ -233,7 +233,7 @@ public sealed class NHttpApplication
         if( httpContext.PipelineContext.Action != null )
             return;
 
-        httpContext.TimeEvents?.Add(new NameTime(nameof(PreFindAction)));
+        httpContext.LogFxEvent(new NameTime(nameof(PreFindAction)));
 
         foreach( NHttpModule module in _modules ) {
             module.PreFindAction(httpContext);
@@ -246,7 +246,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void PostFindAction(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime(nameof(PostFindAction)));
+        httpContext.LogFxEvent(new NameTime(nameof(PostFindAction)));
 
         foreach( NHttpModule module in _modules ) {
             module.PostFindAction(httpContext);
@@ -259,7 +259,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void PreRequestExecute(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime(nameof(PreRequestExecute)));
+        httpContext.LogFxEvent(new NameTime(nameof(PreRequestExecute)));
 
         foreach( NHttpModule module in _modules ) {
             module.PreRequestExecute(httpContext);
@@ -272,7 +272,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void PostRequestExecute(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime(nameof(PostRequestExecute)));
+        httpContext.LogFxEvent(new NameTime(nameof(PostRequestExecute)));
 
         foreach( NHttpModule module in _modules ) {
             module.PostRequestExecute(httpContext);
@@ -285,7 +285,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void UpdateRequestCache(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime(nameof(UpdateRequestCache)));
+        httpContext.LogFxEvent(new NameTime(nameof(UpdateRequestCache)));
 
         foreach( NHttpModule module in _modules ) {
             module.UpdateRequestCache(httpContext);
@@ -298,7 +298,7 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void EndRequest(NHttpContext httpContext)
     {
-        httpContext.TimeEvents?.Add(new NameTime("EndRequest"));
+        httpContext.LogFxEvent(new NameTime("EndRequest"));
 
         httpContext.PipelineContext.End();
 
@@ -328,7 +328,7 @@ public sealed class NHttpApplication
         if( httpContext.IsTransfer == false && StatusCodeUtils.IsServerError(httpContext.Response.StatusCode) )
             ClownFishCounters.ExecuteTimes.HttpError.Increment();
 
-        httpContext.TimeEvents?.Add(new NameTime("framework end"));
+        httpContext.LogFxEvent(new NameTime("framework end"));
     }
 
     /// <summary>

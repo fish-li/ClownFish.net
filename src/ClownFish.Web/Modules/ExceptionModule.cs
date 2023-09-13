@@ -30,7 +30,7 @@ public sealed class ExceptionModule : NHttpModule
             return;
         }
 
-        httpContext.TimeEvents?.Add(new NameTime("ExceptionModule.OnError begin"));
+        httpContext.LogFxEvent(new NameTime("ExceptionModule.OnError begin"));
 
         if( ex is HttpException ex2 ) {
             httpContext.Response.StatusCode = ex.GetErrorCode();
@@ -48,7 +48,7 @@ public sealed class ExceptionModule : NHttpModule
 
         httpContext.PipelineContext.ClearErrors();
 
-        httpContext.TimeEvents?.Add(new NameTime("ExceptionModule.OnError begin"));
+        httpContext.LogFxEvent(new NameTime("ExceptionModule.OnError begin"));
     }
 
 

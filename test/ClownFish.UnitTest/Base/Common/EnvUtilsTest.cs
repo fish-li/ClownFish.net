@@ -19,7 +19,7 @@ public class EnvUtilsTest
         Assert.AreEqual("ClownFish.UnitTest", EnvUtils.GetAppName());
         Assert.AreEqual("FishDev", EnvUtils.EnvName);
         Assert.AreEqual("ClownFish.TEST", EnvUtils.ClusterName);
-        Assert.AreEqual("ClownFish.TEST", EnvUtils.GetEnvName());
+        Assert.AreEqual("ClownFish.TEST", EnvUtils.GetClusterName());
 
         // 下面2个结果没有写断言
         Console.WriteLine(EnvUtils.GetHostName());
