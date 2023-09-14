@@ -34,6 +34,10 @@ public static class EnvUtils
     /// </summary>
     public static readonly DateTime AppStartTime = DateTime.Now;
 
+    /// <summary>
+    /// 判断当前进程是不是运行在 docker 容器中
+    /// </summary>
+    public static readonly bool IsInDocker = EnvironmentVariables.Get("DOTNET_RUNNING_IN_CONTAINER").TryToBool();
 
     /// <summary>
     /// 当前环境类别
@@ -94,7 +98,7 @@ public static class EnvUtils
         EnvName = GetEvnName();
         CurEvnKind = GetEvnKind(EnvName);
         HostName = GetMachineName();
-        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? Path.Combine(AppContext.BaseDirectory, "temp");   // Path.GetTempPath();
+        TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? EvalAppTempPath();
 
         ReLoad();
     }
@@ -131,6 +135,15 @@ public static class EnvUtils
         return EvnKind.Dev;
     }
 
+
+    private static string EvalAppTempPath()
+    {
+        if( IsInDocker )
+            // linux 内置的临时目录 /tmp, /var/tmp 有自动清理机制，所以不使用它们
+            return "/temp";
+        else
+            return Path.Combine(Path.GetTempPath(), "ClownFishApp", Path.GetFileNameWithoutExtension(AsmHelper.GetEntryAssembly().Location));
+    }
 
     private static string GetMachineName()
     {

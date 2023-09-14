@@ -35,11 +35,19 @@ internal class TracingHostingStartup : IHostingStartup
     private static void ShowStartInfo()
     {
         Console2.WriteLine("==================================================================");
-        Console2.WriteLine("ApplicationName: ".PadRight(28) + EnvUtils.GetAppName());
-        Console2.WriteLine("HostName: ".PadRight(28) + EnvUtils.GetHostName());
-        Console2.WriteLine("EnvName: ".PadRight(28) + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
-        Console2.WriteLine("Version: ".PadRight(28) + FileVersionInfo.GetVersionInfo(typeof(TracingInitializer).Assembly.Location).FileVersion);
-        Console2.WriteLine("##### ClownFish.Tracing 初始化成功!");
+        Console2.WriteLine("ApplicationName : " + EnvUtils.GetAppName());
+        Console2.WriteLine("AppRuntimeId    : " + EnvUtils.AppRuntimeId);
+        Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTimeString());
+        Console2.WriteLine("EntryAssembly   : " + Assembly.GetEntryAssembly().Location);
+        Console2.WriteLine("EnvironmentName : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
+        Console2.WriteLine("ApplicationPath : " + AppContext.BaseDirectory);
+        Console2.WriteLine("CurrentDirectory: " + Environment.CurrentDirectory);
+        Console2.WriteLine("TempPath        : " + EnvUtils.GetTempPath());
+        Console2.WriteLine("HostName        : " + EnvUtils.GetHostName());
+        Console2.WriteLine("TimeZone        : " + MyTimeZone.CurrentTZ);
+        Console2.WriteLine("CurrentCulture  : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
+        Console2.WriteLine("Version         : " + FileVersionInfo.GetVersionInfo(typeof(TracingHostingStartup).Assembly.Location).FileVersion);
+        Console2.WriteLine("Framework  Name : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
         Console2.WriteLine("==================================================================");
     }
 }

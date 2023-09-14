@@ -26,8 +26,10 @@ public static class TracingInitializer
         ClownFishInit.InitBase();
 
         string writesMap = Settings.GetSetting("ClownFish_Log_WritersMap");
-        if( writesMap.IsNullOrEmpty() )
+        if( writesMap.IsNullOrEmpty() ) {
+            Console2.Info("ClownFish.Tracing force set: ClownFish_Log_WritersMap => OprLog=http");
             MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=http");
+        }
 
         ClownFishInit.InitLogAsDefault();
 

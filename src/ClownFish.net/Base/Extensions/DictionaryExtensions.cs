@@ -175,4 +175,62 @@ public static class DictionaryExtensions
         return (from x in dict select x.Key).ToArray();
     }
 
+
+    /// <summary>
+    /// 与 System.Linq.Enumerable.ToDictionary 方法的功能相同，差别在于可以指定返回值集合的初始容量，避免在填充过程中反复扩容。
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="capacity"></param>
+    /// <param name="keySelector"></param>
+    /// <param name="comparer"></param>
+    /// <returns></returns>
+    public static Dictionary<TKey, TSource> ToDictionary2<TSource, TKey>(this IEnumerable<TSource> source, int capacity, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer = null) where TKey : notnull
+    {
+        if( source == null ) {
+            throw new ArgumentNullException(nameof(source));
+        }
+        if( keySelector == null ) {
+            throw new ArgumentNullException(nameof(keySelector));
+        }
+
+        Dictionary<TKey, TSource> dictionary = new Dictionary<TKey, TSource>(capacity, comparer);
+        foreach( TSource item in source ) {
+            dictionary.AddValue(keySelector(item), item);
+        }
+        return dictionary;
+    }
+
+
+    /// <summary>
+    /// 与 System.Linq.Enumerable.ToDictionary 方法的功能相同，差别在于可以指定返回值集合的初始容量，避免在填充过程中反复扩容。
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TElement"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="capacity"></param>
+    /// <param name="keySelector"></param>
+    /// <param name="elementSelector"></param>
+    /// <param name="comparer"></param>
+    /// <returns></returns>
+    public static Dictionary<TKey, TElement> ToDictionary2<TSource, TKey, TElement>(this IEnumerable<TSource> source, int capacity, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer = null) where TKey : notnull
+    {
+        if( source == null ) {
+            throw new ArgumentNullException(nameof(source));
+        }
+        if( keySelector == null ) {
+            throw new ArgumentNullException(nameof(keySelector));
+        }
+        if( elementSelector == null ) {
+            throw new ArgumentNullException(nameof(elementSelector));
+        }
+
+        Dictionary<TKey, TElement> dictionary = new Dictionary<TKey, TElement>(capacity, comparer);
+        foreach( TSource item in source ) {
+            dictionary.AddValue(keySelector(item), elementSelector(item));
+        }
+        return dictionary;
+    }
 }

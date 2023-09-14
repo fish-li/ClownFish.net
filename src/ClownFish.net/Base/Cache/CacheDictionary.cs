@@ -174,6 +174,6 @@ public sealed class CacheDictionary<T> where T : class
     internal Dictionary<string, T> DumpData()
     {
         var dict = _cache.Clone();
-        return dict.ToDictionary(x => x.Key, x => x.Value.Get());
+        return dict.ToDictionary2(dict.Count, x => x.Key, x => x.Value.Get());
     }
 }

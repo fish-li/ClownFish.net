@@ -4,8 +4,8 @@
         <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.913.100</Version>
-        <FileVersion>7.23.913.100</FileVersion>
+        <Version>7.23.914.100</Version>
+        <FileVersion>7.23.914.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

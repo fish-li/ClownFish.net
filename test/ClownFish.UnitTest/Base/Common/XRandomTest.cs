@@ -38,7 +38,7 @@ xx-time5: {5天前}
         Console.WriteLine(result);
 
         List<NameValue> list = result.ToKVList(new char[] { '\r', '\n' }, ':');
-        Dictionary<string, string> dict = list.ToDictionary(k => k.Name, v => v.Value);
+        Dictionary<string, string> dict = list.ToDictionary2(list.Count, k => k.Name, v => v.Value);
 
         Assert.IsTrue(dict["x-null"] == "#{xx}#");
 

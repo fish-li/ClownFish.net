@@ -1,4 +1,5 @@
-﻿using ClownFish.WebHost.Config;
+﻿using ClownFish.Base;
+using ClownFish.WebHost.Config;
 using ClownFish.WebHost.Utils;
 
 namespace ClownFish.WebApi.Controllers;
@@ -24,7 +25,7 @@ internal class StaticFileHandlerFactory
         if( option.Website.StaticFiles.IsNullOrEmpty() == false )
             _staticFileExtNames = (from x in option.Website.StaticFiles
                                    select x.Ext
-                                ).ToDictionary(x => x, x => 1, StringComparer.OrdinalIgnoreCase);
+                                ).ToDictionary2(option.Website.StaticFiles.Length, x => x, x => 1, StringComparer.OrdinalIgnoreCase);
 
 
         _websitePath = option.Website.LocalPath; // ?? AppDomain.CurrentDomain.BaseDirectory;
