@@ -1,54 +1,43 @@
 ﻿namespace ClownFish.Base;
 
 /// <summary>
-/// 应用程序初始化工具类
+/// 应用程序始化工具类
 /// </summary>
-/// 
 public static class ApplicationInitializer
 {
     /// <summary>
-    /// 程序初始化 启动方法由<see cref="PreApplicationStartMethodAttribute"/>类配置并使用
+    /// 执行所有初始化方法。 
+    /// 初始化方法入口由 [PreApplicationStartMethod]/[Init]/AppInitializer.Init() 指定
     /// </summary>
-    /// <exception cref="InvalidProgramException">反射调用配置的启动方法，方法调用失败，且该方法的内部异常为空，抛出的反射调用失败异常</exception>
-    /// <exception cref="Exception">反射调用配置的启动方法，启动方法内部的异常</exception>
-    public static void Start()
+    public static void Execute()
     {
-        var assemblies = AsmHelper.GetLoadAssemblies(true);
-        foreach( Assembly asm in assemblies ) {
+        PreApplicationStartMethodAttribute.ExecuteAll();
 
-            PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();
+        InitAttribute.ExecuteAll();
 
-            foreach( PreApplicationStartMethodAttribute attr in attrs ) {
-                Invoke(attr, asm);
-            }
-        }
+        ExecuteAppInit();
     }
 
-    internal static void Invoke(PreApplicationStartMethodAttribute applicationStartMethodAttribute, Assembly asm)
+
+    private static void ExecuteAppInit()
     {
-        MethodInfo method = applicationStartMethodAttribute.Type.GetMethod(applicationStartMethodAttribute.MethodName,
-                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-                    null, Type.EmptyTypes, null);
+        List<Type> list = (from asm in AppPartUtils.GetApplicationPartAsmList()
+                           from x in asm.GetPublicTypes()
+                           where x.Name == "AppInitializer"
+                           select x).ToList();
 
-        if( method == null ) {
-            throw new InvalidProgramException(
-                string.Format("PreApplicationStartMethodAttribute指定的设置无效，不能找到匹配的方法。Type: {0}, MethodName: {1}",
-                                applicationStartMethodAttribute.Type.FullName,
-                                applicationStartMethodAttribute.MethodName
-                ));
-        }
+        foreach( Type type in list ) {
+            MethodInfo method = type.GetMethod("Init", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
 
-
-        try {
-            Console2.Info($"Execute {applicationStartMethodAttribute.Type.FullName}.{method.Name}()");
-            method.Invoke(null, null);
-        }
-        catch( TargetInvocationException ex ) {
-            if( ex.InnerException != null )
-
-                // 尽量将原始的错误信息暴露出来。
-                throw new InvalidProgramException("程序集初始化异常，当前程序集：" + asm.FullName, ex.InnerException);
-            throw;
+            if( method != null ) {
+                Console2.Info($"Execute {type.FullName}.Init()");
+                try {
+                    method.Invoke(null, null);
+                }
+                catch( TargetInvocationException ex ) {
+                    throw ex.InnerException;   // 将原始异常抛出来
+                }
+            }
         }
     }
 }

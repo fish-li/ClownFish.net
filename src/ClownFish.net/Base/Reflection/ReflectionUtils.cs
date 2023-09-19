@@ -21,5 +21,26 @@ public static class ReflectionUtils
 
         return (T)p.FastGetValue(data);
     }
+
+
+    /// <summary>
+    /// 用反射的方式查找一个类型，然后调用它的一个【静态无参方法】
+    /// </summary>
+    /// <param name="typeFullName"></param>
+    /// <param name="methodName"></param>
+    /// <returns></returns>
+    public static int CallStaticMethod(string typeFullName, string methodName)
+    {
+        Type type = Type.GetType(typeFullName, false, true);
+        if( type == null )
+            return -1;
+
+        MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        if( method == null )
+            return -2;
+
+        method.Invoke(null, null);
+        return 1;
+    }
 }
 

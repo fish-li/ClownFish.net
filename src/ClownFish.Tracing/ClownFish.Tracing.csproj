@@ -4,8 +4,8 @@
         <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Tracing</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.914.100</Version>
-        <FileVersion>7.23.914.100</FileVersion>
+        <Version>7.23.919.100</Version>
+        <FileVersion>7.23.919.100</FileVersion>
         <OutputType>Library</OutputType>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
@@ -26,11 +26,23 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpContextNetCore.cs" Link="link_files\HttpContextNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpRequestNetCore.cs" Link="link_files\HttpRequestNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpResponseNetCore.cs" Link="link_files\HttpResponseNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Utils\RequestBufferingUtils.cs" Link="link_files\RequestBufferingUtils.cs" />
+      <Compile Include="..\ClownFish.Web\Utils\TracingUtils.cs" Link="link_files\TracingUtils.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ClownFish.Web\ClownFish.Web.csproj" />
+        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="link_files\" />
     </ItemGroup>
 
 </Project>

@@ -21,38 +21,19 @@ internal sealed class ElasticsearchWriter : ILogWriter
 
     private bool InternalInit()
     {
-        EsConnOption opt = GetConnOption1() ?? GetConnOption2();
+        EsConnOption opt = EsConnOption.Create(ElasticsearchSettingName, false);
 
         if( opt == null ) {
             Console2.Info($"ElasticsearchWriter 不能初始化，因为没有找到 {ElasticsearchSettingName} 连接配置参数。");
             return false;
         }
 
+        opt.TimeoutMs = ElasticsearchWriter.RequestTimeoutMs;
+        opt.IndexNameTimeFormat = ElasticsearchWriter.IndexNameTimeFormat;
         _client = new SimpleEsClient(opt);
 
         Console2.Info(this.GetType().FullName + " Init OK.");
         return true;
-    }
-
-    private EsConnOption GetConnOption1()
-    {
-        return Settings.GetSetting<EsConnOption>(ElasticsearchSettingName, false);
-    }
-
-    private EsConnOption GetConnOption2()
-    {
-        DbConfig dbConfig = DbConnManager.GetAppDbConfig(ElasticsearchSettingName, false);
-
-        if( dbConfig == null )
-            return null;
-
-        return new EsConnOption {
-            Server = dbConfig.Server,
-            UserName = dbConfig.UserName,
-            Password = dbConfig.Password,
-            TimeoutMs = RequestTimeoutMs,
-            IndexNameTimeFormat = IndexNameTimeFormat,
-        };
     }
 
     public void Write<T>(List<T> list) where T : class, IMsgObject

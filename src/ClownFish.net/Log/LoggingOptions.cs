@@ -16,6 +16,25 @@ public static class LoggingOptions
     public static int WriteListBatchSize { get; set; } = LocalSettings.GetInt("ClownFish_Log_WriteListBatchSize", 300);
 
     /// <summary>
+    /// 是否启用“链路日志”
+    /// </summary>
+    public static bool TracingEnabled {
+        get {
+            // 有些程序对性能要求较高（例如转发操作），可以明确禁止
+            if( LoggingOptions.PerformanceEnable == false )
+                return false;
+
+
+            // 如果日志全部被关闭，性能监控也没必要开启了
+            bool enableLog = LoggingOptions.HttpActionEnableLog || LoggingOptions.MessageHandlerEnableLog || LoggingOptions.BackgroundTaskEnableLog;
+            if( enableLog == false )
+                return false;
+
+            return true;
+        }
+    }
+
+    /// <summary>
     /// 是否启用性能监控
     /// </summary>
     public static bool PerformanceEnable { get; set; } = LocalSettings.GetBool("ClownFish_Log_PerformanceEnable", 1);

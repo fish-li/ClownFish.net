@@ -1,7 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.AspNetCore.Http;
-
-namespace ClownFish.Web.Aspnetcore;
+﻿namespace ClownFish.Web.Aspnetcore;
 
 public class FirstModule
 {
@@ -103,12 +100,9 @@ public class FirstModule
 
     public virtual void SetRequestBuffering(NHttpContext httpContext)
     {
-        HttpContextUtils.SetRequestBuffering(httpContext);
+        httpContext.SetRequestBuffering();
     }
 
 
 
 }
-
-#endif
-

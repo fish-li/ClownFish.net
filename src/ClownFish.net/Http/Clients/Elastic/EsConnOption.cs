@@ -38,7 +38,41 @@ public sealed class EsConnOption
     /// </summary>
     public string IndexNameTimeFormat { get; set; } = "-yyyyMMdd";
 
-    internal string Url;
+    private string _url;
+    internal string Url {
+        get {
+            if( _url == null ) {
+                string scheme = this.IsHttps ? "https" : "http";
+                if( this.Port > 0 )
+                    _url = $"{scheme}://{this.Server}:{this.Port}";
+                else
+                    _url = $"{scheme}://{this.Server}";
+            }
+            return _url;
+        }
+    }
+
+    /// <summary>
+    /// Set TimeoutMs
+    /// </summary>
+    /// <param name="timeoutMs"></param>
+    /// <returns></returns>
+    public EsConnOption SetTimeoutMs(int timeoutMs)
+    {
+        this.TimeoutMs = timeoutMs;
+        return this;
+    }
+
+    /// <summary>
+    /// Set IndexNameTimeFormat
+    /// </summary>
+    /// <param name="indexNameTimeFormat"></param>
+    /// <returns></returns>
+    public EsConnOption SetIndexNameTimeFormat(string indexNameTimeFormat)
+    {
+        this.IndexNameTimeFormat = indexNameTimeFormat;
+        return this;
+    }
 
     /// <summary>
     /// <inheritdoc/>
@@ -63,29 +97,33 @@ public sealed class EsConnOption
 
         if( this.TimeoutMs <= 0 )
             this.TimeoutMs = 30_000;
-
-        string scheme = this.IsHttps ? "https" : "http";
-        if( this.Port > 0 )
-            this.Url = $"{scheme}://{this.Server}:{this.Port}";
-        else
-            this.Url = $"{scheme}://{this.Server}";
     }
 
     /// <summary>
     /// 根据连接名称创建EsConnOption实例
     /// </summary>
-    /// <param name="dbConnName"></param>
-    /// <param name="timeoutMs"></param>
+    /// <param name="connName"></param>
+    /// <param name="checkExist"></param>
     /// <returns></returns>
-    public static EsConnOption Create(string dbConnName, int timeoutMs = 30_000)
+    public static EsConnOption Create(string connName, bool checkExist = true)
     {
-        DbConfig dbConfig = DbConnManager.GetAppDbConfig(dbConnName, true);
-        return new EsConnOption {
-            Server = dbConfig.Server,
-            Port = dbConfig.Port.GetValueOrDefault(),
-            UserName = dbConfig.UserName,
-            Password = dbConfig.Password,
-            TimeoutMs = timeoutMs
-        };
+        DbConfig dbConfig = DbConnManager.GetAppDbConfig(connName, false);
+        if( dbConfig != null ) {
+            return new EsConnOption {
+                Server = dbConfig.Server,
+                Port = dbConfig.Port.GetValueOrDefault(),
+                UserName = dbConfig.UserName,
+                Password = dbConfig.Password,
+            };
+        }
+
+        EsConnOption opt = Settings.GetSetting<EsConnOption>(connName, false);
+        if( opt != null )
+            return opt;
+
+        if( checkExist )
+            throw new DatabaseNotFoundException("没有找到指定的连接配置参数，connName：" + connName);
+
+        return null;
     }
 }

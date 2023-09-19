@@ -10,10 +10,24 @@ public static class ClownFishInit
     private static bool s_baseInited = false;
     private static bool s_dalInited = false;
 
+    private static readonly CancellationTokenSource s_exitTokenSource = new CancellationTokenSource();
     /// <summary>
-    /// 
+    /// 应用程序结束时通知对象
     /// </summary>
-    public static CancellationToken AppExitToken { get; internal set; } = CancellationToken.None;
+    public static CancellationToken AppExitToken => s_exitTokenSource.Token;
+
+    /// <summary>
+    /// 【此方法仅供框架内部使用】通知后台线程执行退出操作。
+    /// </summary>
+    public static void ApplicationEnd()
+    {
+        Console2.WriteSeparatedLine();
+
+        // 通知所有后台线程，应用程序即将退出
+        s_exitTokenSource.Cancel();
+
+        Console2.WriteLine("Application End!");
+    }
 
 
     /// <summary>
@@ -104,7 +118,7 @@ public static class ClownFishInit
     }
     private static void HttpClientEventOnBeforeSendRequest(object sender, BeforeSendEventArgs e)
     {
-        Console2.Info($"{e.HttpOption.Method} {e.HttpOption.Url}");
+        Console2.Info($"HttpClient send: {e.HttpOption.Method} {e.HttpOption.Url}");
     }
 
 

@@ -47,4 +47,42 @@ public sealed class PreApplicationStartMethodAttribute : Attribute
     /// 一个字符串，其中包含关联启动方法的名称。
     /// </returns>
     public string MethodName { get; private set; }
+
+
+
+    internal static void ExecuteAll()
+    {
+        var assemblies = AppPartUtils.GetApplicationPartAsmList();
+        foreach( Assembly asm in assemblies ) {
+
+            PreApplicationStartMethodAttribute[] attrs = asm.GetAttributes<PreApplicationStartMethodAttribute>();
+
+            foreach( PreApplicationStartMethodAttribute attr in attrs ) {
+                Invoke(attr, asm);
+            }
+        }
+    }
+
+    internal static void Invoke(PreApplicationStartMethodAttribute attr, Assembly asm)
+    {
+        MethodInfo method = attr.Type.GetMethod(attr.MethodName,
+                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+                    null, Type.EmptyTypes, null);
+
+        if( method == null ) {
+            throw new InvalidProgramException(
+                string.Format("PreApplicationStartMethodAttribute指定的设置无效，不能找到匹配的方法。Type: {0}, MethodName: {1}",
+                                attr.Type.FullName,
+                                attr.MethodName
+                ));
+        }
+
+        Console2.Info($"Execute {attr.Type.FullName}.{method.Name}()");
+        try {
+            method.Invoke(null, null);
+        }
+        catch( TargetInvocationException ex ) {
+            throw ex.InnerException;   // 将原始异常抛出来
+        }
+    }
 }

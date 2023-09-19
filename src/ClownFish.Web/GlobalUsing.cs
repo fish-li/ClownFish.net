@@ -35,7 +35,7 @@ global using ClownFish.Log.Attributes;
 global using ClownFish.Log.Logging;
 global using ClownFish.Log.Models;
 global using ClownFish.Web.Aspnetcore;
-global using ClownFish.Web.AspnetCore.Objects;
+global using ClownFish.Web.Aspnetcore.Objects;
 global using ClownFish.Web.Modules;
 global using ClownFish.Web.Security;
 global using ClownFish.Web.Security.Attributes;

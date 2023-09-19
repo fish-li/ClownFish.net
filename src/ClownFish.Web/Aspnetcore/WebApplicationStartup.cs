@@ -1,8 +1,5 @@
-﻿#if NET6_0_OR_GREATER
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using ClownFish.Base.Xml;
-using ClownFish.Log.Configuration;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace ClownFish.Web.Aspnetcore;
@@ -13,11 +10,25 @@ namespace ClownFish.Web.Aspnetcore;
 /// </summary>
 public class WebApplicationStartup
 {
+    /// <summary>
+    /// 是否需要初始化 “数据访问层”
+    /// </summary>
     public virtual bool AutoInitDAL => false;
 
+    /// <summary>
+    /// 是否需要初始化 “数据访问层”
+    /// </summary>
     public virtual bool AutoInitLog => false;
 
+    /// <summary>
+    /// 是否需要初始化 “身份认证模块”
+    /// </summary>
     public virtual bool AutoInitAuth => false;
+
+    /// <summary>
+    /// 是否需要初始化 “链路日志”
+    /// </summary>
+    public virtual bool AutoInitTracing => false;
 
     /// <summary>
     /// 在执行框架初始化的一些自定义逻辑。 默认行为：什么也不做。
@@ -114,4 +125,3 @@ public class WebApplicationStartup
         }
     }
 }
-#endif

@@ -35,7 +35,10 @@ public static class ExceptionExtensions
     }
 
 
-    internal static Func<Exception, int?> GetErrorCodeCallbackFunc;
+    /// <summary>
+    /// 一个回调委托，用于GetErrorCode方法执行时，遇到一个不能识别的异常时发生回调
+    /// </summary>
+    public static Func<Exception, int?> GetErrorCodeCallbackFunc;
 
 
     /// <summary>

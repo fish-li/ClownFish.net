@@ -1,17 +1,13 @@
-﻿using ClownFish.Web;
-using ClownFish.Web.Utils;
-
-namespace ClownFish.Tracing.Logging;
+﻿namespace ClownFish.Tracing.Logging;
 
 internal static class AspnetcoreLogger
 {
     internal static void Init()
     {
-        if( MemoryConfig.GetSetting(ConstNames.AspnetCoreStarterName).IsNullOrEmpty() ) {
+        if( NHttpApplication.Instance == null ) {
             DiagnosticListener.AllListeners.Subscribe(new AspnetEventSubscriber());
         }
     }
-
 }
 
 

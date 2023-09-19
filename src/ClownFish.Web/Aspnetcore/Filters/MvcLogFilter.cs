@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ClownFish.Web.Aspnetcore.Filters;
 
@@ -105,4 +104,3 @@ public sealed class MvcLogFilter : IAsyncActionFilter
         pipelineContext.OprLogScope.AddStep(step);
     }
 }
-#endif

@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.914.100</Version>
-        <FileVersion>7.23.914.100</FileVersion>
+        <Version>7.23.919.100</Version>
+        <FileVersion>7.23.919.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn);1591</NoWarn>
         <DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
         <LangVersion>11.0</LangVersion>
+        <DefineConstants>ClownFishWeb</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -38,6 +39,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Aspnetcore\Objects\" />
     </ItemGroup>
 
 </Project>

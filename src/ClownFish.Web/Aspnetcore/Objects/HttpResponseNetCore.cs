@@ -1,30 +1,52 @@
-﻿namespace ClownFish.Web.AspnetCore.Objects;
+﻿namespace ClownFish.Web.Aspnetcore.Objects;
 
+/// <summary>
+/// NHttpResponse的ASP.NETCORE实现
+/// </summary>
 public sealed class HttpResponseNetCore : NHttpResponse
 {
     private readonly HttpResponse _response;
 
+    /// <summary>
+    /// 原始的HttpResponse对象
+    /// </summary>
     public override object OriginalHttpResponse => _response;
 
+    /// <summary>
+    /// 构造方法
+    /// </summary>
+    /// <param name="response"></param>
+    /// <param name="httpContext"></param>
     public HttpResponseNetCore(HttpResponse response, NHttpContext httpContext)
         : base(httpContext)
     {
         _response = response;
     }
 
-
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override int StatusCode {
         get => _response.StatusCode;
         set => _response.StatusCode = value;
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override bool HasStarted => _response.HasStarted;
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override long ContentLength {
         get => _response.ContentLength ?? -1;
         set => _response.ContentLength = value;
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override Stream OutputStream => _response.Body;
 
     /// <summary>
@@ -32,12 +54,20 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// </summary>
     public override Encoding ContentEncoding { get; set; }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override string ContentType {
         get => _response.ContentType;
         set => _response.ContentType = value;
     }
 
-
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="value"></param>
+    /// <param name="expires"></param>
     public override void SetCookie2(string name, string value, DateTime? expires = null)
     {
         var httpRequest = HttpContext.Request;
@@ -88,6 +118,13 @@ public sealed class HttpResponseNetCore : NHttpResponse
         return options;
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="value"></param>
+    /// <param name="ignoreExist"></param>
+    /// <returns></returns>
     public override bool SetHeader(string name, string value, bool ignoreExist)
     {
         value = value ?? string.Empty;
@@ -101,11 +138,23 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public override bool RemoveHeader(string name)
     {
         return _response.Headers.Remove(name);
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="values"></param>
+    /// <param name="ignoreExist"></param>
+    /// <returns></returns>
     public override bool SetHeaders(string name, string[] values, bool ignoreExist)
     {
         if( values.IsNullOrEmpty() )
@@ -120,6 +169,10 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <returns></returns>
     public override IEnumerable<KeyValuePair<string, IEnumerable<string>>> GetAllHeaders()
     {
         foreach( var x in _response.Headers ) {
@@ -128,6 +181,9 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void ClearHeaders()
     {
         _response.Headers.Clear();
@@ -148,6 +204,10 @@ public sealed class HttpResponseNetCore : NHttpResponse
     // https://khalidabuhakmeh.com/dotnet-core-3-dot-0-allowsynchronousio-workaround
 
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="buffer"></param>
     public override void Write(byte[] buffer)
     {
         if( buffer != null && buffer.Length > 0 ) {
@@ -155,6 +215,10 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="buffer"></param>
     public override void WriteAll(byte[] buffer)
     {
         if( buffer != null && buffer.Length > 0 ) {
@@ -163,6 +227,11 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="buffer"></param>
+    /// <returns></returns>
     public override async Task WriteAsync(byte[] buffer)
     {
         if( buffer != null && buffer.Length > 0 ) {
@@ -170,6 +239,11 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="buffer"></param>
+    /// <returns></returns>
     public override async Task WriteAllAsync(byte[] buffer)
     {
         if( buffer != null && buffer.Length > 0 ) {
@@ -178,6 +252,9 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Close()
     {
         // 在 ASP.NET CORE 中不需要处理

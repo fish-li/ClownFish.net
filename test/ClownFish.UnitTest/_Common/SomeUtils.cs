@@ -46,7 +46,7 @@ internal static class SomeUtils
 
     public static string GetTempPath(this AppDomain app)
     {
-        return Path.Combine(app.BaseDirectory, "temp");
+        return EnvUtils.GetTempPath();
     }
 
 

@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace ClownFish.Web.Aspnetcore;
+﻿namespace ClownFish.Web.Aspnetcore;
 
 /// <summary>
 /// 启动asp.netcore的工具类
@@ -8,12 +7,12 @@ public static class AspnetCoreStarter
 {
     internal static WebApplication WebApplication { get; private set; }
 
-
     public static void Run(WebApplicationStartup startup = null)
     {
         if( startup == null )
             startup = new WebApplicationStartup();
 
+        ConfigClownFish();
         ClownFishInit.InitBase();
 
         startup.BeforeFrameworkInit();
@@ -30,12 +29,40 @@ public static class AspnetCoreStarter
         CreateWebApp(startup);
 
         startup.RegisterHttpModules();
+
+        ApplicationInitializer.Execute();
         startup.AppInit();
 
-        //TracingInitializer.Init();   // 这个方法放在 startup.AppInit() 中调用
+        // 初始化经典风格的ASP.NET管道
+        InitNHttpApplication();
+
+        if( startup.AutoInitTracing )
+            TracingUtils.Init();
+        
 
         RunAspnetcore();
+
+        ClownFishInit.ApplicationEnd();
     }
+
+    
+
+    private static void ConfigClownFish()
+    {
+        ClownFish.Base.ExceptionExtensions.GetErrorCodeCallbackFunc = GetErrorCode;
+
+        string tempPath = EnvUtils.GetTempPath();
+        RetryDirectory.CreateDirectory(tempPath);
+    }
+
+    private static int? GetErrorCode(Exception ex)
+    {
+        if( ex is Microsoft.AspNetCore.Http.BadHttpRequestException bex )
+            return bex.StatusCode;
+
+        return null;
+    }
+
 
     /// <summary>
     /// 创建WebApplication实例
@@ -46,9 +73,6 @@ public static class AspnetCoreStarter
     {
         if( startup == null )
             startup = new WebApplicationStartup();
-
-        // 供 ClownFish.Tracing 判断
-        MemoryConfig.AddSetting(ConstNames.AspnetCoreStarterName, typeof(AspnetCoreStarter).FullName);
 
         WebApplicationBuilder appBuilder = WebApplication.CreateBuilder();
 
@@ -71,18 +95,6 @@ public static class AspnetCoreStarter
     /// </summary>
     internal static void RunAspnetcore()
     {
-        // 初始化经典风格的ASP.NET管道
-        InitNHttpApplication();
-
-
-        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", 1) ) {
-            Console2.WriteSeparatedLine();
-            foreach( var module in NHttpApplication.Instance.GetModules() ) {
-                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
-            }
-        }
-
-
         // 为什么要在这里修改 Console2.InfoEnabled 的设置？
         // 因为：如果直接在 Console2的静态构造方法中就读取 LocalSettings，会导致这个开关一直关闭，
         // 那么程序在启动时的调用就会被忽略，一些重要的初始化消息就看不到了~~~
@@ -120,13 +132,21 @@ public static class AspnetCoreStarter
         // 注意：这后面的代码将不会立即执行！
     }
 
-    private static void InitNHttpApplication()
+    internal static void InitNHttpApplication()
     {
         // 加载HTTP模块
         LoadModules();
 
         // 启动 HTTP管线
         NHttpApplication.Start();
+
+
+        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", 1) ) {
+            Console2.WriteSeparatedLine();
+            foreach( var module in NHttpApplication.Instance.GetModules() ) {
+                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
+            }
+        }
     }
 
 
@@ -163,6 +183,3 @@ public static class AspnetCoreStarter
     }
 
 }
-
-
-#endif

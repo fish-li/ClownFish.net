@@ -16,7 +16,7 @@ namespace ClownFish.UnitTest.Base.Init
         [TestMethod]
         public void Test_Start()
         {
-            ApplicationInitializer.Start();
+            PreApplicationStartMethodAttribute.ExecuteAll();
             Assert.AreEqual(2, AppStartX.Flag);
         }
 
@@ -25,15 +25,15 @@ namespace ClownFish.UnitTest.Base.Init
         public void Test_Error()
         {
             PreApplicationStartMethodAttribute attr = new PreApplicationStartMethodAttribute(typeof(AppStartX), "xxx");
-            ApplicationInitializer.Invoke(attr, typeof(AppStartX).Assembly);
+            PreApplicationStartMethodAttribute.Invoke(attr, typeof(AppStartX).Assembly);
         }
 
-        [ExpectedException(typeof(InvalidProgramException))]
+        [ExpectedException(typeof(DivideByZeroException))]
         [TestMethod]
         public void Test_Error2()
         {
             PreApplicationStartMethodAttribute attr = new PreApplicationStartMethodAttribute(typeof(AppStartX), "Init3");
-            ApplicationInitializer.Invoke(attr, typeof(AppStartX).Assembly);
+            PreApplicationStartMethodAttribute.Invoke(attr, typeof(AppStartX).Assembly);
         }
 
         [TestMethod]
