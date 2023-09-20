@@ -68,7 +68,7 @@ public sealed class Initializer
     /// <returns></returns>
     public Initializer RegisterMySqlProvider(int flag = 0)
     {
-        MySqlUtils.RegisterProvider(flag);
+        MySqlProviderUtils.RegisterProvider(flag);
 
         return this;
     }

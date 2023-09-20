@@ -26,7 +26,7 @@ public static class TextUtils
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    internal static string GetLogText(this object value)
+    public static string GetLogText(this object value)
     {
         if( value == null )
             return string.Empty;

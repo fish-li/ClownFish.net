@@ -1,31 +1,38 @@
 ﻿namespace ClownFish.Base;
 
-internal static class StatusCodeUtils
+/// <summary>
+/// HTTP状态码工具类
+/// </summary>
+public static class StatusCodeUtils
 {
-    // 注意：不要使用 650 以下的数字，说不定以后Web标准会使用
-
-    public const int X651 = 651;  // BusinessLogicException
-
-    public const int X670 = 670;  // VenusClientException
-
-    public const int X680 = 680;  // Venus.ViewAppDataController.SendCommand(), 目标应用程序执行超时
-
-
     // 说明：状态码这个数字不能超过 3 位，否则会出现异常： 服务器提交了协议冲突. Section=ResponseStatusLine
 
 
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <summary>
+    /// 判断错误是否由 客户端 导致的
+    /// </summary>
+    /// <param name="status"></param>
+    /// <returns></returns>
     public static bool IsClientError(int status)
     {
         return status >= 400 && status < 500;
     }
 
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <summary>
+    /// 判断错误是否由 服务端 导致的
+    /// </summary>
+    /// <param name="status"></param>
+    /// <returns></returns>
     public static bool IsServerError(int status)
     {
         return (status >= 500 && status < 600) || (status >= 700 && status < 800);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serverStatus"></param>
+    /// <returns></returns>
     public static int GetStatusCodeForRemoteWebException(int serverStatus)
     {
         // 4xx 这类错误很特殊，它虽然表示是【客户端错误】，但这只是相当而言

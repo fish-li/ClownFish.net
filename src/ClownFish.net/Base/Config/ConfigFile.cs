@@ -5,9 +5,15 @@
 /// </summary>
 public static class ConfigFile
 {
-    internal static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
+    /// <summary>
+    /// 默认的 App.Config 文件名
+    /// </summary>
+    public static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
 
-    internal static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
+    /// <summary>
+    /// 默认的 Log.Config 文件名
+    /// </summary>
+    public static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
 
 
 

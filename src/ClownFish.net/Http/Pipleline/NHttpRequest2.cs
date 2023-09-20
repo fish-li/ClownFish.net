@@ -146,6 +146,62 @@ public partial class NHttpRequest : ILoggingObject
 
 
     /// <summary>
+    /// 按string方式读取整个请求体内容，并监控读取性能
+    /// </summary>
+    /// <returns></returns>
+    public async Task<string> ReadBodyAsTextWithMonitorAsync()
+    {
+        DateTime startTime = DateTime.Now;
+
+        // 说明：这里不使用 ReadBodyAsTextAsync 方法，因为它不缓存结果，会影响日志的记录过程（读不到内容），
+        //       ReadBodyAsBytesAsync 也有这样的问题，但是没办法，用户就是需要 byte[]
+        var result = await this.GetBodyTextAsync();
+
+        // 将执行时间记录到日志中
+        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsTextAsync", "size: " + result.Length);
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// 按二进制方式读取整个请求体内容，并监控读取性能
+    /// </summary>
+    /// <returns></returns>
+    public async Task<byte[]> ReadBodyAsBytesWithMonitorAsync()
+    {
+        DateTime startTime = DateTime.Now;
+        var result = await this.ReadBodyAsBytesAsync();
+
+        // 将执行时间记录到日志中
+        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsBytesAsync", "size: " + result.Length);
+
+        return result;
+    }
+
+#if NETCOREAPP
+
+    /// <summary>
+    /// 按二进制方式读取整个请求，包含3个部分（开始行，请求头，请求体），并监控读取性能
+    /// </summary>
+    /// <returns></returns>
+    public async Task<byte[]> RequestToBytesWithMonitorAsync()
+    {
+        DateTime startTime = DateTime.Now;
+        RequestData requestData = await RequestData.CreateAsync(this);
+
+        long size = requestData.RequestLine.Length + requestData.Headers.Length + (requestData.Body?.Length ?? 0);  // 这只是一个近视值
+
+        // 将执行时间记录到日志中
+        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "RequestToBytesAsync", "size: " + size.ToString());
+
+        var result = (requestData as IBinarySerializer).ToBytes();
+        return result;
+    }
+#endif
+
+
+    /// <summary>
     /// 在记录请求日志时，是否记录请求体内容。
     /// 说明：在ASP.NETCORE中，记录请体还需要将开启请求缓冲。
     /// </summary>

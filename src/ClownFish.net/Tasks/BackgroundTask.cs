@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 // 设计说明
 // ===========================================
 // BackgroundTask 不使用传统的调度模式，因为那种方式有以下缺点：

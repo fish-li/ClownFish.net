@@ -1,8 +1,4 @@
-﻿#if NETCOREAPP
-using System.Net.Http;
-#endif
-
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace ClownFish.Base;
 
@@ -19,11 +15,11 @@ public static class UnixHelper
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static HttpMessageHandler CreateSocketHandler(string path)
+    public static System.Net.Http.HttpMessageHandler CreateSocketHandler(string path)
     {
         // 参考：https://stackoverflow.com/questions/53547152/how-do-i-nicely-send-http-over-a-unix-domain-socket-in-net-core
 
-        return new SocketsHttpHandler {
+        return new System.Net.Http.SocketsHttpHandler {
             ConnectCallback = async (context, token) => {
                 var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.IP);
                 var endpoint = new UnixDomainSocketEndPoint(path);

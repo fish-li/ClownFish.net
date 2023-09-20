@@ -7,7 +7,6 @@ public static class AppCache
 {
     private static readonly CacheDictionary<object> s_cacheDict = new CacheDictionary<object>();
 
-
     internal static int GetCount()
     {
         return s_cacheDict.GetCount();
@@ -33,7 +32,7 @@ public static class AppCache
                 // 调用委托加载对象
                 value = loadFunc();
 
-                s_cacheDict.Set(key, value, DateTime.Now.AddSeconds(CacheOption.CacheSeconds));
+                s_cacheDict.Set(key, value, DateTime.Now.AddSeconds(CacheOption.AppCacheSeconds));
             }
         }
 

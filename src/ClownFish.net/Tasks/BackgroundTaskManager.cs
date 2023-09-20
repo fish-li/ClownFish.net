@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 
 /// <summary>
 /// 管理所有继承BackgroundTask的后台任务工具类
@@ -78,7 +78,11 @@ public static class BackgroundTaskManager
     }
 
 
-    internal static List<BgTaskStatus> GetAllStatus()
+    /// <summary>
+    /// 获取所有后台任务的状态信息
+    /// </summary>
+    /// <returns></returns>
+    public static List<BgTaskStatus> GetAllStatus()
     {
         List<BgTaskStatus> list = new List<BgTaskStatus>(s_taskList.Count);
 
@@ -102,7 +106,11 @@ public static class BackgroundTaskManager
     }
 
 
-    internal static void ActivateTask(string taskName)
+    /// <summary>
+    /// 激活某个休眠的任务
+    /// </summary>
+    /// <param name="taskName"></param>
+    public static void ActivateTask(string taskName)
     {
         BaseBackgroundTask task = s_taskList.FirstOrDefault(x => x.GetType().FullName == taskName);
         task?.StopWait();

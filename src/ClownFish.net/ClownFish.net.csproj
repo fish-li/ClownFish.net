@@ -4,8 +4,8 @@
         <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.919.100</Version>
-        <FileVersion>7.23.919.100</FileVersion>
+        <Version>7.23.920.100</Version>
+        <FileVersion>7.23.920.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -33,6 +33,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+        <PackageReference Include="Cronos" Version="0.7.1" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
         <PackageReference Include="System.CodeDom" Version="6.0.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />

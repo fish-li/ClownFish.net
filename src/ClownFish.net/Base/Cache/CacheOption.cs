@@ -6,7 +6,7 @@ internal static class CacheOption
     /// AppCache类型的默认缓存时间，单位：秒
     /// 默认值：180 秒
     /// </summary>
-    public static readonly int CacheSeconds = LocalSettings.GetUInt("ClownFish_AppCache_CacheSeconds", 180).Min(10);
+    public static readonly int AppCacheSeconds = LocalSettings.GetUInt("ClownFish_AppCache_CacheSeconds", 180).Min(10);
 
     /// <summary>
     /// CacheDictionary&lt;T&gt;类型的主动过期清理周期，单位：秒

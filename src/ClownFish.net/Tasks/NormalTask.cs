@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 /// <summary>
 /// 一个普通的一次性任务，使用【当前调用线程】来执行。
 /// 任务在的执行后会有日志记录和执行次数统计。

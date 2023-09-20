@@ -103,7 +103,10 @@ public static class EnvUtils
         ReLoad();
     }
 
-    internal static void ReLoad()
+    /// <summary>
+    /// 框架内部使用
+    /// </summary>
+    public static void ReLoad()
     {
         // 真实使用时，部署条件会比较复杂，不能直接依赖于 进程自身的环境变量 参数来决定，
         // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
@@ -167,7 +170,13 @@ public static class EnvUtils
     }
 
 
-    internal static void CheckApplicationName(string appName)
+    /// <summary>
+    /// 检查应用名称是否合法
+    /// </summary>
+    /// <param name="appName"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static void CheckApplicationName(string appName)
     {
         if( appName.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(appName));

@@ -141,8 +141,9 @@ public static class TestHttpClient2
 
     private static string SendRequest2(HttpOption option)
     {
-        var httpClient = new ClownFish.WebClient.V2.HttpClient2(option);
-        return httpClient.Send<string>();
+        //var httpClient = new ClownFish.WebClient.V2.HttpClient2(option);
+        //return httpClient.Send<string>();
+        return option.GetResult();
     }
 
 }

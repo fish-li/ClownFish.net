@@ -165,13 +165,20 @@ public sealed class CacheDictionary<T> where T : class
     }
 
 
-    internal int GetCount()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public int GetCount()
     {
         return _cache.Count;
     }
 
-
-    internal Dictionary<string, T> DumpData()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, T> DumpData()
     {
         var dict = _cache.Clone();
         return dict.ToDictionary2(dict.Count, x => x.Key, x => x.Value.Get());

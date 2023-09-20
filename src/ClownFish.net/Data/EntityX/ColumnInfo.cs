@@ -1,7 +1,13 @@
 ﻿namespace ClownFish.Data;
 
-internal sealed class ColumnInfo
+/// <summary>
+/// 
+/// </summary>
+public sealed class ColumnInfo
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string DbName {
         get {
             return Attr == null || string.IsNullOrEmpty(Attr.Alias)
@@ -10,8 +16,14 @@ internal sealed class ColumnInfo
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public PropertyInfo PropertyInfo { get; private set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public DbColumnAttribute Attr { get; private set; }
 
     /// <summary>
@@ -23,7 +35,12 @@ internal sealed class ColumnInfo
     /// </summary>
     public int Index { get; set; }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="propertyInfo"></param>
+    /// <param name="attr"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public ColumnInfo(PropertyInfo propertyInfo, DbColumnAttribute attr)
     {
         if( propertyInfo == null )

@@ -34,7 +34,11 @@ public sealed class DebugReportBlock
     }
 
 
-    internal void GetText(StringBuilder sb)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sb"></param>
+    public void GetText(StringBuilder sb)
     {
         sb.AppendLineRN($"##### {this.Category ?? "NONE"} #####{this.Order}");
 

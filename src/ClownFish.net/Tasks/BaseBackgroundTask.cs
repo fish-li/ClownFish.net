@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 /// <summary>
 /// BackgroundTask基类，此类型仅供框架内部使用。
 /// </summary>

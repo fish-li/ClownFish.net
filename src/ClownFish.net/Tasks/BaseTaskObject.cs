@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 /// <summary>
 /// 所有后台任务的基类
 /// </summary>

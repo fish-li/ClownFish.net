@@ -14,7 +14,7 @@ public sealed class BusinessLogicException : MessageException, IErrorCode
     /// <param name="message"></param>
     public BusinessLogicException(string message) : base(message)
     {
-        this.StatusCode = StatusCodeUtils.X651;
+        this.StatusCode = 651;
     }
 
     /// <summary>

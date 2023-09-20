@@ -1,4 +1,4 @@
-﻿#if NET6_0_OR_GREATER
+﻿#if NETCOREAPP
 
 using Cronos;
 namespace ClownFish.Tasks;

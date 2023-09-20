@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 /// <summary>
 /// 表示一个后台运行的任务，它的子类会在程序启动时自动创建并运行
 /// </summary>
@@ -176,7 +176,7 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
     private async Task Wait0(TimeSpan waitTime)
     {
         if( _tokenSource != null ) {
-            if( _tokenSource.TryReset() == false ) {
+            if( _tokenSource.TryReset() == false ) {   // TryReset() 是 .NET 6 新增的
                 _tokenSource.Dispose();
                 _tokenSource = new CancellationTokenSource();
             }

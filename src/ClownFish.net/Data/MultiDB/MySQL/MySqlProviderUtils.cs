@@ -1,8 +1,11 @@
 ﻿namespace ClownFish.Data.MultiDB.MySQL;
 
-internal static class MySqlUtils
+/// <summary>
+/// MySQL专属工具类
+/// </summary>
+public static class MySqlProviderUtils
 {
-    internal static int MySqlClientProviderSupportFlag { get; private set; }
+    internal static int CurrentProviderFlag { get; private set; }
 
     /// <summary>
     /// 注册 MySQL 客户端提供者
@@ -50,18 +53,22 @@ internal static class MySqlUtils
                 throw new ArgumentOutOfRangeException(nameof(flag), "参数flag的取值超出有效范围(1~3)，当前值：" + flag.ToString());
         }
 
-        MySqlClientProviderSupportFlag = flag;
+        CurrentProviderFlag = flag;
     }
 
 
-    public static string GetProviderName()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public static string GetCurrentProviderName()
     {
-        if( MySqlClientProviderSupportFlag == 1 || MySqlClientProviderSupportFlag  == 2 ) {
+        if( CurrentProviderFlag == 1 || CurrentProviderFlag  == 2 ) {
             var provider = DbClientFactory.GetDbProviderFactory(DatabaseClients.MySqlClient);
             return provider.GetType().Namespace;
         }
 
-        if( MySqlClientProviderSupportFlag == 3 ) {
+        if( CurrentProviderFlag == 3 ) {
             return "MySqlConnector; MySql.Data";
         }
 

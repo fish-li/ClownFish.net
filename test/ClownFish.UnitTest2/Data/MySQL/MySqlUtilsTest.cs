@@ -8,10 +8,10 @@ public class MySqlUtilsTest
     [TestMethod]
     public void Test_RegisterMySqlProvider()
     {
-        MySqlUtils.RegisterProvider(2);
+        MySqlProviderUtils.RegisterProvider(2);
         BaseClientProvider client1 = DbClientFactory.GetProvider(DatabaseClients.MySqlClient);
         Assert.AreEqual(MySqlConnectorClientProvider.Instance, client1);
-        Assert.AreEqual("MySql.Data.MySqlClient", MySqlUtils.GetProviderName());
+        Assert.AreEqual("MySql.Data.MySqlClient", MySqlProviderUtils.GetCurrentProviderName());
     }
 
 

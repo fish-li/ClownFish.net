@@ -11,7 +11,7 @@ public abstract partial class Entity
     /// 获取实体对应的数据库表名。
     /// </summary>
     /// <returns></returns>
-    internal string GetTableName()
+    public string GetTableName()
     {
         Type entityType = (this is IEntityProxy) ? this.GetType().BaseType : this.GetType();
         return entityType.GetDbTableName();
@@ -22,7 +22,7 @@ public abstract partial class Entity
     /// 如果实体没有定义自增列，就返回NULL
     /// </summary>
     /// <returns></returns>
-    internal ColumnInfo GetIdentity()
+    public ColumnInfo GetIdentity()
     {
         Type entityType = (this is IEntityProxy) ? this.GetType().BaseType : this.GetType();
 
@@ -32,7 +32,11 @@ public abstract partial class Entity
     }
 
 
-    internal ColumnInfo GetPrimaryKey()
+    /// <summary>
+    /// 获取实体的主键列
+    /// </summary>
+    /// <returns></returns>
+    public ColumnInfo GetPrimaryKey()
     {
         Type entityType = (this is IEntityProxy) ? this.GetType().BaseType : this.GetType();
 

@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NET6_0_OR_GREATER
+#if NETCOREAPP
 /// <summary>
 /// 与BackgroundTask相关的执行上下文对象
 /// </summary>

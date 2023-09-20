@@ -46,7 +46,7 @@ public static class AppConfig
     /// 此方法不是线程安全的，必须在程序初始化时调用。
     /// </summary>
     /// <param name="xml"></param>
-    internal static void ReLoadFromXml(string xml)
+    public static void ReLoadFromXml(string xml)
     {
         AppConfiguration config = AppConfiguration.LoadFromXml(xml);
         s_configuration = new AppConfigObject(config);

@@ -12,8 +12,8 @@ public static class AspnetCoreStarter
         if( startup == null )
             startup = new WebApplicationStartup();
 
-        ConfigClownFish();
         ClownFishInit.InitBase();
+        ConfigClownFish();
 
         startup.BeforeFrameworkInit();
 
@@ -28,7 +28,6 @@ public static class AspnetCoreStarter
 
         CreateWebApp(startup);
 
-        startup.RegisterHttpModules();
 
         ApplicationInitializer.Execute();
         startup.AppInit();
@@ -38,8 +37,9 @@ public static class AspnetCoreStarter
 
         if( startup.AutoInitTracing )
             TracingUtils.Init();
-        
 
+
+        WriteDebugReport();
         RunAspnetcore();
 
         ClownFishInit.ApplicationEnd();
@@ -80,7 +80,9 @@ public static class AspnetCoreStarter
         startup.ConfigureServices(appBuilder.Services);
 
         // 创建 WebApplication 实例，并生成IServiceProvider
+        startup.BeforeApplicationBuild(appBuilder);
         WebApplication app = appBuilder.Build();
+        startup.AfterApplicationBuild(app);
 
         // 配置ASP.NET管道
         app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来!
@@ -173,13 +175,29 @@ public static class AspnetCoreStarter
         }
 
         // 搜索当前应用中的Http模块并注册
-        Type[] types = (from x in Assembly.GetEntryAssembly().GetPublicTypes()
-                        where x.IsClass && x.IsAbstract == false && x.IsSubclassOf(typeof(NHttpModule))
-                        select x).ToArray();
+        foreach( Assembly asm in AppPartUtils.GetApplicationPartAsmList() ) {
+            Type[] types = (from x in asm.GetPublicTypes()
+                            where x.IsClass && x.IsAbstract == false && x.IsSubclassOf(typeof(NHttpModule))
+                            select x).ToArray();
 
-        foreach( Type t in types ) {
-            NHttpModuleFactory.RegisterModule(t);
+            foreach( Type t in types ) {
+                NHttpModuleFactory.RegisterModule(t);
+            }
         }
     }
 
+
+
+
+    private static void WriteDebugReport()
+    {
+        if( LocalSettings.GetBool("CreateDebugReport_AtAppStartup", 1) == false )
+            return;
+
+
+        // 获取所有的诊断信息，并写入到临时文件中
+        string text = DebugReport.GetAllData().ToText();
+        string filePath = Path.Combine(EnvUtils.GetTempPath(), "DebugReport.txt");
+        RetryFile.WriteAllText(filePath, text);
+    }
 }

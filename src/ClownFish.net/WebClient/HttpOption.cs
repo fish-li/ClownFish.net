@@ -232,7 +232,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// 如果是GET请求，将会包含提交数据。
     /// </summary>
     /// <returns></returns>
-    internal string GetRequestUrl()
+    public string GetRequestUrl()
     {
         string requestUrl = this.Url;
 
@@ -248,7 +248,11 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     }
 
     private Uri _requestUri;
-    internal Uri GetReuestUri()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public Uri GetReuestUri()
     {
         if( _requestUri == null ) {
             string url = this.GetRequestUrl();
@@ -263,7 +267,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    internal static string GetQueryString(object data)
+    public static string GetQueryString(object data)
     {
         if( data == null )
             return null;
@@ -280,7 +284,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// 如果已指定要提交的数据，但是是GET请求，那么也认为是没有提交数据。
     /// </summary>
     /// <returns></returns>
-    internal object GetPostData()
+    public object GetPostData()
     {
         if( this.Data != null && HttpUtils.RequestHasBody(this.Method) )
             return this.Data;

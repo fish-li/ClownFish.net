@@ -1,9 +1,18 @@
 ﻿namespace ClownFish.Base;
 
-internal static class ConstValues
+/// <summary>
+/// 一些常量值
+/// </summary>
+public static class ConstValues
 {
-    internal static readonly string CurrentVersion;
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly string CurrentVersion;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static readonly string HttpClientUserAgent;
 
     static ConstValues()
