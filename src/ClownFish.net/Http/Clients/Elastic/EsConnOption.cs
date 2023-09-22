@@ -8,7 +8,7 @@ public sealed class EsConnOption
     /// <summary>
     /// 是否采用HTTPS协议访问
     /// </summary>
-    public bool IsHttps { get; set; }
+    public bool Https { get; set; }
     /// <summary>
     /// elasticsearch服务地址。【必填】
     /// </summary>
@@ -39,10 +39,14 @@ public sealed class EsConnOption
     public string IndexNameTimeFormat { get; set; } = "-yyyyMMdd";
 
     private string _url;
-    internal string Url {
+
+    /// <summary>
+    /// Url
+    /// </summary>
+    public string Url {
         get {
             if( _url == null ) {
-                string scheme = this.IsHttps ? "https" : "http";
+                string scheme = this.Https ? "https" : "http";
                 if( this.Port > 0 )
                     _url = $"{scheme}://{this.Server}:{this.Port}";
                 else
@@ -107,17 +111,8 @@ public sealed class EsConnOption
     /// <returns></returns>
     public static EsConnOption Create(string connName, bool checkExist = true)
     {
-        DbConfig dbConfig = DbConnManager.GetAppDbConfig(connName, false);
-        if( dbConfig != null ) {
-            return new EsConnOption {
-                Server = dbConfig.Server,
-                Port = dbConfig.Port.GetValueOrDefault(),
-                UserName = dbConfig.UserName,
-                Password = dbConfig.Password,
-            };
-        }
-
-        EsConnOption opt = Settings.GetSetting<EsConnOption>(connName, false);
+        EsConnOption opt = Create1(DbConnManager.GetAppDbConfig(connName, false))
+                            ?? Settings.GetSetting<EsConnOption>(connName, false);
         if( opt != null )
             return opt;
 
@@ -125,5 +120,28 @@ public sealed class EsConnOption
             throw new DatabaseNotFoundException("没有找到指定的连接配置参数，connName：" + connName);
 
         return null;
+    }
+
+
+    /// <summary>
+    /// 根据DbConfig实例创建EsConnOption实例
+    /// </summary>
+    /// <param name="dbConfig"></param>
+    /// <returns></returns>
+    public static EsConnOption Create1(DbConfig dbConfig)
+    {
+        if( dbConfig == null )
+            return null;
+
+        var args = dbConfig.Args.ToKVList(';', '=');
+        return new EsConnOption {
+            Server = dbConfig.Server,
+            Port = dbConfig.Port.GetValueOrDefault(),
+            UserName = dbConfig.UserName,
+            Password = dbConfig.Password,
+            Https = args.GetValue(nameof(Https)).TryToBool(),
+            TimeoutMs = args.GetValue(nameof(TimeoutMs)).TryToInt(),
+            IndexNameTimeFormat = args.GetValue(nameof(IndexNameTimeFormat))
+        };
     }
 }

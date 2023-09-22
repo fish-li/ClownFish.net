@@ -76,17 +76,30 @@ public sealed class NameValue
 public static class NameValueExtensions
 {
     /// <summary>
-    /// 获取名称匹配项
+    /// 根据名称查找匹配项
     /// </summary>
     /// <param name="list"></param>
     /// <param name="name"></param>
-    /// <param name="comparisonType"></param>
     /// <returns></returns>
-    public static NameValue FindByName(this List<NameValue> list, string name, StringComparison comparisonType = StringComparison.Ordinal)
+    public static NameValue Find(this List<NameValue> list, string name)
     {
         if( list.IsNullOrEmpty() )
             return null;
 
-        return list.FirstOrDefault(x => string.Compare(x.Name, name, comparisonType) == 0);
+        return list.FirstOrDefault(x => string.Compare(x.Name, name, StringComparison.OrdinalIgnoreCase) == 0);
+    }
+
+    /// <summary>
+    /// 根据名称获取匹配项的值
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static string GetValue(this List<NameValue> list, string name)
+    {
+        if( list.IsNullOrEmpty() )
+            return null;
+
+        return list.FirstOrDefault(x => string.Compare(x.Name, name, StringComparison.OrdinalIgnoreCase) == 0)?.Value;
     }
 }

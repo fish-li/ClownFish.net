@@ -26,6 +26,21 @@ public static class EnumerableExtensions
         return collection != null && collection.Count > 0;
     }
 
+    /// <summary>
+    /// 将指定的元素添加到集合的的末尾，并返回集合本身。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="dest"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public static List<T> Add2<T>(this List<T> dest, T item)
+    {
+        if( dest == null )
+            throw new ArgumentNullException(nameof(dest));
+
+        dest.Add(item);
+        return dest;
+    }
 
     /// <summary>
     /// 将指定集合的元素添加到集合的的末尾，并返回集合本身。

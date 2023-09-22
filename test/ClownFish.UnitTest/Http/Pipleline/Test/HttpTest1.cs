@@ -43,23 +43,23 @@ public class HttpTest1
         Assert.AreEqual(true.ToString(), handler1.RequestValues["LogRequestBody"]);
 
         Assert.AreEqual(3, handler1.Headers.Count);
-        Assert.IsNotNull(handler1.Headers.FindByName("Content-Type"));
-        Assert.IsNotNull(handler1.Headers.FindByName("x-client-app"));
-        Assert.IsNotNull(handler1.Headers.FindByName("Cookie"));
-        Assert.AreEqual("application/json", handler1.Headers.FindByName("Content-Type").Value);
-        Assert.AreEqual("HttpTest1", handler1.Headers.FindByName("x-client-app").Value);
+        Assert.IsNotNull(handler1.Headers.Find("Content-Type"));
+        Assert.IsNotNull(handler1.Headers.Find("x-client-app"));
+        Assert.IsNotNull(handler1.Headers.Find("Cookie"));
+        Assert.AreEqual("application/json", handler1.Headers.Find("Content-Type").Value);
+        Assert.AreEqual("HttpTest1", handler1.Headers.Find("x-client-app").Value);
 
         Assert.AreEqual(2, handler1.Cookies.Count);
-        Assert.IsNotNull(handler1.Cookies.FindByName("c1"));
-        Assert.IsNotNull(handler1.Cookies.FindByName("c2"));
-        Assert.AreEqual("1111111", handler1.Cookies.FindByName("c1").Value);
-        Assert.AreEqual("22222222", handler1.Cookies.FindByName("c2").Value);
+        Assert.IsNotNull(handler1.Cookies.Find("c1"));
+        Assert.IsNotNull(handler1.Cookies.Find("c2"));
+        Assert.AreEqual("1111111", handler1.Cookies.Find("c1").Value);
+        Assert.AreEqual("22222222", handler1.Cookies.Find("c2").Value);
 
         Assert.AreEqual(2, handler1.QuerySting.Count);
-        Assert.IsNotNull(handler1.QuerySting.FindByName("tenantId"));
-        Assert.IsNotNull(handler1.QuerySting.FindByName("checkType"));
-        Assert.AreEqual("my57972739adc90", handler1.QuerySting.FindByName("tenantId").Value);
-        Assert.AreEqual("系统应用水平", handler1.QuerySting.FindByName("checkType").Value);
+        Assert.IsNotNull(handler1.QuerySting.Find("tenantId"));
+        Assert.IsNotNull(handler1.QuerySting.Find("checkType"));
+        Assert.AreEqual("my57972739adc90", handler1.QuerySting.Find("tenantId").Value);
+        Assert.AreEqual("系统应用水平", handler1.QuerySting.Find("checkType").Value);
 
         Console.WriteLine(handler1.RequestBodyText);
     }
