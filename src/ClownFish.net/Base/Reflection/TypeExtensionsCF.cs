@@ -94,7 +94,7 @@ public static class TypeExtensionsCF
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    internal static string GetFullName(this Type type)
+    public static string GetFullName(this Type type)
     {
         if( type == null )
             throw new ArgumentNullException(nameof(type));

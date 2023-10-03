@@ -107,6 +107,9 @@ public static class LogHelper
     [MethodImpl(MethodImplOptions.Synchronized)]
     internal static void RaiseErrorEvent(Exception ex)
     {
+        if( ClownFishInit.AppExitToken.IsCancellationRequested )
+            return;
+
         FatalErrorLogger.WriteFile(ex, "_ClownFish_log_error_");
         ClownFishCounters.Logging.WriterErrorCount.Increment();
 

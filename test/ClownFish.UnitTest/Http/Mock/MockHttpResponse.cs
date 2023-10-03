@@ -58,7 +58,7 @@ public class MockHttpResponse : NHttpResponse
         this.OutCookies.Add(name, value);
     }
 
-    public override bool SetHeader(string name, string value, bool ignoreExist)
+    public override bool SetHeader(string name, string value, bool ifExistThenIgnore)
     {
         if( name.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(name));
@@ -73,7 +73,7 @@ public class MockHttpResponse : NHttpResponse
         return true;
     }
 
-    public override bool SetHeaders(string name, string[] values, bool ignoreExist)
+    public override bool SetHeaders(string name, string[] values, bool ifExistThenIgnore)
     {
         if( name.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(name));

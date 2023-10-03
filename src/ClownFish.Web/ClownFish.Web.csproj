@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.922.100</Version>
-        <FileVersion>7.23.922.100</FileVersion>
+        <Version>7.23.1003.100</Version>
+        <FileVersion>7.23.1003.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -26,10 +26,14 @@
 
     <ItemGroup>
       <None Remove="ExecHttp.html" />
+      <None Remove="files\http403-not-login.html" />
+      <None Remove="files\http404-url-error.html" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="ExecHttp.html" />
+      <EmbeddedResource Include="files\http403-not-login.html" />
+      <EmbeddedResource Include="files\http404-url-error.html" />
     </ItemGroup>
 
 

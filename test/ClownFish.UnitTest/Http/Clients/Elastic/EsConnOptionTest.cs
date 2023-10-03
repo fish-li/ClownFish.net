@@ -62,4 +62,36 @@ public class EsConnOptionTest
         Assert.AreEqual(3000, opt.TimeoutMs);
         Assert.AreEqual("-yyyyMMdd-HH", opt.IndexNameTimeFormat);
     }
+
+    [TestMethod]
+    public void Teset_Create1_4()
+    {
+        DbConfig dbConfig = new DbConfig {
+            Server = "localhost",
+            Database = "x",
+        };
+
+        EsConnOption opt = EsConnOption.Create1(dbConfig);
+        Assert.AreEqual("localhost", opt.Server);
+        Assert.AreEqual(0, opt.Port);
+        Assert.AreEqual("http://localhost:9200", opt.Url);
+        Assert.AreEqual(0, opt.TimeoutMs);
+        Assert.IsNull(opt.IndexNameTimeFormat);
+    }
+
+    [TestMethod]
+    public void Teset_Create1_5()
+    {
+        DbConfig dbConfig = new DbConfig {
+            Server = "10.5.1.1:9300",
+            Database = "x",
+        };
+
+        EsConnOption opt = EsConnOption.Create1(dbConfig);
+        Assert.AreEqual("10.5.1.1:9300", opt.Server);
+        Assert.AreEqual(0, opt.Port);
+        Assert.AreEqual("http://10.5.1.1:9300", opt.Url);
+        Assert.AreEqual(0, opt.TimeoutMs);
+        Assert.IsNull(opt.IndexNameTimeFormat);
+    }
 }

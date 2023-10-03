@@ -74,10 +74,15 @@ public static partial class HttpContextExtensions
         if( statusCode >= 300 )
             httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
 
-        NHttpResponse response = httpContext.Response;
-        response.StatusCode = statusCode;
-        response.ContentType = contentType ?? ResponseContentType.TextUtf8;
-        response.WriteAll(body.GetBytes());
+        if( string.IsNullOrEmpty(body) ) {
+            httpContext.Response.StatusCode = 204;
+        }
+        else {
+            NHttpResponse response = httpContext.Response;
+            response.StatusCode = statusCode;
+            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+            response.WriteAll(body.GetBytes());
+        }
     }
 
 
@@ -97,10 +102,15 @@ public static partial class HttpContextExtensions
         if( statusCode >= 300 )
             httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
 
-        NHttpResponse response = httpContext.Response;
-        response.StatusCode = statusCode;
-        response.ContentType = contentType ?? ResponseContentType.TextUtf8;
-        await response.WriteAllAsync(body.GetBytes());
+        if( string.IsNullOrEmpty(body) ) {
+            httpContext.Response.StatusCode = 204;
+        }
+        else {
+            NHttpResponse response = httpContext.Response;
+            response.StatusCode = statusCode;
+            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+            await response.WriteAllAsync(body.GetBytes());
+        }
     }
 
 

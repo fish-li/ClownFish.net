@@ -5,6 +5,7 @@ public class FirstModule
     private static readonly bool s_debugHttpLine = LocalSettings.GetBool("ClownFish_Aspnet_DebugHttpLine");
     private static readonly bool s_deleteUselessHeaders = LocalSettings.GetBool("ClownFish_Aspnet_DeleteUselessHeaders", 1);
     private static readonly bool s_logExecutTime = LocalSettings.GetBool("ClownFish_Aspnet_LogExecutTime");
+    private static readonly bool s_show404Page = LocalSettings.GetBool("ClownFish_Aspnet_Show404Page");
 
     private readonly RequestDelegate _next;
 
@@ -89,6 +90,11 @@ public class FirstModule
         }
         finally {
             app.EndRequest(httpContextNetCore);
+        }
+
+
+        if( httpContext.Response.StatusCode == 404 && s_show404Page ) {
+            await Http404Handler.Instance.ProcessRequestAsync(httpContextNetCore);
         }
     }
 

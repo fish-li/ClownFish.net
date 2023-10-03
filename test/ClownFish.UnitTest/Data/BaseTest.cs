@@ -17,6 +17,7 @@ public abstract class BaseTest
                             null, null, new object[] { 0 });
     }
 
+    // 达梦这玩意有license控制，不是想运行就能运行的，所以没办法一直对它测试！
 #if TEST_DM
     public static readonly string[] ConnNames = new string[] { "sqlserver", "mysql", "postgresql", "dm" };
 #else

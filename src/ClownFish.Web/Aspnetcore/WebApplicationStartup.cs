@@ -56,7 +56,7 @@ public class WebApplicationStartup
     }
 
     /// <summary>
-    /// 给 Ioc 容器注册组件。 默认行为：配置基本的KestrelServerOptions参数
+    /// 给 Ioc 容器注册组件。 默认行为：配置基本的KestrelServerOptions参数，UnicodeRanges.All
     /// </summary>
     /// <param name="services"></param>
     public virtual void ConfigureServices(IServiceCollection services)

@@ -47,10 +47,15 @@ public sealed class EsConnOption
         get {
             if( _url == null ) {
                 string scheme = this.Https ? "https" : "http";
-                if( this.Port > 0 )
-                    _url = $"{scheme}://{this.Server}:{this.Port}";
-                else
+                if( this.Server.IndexOf(':') > 0 ) {  // 例如： 10.5.1.1:9300
                     _url = $"{scheme}://{this.Server}";
+                }
+                else {
+                    if( this.Port > 0 )
+                        _url = $"{scheme}://{this.Server}:{this.Port}";
+                    else
+                        _url = $"{scheme}://{this.Server}:9200";  // 如果不设置就使用默认端口号
+                }
             }
             return _url;
         }

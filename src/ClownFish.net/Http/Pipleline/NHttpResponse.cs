@@ -90,18 +90,18 @@ public abstract class NHttpResponse
     /// <summary>
     /// 添加一个响应头
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="value"></param>
-    /// <param name="ignoreExist"></param>
-    public abstract bool SetHeader(string name, string value, bool ignoreExist = false);
+    /// <param name="name">响应头名称</param>
+    /// <param name="value">响应头的值</param>
+    /// <param name="ifExistThenIgnore">如果响应头存在，则忽略</param>
+    public abstract bool SetHeader(string name, string value, bool ifExistThenIgnore = false);
 
     /// <summary>
     /// 添加一批响应头，这些响应头使用同一个名称。
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="values"></param>
-    /// <param name="ignoreExist"></param>
-    public abstract bool SetHeaders(string name, string[] values, bool ignoreExist = false);
+    /// <param name="name">响应头名称</param>
+    /// <param name="values">响应头的值</param>
+    /// <param name="ifExistThenIgnore">如果响应头存在，则忽略</param>
+    public abstract bool SetHeaders(string name, string[] values, bool ifExistThenIgnore = false);
 
     /// <summary>
     /// 获取所有响应头

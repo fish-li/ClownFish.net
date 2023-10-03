@@ -52,11 +52,11 @@ internal class HttpResponseSysNet : NHttpResponse
         _response.Cookies.Add(cookie);
     }
 
-    public override bool SetHeader(string name, string value, bool ignoreExist)
+    public override bool SetHeader(string name, string value, bool ifExistThenIgnore)
     {
         value = value ?? string.Empty;
 
-        if( (ignoreExist == false) || (_response.Headers.AllKeys.Contains(name) == false) ) {
+        if( (ifExistThenIgnore == false) || (_response.Headers.AllKeys.Contains(name) == false) ) {
             _response.Headers.Set(name, value);
             return true;
         }
@@ -71,12 +71,12 @@ internal class HttpResponseSysNet : NHttpResponse
         return true;
     }
 
-    public override bool SetHeaders(string name, string[] values, bool ignoreExist)
+    public override bool SetHeaders(string name, string[] values, bool ifExistThenIgnore)
     {
         if( values.IsNullOrEmpty() )
             return false;
 
-        if( (ignoreExist == false) || (_response.Headers.AllKeys.Contains(name) == false) ) {
+        if( (ifExistThenIgnore == false) || (_response.Headers.AllKeys.Contains(name) == false) ) {
             foreach( var value in values )
                 _response.Headers.InternalAdd(name, value);
             return true;

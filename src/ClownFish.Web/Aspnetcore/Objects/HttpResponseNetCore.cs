@@ -123,13 +123,13 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// </summary>
     /// <param name="name"></param>
     /// <param name="value"></param>
-    /// <param name="ignoreExist"></param>
+    /// <param name="ifExistThenIgnore"></param>
     /// <returns></returns>
-    public override bool SetHeader(string name, string value, bool ignoreExist)
+    public override bool SetHeader(string name, string value, bool ifExistThenIgnore)
     {
         value = value ?? string.Empty;
 
-        if( (ignoreExist == false) || (_response.Headers.ContainsKey(name) == false) ) {
+        if( (ifExistThenIgnore == false) || (_response.Headers.ContainsKey(name) == false) ) {
             _response.Headers.Add(name, value);
             return true;
         }
@@ -153,14 +153,14 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// </summary>
     /// <param name="name"></param>
     /// <param name="values"></param>
-    /// <param name="ignoreExist"></param>
+    /// <param name="ifExistThenIgnore"></param>
     /// <returns></returns>
-    public override bool SetHeaders(string name, string[] values, bool ignoreExist)
+    public override bool SetHeaders(string name, string[] values, bool ifExistThenIgnore)
     {
         if( values.IsNullOrEmpty() )
             return false;
 
-        if( (ignoreExist == false) || (_response.Headers.ContainsKey(name) == false) ) {
+        if( (ifExistThenIgnore == false) || (_response.Headers.ContainsKey(name) == false) ) {
             _response.Headers.Add(name, values);
             return true;
         }

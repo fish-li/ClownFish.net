@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
-        <DefineConstants>TEST_DM</DefineConstants>
+        <DefineConstants>xxTEST_DM</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
