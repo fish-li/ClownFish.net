@@ -15,6 +15,9 @@ internal class ExecHttpUiModule : NHttpModule
 
     public override void BeginRequest(NHttpContext httpContext)
     {
+        if( httpContext.PipelineContext.Action != null )
+            return;
+
         string path = httpContext.Request.Path;
 
         if( path == "/clownfish/ui/exechttp/page" ) {

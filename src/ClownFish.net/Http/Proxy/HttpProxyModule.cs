@@ -36,6 +36,9 @@ public abstract class HttpProxyModule : NHttpModule
     /// <param name="httpContext"></param>
     public override void BeginRequest(NHttpContext httpContext)
     {
+        if( httpContext.PipelineContext.Action != null )
+            return;
+
         TrySetProxyHandler(httpContext);
     }
 
