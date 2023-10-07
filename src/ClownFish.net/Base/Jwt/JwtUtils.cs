@@ -11,7 +11,7 @@ public static class JwtUtils
     /// <summary>
     /// 默认的Hash算法名称
     /// </summary>
-    public static readonly string DefaultHashAlgorithmName = "HS256";
+    public static readonly string DefaultHashAlgorithmName = "HS512";
 
     internal static readonly JwtBase JwtHs256 = new JwtHMACSHA256();
     internal static readonly JwtBase JwtHs512 = new JwtHMACSHA512();

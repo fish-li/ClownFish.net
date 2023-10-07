@@ -6,7 +6,7 @@ namespace ClownFish.Web.UnitTest.Security.Jwt;
 [TestClass]
 public class JwtDecodeTest
 {
-    private static readonly JwtProvider s_jwtV3 = JwtProviderTest.CreateJwtProvider(null, true, true, true);
+    private static readonly JwtProvider s_jwtV3 = JwtProviderTest.CreateJwtProvider("HS256", true, true, true);
 
     [TestMethod]
     public void Test_1()

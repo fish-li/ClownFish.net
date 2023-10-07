@@ -363,12 +363,12 @@ Cache-Control: no-cache
         Console.WriteLine(responseText);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void 发送请求时指定身份信息()
     {
         string text = new HttpOption {
             Url = "http://RabbitHost:15672/api/queues",
-            Credentials = new NetworkCredential("fishli", "1qazxsw2_Sedrvsg234_ef234_ZZ"),
+            Credentials = new NetworkCredential("username", "password"),
             Timeout = 6 * 1000,
         }.GetResult();
         Console.WriteLine(text);
