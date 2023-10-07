@@ -31,7 +31,7 @@ internal sealed class RabbitWriter : ILogWriter
 
 
         // 创建客户端连接
-        _client = new RabbitClient(option, "Nebula.Log.RabbitWriter");
+        _client = new RabbitClient(option, "ClownFish_Log_RabbitWriter");
 
         // 触发连接打开
         _client.TestConnection();

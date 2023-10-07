@@ -5,7 +5,7 @@
 /// </summary>
 public static class ImHttpClient
 {
-    private static readonly bool s_debug = LocalSettings.GetInt("Nebula_ImHttpClient_Debug_Enabled", 0) == 1;
+    private static readonly bool s_debug = LocalSettings.GetInt("ClownFish_ImHttpClient_Debug_Enabled", 0) == 1;
 
     /// <summary>
     /// 执行HTTP调用

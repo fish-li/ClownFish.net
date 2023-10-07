@@ -2,7 +2,7 @@
 
 internal static class RabbitClientEvent
 {
-    //private static readonly DiagnosticListener s_diagnosticSource = new DiagnosticListener("Nebula.RabbitClientEvent");
+    //private static readonly DiagnosticListener s_diagnosticSource = new DiagnosticListener("ClownFish.RabbitClientEvent");
 
     /// <summary>
     /// 每次发送一条消息后触发

@@ -52,7 +52,7 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
     key: Microsoft.AspNetCore.Mvc.BeforeOnActionExecuting, value: Microsoft.AspNetCore.Mvc.Diagnostics.BeforeActionFilterOnActionExecutingEventData
     key: Microsoft.AspNetCore.Mvc.AfterOnActionExecuting, value: Microsoft.AspNetCore.Mvc.Diagnostics.AfterActionFilterOnActionExecutingEventData
     key: Microsoft.AspNetCore.Mvc.BeforeOnActionExecution, value: Microsoft.AspNetCore.Mvc.Diagnostics.BeforeActionFilterOnActionExecutionEventData
-    key: Microsoft.AspNetCore.Mvc.BeforeActionMethod, value: { actionContext = Microsoft.AspNetCore.Mvc.ControllerContext, actionArguments = System.Collections.Generic.Dictionary`2[System.String,System.Object], controller = Nebula.Web.InternalController }
+    key: Microsoft.AspNetCore.Mvc.BeforeActionMethod, value: { actionContext = Microsoft.AspNetCore.Mvc.ControllerContext, actionArguments = System.Collections.Generic.Dictionary`2[System.String,System.Object], controller = Xxxx.Web.InternalController }
     key: Microsoft.AspNetCore.Mvc.BeforeControllerActionMethod, value: Microsoft.AspNetCore.Mvc.Diagnostics.BeforeControllerActionMethodEventData
     key: Microsoft.AspNetCore.Mvc.AfterControllerActionMethod, value: Microsoft.AspNetCore.Mvc.Diagnostics.AfterControllerActionMethodEventData
     key: Microsoft.AspNetCore.Mvc.AfterActionMethod, value: { actionContext = Microsoft.AspNetCore.Mvc.ControllerContext, actionArguments = System.Collections.Generic.Dictionary`2[System.String,System.Object], controller = Microsoft.AspNetCore.Mvc.ControllerContext, result = Microsoft.AspNetCore.Mvc.ObjectResult }
