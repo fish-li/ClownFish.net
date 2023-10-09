@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.1006.100</Version>
-        <FileVersion>7.23.1006.100</FileVersion>
+        <Version>7.23.1008.100</Version>
+        <FileVersion>7.23.1008.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -36,17 +36,12 @@
       <EmbeddedResource Include="files\http404-url-error.html" />
     </ItemGroup>
 
-
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Aspnetcore\Objects\" />
     </ItemGroup>
 
 </Project>

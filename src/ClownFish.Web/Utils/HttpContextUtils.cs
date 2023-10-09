@@ -34,8 +34,7 @@ public static class HttpContextUtils
     {
         string text = $"This is {EnvUtils.GetAppName()}, It's worked! \nServer time: {DateTime.Now.ToTime23String()}";
 
-        httpContext.Response.ContentType = ResponseContentType.TextUtf8;
-        await httpContext.Response.WriteAsync(text);
+        await httpContext.Response.WriteAllAsync(text);
     }
 
 

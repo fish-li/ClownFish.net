@@ -4,8 +4,8 @@
         <TargetFrameworks>net48;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>7.0.0.0</AssemblyVersion>
-        <Version>7.23.1006.100</Version>
-        <FileVersion>7.23.1006.100</FileVersion>
+        <Version>7.23.1008.100</Version>
+        <FileVersion>7.23.1008.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -20,8 +20,7 @@
         <PackageId>ClownFish.net</PackageId>
         <Authors>Fish Li</Authors>
         <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
-        <Description>一个“小而美”的.NET工具类库</Description>
-        
+        <Description>一个“小而美”的.NET工具类库</Description>        
     </PropertyGroup>
     
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
