@@ -20,9 +20,10 @@ public sealed class ProxyRuleManager
             return false;
 
         if( LocalSettings.GetBool("ProxyRuleManager_ShowConfig", 1) ) {
-            Console2.WriteSeparatedLine();
+            string title = $"======================= {filename} ============================";
+            Console2.WriteLine(title);
             Console2.WriteLine(rule.ToXml2());
-            Console2.WriteSeparatedLine();
+            Console2.WriteLine(new string('=', title.Length));
         }
 
         // 忽略无效的规则
@@ -41,7 +42,6 @@ public sealed class ProxyRuleManager
         if( filename.HasValue() ) {
             string xmlText = ConfigFile.GetFile(filename);
             if( xmlText.HasValue() ) {
-                Console2.Info("Load ProxyRule file：" + filename);
                 return LoadRuleXml(xmlText);
             }
         }

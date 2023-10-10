@@ -18,12 +18,12 @@ internal static class CodeGenUtils
         List<Type> listTypes = SearchEntityTypes(binPath);
 
         if( listTypes.Count == 0 ) {
-            Console.WriteLine("没有找到实体类型。");
+            Console2.WriteLine("没有找到实体类型。");
             return 0;
         }
 
         List<EntityCompileResult> compileResult = ProxyBuilder.Compile(listTypes.ToArray(), dllSaveFilePath);
-        Console.WriteLine($"已为 {compileResult.Count} 个实体生成代理和加载器类型。");
+        Console2.WriteLine($"已为 {compileResult.Count} 个实体生成代理和加载器类型。");
 
         if( deleteTempFile ) {
             RetryFile.Delete(dllSaveFilePath + ".cs");

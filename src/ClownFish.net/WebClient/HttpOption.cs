@@ -8,6 +8,8 @@ namespace ClownFish.WebClient;
 /// </summary>
 public sealed class HttpOption : ILoggingObject, IToAllText
 {
+    private static readonly bool s_useAppExitToken = LocalSettings.GetBool("ClownFish_HttpClient_UseAppExitToken", 1);
+
     /// <summary>
     /// 构造方法
     /// </summary>
@@ -20,7 +22,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         Timeout = HttpClientDefaults.HttpTimeout;
 
 #if NETCOREAPP
-        CancellationToken = CancellationToken.None;
+        CancellationToken = s_useAppExitToken ? ClownFishInit.AppExitToken : CancellationToken.None;
 #endif
     }
 
@@ -384,7 +386,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
             if( mode == 2 )
                 return "已将二进制数据转成Base64字符串\r\n" + ms.ToArray().ToBase64();
             else  // mode == 1
-                return "## 一大堆二进制数据 ##";
+                return $"##--非文本类数据，长度：({ms.Length})--##";
         }
     }
 

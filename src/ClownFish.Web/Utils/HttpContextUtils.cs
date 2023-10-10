@@ -73,15 +73,4 @@ public static class HttpContextUtils
             log.UserRole = user.UserRole;
     }
 
-
-    public static string GetToken(this NHttpContext httpContext, LoginTicketSource source)
-    {
-        if( source == LoginTicketSource.Header )
-            return httpContext.Request.Header(AuthOptions.HeaderName);
-
-        if( source == LoginTicketSource.Cookie )
-            return httpContext.Request.Cookie(AuthOptions.CookieName);
-
-        return null;
-    }
 }

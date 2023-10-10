@@ -74,9 +74,11 @@ public sealed class ServerHost : IDisposable
 
 
         // 用后台线程接收请求，防止阻塞当前线程
-        _workThread = new Thread(ServerProc);
-        _workThread.IsBackground = true;
-        _workThread.Start();
+        using( ExecutionContext.SuppressFlow() ) {
+            _workThread = new Thread(ServerProc);
+            _workThread.IsBackground = true;
+            _workThread.Start();
+        }
 
         listener.Start();
         _listener = listener;

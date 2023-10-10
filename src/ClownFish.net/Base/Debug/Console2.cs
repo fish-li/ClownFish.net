@@ -15,6 +15,50 @@ public static class Console2
     /// </summary>
     public static readonly string SeparatedLine = "--------------------------------------------------";
 
+    private static StringBuilder s_listenLines;
+
+    /// <summary>
+    /// 输出一条消息到控制台
+    /// </summary>
+    /// <param name="message"></param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static void WriteLine(string message)
+    {
+        Console.WriteLine(message);
+
+        if( s_listenLines != null )
+            s_listenLines.AppendLine(message);
+    }
+
+    /// <summary>
+    /// 开始监听所有对 Console 的输出调用，并记录到内存中。
+    /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static void BeginListen()
+    {
+        if( s_listenLines == null )
+            s_listenLines = new StringBuilder(1024 * 16);
+    }
+
+    /// <summary>
+    /// 结束BeginListen()的监听，并将内存中的监听结果写入到临时文件
+    /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static string EndListen(string filename = null)
+    {
+        if( s_listenLines == null )
+            return null;
+
+        string text = s_listenLines.ToString();
+        s_listenLines = null;
+
+        if( filename == null )
+            filename = "_ConsoleWrite.log";
+
+        string filePath = Path.Combine(EnvUtils.GetTempPath(), filename);
+        RetryFile.WriteAllText(filePath, text);
+        return filePath;
+    }
 
     /// <summary>
     /// 输出一条消息到控制台
@@ -29,10 +73,10 @@ public static class Console2
         ClownFishCounters.Console2.Error.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        Console2.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
 
         if( ex != null )
-            Console.WriteLine(ex.ToString());
+            Console2.WriteLine(ex.ToString());
     }
 
     /// <summary>
@@ -47,7 +91,7 @@ public static class Console2
         ClownFishCounters.Console2.Error.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
+        Console2.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
     }
 
     /// <summary>
@@ -76,7 +120,7 @@ public static class Console2
         ClownFishCounters.Console2.Warnning.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console.WriteLine($"[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        Console2.WriteLine($"[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
     }
 
 
@@ -93,25 +137,16 @@ public static class Console2
             return;
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console.WriteLine($"[INFO] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        Console2.WriteLine($"[INFO] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
     }
 
-
-    /// <summary>
-    /// 输出一条消息到控制台
-    /// </summary>
-    /// <param name="message"></param>
-    public static void WriteLine(string message)
-    {
-        Console.WriteLine(message);
-    }
 
     /// <summary>
     /// 在Console上输出一个分隔行
     /// </summary>
     public static void WriteSeparatedLine()
     {
-        Console.WriteLine(SeparatedLine);
+        Console2.WriteLine(SeparatedLine);
     }
 
 
@@ -128,7 +163,7 @@ public static class Console2
             return;
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console.WriteLine($"[DEBUG] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        Console2.WriteLine($"[DEBUG] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
     }
 
 

@@ -3,12 +3,12 @@
 public static class AuthOptions
 {
     /// <summary>
-    /// 登录凭证在请求头中的名称
+    /// 登录凭证在请求头中的名称，默认值："x-token"
     /// </summary>
     public static string HeaderName { get; set; } = LocalSettings.GetSetting("ClownFish_Authentication_HeaderName", "x-token");
 
     /// <summary>
-    /// 登录凭证在COOKIE中的名称
+    /// 登录凭证在COOKIE中的名称，默认值："xtoken"
     /// </summary>
     public static string CookieName { get; set; } = LocalSettings.GetSetting("ClownFish_Authentication_CookieName", "xtoken");
 

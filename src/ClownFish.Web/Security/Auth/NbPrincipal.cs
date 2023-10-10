@@ -17,14 +17,18 @@ public sealed class NbPrincipal : ClaimsPrincipal
     /// </summary>
     public LoginTicketSource Source { get; private set; }
 
+    /// <summary>
+    /// 原始的登录凭证文本
+    /// </summary>
+    public string Token { get; private set; }
 
     /// <summary>
     /// 构造方法
     /// </summary>
     /// <param name="ticket"></param>
     /// <param name="source"></param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public NbPrincipal(LoginTicket ticket, LoginTicketSource source)
+    /// <param name="token"></param>
+    public NbPrincipal(LoginTicket ticket, LoginTicketSource source, string token)
     {
         if( ticket == null )
             throw new ArgumentNullException(nameof(ticket));
@@ -32,6 +36,7 @@ public sealed class NbPrincipal : ClaimsPrincipal
 
         this.Ticket = ticket;
         this.Source = source;
+        this.Token = token;
 
         this.AddIdentity(new NbIdentity(ticket.User));
     }

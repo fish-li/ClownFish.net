@@ -9,6 +9,8 @@ public static class AspnetCoreStarter
 
     public static void Run(WebApplicationStartup startup = null)
     {
+        Console2.BeginListen();
+
         if( startup == null )
             startup = new WebApplicationStartup();
 
@@ -125,6 +127,8 @@ public static class AspnetCoreStarter
         Console2.WriteLine("Listening  Addr : " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "http://0.0.0.0:80");
         Console2.WriteLine("Application started. Press Ctrl+C to shut down.");
         Console2.WriteSeparatedLine();
+
+        Console2.EndListen("_app_startup.log");
 
         // 进入ASP.NET CORE的启动过程
         // 注意：执行下面这行代码后，主线程会被阻塞，直到 Ctrl+C

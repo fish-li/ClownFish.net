@@ -106,6 +106,7 @@ public static class AuthenticationManager
     /// <summary>
     /// 手动验证当前用户身份。
     /// 默认情况下 AuthenticateModule 会自动完成这个操作。
+    /// 当前方法可多次调用（后面的调用不会发生作用）
     /// </summary>
     /// <param name="httpContext"></param>
     public static void AuthenticationUser(NHttpContext httpContext)

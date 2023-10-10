@@ -81,7 +81,6 @@ internal class DataImportMySql : IDataImport
             StringBuilderPool.Return(sb);
         }
 
-        Console.WriteLine(_insertSql);
     }
 
 

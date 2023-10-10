@@ -19,7 +19,8 @@ internal static class TokenHelper
 
 
     /// <summary>
-    /// 解密 JWT-TOKEN
+    /// 加载请求中的身份凭证，并设置 httpContext.User ,
+    /// 当前方法可多次调用（后面的调用不会发生作用）
     /// </summary>
     /// <param name="httpContext"></param>
     public static void LoadToken(NHttpContext httpContext)
@@ -53,6 +54,26 @@ internal static class TokenHelper
         token = httpContext.Request.Cookie(AuthOptions.CookieName);
         if( string.IsNullOrEmpty(token) == false ) {
             SetContextUser(httpContext, token, LoginTicketSource.Cookie);
+            return;
+        }
+
+
+        string authHeaderName = httpContext.Request.Header("x-auth-headername");
+        if( authHeaderName.HasValue() ) {
+            token = httpContext.Request.Header(authHeaderName);
+            if( string.IsNullOrEmpty(token) == false ) {
+                SetContextUser(httpContext, token, LoginTicketSource.Header);
+                return;
+            }
+        }
+
+        string authCookiename = httpContext.Request.Header("x-auth-cookiename");
+        if( authCookiename.HasValue() ) {
+            token = httpContext.Request.Cookie(authCookiename);
+            if( string.IsNullOrEmpty(token) == false ) {
+                SetContextUser(httpContext, token, LoginTicketSource.Cookie);
+                return;
+            }
         }
     }
 
@@ -63,7 +84,7 @@ internal static class TokenHelper
         if( ticket == null || ticket.User == null )
             return;
 
-        httpContext.User = new NbPrincipal(ticket, source);
+        httpContext.User = new NbPrincipal(ticket, source, token);
     }
 
 
