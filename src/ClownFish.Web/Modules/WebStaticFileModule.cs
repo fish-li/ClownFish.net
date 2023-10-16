@@ -22,7 +22,13 @@ public sealed class WebStaticFileModule : NHttpModule
         { ".woff2", "font/woff2" },
     };
 
-    public override void BeginRequest(NHttpContext httpContext)
+    //public override void PostAuthenticateRequest(NHttpContext httpContext)
+    //{
+    //    // 如果需要对静态文件做授权检查，可以自行开发一个 NHttpModule，然后重写 PostAuthenticateRequest 方法
+    //    // 在那个方法中，检查 用户是否可以访问某个 URL 
+    //}
+
+    public override void ResolveRequestCache(NHttpContext httpContext)
     {
         if( httpContext.PipelineContext.Action != null )
             return;
