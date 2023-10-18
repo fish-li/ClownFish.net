@@ -1,4 +1,6 @@
-﻿namespace ClownFish.NRedis;
+﻿using System.Threading.Channels;
+
+namespace ClownFish.NRedis;
 
 /// <summary>
 /// Redis消息订阅管道
@@ -11,6 +13,7 @@ internal sealed class RedisSubscriberSync<T> where T : class
 
     private ChannelMessageQueue _channelMessageQueue;
     private ISubscriber _subscriber;
+    private RedisChannel _channel;
 
 
     internal RedisSubscriberSync(BaseMessageHandler<T> handler, RedisSubscriberArgs args)
@@ -28,7 +31,8 @@ internal sealed class RedisSubscriberSync<T> where T : class
         RedisClient client = Redis.GetClient(_args.SettingName);
         _subscriber = client.GetConnection().GetSubscriber(this);
 
-        _channelMessageQueue = _subscriber.Subscribe(_args.Channel);
+        _channel = new RedisChannel(_args.Channel, RedisChannel.PatternMode.Auto);
+        _channelMessageQueue = _subscriber.Subscribe(_channel);
         _channelMessageQueue.OnMessage(HandleMessage);
 
         ClownFishInit.AppExitToken.Register(OnAppEnd);
@@ -36,7 +40,7 @@ internal sealed class RedisSubscriberSync<T> where T : class
 
     private void OnAppEnd()
     {
-        _subscriber?.Unsubscribe(_args.Channel);
+        _subscriber?.Unsubscribe(_channel);
         Console2.WriteLine("Application exit, stop RedisSubscriber: " + _pipeline.HandlerInstance.GetType().FullName);
     }
 

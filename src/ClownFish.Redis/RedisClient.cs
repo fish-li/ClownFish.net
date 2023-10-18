@@ -103,7 +103,9 @@ public sealed class RedisClient //: IDisposable
             throw new ArgumentNullException(nameof(data));
 
         IDatabase db = GetDatabase();
-        db.Publish(channel, body);
+
+        RedisChannel redisChannel = new RedisChannel(channel, RedisChannel.PatternMode.Auto);
+        db.Publish(redisChannel, body);
 
         return body.Length;
     }

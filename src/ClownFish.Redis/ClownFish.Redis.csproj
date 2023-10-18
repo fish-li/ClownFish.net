@@ -14,7 +14,7 @@
         <LangVersion>11.0</LangVersion>
     </PropertyGroup>
 
-    <PropertyGroup>        
+    <PropertyGroup>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <PackageId>ClownFish.Redis</PackageId>
@@ -26,9 +26,8 @@
     <ItemGroup>
         <PackageReference Include="Castle.Core" Version="5.0.0" />
         <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
-        <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
+        <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
     </ItemGroup>
-
 
     <ItemGroup>
         <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />

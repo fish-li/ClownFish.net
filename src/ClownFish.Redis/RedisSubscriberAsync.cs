@@ -11,7 +11,7 @@ internal sealed class RedisSubscriberAsync<T> where T : class
     
     private ChannelMessageQueue _channelMessageQueue;
     private ISubscriber _subscriber;
-
+    private RedisChannel _channel;
 
     internal RedisSubscriberAsync(AsyncBaseMessageHandler<T> handler, RedisSubscriberArgs args)
     {
@@ -29,7 +29,9 @@ internal sealed class RedisSubscriberAsync<T> where T : class
         _subscriber = client.GetConnection().GetSubscriber(this);
 
         // https://github.com/StackExchange/StackExchange.Redis/issues/639
-        _channelMessageQueue = _subscriber.Subscribe(_args.Channel);
+
+        _channel = new RedisChannel(_args.Channel, RedisChannel.PatternMode.Auto);
+        _channelMessageQueue = _subscriber.Subscribe(_channel);
         _channelMessageQueue.OnMessage(HandleMessage);
 
         ClownFishInit.AppExitToken.Register(OnAppEnd);
@@ -37,7 +39,7 @@ internal sealed class RedisSubscriberAsync<T> where T : class
 
     private void OnAppEnd()
     {
-        _subscriber?.Unsubscribe(_args.Channel);
+        _subscriber?.Unsubscribe(_channel);
         Console2.WriteLine("Application exit, stop RedisSubscriber: " + _pipeline.HandlerInstance.GetType().FullName);
     }
 
