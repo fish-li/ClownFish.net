@@ -1,4 +1,4 @@
-﻿using ClownFish.Base.Jwt;
+﻿using ClownFish.Jwt;
 
 namespace ClownFish.Web.Security.Auth;
 
@@ -45,7 +45,10 @@ public sealed class JwtProvider
 
         string payloadJosn = _serializer.Serialize(ticket);
 
-        return JwtUtils.Encode(payloadJosn, _options.SecretKeyBytes, _options.HashAlgorithmName);
+        if( _options.IsAsymmetricAlgorithm )
+            return JwtUtils.Encode2(payloadJosn, _options.X509Cert, _options.AlgorithmName);
+        else
+            return JwtUtils.Encode(payloadJosn, _options.HashKeyBytes, _options.AlgorithmName);
     }
 
 
@@ -68,7 +71,10 @@ public sealed class JwtProvider
         if( string.IsNullOrEmpty(token) )
             throw new ArgumentNullException(nameof(token));
 
-        string json = DecodePayload(token, _options.SecretKeyBytes);
+
+        string json = _options.IsAsymmetricAlgorithm
+                        ? DecodePayload2(token, _options.X509Cert)
+                        : DecodePayload(token, _options.HashKeyBytes);
 
         return DecodeJson(json, true);
     }
@@ -94,20 +100,34 @@ public sealed class JwtProvider
     /// 解析Token的 Payload 部分
     /// </summary>
     /// <param name="token"></param>
-    /// <param name="secretKey">如果不指定此参数，将不会签名验证</param>
+    /// <param name="x509">如果不指定此参数，将不会签名验证</param>
     /// <returns></returns>
+    internal string DecodePayload2(string token, X509Certificate2 x509 = null)
+    {
+        if( string.IsNullOrEmpty(token) )
+            throw new ArgumentNullException(nameof(token));
+
+        try {
+            return JwtUtils.Decode2(token, x509, _options.AlgorithmName);
+        }
+        catch( Exception ) { /* 忽略所有的错误场景 */ }
+
+        return null;
+    }
+
     internal string DecodePayload(string token, byte[] secretKey = null)
     {
         if( string.IsNullOrEmpty(token) )
             throw new ArgumentNullException(nameof(token));
 
         try {
-            return JwtUtils.Decode(token, secretKey, _options.HashAlgorithmName);
+            return JwtUtils.Decode(token, secretKey, _options.AlgorithmName);
         }
         catch( Exception ) { /* 忽略所有的错误场景 */ }
 
         return null;
     }
+
 
     internal LoginTicket DecodeJson(string json, bool verifyExpiration)
     {

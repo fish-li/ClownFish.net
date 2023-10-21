@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base.Jwt;
+﻿namespace ClownFish.Jwt;
 
 internal sealed class JwtParts
 {
@@ -13,8 +13,9 @@ internal sealed class JwtParts
     public JwtParts(string token)
     {
         if( string.IsNullOrWhiteSpace(token) ) {
-            throw new ArgumentNullException("token");
+            throw new ArgumentNullException(nameof(token));
         }
+
         string[] array = token.Split('.');
         if( array.Length != 3 ) {
             throw new InvalidTokenPartsException("token格式不正确");

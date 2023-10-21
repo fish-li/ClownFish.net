@@ -26,7 +26,7 @@ public static class AspnetCoreStarter
             ClownFishInit.InitLogAsDefault();
 
         if( startup.AutoInitAuth )
-            AuthenticationManager.InitAsDefault();
+            ClownFishWebInit.InitAuth();
 
         CreateWebApp(startup);
 

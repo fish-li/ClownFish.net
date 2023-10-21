@@ -1,4 +1,4 @@
-﻿using ClownFish.Base.Jwt;
+﻿using ClownFish.Jwt;
 using ClownFish.Web.Security.Auth;
 using JWT;
 using JWT.Algorithms;

@@ -10,12 +10,12 @@ public class JwtProviderTest
     internal static JwtProvider CreateJwtProvider(string algorithmName, bool useShortTypeName, bool verifyTokenExpiration, bool useShortTime)
     {
         JwtOptions opt = new JwtOptions {
-            HashAlgorithmName = algorithmName,
+            AlgorithmName = algorithmName,
             ShortTypeName = useShortTypeName,
             VerifyTokenExpiration = verifyTokenExpiration,
             ShortTime = useShortTime,
             LoadUnknownUser = LocalSettings.GetBool("ClownFish_Authentication_LoadUnknownUserType"),
-            SecretKeyBytes = GetSecretKeyBytes()
+            HashKeyBytes = GetSecretKeyBytes()
         };
 
         return new JwtProvider(opt);

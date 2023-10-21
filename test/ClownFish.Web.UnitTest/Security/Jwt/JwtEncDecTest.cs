@@ -1,4 +1,4 @@
-﻿using ClownFish.Base.Jwt;
+﻿using ClownFish.Jwt;
 using ClownFish.Web.Security.Auth;
 using AuthenticationManager = ClownFish.Web.Security.Auth.AuthenticationManager;
 

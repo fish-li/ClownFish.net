@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 /// <summary>
 /// RSA算法（签名/验证签名/加密/解密）的封装工具类。
@@ -14,7 +12,7 @@ public static class RsaHelper
     /// <param name="data">需要做签名的数据</param>
     /// <param name="certSubject">证书主题</param>
     /// <returns></returns>
-    public static string Sign(byte[] data, string certSubject)
+    internal static string Sign(byte[] data, string certSubject)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));
@@ -31,7 +29,7 @@ public static class RsaHelper
     /// <param name="data">需要做签名的数据</param>
     /// <param name="cert">X509Certificate2对象</param>
     /// <returns></returns>
-    public static string Sign(byte[] data, X509Certificate2 cert)
+    internal static string Sign(byte[] data, X509Certificate2 cert)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));
@@ -49,7 +47,7 @@ public static class RsaHelper
     /// <param name="signature"></param>
     /// <param name="publicKey"></param>
     /// <returns></returns>
-    public static bool Verify(byte[] data, string signature, byte[] publicKey)
+    internal static bool Verify(byte[] data, string signature, byte[] publicKey)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));
@@ -73,7 +71,7 @@ public static class RsaHelper
     /// <param name="signature"></param>
     /// <param name="publicKeyText"></param>
     /// <returns></returns>
-    public static bool Verify(byte[] data, string signature, string publicKeyText)
+    internal static bool Verify(byte[] data, string signature, string publicKeyText)
     {
         // 这里参数是 publicKey，而不是 certname 主要是为了方便，
         // publicKey 可以写死在代码中
@@ -90,7 +88,7 @@ public static class RsaHelper
     /// <param name="signature"></param>
     /// <param name="cert"></param>
     /// <returns></returns>
-    public static bool Verify(byte[] data, string signature, X509Certificate2 cert)
+    internal static bool Verify(byte[] data, string signature, X509Certificate2 cert)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));
@@ -117,7 +115,7 @@ public static class RsaHelper
     /// <param name="data">二进制数据</param>
     /// <param name="certSubject">证书名称</param>
     /// <returns>加密后的数据</returns>
-    public static byte[] Encrypt(byte[] data, string certSubject)
+    internal static byte[] Encrypt(byte[] data, string certSubject)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));
@@ -136,7 +134,7 @@ public static class RsaHelper
     /// <param name="data"></param>
     /// <param name="certSubject"></param>
     /// <returns></returns>
-    public static byte[] Decrypt(byte[] data, string certSubject)
+    internal static byte[] Decrypt(byte[] data, string certSubject)
     {
         if( data == null )
             throw new ArgumentNullException(nameof(data));

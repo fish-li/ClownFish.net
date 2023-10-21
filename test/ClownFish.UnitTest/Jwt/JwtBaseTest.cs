@@ -1,7 +1,7 @@
-﻿using ClownFish.Base.Jwt;
-using ClownFish.Base.Jwt.Impl;
+﻿using ClownFish.Jwt;
+using ClownFish.Jwt.Impl;
 
-namespace ClownFish.UnitTest.Base.Jwt;
+namespace ClownFish.UnitTest.Jwt;
 
 [TestClass]
 public class JwtBaseTest

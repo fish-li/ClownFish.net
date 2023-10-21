@@ -128,7 +128,7 @@ public static class X509Finder
     /// <returns></returns>
     public static X509Certificate2 LoadFromPublicKey(byte[] publicKey)
     {
-        if( publicKey == null )
+        if( publicKey.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(publicKey));
 
 
@@ -198,7 +198,7 @@ public static class X509Finder
         if( pfxBody == null )
             throw new ArgumentNullException(nameof(pfxBody));
 
-        return new X509Certificate2(pfxBody, password, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+        return new X509Certificate2(pfxBody, password, X509KeyStorageFlags.DefaultKeySet);
     }
 
 
@@ -213,7 +213,31 @@ public static class X509Finder
         if( pfxFilePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(pfxFilePath));
 
-        return new X509Certificate2(pfxFilePath, password, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+        return new X509Certificate2(pfxFilePath, password, X509KeyStorageFlags.DefaultKeySet);
     }
 
+
+    /// <summary>
+    /// 从配置文件中加载一个包含私钥的证书文件，
+    /// 配置文件格式：base64(证书加载密码)\nbase64(证书文件二进制内容)
+    /// </summary>
+    /// <param name="fileBdoy">配置文件内容</param>
+    /// <returns></returns>
+    public static X509Certificate2 LoadFromConfigFile(string fileBdoy)
+    {
+        // 包含私钥的证书文件通常在加载和导入时会需要密码，所以就需要2样东西：证书文件 和 导入密码
+        // 为了让这2个“强关联”，方便配置和复制，
+        // 所以就要求把这2个都放在一个项目文件中，配置文件格式：base64(证书加载密码)\nbase64(证书文件二进制内容)
+
+        if( fileBdoy.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(fileBdoy));
+
+        string[] lines = fileBdoy.ToLines();
+        if( lines.Length != 2 )
+            throw new ArgumentException("配置文件的内容格式不正确！");
+
+        string pwd = lines[0].FromBase64(true);
+        byte[] body = Convert.FromBase64String(lines[1]);
+        return new X509Certificate2(body, pwd, X509KeyStorageFlags.DefaultKeySet);
+    }
 }

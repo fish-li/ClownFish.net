@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base.Jwt;
+﻿namespace ClownFish.Jwt;
 
 internal sealed class InvalidTokenPartsException : Exception
 {

@@ -19,11 +19,10 @@ public static class X509Extensions
             throw new ArgumentNullException(nameof(data));
 
 
-        if( cert.HasPrivateKey == false )
-            throw new ArgumentException("指定的证书没有包含私钥：" + cert.Subject);
-
-
         using RSA rsa = (RSA)cert.GetRSAPrivateKey();
+
+        if( rsa == null )
+            throw new ArgumentException("证书没有包含私钥!");
 
         //计算数据哈希值
         using SHA1 sha1 = SHA1.Create();
@@ -102,12 +101,11 @@ public static class X509Extensions
             throw new ArgumentNullException(nameof(data));
 
 
-        if( cert.HasPrivateKey == false )
-            throw new ArgumentException("证书没有私钥。");
-
-
         // 读取证书私钥
         using RSA rsa = (RSA)cert.GetRSAPrivateKey();
+
+        if( rsa == null )
+            throw new ArgumentException("证书没有包含私钥!");
 
         return rsa.Decrypt(data, RSAEncryptionPadding.Pkcs1);
     }

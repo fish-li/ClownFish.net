@@ -1,6 +1,6 @@
-﻿using ClownFish.Base.Jwt;
+﻿using ClownFish.Jwt;
 
-namespace ClownFish.UnitTest.Base.Jwt;
+namespace ClownFish.UnitTest.Jwt;
 
 [TestClass]
 public class NbJwtBase64UrlEncoderTest

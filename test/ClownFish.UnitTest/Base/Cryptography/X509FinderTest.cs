@@ -30,6 +30,15 @@ namespace ClownFish.UnitTest.Base.Cryptography
         }
 
 
+        public static X509Certificate2 LoadPfxFile()
+        {
+            return X509Finder.LoadPfx(PfxFilePath, "pwdFishli");
+        }
+
+        public static X509Certificate2 LoadPublicKeyFile()
+        {
+            return X509Finder.LoadPublicKeyFile(CerFilePath);
+        }
 
         [TestMethod]
         public void Test_LoadPfx()
@@ -48,6 +57,27 @@ namespace ClownFish.UnitTest.Base.Cryptography
 
             MyAssert.IsError<Exception>(() => {  // Internal.Cryptography.CryptoThrowHelper+WindowsCryptographicException
                 _ = X509Finder.LoadPfx(body, "xxxxxxxx");
+            });
+        }
+
+        [TestMethod]
+        public void Test_LoadFromConfigFile()
+        {
+            string confBody = File.ReadAllText(@"..\..\cert\ClownFishTest.conf");
+            X509Certificate2 cert3 = X509Finder.LoadFromConfigFile(confBody);
+            Assert.AreEqual(CertThumbprint, cert3.Thumbprint);
+
+
+            MyAssert.IsError<ArgumentNullException>(() => {
+                _ = X509Finder.LoadFromConfigFile("");
+            });
+
+            MyAssert.IsError<ArgumentException>(() => {
+                _ = X509Finder.LoadFromConfigFile("xxxxx");
+            });
+
+            MyAssert.IsError<Exception>(() => {
+                _ = X509Finder.LoadFromConfigFile("aaaa \n bbbb");
             });
         }
 

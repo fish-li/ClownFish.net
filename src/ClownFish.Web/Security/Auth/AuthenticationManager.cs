@@ -1,6 +1,4 @@
-﻿using ClownFish.Base.Jwt;
-
-namespace ClownFish.Web.Security.Auth;
+﻿namespace ClownFish.Web.Security.Auth;
 
 /// <summary>
 /// 用户身份验证操作相关的工具类
@@ -21,27 +19,6 @@ public static class AuthenticationManager
         if( checkRights != null ) {
             AuthorizeAttribute.SetCheckRightsImpl(checkRights);
         }
-    }
-
-    public static void InitAsDefault()
-    {
-        AuthOptions.CookieName = LocalSettings.GetSetting("ClownFish_Authentication_CookieName", "x-token");
-        AuthOptions.HeaderName = LocalSettings.GetSetting("ClownFish_Authentication_HeaderName", "xtoken");
-
-        string secretKey = LocalSettings.GetSetting("ClownFish_Authentication_SecretKey", "defaultkey_ed5aa823f9b546e78c2ac10915549326");
-
-        JwtOptions jwtOptions = new JwtOptions {
-            SecretKeyBytes = Encoding.UTF8.GetBytes(secretKey),
-            HashAlgorithmName = LocalSettings.GetSetting("ClownFish_JwtToken_AlgorithmName").IfEmpty(JwtUtils.DefaultHashAlgorithmName),
-            IssuerName = EnvUtils.GetAppName(),
-            ShortTime = LocalSettings.GetBool("ClownFish_JwtToken_ShortTimeFormat", 1),
-            ShortTypeName = LocalSettings.GetBool("ClownFish_JwtToken_ShortTypeName", 1),
-            LoadUnknownUser = LocalSettings.GetBool("ClownFish_Authentication_LoadUnknownUserType", 0),
-            VerifyTokenExpiration = LocalSettings.GetBool("ClownFish_JwtToken_VerifyExpiration", 1)
-        };
-
-        JwtProvider provider = new JwtProvider(jwtOptions);
-        AuthenticationManager.Init(provider, null);
     }
 
 
@@ -175,11 +152,11 @@ public static class AuthenticationManager
 
 
     internal static readonly JwtProvider SimpleJwtDecoder = new JwtProvider(new JwtOptions {
-        HashAlgorithmName = null,
+        AlgorithmName = null,
         ShortTime = true,
         ShortTypeName = true,
         VerifyTokenExpiration = false,
-        SecretKeyBytes = new byte[] { 0 }  // 随便指定
+        HashKeyBytes = new byte[] { 0 }  // 随便指定
     });
 
     /// <summary>

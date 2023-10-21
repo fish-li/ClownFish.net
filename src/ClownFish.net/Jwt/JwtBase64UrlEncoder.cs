@@ -1,7 +1,16 @@
-﻿namespace ClownFish.Base.Jwt;
+﻿namespace ClownFish.Jwt;
 
 internal static class NbJwtBase64UrlEncoder
 {
+    internal static string Base64UrlEncode(this string input)
+    {
+        if( input.IsNullOrEmpty())
+            throw new ArgumentNullException(nameof(input));
+
+        byte[] bytes = Encoding.UTF8.GetBytes(input);
+        return Encode(bytes);
+    }
+
     public static string Encode(byte[] input)
     {
         if( input == null || input.Length == 0 ) {
