@@ -24,9 +24,6 @@ public sealed class HttpRequestAlone : NHttpRequest, IDisposable
     /// </summary>
     public HttpRequestAlone(RequestData data) : base(HttpContextAlone.Instance)
     {
-        if( _data != null )
-            throw new InvalidOperationException("不允许多次调用当前方法。");
-
         if( data == null )
             throw new ArgumentNullException(nameof(data));
 

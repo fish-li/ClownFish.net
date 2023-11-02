@@ -93,7 +93,7 @@ public class FirstModule
         }
 
 
-        if( httpContext.Response.StatusCode == 404 && s_show404Page ) {
+        if( httpContext.Response.StatusCode == 404 && s_show404Page && httpContext.Response.HasStarted == false ) {
             await Http404Handler.Instance.ProcessRequestAsync(httpContextNetCore);
         }
     }

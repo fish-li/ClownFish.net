@@ -1,4 +1,7 @@
-﻿namespace ClownFish.UnitTest.WebClient;
+﻿using System.Runtime.InteropServices;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+
+namespace ClownFish.UnitTest.WebClient;
 
 [TestClass]
 public class HttpOptionTest
@@ -232,7 +235,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
         Assert.IsTrue(text.Contains("POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1"));
         Assert.IsTrue(text.Contains("User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0"));
         Assert.IsTrue(text.Contains("Content-Type: application/octet-stream"));
-        Assert.IsTrue(text.Contains("已将二进制数据转成Base64字符串\r\n" + bytes.ToBase64()));
+        Assert.IsTrue(text.Contains("已将二进制数据转成Base64字符串：" + bytes.ToBase64()));
     }
 
     [TestMethod]
@@ -355,6 +358,93 @@ Host=www.fish-test.com
         });
         Assert.AreEqual($"不能识别的请求文本格式，请求头：[Host=www.fish-test.com]", ex4.Message);
 
+    }
+
+
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_UnixSocketEndPoint()
+    {
+        if( RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) {
+            MyAssert.IsError<NotSupportedException>(() => {
+                HttpOption httpOption = new HttpOption();
+                httpOption.UnixSocketEndPoint = "xxx.sock";
+            });
+        }
+    }
+
+
+    [TestMethod]
+    public void Test_xx()
+    {
+        var option = new HttpOption();
+        option.MockResult = new object();
+        Assert.IsNotNull(option.MockResult);
+
+        option.CompletionOption = System.Net.Http.HttpCompletionOption.ResponseHeadersRead;
+        Assert.AreEqual(System.Net.Http.HttpCompletionOption.ResponseHeadersRead, option.CompletionOption);
+        
+        option.MessageHandler = null;
+        Assert.IsNull(option.MessageHandler);
+
+        option.AutoDecompressResponse = true;
+        Assert.IsTrue(option.AutoDecompressResponse);
+
+        option.OnSetRequest = null;
+        Assert.IsNull(option.OnSetRequest);
+    }
+
+#endif
+
+    [TestMethod]
+    public void Test_GetPostBodyAsString()
+    {
+        HttpOption option = new HttpOption {
+            Method = "POST",
+            Url = "http://www.fish-test.com/test1.aspx",
+            Data = "abc",
+            Format = SerializeFormat.Text
+        };
+
+        string text0 = (string)option.InvokeMethod("GetPostBodyAsString", 0);
+        Assert.IsNull(text0);
+
+        option.Data = "abc".ToUtf8Bytes();
+        option.Format = SerializeFormat.Binary;
+
+        string text1 = (string)option.InvokeMethod("GetPostBodyAsString", 1);
+        Assert.AreEqual("##--非文本类数据，长度：(3)--##", text1);
+
+
+        string text2 = (string)option.InvokeMethod("GetPostBodyAsString", 2);
+        Assert.AreEqual("已将二进制数据转成Base64字符串：YWJj", text2);
+    }
+
+
+    [TestMethod]
+    public void Test_FillLineAndHeaders_Cookie()
+    {
+        HttpOption option = new HttpOption {
+            Method = "POST",
+            Url = "http://www.fish-test.com/test1.aspx",
+            Data = "abc",
+            Format = SerializeFormat.Text
+        };
+
+        CookieContainer cookieContainer = new CookieContainer();
+        Uri uri = new Uri(option.Url);
+        cookieContainer.Add(uri, new Cookie("name1", "abc"));
+
+        option.Cookie = cookieContainer;
+
+        StringBuilder sb = new StringBuilder();
+        option.InvokeMethod("FillLineAndHeaders", sb);
+
+        string text = sb.ToString();
+        Console.WriteLine(sb.ToString());
+
+        Assert.IsTrue(text.Contains("Cookie: name1=abc"));
+        
     }
 
 }

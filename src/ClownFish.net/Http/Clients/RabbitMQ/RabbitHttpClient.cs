@@ -50,16 +50,10 @@ public sealed class RabbitHttpClient : IDisposable
 
         try {
             QueueDeclare(queue, true, false, false, argument);
-        }
-        catch( Exception ex ) {
-            throw new RabbitHttpException("执行 QueueDeclare 失败。", ex);
-        }
-
-        try {
             QueueBind(queue, exchange, routing);
         }
         catch( Exception ex ) {
-            throw new RabbitHttpException("执行 QueueBind 失败。", ex);
+            throw new RabbitHttpException("执行 CreateQueueBind 失败。", ex);
         }
     }
 
@@ -69,6 +63,7 @@ public sealed class RabbitHttpClient : IDisposable
 
         //  {"auto_delete":false,"durable":true,"arguments":{},"node":"rabbit@smacmullen"}
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
+        httpOption.Id = "ClownFish_RabbitHttpClient_QueueDeclare";
         httpOption.Method = "PUT";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -86,6 +81,7 @@ public sealed class RabbitHttpClient : IDisposable
 
         // { "routing_key":"my_routing_key","arguments":{ } }
         HttpOption httpOption = _option.GetHttpOption($"/api/bindings/{vhost}/e/{exchange}/q/{queue}");
+        httpOption.Id = "ClownFish_RabbitHttpClient_QueueBind";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -128,6 +124,7 @@ public sealed class RabbitHttpClient : IDisposable
             throw new ArgumentNullException(nameof(data));
 
         HttpOption httpOption = _option.GetHttpOption($"/api/exchanges/{vhost}/{exchange}/publish");
+        httpOption.Id = "ClownFish_RabbitHttpClient_SendMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -185,29 +182,87 @@ public sealed class RabbitHttpClient : IDisposable
     }
 
 #if NETCOREAPP
+    ///// <summary>
+    ///// 获取指定数据类型对应的队列中的消息数量
+    ///// </summary>
+    ///// <param name="queue"></param>
+    ///// <returns></returns>
+    //public long MessageCount(string queue)
+    //{
+    //    // As the default virtual host is called "/", this will need to be encoded as "%2F".
+    //    string vhost = _option.VHost.UrlEncode();
+
+    //    dynamic resultObject = null;
+    //    long? count = null;
+
+
+    //    for( int i = 0; i < 60; i++ ) {
+    //        try {
+    //            HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
+    //            httpOption.Id = "ClownFish_RabbitHttpClient_MessageCount";
+
+    //            string json = httpOption.GetResult();
+    //            //Console.WriteLine(json);
+    //            resultObject = json.FromJson<ExpandoObject>();
+    //        }
+    //        catch( Exception ex ) {
+    //            throw new RabbitHttpException("执行 MessageCount 失败。", ex);
+    //        }
+
+    //        // RabbitMQ 这个接口的返回结构很不固定，会导致取不到结果，
+    //        // 所以暂时也没有很好的办法对付这个老六
+
+    //        // 下面是5个返回结果的样例，而且还不是5个轮流换，结果很随机！！
+    //        //{ "consumer_details":[],"arguments":{},"auto_delete":false,"backing_queue_status":{"avg_ack_egress_rate":0.0,"avg_ack_ingress_rate":0.0,"avg_egress_rate":0.0,"avg_ingress_rate":0.0,"delta":["delta","undefined",0,0,"undefined"],"len":0,"mode":"default","next_seq_id":0,"q1":0,"q2":0,"q3":0,"q4":0,"target_ram_count":"infinity"},"consumer_utilisation":null,"consumers":0,"deliveries":[],"durable":true,"effective_policy_definition":{"max-length":100000,"overflow":"reject-publish"},"exclusive":false,"exclusive_consumer_tag":null,"garbage_collection":{"fullsweep_after":65535,"max_heap_size":0,"min_bin_vheap_size":46422,"min_heap_size":233,"minor_gcs":5},"head_message_timestamp":null,"incoming":[],"memory":34668,"message_bytes":0,"message_bytes_paged_out":0,"message_bytes_persistent":0,"message_bytes_ram":0,"message_bytes_ready":0,"message_bytes_unacknowledged":0,"message_stats":{"ack":0,"ack_details":{"rate":0.0},"deliver":0,"deliver_details":{"rate":0.0},"deliver_get":3,"deliver_get_details":{"rate":0.0},"deliver_no_ack":0,"deliver_no_ack_details":{"rate":0.0},"get":1,"get_details":{"rate":0.0},"get_empty":0,"get_empty_details":{"rate":0.0},"get_no_ack":2,"get_no_ack_details":{"rate":0.0},"redeliver":1,"redeliver_details":{"rate":0.0}},"messages_paged_out":0,"messages_persistent":0,"messages_ram":0,"messages_ready_ram":0,"messages_unacknowledged_ram":0,"name":"test1","node":"rabbit@my-rabbit","operator_policy":null,"policy":"10W","recoverable_slaves":null,"single_active_consumer_tag":null,"state":"running","type":"classic","vhost":"nbtest"}
+    //        //{ "consumer_details":[],"arguments":{},"auto_delete":false,"backing_queue_status":{"avg_ack_egress_rate":0.0,"avg_ack_ingress_rate":0.0,"avg_egress_rate":0.0,"avg_ingress_rate":0.0,"delta":["delta","undefined",0,0,"undefined"],"len":0,"mode":"default","next_seq_id":0,"q1":0,"q2":0,"q3":0,"q4":0,"target_ram_count":"infinity"},"consumer_utilisation":null,"consumers":0,"deliveries":[],"durable":true,"effective_policy_definition":{"max-length":100000,"overflow":"reject-publish"},"exclusive":false,"exclusive_consumer_tag":null,"garbage_collection":{"fullsweep_after":65535,"max_heap_size":0,"min_bin_vheap_size":46422,"min_heap_size":233,"minor_gcs":5},"head_message_timestamp":null,"incoming":[],"memory":34668,"message_bytes":0,"message_bytes_paged_out":0,"message_bytes_persistent":0,"message_bytes_ram":0,"message_bytes_ready":0,"message_bytes_unacknowledged":0,"message_stats":{"ack":0,"ack_details":{"rate":0.0},"deliver":0,"deliver_details":{"rate":0.0},"deliver_get":3,"deliver_get_details":{"rate":0.0},"deliver_no_ack":0,"deliver_no_ack_details":{"rate":0.0},"get":1,"get_details":{"rate":0.0},"get_empty":0,"get_empty_details":{"rate":0.0},"get_no_ack":2,"get_no_ack_details":{"rate":0.0},"publish":2,"publish_details":{"rate":0.0},"redeliver":1,"redeliver_details":{"rate":0.0}},"messages_paged_out":0,"messages_persistent":0,"messages_ram":0,"messages_ready_ram":0,"messages_unacknowledged_ram":0,"name":"test1","node":"rabbit@my-rabbit","operator_policy":null,"policy":"10W","recoverable_slaves":null,"single_active_consumer_tag":null,"state":"running","type":"classic","vhost":"nbtest"}
+    //        //{ "garbage_collection":{ "max_heap_size":-1,"min_bin_vheap_size":-1,"min_heap_size":-1,"fullsweep_after":-1,"minor_gcs":-1},"consumer_details":[],"arguments":{ },"auto_delete":false,"deliveries":[],"durable":true,"exclusive":false,"incoming":[],"name":"test1","node":"rabbit@my-rabbit","type":"classic","vhost":"nbtest"}
+    //        //{ "garbage_collection":{ "max_heap_size":-1,"min_bin_vheap_size":-1,"min_heap_size":-1,"fullsweep_after":-1,"minor_gcs":-1},"consumer_details":[],"arguments":{ },"auto_delete":false,"deliveries":[],"durable":true,"exclusive":false,"incoming":[],"message_stats":{ "publish":2,"publish_details":{ "rate":0.0} },"name":"test1","node":"rabbit@my-rabbit","type":"classic","vhost":"nbtest"}
+    //        //{ "garbage_collection":{ "max_heap_size":-1,"min_bin_vheap_size":-1,"min_heap_size":-1,"fullsweep_after":-1,"minor_gcs":-1},"consumer_details":[],"arguments":{ },"auto_delete":false,"deliveries":[],"durable":true,"exclusive":false,"incoming":[],"message_stats":{ "publish":2,"publish_details":{ "rate":0.0} },"messages":0,"messages_details":{ "rate":0.0},"messages_ready":0,"messages_ready_details":{ "rate":0.0},"messages_unacknowledged":0,"messages_unacknowledged_details":{ "rate":0.0},"name":"test1","node":"rabbit@my-rabbit","reductions":10546,"reductions_details":{ "rate":0.0},"type":"classic","vhost":"nbtest"}
+
+    //        try {
+    //            count = (long)resultObject.messages;
+    //        }
+    //        catch {
+    //            Thread.Sleep(300);
+    //        }
+
+    //        if( count.HasValue )
+    //            return count.Value;
+    //    }
+
+    //    return -1;
+    //}
+
     /// <summary>
-    /// 获取指定数据类型对应的队列中的消息数量
+    /// 获取指定数据类型对应的队列中的消息数量。
+    /// 【注意】：由于RabbitMQ服务端的原因（响应体数据结构不固定），当此方法返回 -1 时表示没有取到结果，调用方可采用循环的方式发起调用，有效结果范围：大于或等于 0
     /// </summary>
     /// <param name="queue"></param>
     /// <returns></returns>
-    public uint MessageCount(string queue)
+    public long MessageCount(string queue)
     {
-        // As the default virtual host is called "/", this will need to be encoded as "%2F".
         string vhost = _option.VHost.UrlEncode();
-
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
+        httpOption.Id = "ClownFish_RabbitHttpClient_MessageCount";
 
-        dynamic result = null;
+        dynamic resultObject = null;
 
         try {
-            result = httpOption.GetResult<ExpandoObject>();
+            string json = httpOption.GetResult();
+            resultObject = json.FromJson<ExpandoObject>();
         }
         catch( Exception ex ) {
             throw new RabbitHttpException("执行 MessageCount 失败。", ex);
         }
 
-        return (uint)result.messages;
+        try {
+            return (long)resultObject.messages;
+        }
+        catch {
+            return -1;
+        }
     }
+
 #endif
 
 
@@ -228,6 +283,7 @@ public sealed class RabbitHttpClient : IDisposable
         string vhost = _option.VHost.UrlEncode();
 
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}/get");
+        httpOption.Id = "ClownFish_RabbitHttpClient_GetMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -250,6 +306,7 @@ public sealed class RabbitHttpClient : IDisposable
         string vhost = _option.VHost.UrlEncode();
 
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}/get");
+        httpOption.Id = "ClownFish_RabbitHttpClient_AckLast";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -268,6 +325,19 @@ public sealed class RabbitHttpClient : IDisposable
     public void TestConnection()
     {
         HttpOption httpOption = _option.GetHttpOption("/api/overview");
+        httpOption.Id = "ClownFish_RabbitHttpClient_TestConnection";
         httpOption.Send();
     }
+
+
+    //internal void DeleteQueue(string queue)
+    //{
+    //    string vhost = _option.VHost.UrlEncode();
+
+    //    HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
+    //    httpOption.Id = "ClownFish_RabbitHttpClient_DeleteQueue";
+    //    httpOption.Method = "DELETE";
+
+    //    httpOption.Send();
+    //}
 }

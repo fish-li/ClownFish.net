@@ -28,12 +28,12 @@ public abstract class BackgroundTask : BaseBackgroundTask
         this.Status = 2;
 
         // 这个方法不做异常处理，因为有可能会包含一些初始化的操作。
-        if( Init() == false )                 
+        if( Init() == false )
             return;
 
         ClownFishInit.AppExitToken.Register(OnAppExit);
 
-        if( this.CronValue.IsNullOrEmpty() == false ) {
+        if( this.CronValue.HasValue() ) {
             RunByCron();
         }
         else if( this.SleepSeconds.GetValueOrDefault() > 0 ) {

@@ -122,7 +122,7 @@ public sealed class EsConnOption
             return opt;
 
         if( checkExist )
-            throw new DatabaseNotFoundException("没有找到指定的连接配置参数，connName：" + connName);
+            throw new ConfigurationErrorsException("没有找到指定的连接配置参数，connName：" + connName);
 
         return null;
     }

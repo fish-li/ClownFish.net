@@ -24,6 +24,19 @@ public sealed class RequestData : IBinarySerializer, ITextSerializer
     public byte[] Body { get; private set; }
 
     /// <summary>
+    /// 构造方法
+    /// </summary>
+    public RequestData() { }
+
+
+    internal RequestData(string requestLine, string headers, byte[] body)
+    {
+        RequestLine = requestLine;
+        Headers = headers;
+        Body = body;
+    }
+
+    /// <summary>
     /// ToString
     /// </summary>
     /// <returns></returns>

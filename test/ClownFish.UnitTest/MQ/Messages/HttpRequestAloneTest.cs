@@ -230,5 +230,87 @@ GET http://localhost:8206/v20/api/WebSiteApp/test/Databus.aspx HTTP/1.1
         Assert.AreEqual("333333333333", req.Cookie("c1"));
     }
 
+
+
+
+    [TestMethod]
+    public void Test_ctor()
+    {
+        MyAssert.IsError<ArgumentNullException>(() => {
+            HttpRequestAlone req = new HttpRequestAlone(null);
+        });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            RequestData data = new RequestData();
+            HttpRequestAlone req = new HttpRequestAlone(data);
+        });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            RequestData data = new RequestData("GET http://xxxxx", null, null);
+            HttpRequestAlone req = new HttpRequestAlone(data);
+        });
+    }
+
+    [TestMethod]
+    public void Test_error()
+    {
+        RequestData data = new RequestData("GET http://xxx.com/ HTTP/1.1", null, null);
+        HttpRequestAlone req = new HttpRequestAlone(data);
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = req.OriginalHttpRequest;
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = req.HttpContext;
+        });
+
+        MyAssert.IsError<NotImplementedException>(() => {
+            _ = req.FormKeys;
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = req.QueryString("");
+        });
+
+        MyAssert.IsError<NotImplementedException>(() => {
+            _ = req.Form("xx");
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = req.GetHeaders("");
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = req.Header("");
+        });
+    }
+
+    [TestMethod]
+    public async Task Test_ReadBodyAsBytesAsync()
+    {
+        RequestData data = new RequestData("POST http://xxx.com/ HTTP/1.1", null, "3233acfbc0484636a8e078393f7727f2".GetBytes());
+        HttpRequestAlone req = new HttpRequestAlone(data);
+
+        byte[] bb = await req.ReadBodyAsBytesAsync();
+        Assert.AreEqual("3233acfbc0484636a8e078393f7727f2", bb.ToUtf8String());
+    }
+
+
+    [TestMethod]
+    public void Test_InputStream()
+    {
+        RequestData data = new RequestData("POST http://xxx.com/ HTTP/1.1", null, "3233acfbc0484636a8e078393f7727f2".GetBytes());
+        HttpRequestAlone req = new HttpRequestAlone(data);
+
+        Stream stream = req.InputStream;
+        Assert.IsNotNull(stream);
+        Assert.IsTrue(stream.CanRead);
+
+        (req as IDisposable).Dispose();
+
+        Assert.IsFalse(stream.CanRead);
+
+    }
 }
 #endif

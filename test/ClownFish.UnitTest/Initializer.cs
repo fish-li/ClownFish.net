@@ -1,7 +1,8 @@
 ﻿global using System.Data.SqlClient;
 global using ClownFish.UnitTest._Common;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using System.Globalization;
+using ClownFish.UnitTest.Base;
 using ClownFish.UnitTest.Data.Events;
 using ClownFish.UnitTest.Data.Models;
 using ClownFish.UnitTest.Data.MultiDB;
@@ -20,6 +21,7 @@ public class Initializer
         EnvironmentVariables.Set("RUNTIME_ENVIRONMENT", "FishDev");
         EnvironmentVariables.Set("ClownFish_Console2_Trace_Enabled", "1");
         EnvironmentVariables.Set("x1.y1.z1", "123");
+
 
         ClownFishInit.InitBase();
         ThreadPool.SetMinThreads(100, 1000);
@@ -90,6 +92,8 @@ public class Initializer
     [AssemblyCleanup()]
     public static void AssemblyCleanup()
     {
+        ClownFishInit.ApplicationEnd();
+
         // 等待 HttpWriter的操作
         System.Threading.Thread.Sleep(2000);
     }

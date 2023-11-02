@@ -51,7 +51,7 @@ public sealed class ConsoleEndWaiter : IDisposable
         _sigTermRegistration?.Dispose();
     }
 
-    private void HandlePosixSignal(PosixSignalContext context)
+    internal void HandlePosixSignal(PosixSignalContext context)
     {
         Console2.WriteLine($"###### {DateTime.Now.ToTime23String()} PosixSignal: {context.Signal}");
         context.Cancel = true;

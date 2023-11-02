@@ -115,5 +115,28 @@ Server: Kestrel";
             Console2.ShowHTTP(request, response, true);
             Console2.ShowHTTP(request, response, false);
         }
+
+
+        [TestMethod]
+        public void Test_BeginListen_EndListen()
+        {
+            string filePath = Path.Combine(EnvUtils.GetTempPath(), "_ConsoleWrite.log");
+            RetryFile.Delete(filePath);
+
+            Console2.EndListen();
+            Assert.IsFalse(File.Exists(filePath));
+
+
+            Console2.BeginListen();
+
+            Console2.WriteLine("493abe3fa542401eaf21de2fc50e47c9");
+            Console2.WriteLine("4c2e0d6268294accae8a44a85e52293e");
+
+            Console2.EndListen();
+            
+            string text = File.ReadAllText(filePath);
+            Assert.IsTrue(text.Contains("493abe3fa542401eaf21de2fc50e47c9"));
+            Assert.IsTrue(text.Contains("4c2e0d6268294accae8a44a85e52293e"));
+        }
     }
 }

@@ -38,11 +38,8 @@ public sealed class HttpResult<T> : IToAllText
     /// <exception cref="ArgumentNullException"></exception>
     public HttpResult(int statusCode, NameValueCollection headers, T result) 
     {
-        if( headers == null )
-            throw new ArgumentNullException(nameof(headers));
-
         this.StatusCode = statusCode;
-        this.Headers = headers;
+        this.Headers = headers ?? new NameValueCollection();
         this.Result = result;
     }
 

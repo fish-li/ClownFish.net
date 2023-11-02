@@ -54,8 +54,9 @@ public sealed class RabbitOption
     /// <returns></returns>
     public HttpOption GetHttpOption(string urlPath)
     {
+        int port = this.HttpPort > 0 ? this.HttpPort : 15672;
         HttpOption httpOption = new HttpOption {
-            Url = $"http://{this.Server}:{(this.HttpPort > 0 ? this.HttpPort : 15672)}{urlPath}",
+            Url = $"http://{this.Server}:{port}{urlPath}",
             Timeout = 10 * 1000,
         };
 
@@ -70,14 +71,14 @@ public sealed class RabbitOption
     /// </summary>
     public void Validate()
     {
-        if( this.VHost.IsNullOrEmpty() )
-            this.VHost = "/";
-
         if( this.Server.IsNullOrEmpty() )
             throw new ConfigurationErrorsException("RabbitMQ连接配置中没有指定 Server 参数。");
 
         if( this.Username.IsNullOrEmpty() )
             throw new ConfigurationErrorsException("RabbitMQ连接配置中没有指定 Username 参数。");
+
+        if( this.VHost.IsNullOrEmpty() )
+            this.VHost = "/";
     }
 
 }

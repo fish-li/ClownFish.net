@@ -12,23 +12,23 @@ internal sealed class RabbitHttpWriter : ILogWriter
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
-        InternalInit(config);
+        InternalInit(config, RabbitOption.DefaultSettingName);
     }
 
 
-    private void InternalInit(LogConfiguration config)
+    internal int InternalInit(LogConfiguration config, string settingName)
     {
-        string configValue = Settings.GetSetting(RabbitOption.DefaultSettingName);
+        string configValue = Settings.GetSetting(settingName);
 
         if( configValue.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitHttpWriter 不能初始化，因为没有找到 {RabbitOption.DefaultSettingName} 的连接配置参数。");
-            return;
+            Console2.Info($"RabbitHttpWriter 不能初始化，因为没有找到 {settingName} 的连接配置参数。");
+            return -1;
         }
 
         RabbitOption option = configValue.ToObject<RabbitOption>();
         if( option.Server.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitHttpWriter 不能初始化，因为连接配置参数 {RabbitOption.DefaultSettingName} 的 Server 为空。");
-            return;
+            Console2.Info($"RabbitHttpWriter 不能初始化，因为连接配置参数 {settingName} 的 Server 为空。");
+            return -2;
         }
 
 
@@ -42,6 +42,7 @@ internal sealed class RabbitHttpWriter : ILogWriter
         AutoCreateQueue(config);
 
         Console2.Info(this.GetType().FullName + " Init OK.");
+        return 1;
     }
 
 

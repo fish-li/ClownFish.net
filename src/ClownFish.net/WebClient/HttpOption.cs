@@ -26,6 +26,17 @@ public sealed class HttpOption : ILoggingObject, IToAllText
 #endif
     }
 
+    /// <summary>
+    /// 一个字符串，用于标识当前客户端请求。配合MockResult一起使用可用于测试时模拟返回结果。
+    /// </summary>
+    public string Id { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public object MockResult { get; set; }
+
+
 #if NETCOREAPP
 
     /// <summary>
@@ -384,7 +395,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
             }
 
             if( mode == 2 )
-                return "已将二进制数据转成Base64字符串\r\n" + ms.ToArray().ToBase64();
+                return "已将二进制数据转成Base64字符串：" + ms.ToArray().ToBase64();
             else  // mode == 1
                 return $"##--非文本类数据，长度：({ms.Length})--##";
         }

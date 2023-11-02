@@ -1,12 +1,17 @@
-﻿namespace ClownFish.UnitTest.WebClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace ClownFish.UnitTest.Http.Utils;
 [TestClass]
 public class HttpUtilsTest
 {
     [TestMethod]
     public void Test_RequestHasBody()
     {
-        MyAssert.IsError<ArgumentNullException>(()=> {
+        MyAssert.IsError<ArgumentNullException>(() => {
             _ = HttpUtils.RequestHasBody(null);
         });
 
@@ -55,7 +60,7 @@ public class HttpUtilsTest
     }
 
     [TestMethod]
-    public void Test_ContentIsText()
+    public void Test_RequestBodyIsText()
     {
         Assert.IsFalse(HttpUtils.RequestBodyIsText(""));
 
@@ -70,6 +75,24 @@ public class HttpUtilsTest
     }
 
     [TestMethod]
+    public void Test_ResponseBodyIsText()
+    {
+        Assert.IsFalse(HttpUtils.ResponseBodyIsText(""));
+
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("text/plain"));
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("text/css"));
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("application/json"));
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("application/xml"));
+
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("application/problem+json"));
+        Assert.IsTrue(HttpUtils.ResponseBodyIsText("application/x-ndjson"));
+
+        Assert.IsFalse(HttpUtils.ResponseBodyIsText("application/x-www-form-urlencoded"));  // Response根本不使用这个类型
+        Assert.IsFalse(HttpUtils.ResponseBodyIsText("multipart/form-data"));
+        Assert.IsFalse(HttpUtils.ResponseBodyIsText("application/octet-stream"));
+    }
+
+    [TestMethod]
     public void Test_GetStatusReasonPhrase()
     {
         StringBuilder sb = new StringBuilder();
@@ -78,7 +101,7 @@ public class HttpUtilsTest
             sb.AppendLineRN($"{i}: {text}");
             Assert.IsTrue(text.Length > 0);
         }
-        
+
         string all = sb.ToString();
         Console.WriteLine(all);
 
@@ -86,4 +109,7 @@ public class HttpUtilsTest
         Assert.IsTrue(all.Contains("200: OK"));
         Assert.IsTrue(all.Contains("500: Internal Server Error"));
     }
+
+
+
 }

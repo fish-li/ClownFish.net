@@ -9,7 +9,7 @@ public static class MmqSubscriber
 {
     private static readonly List<Task> s_workers = new List<Task>();
 
-    private static void CheckArgs<TData>(MmqSubscriberArgs<TData> args) where TData : class
+    internal static void CheckArgs<TData>(MmqSubscriberArgs<TData> args) where TData : class
     {
         if( args == null )
             throw new ArgumentNullException(nameof(args));
@@ -17,11 +17,14 @@ public static class MmqSubscriber
         if( args.Queue == null )
             throw new ArgumentNullException(nameof(args.Queue));
 
+        if( args.SubscriberCount <= 0 )
+            throw new ArgumentOutOfRangeException(nameof(args.SubscriberCount));
+
         if( args.RetryCount < 0 )
-            args.RetryCount = 0;
+            throw new ArgumentOutOfRangeException(nameof(args.RetryCount));
 
         if( args.RetryWaitMilliseconds < 0 )
-            args.RetryWaitMilliseconds = 0;
+            throw new ArgumentOutOfRangeException(nameof(args.RetryWaitMilliseconds));
 
         PipelineUtils.EnsureIsRootCode();
     }

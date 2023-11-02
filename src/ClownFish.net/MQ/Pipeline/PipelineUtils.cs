@@ -65,14 +65,20 @@ public static class PipelineUtils
         // 这些异常不需要【重试】，因为重试的结果不会有变化。
         if( lastException is System.ComponentModel.DataAnnotations.ValidationException
             || lastException is ValidationException2
+            || lastException is ClientDataException
             || lastException is ArgumentException
             || lastException is InvalidOperationException
+            || lastException is InvalidDataException
             || lastException is InvalidCodeException
             || lastException is MessageException
             || lastException is TaskCanceledException
             || lastException is DuplicateInsertException
+            || lastException is ForbiddenException
+            || lastException is DatabaseNotFoundException
+            || lastException is TenantNotFoundException
             || lastException is ConfigurationErrorsException
-            || lastException is NotImplementedException ) {
+            || lastException is NotImplementedException
+            || lastException is NotSupportedException ) {
 
             return false;
         }

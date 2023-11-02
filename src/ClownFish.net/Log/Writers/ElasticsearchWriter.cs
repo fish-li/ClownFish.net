@@ -16,15 +16,15 @@ internal sealed class ElasticsearchWriter : ILogWriter
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
-        InternalInit();
+        InternalInit(ElasticsearchSettingName);
     }
 
-    private bool InternalInit()
+    internal bool InternalInit(string settingName)
     {
-        EsConnOption opt = EsConnOption.Create(ElasticsearchSettingName, false);
+        EsConnOption opt = EsConnOption.Create(settingName, false);
 
         if( opt == null ) {
-            Console2.Info($"ElasticsearchWriter 不能初始化，因为没有找到 {ElasticsearchSettingName} 连接配置参数。");
+            Console2.Info($"ElasticsearchWriter 不能初始化，因为没有找到 {settingName} 连接配置参数。");
             return false;
         }
 
@@ -41,8 +41,8 @@ internal sealed class ElasticsearchWriter : ILogWriter
         if( _client == null )
             return;
 
-        ClownFishCounters.Logging.EsWriteCount.Add(list.Count);
-
         _client.WriteList(list);
+
+        ClownFishCounters.Logging.EsWriteCount.Add(list.Count);
     }
 }

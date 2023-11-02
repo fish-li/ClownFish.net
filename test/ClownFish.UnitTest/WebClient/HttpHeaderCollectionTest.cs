@@ -62,6 +62,9 @@ public class HttpHeaderCollectionTest
     [TestMethod]
     public void Test_CreateFrom_object()
     {
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = HttpHeaderCollection.Create(null);
+        });
         MyAssert.IsError<ArgumentException>(()=> {
             _ = HttpHeaderCollection.Create(111);
         });
@@ -99,6 +102,18 @@ public class HttpHeaderCollectionTest
         Assert.AreEqual(3, h.Count);
         Assert.AreEqual("11", h["a"]);
         Assert.AreEqual("22", h["b"]);
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            HttpHeaderCollection h2 = null;
+            NameValueCollection nv2 = h2;
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            NameValueCollection nv3 = null;
+            HttpHeaderCollection h3 = nv3;
+        });
+
+        HttpHeaderCollection h4 = nvc;
     }
 
     [TestMethod]

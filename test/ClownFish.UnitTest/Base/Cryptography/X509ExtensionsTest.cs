@@ -20,7 +20,13 @@ namespace ClownFish.UnitTest.Base.Cryptography
             string signature = cert1.Sign(bb);
             bool flag = cert1.Verify(bb, signature);
             Assert.IsTrue(flag);
+            
+            bool flag2 = cert1.GetRSAPublicKey().VerifyData(bb, Convert.FromBase64String(signature), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            Assert.IsTrue(flag2);
 
+            string signature2 = cert1.GetRSAPrivateKey().SignData(bb, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1).ToBase64();
+            bool flag3 = cert1.Verify(bb, signature2);
+            Assert.IsTrue(flag3);
 
             byte[] enc = cert1.Encrypt(bb);
             byte[] bb2 = cert1.Decrypt(enc);

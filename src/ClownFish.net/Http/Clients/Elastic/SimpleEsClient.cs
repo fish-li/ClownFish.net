@@ -118,6 +118,7 @@ public sealed class SimpleEsClient
         string id = GetDocumentId(info);
 
         HttpOption httpOption = new HttpOption {
+            Id = "ClownFish_SimpleEsClient_WriteOne",
             Method = "POST",
             Url = _option.Url + $"/{index}/_doc/{id}",
             Data = info.ToJson(JsonStyle.CamelCase),
@@ -174,6 +175,7 @@ public sealed class SimpleEsClient
         string index = indexName ?? GetIndexName(typeof(T));
 
         HttpOption httpOption = new HttpOption {
+            Id = "ClownFish_SimpleEsClient_WriteList",
             Method = "POST",
             Url = _option.Url + $"/{index}/_bulk",
             Data = dataList.ToMultiLineJson(JsonStyle.CamelCase),
@@ -189,19 +191,19 @@ public sealed class SimpleEsClient
 
     #region 搜索数据
 
-    private class SearchResponse<T>
+    internal class SearchResponse<T>
     {
         [JsonProperty("hits")]
         public SearchHit<T> Hits { get; set; }
     }
 
-    private class SearchHit<T>
+    internal class SearchHit<T>
     {
         [JsonProperty("hits")]
         public List<HitData<T>> Hits { get; set; }
     }
 
-    private class HitData<T>
+    internal class HitData<T>
     {
         [JsonProperty("_source")]
         public T Data { get; set; }
@@ -248,6 +250,7 @@ public sealed class SimpleEsClient
     private HttpOption GetSearchHttpOption(string index, object body)
     {
         HttpOption httpOption = new HttpOption {
+            Id = "ClownFish_SimpleEsClient_Search",
             Method = "POST",
             Url = _option.Url + $"/{index.UrlEncode()}/_search?typed_keys=true",
             Format = SerializeFormat.Json,

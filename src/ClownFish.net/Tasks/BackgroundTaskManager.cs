@@ -13,10 +13,10 @@ public static class BackgroundTaskManager
     /// 启用所有的BackgroundTask
     /// </summary>
     /// <param name="types"></param>
-    public static void StartAll(params Type[] types)
+    public static int StartAll(params Type[] types)
     {
         if( types.IsNullOrEmpty() )
-            return;
+            return 0;
 
         if( s_taskList.Count > 0 )
             throw new InvalidOperationException("此方法不允许多次调用！");
@@ -32,6 +32,7 @@ public static class BackgroundTaskManager
                 continue;
             }
         }
+        return s_taskList.Count;
     }
 
 
@@ -68,7 +69,7 @@ public static class BackgroundTaskManager
         DebugReportBlock block = new DebugReportBlock { Category = "BackgroundTask Information" };
 
         foreach( var task in s_taskList ) {
-            string name = task.GetType().Name;
+            string name = task.GetType().FullName;
             long count = task.ExecuteCount.Get();
             long error = task.ErrorCount.Get();
             block.AppendLine($"{name}: {count.ToWString()},  {error.ToWString()}");
@@ -110,12 +111,22 @@ public static class BackgroundTaskManager
     /// 激活某个休眠的任务
     /// </summary>
     /// <param name="taskName"></param>
-    public static void ActivateTask(string taskName)
+    public static int ActivateTask(string taskName)
     {
         BaseBackgroundTask task = s_taskList.FirstOrDefault(x => x.GetType().FullName == taskName);
         task?.StopWait();
+        return task == null ? 0 : 1;
     }
 
+
+    internal static void StopAll()   // 单元测试用
+    {
+        foreach(var task in s_taskList ) {
+            task.OnAppExit();
+        }
+
+        s_taskList.Clear();
+    }
 }
 
 #endif

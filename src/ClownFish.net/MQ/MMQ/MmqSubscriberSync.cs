@@ -5,6 +5,7 @@
 internal class MmqSubscriberSync<T>  where T : class
 {
     private readonly MmqSubscriberArgs<T> _args;
+    private readonly CancellationToken _cancellationToken;
     private readonly MessagePipeline<T> _pipeline;
 
     private readonly MemoryMesssageQueue<T> _channel;
@@ -19,7 +20,12 @@ internal class MmqSubscriberSync<T>  where T : class
         _args = args;
         _channel = args.Queue;
 
-        _pipeline = new MessagePipeline<T>( handler, args.RetryCount, args.RetryWaitMilliseconds);
+        _pipeline = new MessagePipeline<T>(handler, args.RetryCount, args.RetryWaitMilliseconds);
+
+        if( _args.CancellationToken.HasValue == false )
+            _cancellationToken = ClownFishInit.AppExitToken;
+        else
+            _cancellationToken = _args.CancellationToken.Value;
     }
 
     /// <summary>
@@ -27,7 +33,7 @@ internal class MmqSubscriberSync<T>  where T : class
     /// </summary>
     public void Start()
     {
-        ClownFishInit.AppExitToken.Register(OnAppExit);
+        _cancellationToken.Register(OnAppExit);
 
         MainLoop();
     }
@@ -38,7 +44,7 @@ internal class MmqSubscriberSync<T>  where T : class
         while( true ) {
             T message = null;
             try {
-                message = _channel.Read(ClownFishInit.AppExitToken);
+                message = _channel.Read(_cancellationToken);
             }
             catch( OperationCanceledException ) { // Appliecation Exit
                 return;
@@ -61,14 +67,14 @@ internal class MmqSubscriberSync<T>  where T : class
     /// <param name="e"></param>
     private void OnError(string subject, Exception e)
     {
-        Console2.Error($"MmqSubscriber {subject}。", e);
+        Console2.Error($"MmqSubscriber {subject}", e);
     }
 
 
-    private void HandleMessage(T message)
+    internal int HandleMessage(T message)
     {
         if( message == null )
-            return;
+            return 0;
 
         MqRequest request = new MqRequest {
             MqKind = MQSource.MMQ,
@@ -76,10 +82,15 @@ internal class MmqSubscriberSync<T>  where T : class
         };
 
         try {
+#if DEBUG
+            TestHelper.TryThrowException();
+#endif
             _pipeline.PushMessage(request);
+            return 1;
         }
         catch( Exception ex ) {
             OnError("处理消息失败", ex);
+            return -1;
         }
     }
 

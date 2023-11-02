@@ -158,7 +158,9 @@ public partial class NHttpRequest : ILoggingObject
         var result = await this.GetBodyTextAsync();
 
         // 将执行时间记录到日志中
-        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsTextAsync", "size: " + result.Length);
+        if( this.HttpContext.PipelineContext != null ) {
+            this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsTextAsync", "size: " + result.Length);
+        }
 
         return result;
     }
@@ -174,7 +176,9 @@ public partial class NHttpRequest : ILoggingObject
         var result = await this.ReadBodyAsBytesAsync();
 
         // 将执行时间记录到日志中
-        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsBytesAsync", "size: " + result.Length);
+        if( this.HttpContext.PipelineContext != null ) {
+            this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "ReadBodyAsBytesAsync", "size: " + result.Length);
+        }
 
         return result;
     }
@@ -193,7 +197,9 @@ public partial class NHttpRequest : ILoggingObject
         long size = requestData.RequestLine.Length + requestData.Headers.Length + (requestData.Body?.Length ?? 0);  // 这只是一个近视值
 
         // 将执行时间记录到日志中
-        this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "RequestToBytesAsync", "size: " + size.ToString());
+        if( this.HttpContext.PipelineContext != null ) {
+            this.HttpContext.PipelineContext.OprLogScope.AddStep(startTime, "RequestToBytesAsync", "size: " + size.ToString());
+        }
 
         var result = (requestData as IBinarySerializer).ToBytes();
         return result;

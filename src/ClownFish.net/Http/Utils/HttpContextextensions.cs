@@ -71,7 +71,7 @@ public static partial class HttpContextExtensions
         if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
 
-        if( statusCode >= 300 )
+        if( statusCode >= 300 && httpContext.PipelineContext != null )
             httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
 
         if( string.IsNullOrEmpty(body) ) {
@@ -99,7 +99,7 @@ public static partial class HttpContextExtensions
         if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
 
-        if( statusCode >= 300 )
+        if( statusCode >= 300 && httpContext.PipelineContext != null )
             httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
 
         if( string.IsNullOrEmpty(body) ) {

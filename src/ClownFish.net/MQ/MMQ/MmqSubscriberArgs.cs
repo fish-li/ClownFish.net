@@ -23,6 +23,8 @@ public sealed class MmqSubscriberArgs<T> where T : class
     /// 消息处理失败后与下次重试之间的时间间隔，单位毫秒
     /// </summary>
     public int RetryWaitMilliseconds { get; set; }
+
+    internal CancellationToken? CancellationToken { get; set; }
 }
 
 #endif

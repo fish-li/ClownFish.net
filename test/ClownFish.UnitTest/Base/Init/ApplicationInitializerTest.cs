@@ -1,73 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using System.Text;
-using ClownFish.Base;
-using ClownFish.UnitTest.Base.Init;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 
-[assembly: PreApplicationStartMethod(typeof(AppStartX), "Init2")]
-
-namespace ClownFish.UnitTest.Base.Init
+namespace ClownFish.UnitTest.Base.Init;
+[TestClass]
+public class ApplicationInitializerTest
 {
-    [TestClass]
-    public class ApplicationInitializerTest
+    [TestMethod]
+    public void Test1()
     {
-        [TestMethod]
-        public void Test_Start()
-        {
-            PreApplicationStartMethodAttribute.ExecuteAll();
-            Assert.AreEqual(2, AppStartX.Flag);
-        }
+        long count1 = AppInitializer.Counter.Get();
 
-        [ExpectedException(typeof(InvalidProgramException))]
-        [TestMethod]
-        public void Test_Error()
-        {
-            PreApplicationStartMethodAttribute attr = new PreApplicationStartMethodAttribute(typeof(AppStartX), "xxx");
-            PreApplicationStartMethodAttribute.Invoke(attr, typeof(AppStartX).Assembly);
-        }
+        ApplicationInitializer.Execute();
 
-        [ExpectedException(typeof(DivideByZeroException))]
-        [TestMethod]
-        public void Test_Error2()
-        {
-            PreApplicationStartMethodAttribute attr = new PreApplicationStartMethodAttribute(typeof(AppStartX), "Init3");
-            PreApplicationStartMethodAttribute.Invoke(attr, typeof(AppStartX).Assembly);
-        }
-
-        [TestMethod]
-        public void Test_Error3()
-        {
-            MyAssert.IsError<ArgumentNullException>(()=> {
-                _ = new PreApplicationStartMethodAttribute(null, "xx");
-            });
-
-            MyAssert.IsError<ArgumentNullException>(() => {
-                _ = new PreApplicationStartMethodAttribute(typeof(ApplicationInitializerTest), "");
-            });
-        }
+        long count2 = AppInitializer.Counter.Get();
+        Assert.AreEqual(count1 + 1, count2);
     }
+}
 
 
 
-    public static class AppStartX
+public static class AppInitializer
+{
+    public static readonly ValueCounter Counter = new ValueCounter();
+
+    public static void Init()
     {
-        public static int Flag = 1;
-
-        public static void Init2()
-        {
-            Flag = 2;
-        }
-
-
-        public static void Init3()
-        {
-            int a = 1;
-            int b = DateTime.Now.Hour > 0 ? 0 : 1;
-            int c = a / b;
-            Console.WriteLine(c);
-        }
+        Counter.Increment();
     }
-    
 }

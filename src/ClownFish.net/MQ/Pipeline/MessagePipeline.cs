@@ -26,7 +26,7 @@ public sealed class MessagePipeline<T> where T : class
     public MessagePipeline(BaseMessageHandler<T> handler, int retryCount, int waitMilliseconds)
     {
         if( handler == null )
-            throw new ArgumentOutOfRangeException(nameof(handler));
+            throw new ArgumentNullException(nameof(handler));
 
         this._handler = handler;
         this._retryCount = (retryCount < 0 ? 0 : retryCount) + 1;

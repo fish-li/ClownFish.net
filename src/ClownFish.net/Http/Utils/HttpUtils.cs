@@ -93,7 +93,7 @@ public static class HttpUtils
             //|| contentType.StartsWith0("application/api-problem+json")
             //|| contentType.StartsWith0("application/problem+xml")
             //|| contentType.StartsWith0("application/json-seq")
-            //|| contentType.StartsWith0("application/x-ndjson")
+            || contentType.StartsWith0("application/x-ndjson")
             // 其实还有更多，这里就不再一一列出 ~~~~
             )
             return true;

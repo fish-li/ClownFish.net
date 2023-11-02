@@ -35,10 +35,10 @@ public static class ClownFishInit
     /// </summary>
     public static void InitBase()
     {
-        if( s_baseInited == false ) {
+        if( s_baseInited == false ) {            
             EnvironmentVariables.Init();
-            AppConfig.Init();
             SetDefaultCulture();
+            AppConfig.Init();            
             SetThreadPool();
             ConfigMisc();
             s_baseInited = true;
@@ -60,16 +60,21 @@ public static class ClownFishInit
 
 
         if( CultureInfo.CurrentCulture == null || CultureInfo.CurrentCulture.Name.IsNullOrEmpty() ) {
-
-            string lang = EnvironmentVariables.Get("LANG").IfEmpty("zh-CN");
-            CultureInfo defaultCulture = new CultureInfo(lang);
-
-            Thread.CurrentThread.CurrentCulture = defaultCulture;
-            CultureInfo.CurrentCulture = defaultCulture;
-            CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
-            Console2.Info("force set CurrentCulture => " + lang);
+            SetDefaultCulture0();
         }
     }
+
+    private static void SetDefaultCulture0()
+    {
+        string lang = EnvironmentVariables.Get("LANG").IfEmpty("zh-CN");
+        CultureInfo defaultCulture = new CultureInfo(lang);
+
+        Thread.CurrentThread.CurrentCulture = defaultCulture;
+        CultureInfo.CurrentCulture = defaultCulture;
+        CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+        Console2.Info("force set CurrentCulture => " + lang);
+    }
+
 
     private static void SetThreadPool()
     {
@@ -215,6 +220,8 @@ public static class ClownFishInit
         if( config == null )
             throw new ArgumentNullException(nameof(config));
 
+        if( ClownFish.Log.LogConfig.IsInited )
+            return;
 
         // 允许重新指定写入器类型，例如：开发时写到XML文件，生产环境部署时统一写到ES
         string logWriterNames = Settings.GetSetting("ClownFish_Log_WritersMap");
@@ -245,6 +252,9 @@ public static class ClownFishInit
     {
         if( filePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(filePath));
+
+        if( ClownFish.Log.LogConfig.IsInited )
+            return;
 
         LogConfiguration config = LogConfiguration.LoadFromFile(filePath, true);
         ClownFishInit.InitLog(config);

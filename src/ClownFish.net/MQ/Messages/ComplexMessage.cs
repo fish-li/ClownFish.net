@@ -70,13 +70,13 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
     }
 
 
-    private void Validate()
+    internal void Validate()
     {
         if( this.Headers.Count == 0 )
-            throw new InvalidDataException("没有指定消息头。如果确实不需要消息头，请不要使用这个类型。");
+            throw new InvalidDataException("没有指定消息头。");   // 如果确实不需要消息头，请不要使用这个类型。
 
         if( this.Body == null )
-            throw new InvalidDataException("消息体为空，不能执行序列化。");
+            throw new InvalidDataException("消息体为null，不能执行序列化。");
 
         if( typeof(T) == typeof(string) ) {
             string value = this.Body.ToString();
@@ -85,10 +85,10 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
         }
     }
 
-    private string GetBodyAsString()
+    internal string GetBodyAsString()
     {
         if( this.Body == null )
-            return null;
+            return string.Empty;
 
 
         if( typeof(T) == typeof(string) ) {
@@ -103,10 +103,10 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
         }
     }
 
-    private T StringToBodyObject(string text)
+    internal T StringToBodyObject(string text)
     {
         if( text.IsNullOrEmpty() )
-            return null;
+            return default(T);
 
 
         if( typeof(T) == typeof(string) ) {

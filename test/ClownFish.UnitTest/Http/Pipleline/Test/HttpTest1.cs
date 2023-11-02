@@ -161,6 +161,21 @@ public class HttpTest1
 
 
     [TestMethod]
+    public void Test_HttpPipelineContext_Get2()
+    {
+        MyAssert.IsError<InvalidOperationException>(() => {
+            _ = HttpPipelineContext.Get2();
+        });
+
+        MockRequestData requestData = GetRequestData();
+        using( MockHttpPipeline mock = new MockHttpPipeline(requestData) ) {
+
+            _ = HttpPipelineContext.Get2();
+        }
+    }
+
+
+    [TestMethod]
     public async Task Test_ResolveRequestCache_Set_Handler()
     {
         MockRequestData requestData = GetRequestData();

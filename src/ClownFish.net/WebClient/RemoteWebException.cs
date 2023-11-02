@@ -72,7 +72,7 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
     public RemoteWebException(Exception ex, string url) : base(ex?.Message, ex)
     {
         if( ex == null )
-            throw new ArgumentNullException("ex");
+            throw new ArgumentNullException(nameof(ex));
 
 
         this.Url = url;

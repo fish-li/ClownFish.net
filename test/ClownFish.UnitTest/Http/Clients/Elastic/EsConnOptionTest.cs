@@ -94,4 +94,60 @@ public class EsConnOptionTest
         Assert.AreEqual(0, opt.TimeoutMs);
         Assert.IsNull(opt.IndexNameTimeFormat);
     }
+
+    [TestMethod]
+    public void Test_2()
+    {
+        DbConfig dbConfig = new DbConfig {
+            Server = "10.5.1.1:9300",
+            Database = "x",
+        };
+
+        EsConnOption opt = EsConnOption.Create1(dbConfig);
+
+        opt.SetTimeoutMs(100)
+            .SetIndexNameTimeFormat("abc");
+
+        Assert.IsNull(opt.Password);
+        Assert.AreEqual(100, opt.TimeoutMs);
+        Assert.AreEqual("abc", opt.IndexNameTimeFormat);
+
+        string text = opt.ToString();
+        Assert.IsTrue(text.StartsWith0("Server="));
+    }
+
+    [TestMethod]
+    public void Test_3()
+    {
+        EsConnOption opt = new EsConnOption();
+        Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
+        Assert.AreEqual(30_000, opt.TimeoutMs);
+
+        opt.IndexNameTimeFormat = null;
+        opt.TimeoutMs = 0;
+
+        Assert.IsNull(opt.IndexNameTimeFormat);
+        Assert.AreEqual(0, opt.TimeoutMs);
+
+        MyAssert.IsError<ConfigurationErrorsException>(() => {
+            opt.Validate();
+        });
+
+        opt.Server = "s1";
+        opt.Validate();
+
+        Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
+        Assert.AreEqual(30_000, opt.TimeoutMs);
+    }
+
+    [TestMethod]
+    public void Test_4()
+    {
+        MyAssert.IsError<ConfigurationErrorsException>(() => {
+            _ = EsConnOption.Create("xxxxxxxxx", true);
+        });
+
+        EsConnOption opt = EsConnOption.Create("xxxxxxxxx", false);
+        Assert.IsNull(opt);
+    }
 }

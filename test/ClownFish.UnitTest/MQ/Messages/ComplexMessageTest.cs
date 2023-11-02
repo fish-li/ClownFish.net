@@ -68,5 +68,109 @@ public class ComplexMessageTest
         ComplexMessage<byte[]> msg3 = MessageTextSerializer.Instance.Deserialize<ComplexMessage<byte[]>>(text);
         Assert.IsTrue(bb.IsEqual(msg3.Body));
     }
+
+    [TestMethod]
+    public void Test_IMsgObject()
+    {
+        ComplexMessage<string> msg = new ComplexMessage<string>("aa");
+
+        // 检验是否可取到数据，不抛异常就算测试通过
+        Console.WriteLine(((IMsgObject)msg).GetTime());
+        Console.WriteLine(((IMsgObject)msg).GetId());
+    }
+
+    [TestMethod]
+    public void Test_ctor_error()
+    {
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = new ComplexMessage<string>(null);
+        });
+    }
+
+
+    [TestMethod]
+    public void Test_Validate()
+    {
+        // throw new InvalidDataException("消息体为空，不能执行序列化。");
+        MyAssert.IsError<InvalidDataException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>("");
+            msg.Validate();
+        });
+
+        // throw new InvalidDataException("没有指定消息头。");
+        MyAssert.IsError<InvalidDataException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>("aa");
+            msg.Headers.Clear();
+            msg.Validate();
+        });
+
+        // throw new InvalidDataException("消息体为null，不能执行序列化。");
+        MyAssert.IsError<InvalidDataException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>();
+            msg.Headers["x1"] = "aa";
+            msg.Validate();
+        });
+    }
+
+    [TestMethod]
+    public void Test_GetBodyAsString()
+    {
+        ComplexMessage<string> msg = new ComplexMessage<string>();
+        Assert.AreEqual(string.Empty, msg.GetBodyAsString());
+
+
+        ComplexMessage<string> msg2 = new ComplexMessage<string>("98b5cb37b39c41b6aef2b3a843698451");
+        Assert.AreEqual("98b5cb37b39c41b6aef2b3a843698451", msg2.GetBodyAsString());
+
+        byte[] bb = "中文汉字最优秀！".GetBytes();
+        ComplexMessage<byte[]> msg3 = new ComplexMessage<byte[]>(bb);
+        Assert.AreEqual("5Lit5paH5rGJ5a2X5pyA5LyY56eA77yB", msg3.GetBodyAsString());
+
+        NameValue nv = new NameValue("aa", "bb");
+        ComplexMessage<NameValue> msg4 = new ComplexMessage<NameValue>(nv);
+        Assert.AreEqual("{\"Name\":\"aa\",\"Value\":\"bb\"}", msg4.GetBodyAsString());
+    }
+
+    [TestMethod]
+    public void Test_StringToBodyObject()
+    {
+        ComplexMessage<string> msg = new ComplexMessage<string>();
+        Assert.IsNull(msg.StringToBodyObject(null));
+
+        Assert.AreEqual("98b5cb37b39c41b6aef2b3a843698451", msg.StringToBodyObject("98b5cb37b39c41b6aef2b3a843698451"));
+
+
+        ComplexMessage<byte[]> msg3 = new ComplexMessage<byte[]>();
+        byte[] bb = msg3.StringToBodyObject("5Lit5paH5rGJ5a2X5pyA5LyY56eA77yB");
+        Assert.AreEqual("中文汉字最优秀！", Encoding.UTF8.GetString(bb));
+
+        ComplexMessage<NameValue> msg4 = new ComplexMessage<NameValue>();
+        NameValue nv = msg4.StringToBodyObject("{\"Name\":\"aa\",\"Value\":\"bb\"}");
+        Assert.IsNotNull(nv);
+    }
+
+
+    [TestMethod]
+    public void Test_LoadData()
+    {
+        MyAssert.IsError<ArgumentNullException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>();
+            (msg as ITextSerializer).LoadData("");
+        });
+
+        MyAssert.IsError<InvalidDataException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>();
+            (msg as ITextSerializer).LoadData("xxxxxxxxxxxxxxxxxxxxxx");
+        });
+
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            ComplexMessage<string> msg = new ComplexMessage<string>();
+            ReadOnlyMemory<byte> body = new byte[0];
+            (msg as IBinarySerializer).LoadData(body);
+
+        });
+    }
+
 }
 #endif

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClownFish.Log.Logging;
+﻿namespace ClownFish.Log.Logging;
 
 /// <summary>
 /// 用于为一段代码片段增加日志监控功能

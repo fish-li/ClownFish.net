@@ -69,6 +69,12 @@ public static class HttpOptionExtensions
 
     private static T Send0<T>(HttpOption option)
     {
+        // 用于单元测试场景，从“模拟结果”中直接返回
+        object mockResult = HttpClientMockResults.GetMockResult(option.Id);
+        if( mockResult != null )
+            return (T)mockResult;
+
+
         var client = CreateClient(option);
         return client.Send<T>();
     }
@@ -110,6 +116,12 @@ public static class HttpOptionExtensions
 
     private static Task<T> SendAsync0<T>(HttpOption option)
     {
+        // 用于单元测试场景，从“模拟结果”中直接返回
+        object mockResult = HttpClientMockResults.GetMockResult(option.Id);
+        if( mockResult != null )
+            return Task.FromResult((T)mockResult);
+
+
         var client = CreateClient(option);
         client.IsAsync = true;
         return client.SendAsync<T>();
