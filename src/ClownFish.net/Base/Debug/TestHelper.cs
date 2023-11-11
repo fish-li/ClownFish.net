@@ -5,7 +5,7 @@
 /// </summary>
 internal static class TestHelper
 {
-    private static Exception s_exceptionForTest = null;
+    private static volatile Exception s_exceptionForTest = null;
 
     /// <summary>
     /// 为测试强制设置一个异常，然后在调用TryThrowException()时将会抛出，

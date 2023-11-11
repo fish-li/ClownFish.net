@@ -95,4 +95,28 @@ public static class JwtUtils
     }
 
 
+    /// <summary>
+    /// JWT Base64 UrlEncode
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string Base64UrlEncode(this byte[] input)
+    {
+        return NbJwtBase64UrlEncoder.Encode(input);
+    }
+
+
+    /// <summary>
+    /// JWT Base64 UrlEncode
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string Base64UrlEncode(this string input)
+    {
+        if( input.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(input));
+
+        byte[] bytes = Encoding.UTF8.GetBytes(input);
+        return NbJwtBase64UrlEncoder.Encode(bytes);
+    }
 }

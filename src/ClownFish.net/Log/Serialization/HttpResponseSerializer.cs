@@ -1,10 +1,5 @@
 ﻿#if NETCOREAPP
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClownFish.Log;
 internal static class HttpResponseSerializer
@@ -45,14 +40,14 @@ internal static class HttpResponseSerializer
                     sb.AppendLineRN($"{x.Key}: {v}");
                 }
             }
+        }
 
-            if( response.ResponseBodyCanLog() ) {
+        if( response.Content != null && response.ResponseBodyCanLog() ) {
 
-                // 有些情况下可能读不到数据~~~~~~~~~~
-                string body = HttpRequestSerializer.ReadBody(response.Content);
-                if( body != null ) {
-                    sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
-                }
+            // 有些情况下可能读不到数据~~~~~~~~~~
+            string body = HttpRequestSerializer.ReadBody(response.Content);
+            if( body != null ) {
+                sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
             }
         }
     }
@@ -60,10 +55,11 @@ internal static class HttpResponseSerializer
 
     internal static bool ResponseBodyCanLog(this HttpResponseMessage response)
     {
-        if( LoggingOptions.HttpClient.MustLogClientResponse && LoggingOptions.HttpClient.LogClientResponseBody
+        if( LoggingOptions.HttpClient.LogClientResponseBody
             && response.Content != null
             && response.Content.Headers != null
             && response.Content.BodyIsText()
+            && response.LoggingIgnoreBody() == false
             && response.Content.GetBodySize().IsBetween(1, LoggingLimit.HttpBodyMaxLen)
             ) {
 
@@ -71,6 +67,20 @@ internal static class HttpResponseSerializer
         }
 
         return false;
+    }
+
+
+    internal static bool LoggingIgnoreBody(this HttpResponseMessage response)
+    {
+        HttpRequestMessage request = response.RequestMessage;
+
+        if( request != null && request.Headers != null 
+            && request.Headers.TryGetValues(LoggingIgnoreNames.HeaderName, out IEnumerable<string> values) ) {
+            return values.Contains(LoggingIgnoreNames.IgnoreResponseBody);
+        }
+        else {
+            return false;
+        }
     }
 
 }

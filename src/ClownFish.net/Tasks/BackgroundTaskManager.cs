@@ -119,6 +119,11 @@ public static class BackgroundTaskManager
     }
 
 
+    internal static BaseBackgroundTask GetTaskInstance(string taskName)
+    {
+        return s_taskList.FirstOrDefault(x => x.GetType().FullName == taskName);
+    }
+
     internal static void StopAll()   // 单元测试用
     {
         foreach(var task in s_taskList ) {

@@ -144,8 +144,11 @@ public class LogHelperTest
         LogHelper.Write(ExceptionHelper.CreateException("33333333"));
         LogHelper.Write(ExceptionHelper.CreateException("444444444"));
 
-        while( count == ClownFishCounters.Logging.QueueFlushCount.Get() )
+        // 用死循环的方式等待后台线程执行成功
+        while( count == ClownFishCounters.Logging.QueueFlushCount.Get()
+            || count1 == ClownFishCounters.Logging.XmlWriteCount.Get() ) {
             Thread.Sleep(50);
+        }
 
         long count2 = ClownFishCounters.Logging.XmlWriteCount.Get();
         Assert.AreEqual(2, count2 - count1);

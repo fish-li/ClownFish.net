@@ -52,13 +52,10 @@ public class EnvUtilsTest
     {
         EnvUtils.CheckApplicationName("aa11_bb");
         EnvUtils.CheckApplicationName("aa11.bb");
+        EnvUtils.CheckApplicationName("aa11-bb");
 
         MyAssert.IsError<ArgumentNullException>(() => {
             EnvUtils.CheckApplicationName("");
-        });
-
-        MyAssert.IsError<ArgumentOutOfRangeException>(() => {
-            EnvUtils.CheckApplicationName("aa11-bb");
         });
 
         MyAssert.IsError<ArgumentOutOfRangeException>(() => {

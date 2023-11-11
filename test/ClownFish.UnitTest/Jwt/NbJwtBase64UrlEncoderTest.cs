@@ -19,8 +19,11 @@ public class NbJwtBase64UrlEncoderTest
             
             string s4 = NbJwtBase64UrlEncoder.Encode(s3.ToUtf8Bytes());
             string s5 = NbJwtBase64UrlEncoder.Decode(s4).ToUtf8String();
-
             Assert.AreEqual(s3, s5);
+
+            string s6 = s3.Base64UrlEncode();
+            string s7 = s3.ToUtf8Bytes().Base64UrlEncode();
+            Assert.AreEqual(s7, s6);
         }
     }
 

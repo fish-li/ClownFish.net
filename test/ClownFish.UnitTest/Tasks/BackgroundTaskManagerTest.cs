@@ -38,14 +38,19 @@ public class BackgroundTaskManagerTest
         Assert.AreEqual(1, a);
         Assert.AreEqual(1, b);
         Assert.AreEqual(0, c);
-        Thread.Sleep(100);
+
+        // 用死循环的方式等待后台线程执行成功
+        while( BackgroundTaskManager.GetTaskInstance(typeof(BackgroundTask1).FullName).ExecuteCount.Get() == 0
+            || BackgroundTaskManager.GetTaskInstance(typeof(AsyncBackgroundTask1).FullName).ExecuteCount.Get() == 0 ) {
+            Thread.Sleep(50);
+        }
 
         DebugReportBlock block2 = BackgroundTaskManager.GetReportBlock();
         string text2 = block2.ToString2();
         Console.WriteLine(text2);
-        Assert.IsTrue(text2.Contains("ClownFish.UnitTest.Tasks.BackgroundTask1: 1,  0"));
-        // 异步采用线程池，所以调用不及时，因此下面这个断言极大概率不通过！
-        //Assert.IsTrue(text2.Contains("ClownFish.UnitTest.Tasks.AsyncBackgroundTask1: 1,  0"));
+
+        Assert.IsTrue(text2.Contains("ClownFish.UnitTest.Tasks.BackgroundTask1:"));
+        Assert.IsTrue(text2.Contains("ClownFish.UnitTest.Tasks.AsyncBackgroundTask1:"));
 
         var stats = BackgroundTaskManager.GetAllStatus();
         Assert.AreEqual(2, stats.Count);

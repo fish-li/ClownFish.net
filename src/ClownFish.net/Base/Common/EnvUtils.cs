@@ -191,7 +191,7 @@ public static class EnvUtils
             if( c >= '0' && c <= '9' )
                 continue;
 
-            if( c == '.' || c == '_' )
+            if( c == '.' || c == '_' || c == '-' )
                 continue;
 
             throw new ArgumentOutOfRangeException(nameof(appName), "应用名称不符合要求，名称允许范围：英文字母，数字，英文句号，下划线");

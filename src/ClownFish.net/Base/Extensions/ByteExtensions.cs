@@ -56,7 +56,11 @@ public static class ByteExtensions
         if( bytes == null || bytes.Length == 0 )
             return string.Empty;
 
+#if NET6_0_OR_GREATER
+        return Convert.ToHexString(bytes);
+#else
         return BitConverter.ToString(bytes).Replace("-", "");
+#endif
     }
 
 

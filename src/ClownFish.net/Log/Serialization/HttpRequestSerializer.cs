@@ -1,7 +1,6 @@
 ﻿#if NETCOREAPP
-
 using System.Net.Http;
-using System.Net.Mime;
+using Newtonsoft.Json.Linq;
 
 namespace ClownFish.Log;
 internal static class HttpRequestSerializer
@@ -41,16 +40,16 @@ internal static class HttpRequestSerializer
                     sb.AppendLineRN($"{x.Key}: {v}");
                 }
             }
+        }
 
-            if( request.RequestBodyCanLog() ) {
+        if( request.Content != null && request.RequestBodyCanLog() ) {
 
-                // 大多数情况下，request.Content 的内容放在 MemoryStream 中，但是有可能在这个时候被 Dispose 了，所以再按非常规方式来读取
-                string body = ReadBody(request.Content)
-                              ?? TryReadBodyFromMemoryStream(request.Content);
+            // 大多数情况下，request.Content 的内容放在 MemoryStream 中，但是有可能在这个时候被 Dispose 了，所以再按非常规方式来读取
+            string body = ReadBody(request.Content)
+                          ?? TryReadBodyFromMemoryStream(request.Content);
 
-                if( body != null ) {
-                    sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
-                }
+            if( body != null ) {
+                sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
             }
         }
     }
@@ -68,6 +67,7 @@ internal static class HttpRequestSerializer
             && request.Content.Headers != null
             && request.HasBody()
             && request.Content.BodyIsText()
+            && request.LoggingIgnoreBody() == false
             && request.Content.GetBodySize().IsBetween(1, LoggingLimit.HttpBodyMaxLen)
             ) {
 
@@ -120,8 +120,8 @@ internal static class HttpRequestSerializer
 
     internal static bool BodyIsText(this HttpContent content)
     {
-        if( content.Headers.Contains(HttpHeaders.Request.ContentType) ) {
-            string contentType = content.Headers.GetValues(HttpHeaders.Request.ContentType).FirstOrDefault();
+        if( content.Headers.TryGetValues(HttpHeaders.Request.ContentType, out IEnumerable<string> values) ) {
+            string contentType = values.FirstOrDefault();
             return HttpUtils.RequestBodyIsText(contentType);
         }
         else {
@@ -131,12 +131,23 @@ internal static class HttpRequestSerializer
 
     internal static long GetBodySize(this HttpContent content)
     {
-        if( content.Headers.Contains(HttpHeaders.Request.ContentLength) ) {
-            string contentLength = content.Headers.GetValues(HttpHeaders.Request.ContentLength).FirstOrDefault();
+        if( content.Headers.TryGetValues(HttpHeaders.Request.ContentLength, out IEnumerable<string> values) ) {
+            string contentLength = values.FirstOrDefault();
             return contentLength.TryToLong();
         }
         else {
             return 0L;
+        }
+    }
+
+    internal static bool LoggingIgnoreBody(this HttpRequestMessage request)
+    {
+        if( request.Headers != null 
+            && request.Headers.TryGetValues(LoggingIgnoreNames.HeaderName, out IEnumerable<string> values) ) {
+            return values.Contains(LoggingIgnoreNames.IgnoreRequestBody);
+        }
+        else {
+            return false;
         }
     }
 
