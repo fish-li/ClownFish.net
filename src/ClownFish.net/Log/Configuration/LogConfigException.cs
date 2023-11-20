@@ -25,13 +25,4 @@ public sealed class LogConfigException : Exception
     {
     }
 
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
-    public LogConfigException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 }

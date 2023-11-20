@@ -9,7 +9,7 @@ public partial class Entity
     /// 根据当前实体创建代理对象，然后可执行数据库更新操作，
     /// 代理对象将监视属性的赋值过程，当给代理对象的属性赋值后，对应的字段会标记为更新状态。
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="context">DbContext实例</param>
     /// <returns>与实体相关的代理对象</returns>
     internal IEntityProxy CreateProxy(DbContext context)
     {

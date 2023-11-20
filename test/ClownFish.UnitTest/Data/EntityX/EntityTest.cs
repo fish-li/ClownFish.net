@@ -9,7 +9,7 @@ public class EntityTest : BaseTest
     public void Test_DbContext()
     {
         using( DbContext dbContext = DbContext.Create() ) {
-            Category c1 = dbContext.Entity.BeginEdit<Category>();
+            Category c1 = dbContext.Entity.CreateProxy<Category>();
             IEntityProxy proxy = c1 as IEntityProxy;
             Assert.IsNotNull(proxy.DbContext);
             Assert.AreEqual(dbContext, proxy.DbContext);
@@ -103,7 +103,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             CPQuery query1 = c3.GetInsertQuery0();
             Assert.IsNull(query1);
 
@@ -134,7 +134,7 @@ public class EntityTest : BaseTest
             });
 
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             CPQuery query1 = c3.GetInsertQueryCommand();
             Assert.IsNull(query1);
 
@@ -161,7 +161,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = c3.Insert();
             Assert.AreEqual(-1, result);
         }
@@ -178,7 +178,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = await c3.InsertAsync();
             Assert.AreEqual(-1, result);
         }
@@ -198,7 +198,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             CPQuery query1 = c3.GetWhereQuery0();
             Assert.IsNull(query1);
 
@@ -232,7 +232,7 @@ public class EntityTest : BaseTest
                 c2.GetDeleteQueryCommand();
             });
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             CPQuery query1 = c3.GetDeleteQueryCommand();
             Assert.IsNull(query1);
 
@@ -264,7 +264,7 @@ public class EntityTest : BaseTest
                 c2.Delete();
             });
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = c3.Delete();
             Assert.AreEqual(-1, result);
         }
@@ -281,7 +281,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = await c3.DeleteAsync();
             Assert.AreEqual(-1, result);
         }
@@ -305,7 +305,7 @@ public class EntityTest : BaseTest
                 Tel = "13812345678"
             };
 
-            Customer c3 = dbContext.Entity.BeginEdit(c2);
+            Customer c3 = dbContext.Entity.CreateProxy(c2);
             var rowKey = ((IEntityProxy)c3).GetRowKey();
 
             // 先不做任何属性更新，直接调用 GetUpdateQuery
@@ -352,7 +352,7 @@ public class EntityTest : BaseTest
             });
 
 
-            Customer c3 = dbContext.Entity.BeginEdit(c2);
+            Customer c3 = dbContext.Entity.CreateProxy(c2);
             var rowKey = ((IEntityProxy)c3).GetRowKey();
 
             // 先不做任何属性更新，直接调用 GetUpdateQuery
@@ -391,7 +391,7 @@ public class EntityTest : BaseTest
                 c2.Update();
             });
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = c3.Update();
             Assert.AreEqual(-1, result);
         }
@@ -408,7 +408,7 @@ public class EntityTest : BaseTest
                 CategoryName = "ab c"
             };
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             int result = await c3.UpdateAsync();
             Assert.AreEqual(-1, result);
         }
@@ -422,7 +422,7 @@ public class EntityTest : BaseTest
             Category c2 = new Category();
             Assert.AreEqual("Categories", c2.GetTableName());
 
-            Category c3 = dbContext.Entity.BeginEdit(c2);
+            Category c3 = dbContext.Entity.CreateProxy(c2);
             Assert.AreEqual("Categories", c3.GetTableName());
         }
     }
@@ -436,7 +436,7 @@ public class EntityTest : BaseTest
             OrderDetailX3 x1 = new OrderDetailX3();
             Assert.AreEqual("NewID", x1.GetIdentity().PropertyInfo.Name);
 
-            OrderDetailX3 x2 = dbContext.Entity.BeginEdit(x1);
+            OrderDetailX3 x2 = dbContext.Entity.CreateProxy(x1);
             Assert.AreEqual("NewID", x2.GetIdentity().PropertyInfo.Name);
         }
     }
@@ -450,7 +450,7 @@ public class EntityTest : BaseTest
             OrderDetailX3 x1 = new OrderDetailX3();
             Assert.AreEqual("RowId", x1.GetPrimaryKey().PropertyInfo.Name);
 
-            OrderDetailX3 x2 = dbContext.Entity.BeginEdit(x1);
+            OrderDetailX3 x2 = dbContext.Entity.CreateProxy(x1);
             Assert.AreEqual("RowId", x2.GetPrimaryKey().PropertyInfo.Name);
         }
     }
@@ -467,7 +467,7 @@ public class EntityTest : BaseTest
             Assert.AreEqual(123, x1.Quantity);
             Assert.AreEqual("abcd", x1.Remark);
 
-            OrderDetailX3 x2 = dbContext.Entity.BeginEdit(x1);
+            OrderDetailX3 x2 = dbContext.Entity.CreateProxy(x1);
             x2.LoadDefaultValues();
             Assert.AreEqual(2.34m, x2.UnitPrice);
             Assert.AreEqual(123, x2.Quantity);

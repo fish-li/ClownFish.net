@@ -20,9 +20,14 @@ public static class ClownFishDataEventSubscriber
     {
         LastQuery = e.Command.Command.CommandText;
 
-        StringBuilder sb = new StringBuilder();
+        LastExecuteSQL = CommandToAllText(e.Command.Command);
 
-        DbCommand command = e.Command.Command;
+        //Console.WriteLine(LastExecuteSQL);
+    }
+
+    internal static string CommandToAllText(DbCommand command)
+    {
+        StringBuilder sb = new StringBuilder();
         sb.AppendLine().AppendLine(command.CommandText);
 
         if( command.Parameters != null )
@@ -32,9 +37,7 @@ public static class ClownFishDataEventSubscriber
                         GetParameterType(p),
                             ((p.Value == null || p.Value == DBNull.Value) ? "NULL" : p.Value.ToString()));
 
-        LastExecuteSQL = sb.ToString();
-
-        //Console.WriteLine(LastExecuteSQL);
+        return sb.ToString();
     }
 
     private static string GetParameterType(DbParameter p)

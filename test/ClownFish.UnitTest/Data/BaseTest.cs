@@ -25,6 +25,12 @@ public abstract class BaseTest
 #endif
 
 
+    public void AssertDbCommand(DbCommand command, string text)
+    {
+        string text2 = ClownFishDataEventSubscriber.CommandToAllText(command);
+        MyAssert.SqlAreEqual(text, text2);
+    }
+
     public void AssertLastExecuteSQL(string text)
     {
         MyAssert.SqlAreEqual(text, ClownFishDataEventSubscriber.LastExecuteSQL);

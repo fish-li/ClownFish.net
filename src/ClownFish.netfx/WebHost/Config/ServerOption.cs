@@ -70,7 +70,7 @@ public sealed class ServerOption
         validator.Validate(option);
 
         // 克隆对象副本，给一些节点填充默认取，然后给静态变量赋值
-        ServerOption option2 = option.CloneObject();
+        ServerOption option2 = option.JsonCloneObject();
         validator.SetDefaultValues(option2);
 
         s_instance = option2;

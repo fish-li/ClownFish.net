@@ -12,13 +12,13 @@ class DEMO_7_Entity_CUD
         using( DbContext db = DbContext.Create() ) {
 
             // 先删除之前测试可能遗留下来的数据
-            ModelX xx = db.Entity.BeginEdit<ModelX>();
+            ModelX xx = db.Entity.CreateProxy<ModelX>();
             xx.IntField = 1978;
             xx.Delete();
 
 
             // 插入一条记录，只给2个字段赋值
-            ModelX obj = db.Entity.BeginEdit<ModelX>();
+            ModelX obj = db.Entity.CreateProxy<ModelX>();
             obj.IntField = 1978;
             obj.StringField = "abc";
             obj.Insert();
@@ -29,7 +29,7 @@ class DEMO_7_Entity_CUD
             Assert.AreEqual("abc", m1.StringField);
 
             // m1 进入编辑状态
-            m1 = db.Entity.BeginEdit(m1);
+            m1 = db.Entity.CreateProxy(m1);
             m1.StringField = "12345";
             int effect = m1.Update();        // 提交更新，WHERE过滤条件由主键字段决定
             Assert.AreEqual(1, effect);
@@ -40,7 +40,7 @@ class DEMO_7_Entity_CUD
             Assert.AreEqual("12345", m2.StringField);
 
             // 删除数据行
-            ModelX obj2 = db.Entity.BeginEdit<ModelX>();
+            ModelX obj2 = db.Entity.CreateProxy<ModelX>();
             obj2.IntField = 1978;
             effect = obj2.Delete();
             Assert.AreEqual(1, effect);

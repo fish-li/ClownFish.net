@@ -72,15 +72,7 @@ internal static class HttpResponseSerializer
 
     internal static bool LoggingIgnoreBody(this HttpResponseMessage response)
     {
-        HttpRequestMessage request = response.RequestMessage;
-
-        if( request != null && request.Headers != null 
-            && request.Headers.TryGetValues(LoggingIgnoreNames.HeaderName, out IEnumerable<string> values) ) {
-            return values.Contains(LoggingIgnoreNames.IgnoreResponseBody);
-        }
-        else {
-            return false;
-        }
+        return response.RequestMessage?.GetRequestOption<string>(LoggingIgnoreNames.IgnoreResponseBody) == "1";
     }
 
 }

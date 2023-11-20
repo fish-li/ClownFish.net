@@ -23,7 +23,7 @@ public static class HttpContextUtils
         if( value != null ) {
 
             TimeSpan time = DateTime.Now - (DateTime)value;
-            httpContext.Response.Headers.Add("x-server-exectime", time.ToString());
+            httpContext.Response.Headers.Append("x-server-exectime", time.ToString());
         }
         return Task.CompletedTask;
     }

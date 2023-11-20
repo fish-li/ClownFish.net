@@ -9,14 +9,16 @@ public sealed class EntityLinqProvider : IQueryProvider
 {
     private readonly DbContext _dbContext;
     private readonly Type _entityType;
+    private readonly string _table;
 
-    internal EntityLinqProvider(DbContext dbContext, Type entityType)
+    internal EntityLinqProvider(DbContext dbContext, Type entityType, string table = null)
     {
         if( dbContext == null )
             throw new ArgumentNullException(nameof(dbContext));
 
         _dbContext = dbContext;
         _entityType = entityType;
+        _table = table.IsNullOrEmpty() ? dbContext.GetObjectFullName(entityType.GetDbTableName()) : dbContext.GetObjectFullName(table);
     }
 
 
@@ -61,7 +63,7 @@ public sealed class EntityLinqProvider : IQueryProvider
     /// <returns></returns>
     public TResult Execute<TResult>(Expression expression)
     {
-        LinqParser sqlParser = new LinqParser(_dbContext, _entityType, expression);
+        LinqParser sqlParser = new LinqParser(_dbContext, _entityType, expression, _table);
         sqlParser.Translator();
         object result = sqlParser.ExecuteCommand();
 
@@ -76,7 +78,7 @@ public sealed class EntityLinqProvider : IQueryProvider
     /// <returns></returns>
     public async Task<TResult> ExecuteAsync<TResult>(Expression expression)
     {
-        LinqParser sqlParser = new LinqParser(_dbContext, _entityType, expression);
+        LinqParser sqlParser = new LinqParser(_dbContext, _entityType, expression, _table);
         sqlParser.Translator();
         object result = await sqlParser.ExecuteCommandAsync();
 

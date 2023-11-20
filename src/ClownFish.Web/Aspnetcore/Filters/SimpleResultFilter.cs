@@ -44,7 +44,7 @@ public sealed class SimpleResultFilter : IResultFilter
         };
 
         if( context.HttpContext.Response.HasStarted == false ) {
-            context.HttpContext.Response.Headers.Add("x-result-datatype", dataType.Name);
+            context.HttpContext.Response.Headers.Append("x-result-datatype", dataType.Name);
         }
     }
 

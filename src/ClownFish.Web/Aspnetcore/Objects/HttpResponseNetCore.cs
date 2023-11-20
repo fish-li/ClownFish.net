@@ -130,7 +130,7 @@ public sealed class HttpResponseNetCore : NHttpResponse
         value = value ?? string.Empty;
 
         if( (ifExistThenIgnore == false) || (_response.Headers.ContainsKey(name) == false) ) {
-            _response.Headers.Add(name, value);
+            _response.Headers.Append(name, value);
             return true;
         }
         else {
@@ -161,7 +161,7 @@ public sealed class HttpResponseNetCore : NHttpResponse
             return false;
 
         if( (ifExistThenIgnore == false) || (_response.Headers.ContainsKey(name) == false) ) {
-            _response.Headers.Add(name, values);
+            _response.Headers.Append(name, values);
             return true;
         }
         else {

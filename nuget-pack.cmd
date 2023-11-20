@@ -1,4 +1,4 @@
-cd /d  D:\my-github\ClownFish.net_net7
+cd /d  D:\my-github\ClownFish.net_dev
 dotnet pack --include-symbols -c Release -o D:\TempNuget src\ClownFish.net\ClownFish.net.csproj
 dotnet pack --include-symbols -c Release -o D:\TempNuget src\ClownFish.Web\ClownFish.Web.csproj
 dotnet pack --include-symbols -c Release -o D:\TempNuget src\ClownFish.Tracing\ClownFish.Tracing.csproj

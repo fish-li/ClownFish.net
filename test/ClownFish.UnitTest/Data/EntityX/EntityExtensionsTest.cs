@@ -64,14 +64,14 @@ public class EntityExtensionsTest : BaseTest
 
         await MyAssert.IsErrorAsync<NotSupportedException>(async () => {
             using( DbContext dbContext = DbContext.Create("sqlserver") ) {
-                Customer customer = dbContext.Entity.BeginEdit<Customer>();
+                Customer customer = dbContext.Entity.CreateProxy<Customer>();
                 _ = await EntityExtensions.InsertAsync(customer, dbContext, true);
             }
         });
 
         await MyAssert.IsErrorAsync<NotSupportedException>(async () => {
             using( DbContext dbContext = DbContext.Create("sqlserver") ) {
-                Customer customer = dbContext.Entity.BeginEdit<Customer>();
+                Customer customer = dbContext.Entity.CreateProxy<Customer>();
                 long id = await EntityExtensions.InsertAsync(customer, dbContext, true);
             }
         });
@@ -89,7 +89,7 @@ public class EntityExtensionsTest : BaseTest
 
         await MyAssert.IsErrorAsync<NotSupportedException>(async () => {
             using( DbContext dbContext = DbContext.Create("sqlserver") ) {
-                Customer customer = dbContext.Entity.BeginEdit<Customer>();
+                Customer customer = dbContext.Entity.CreateProxy<Customer>();
                 _ = await dbContext.Entity.UpdateAsync(customer);
             }
         });
@@ -173,7 +173,7 @@ public class EntityExtensionsTest : BaseTest
             });
 
             MyAssert.IsError<NotSupportedException>(() => {
-                Category c1 = dbContext.Entity.BeginEdit<Category>();
+                Category c1 = dbContext.Entity.CreateProxy<Category>();
                 EntityCudUtils.GetInsertSQL(c1, dbContext);
             });
 

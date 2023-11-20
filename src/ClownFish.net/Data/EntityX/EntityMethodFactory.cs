@@ -32,10 +32,11 @@ public sealed class EntityMethodFactory
     /// 开始LINQ查询
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <param name="table">需要查询的数据表名称。通常场景下可不指定，【仅当】一个实体类型对应多个数据表时才需要指定。</param>
     /// <returns></returns>
-    public EntityQuery<T> Query<T>() where T : Entity, new()
+    public EntityQuery<T> Query<T>(string table = null) where T : Entity, new()
     {
-        EntityLinqProvider provider = new EntityLinqProvider(_dbContext, typeof(T));
+        EntityLinqProvider provider = new EntityLinqProvider(_dbContext, typeof(T), table);
         return new EntityQuery<T>(provider);
     }
 
@@ -43,6 +44,8 @@ public sealed class EntityMethodFactory
     /// <summary>
     /// 创建与实体相关的代理对象。 CreateProxy方法的别名。
     /// </summary>
+    /// <typeparam name="T">实体类型</typeparam>
+    /// <param name="entity">初始实体，如果为null表示新增，否则基于指定的对象来创建实体代理副本</param>
     /// <returns>与实体相关的代理对象</returns>
     public T BeginEdit<T>(T entity = null) where T : Entity, new()
     {
@@ -55,8 +58,8 @@ public sealed class EntityMethodFactory
     /// 实体代理对象可感知属性的所有变更情况，提供动态SQL生成能力，
     /// 实体代理对象提供了简便的 Insert/Update/Delete 方法。
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="entity"></param>
+    /// <typeparam name="T">实体类型</typeparam>
+    /// <param name="entity">初始实体，如果为null表示新增，否则基于指定的对象来创建实体代理副本</param>
     /// <returns></returns>
     /// <example>
     /// var product = dbContext.Entity.CreateProxy(product);
@@ -64,7 +67,6 @@ public sealed class EntityMethodFactory
     /// product.ProductName = "xxxx";
     /// product.Insert() or Update() or Delete()
     /// </example>
-    /// <exception cref="NotSupportedException"></exception>
     public T CreateProxy<T>(T entity = null) where T : Entity, new()
     {
         if( entity == null )

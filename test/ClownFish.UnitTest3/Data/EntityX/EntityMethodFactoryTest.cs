@@ -28,21 +28,21 @@ public class EntityMethodFactoryTest
             Assert.IsNotNull(query);
             Assert.AreEqual(dbContext, query.GetFieldValue("_provider").GetFieldValue("_dbContext"));
 
-            Customer c1 = factory.BeginEdit<Customer>();
+            Customer c1 = factory.CreateProxy<Customer>();
             IEntityProxy proxy1 = c1 as IEntityProxy;
             Assert.IsNotNull(proxy1);
             Assert.AreEqual(dbContext, proxy1.DbContext);
 
 
             Customer c2 = new Customer();
-            Customer c3 = factory.BeginEdit(c2);
+            Customer c3 = factory.CreateProxy(c2);
             IEntityProxy proxy2 = c3 as IEntityProxy;
             Assert.IsNotNull(proxy2);
             Assert.AreEqual(dbContext, proxy2.DbContext);
 
 
             MyAssert.IsError<InvalidOperationException>(() => {
-                Customer c4 = factory.BeginEdit(c3);
+                Customer c4 = factory.CreateProxy(c3);
             });
         }
     }

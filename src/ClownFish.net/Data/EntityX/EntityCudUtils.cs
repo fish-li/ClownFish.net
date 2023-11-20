@@ -62,23 +62,6 @@ internal static class EntityCudUtils
 
         query = query.Context.ClientProvider.GetNewIdQuery(query, entity);
         return query.ExecuteScalar<long>();
-
-
-        //if( query.Context.DatabaseType == DatabaseType.SQLSERVER ) {
-        //    query = query + "; select SCOPE_IDENTITY();";
-        //    return query.ExecuteScalar<long>();
-        //}
-        //else if( query.Context.DatabaseType == DatabaseType.MySQL ) {
-        //    query = query + "; select LAST_INSERT_ID();";
-        //    return query.ExecuteScalar<long>();
-        //}
-        //else if( query.Context.DatabaseType == DatabaseType.PostgreSQL ) {
-        //    query = query + "; select lastval();";
-        //    return query.ExecuteScalar<long>();
-        //}
-        //else {
-        //    throw new NotSupportedException("不支持从此类型数据库中获取自增ID");
-        //}
     }
 
 
@@ -89,23 +72,6 @@ internal static class EntityCudUtils
 
         query = query.Context.ClientProvider.GetNewIdQuery(query, entity);
         return await query.ExecuteScalarAsync<long>();
-
-
-        //if( query.Context.DatabaseType == DatabaseType.SQLSERVER ) {
-        //    query = query + "; select SCOPE_IDENTITY();";
-        //    return await query.ExecuteScalarAsync<long>();
-        //}
-        //else if( query.Context.DatabaseType == DatabaseType.MySQL ) {
-        //    query = query + "; select LAST_INSERT_ID();";
-        //    return await query.ExecuteScalarAsync<long>();
-        //}
-        //else if( query.Context.DatabaseType == DatabaseType.PostgreSQL ) {
-        //    query = query + "; select lastval();";
-        //    return await query.ExecuteScalarAsync<long>();
-        //}
-        //else {
-        //    throw new NotSupportedException("不支持从此类型数据库中获取自增ID");
-        //}
     }
 
 

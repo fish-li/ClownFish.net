@@ -6,18 +6,18 @@
 public static class LoggingIgnoreNames
 {
     /// <summary>
-    /// 请求头名称
+    /// "Logging-Ignore-RequestBody"
     /// </summary>
-    public static readonly string HeaderName = "x-cf-logflags";
-
-
-    /// <summary>
-    /// "IgnoreRequestBody"
-    /// </summary>
-    public static readonly string IgnoreRequestBody = "IgnoreRequestBody";
+    /// <example>
+    /// httpOption.OnSetRequest = req => req.Options.AddValue(LoggingIgnoreNames.IgnoreRequestBody, "1");
+    /// </example>
+    public static readonly string IgnoreRequestBody = "Logging-Ignore-RequestBody";
 
     /// <summary>
-    /// "IgnoreResponseBody"
+    /// "Logging-Ignore-ResponseBody"
     /// </summary>
-    public static readonly string IgnoreResponseBody = "IgnoreResponseBody";
+    /// <example>
+    /// httpOption.OnSetRequest = req => req.Options.AddValue(LoggingIgnoreNames.IgnoreResponseBody, "1");
+    /// </example>
+    public static readonly string IgnoreResponseBody = "Logging-Ignore-ResponseBody";
 }

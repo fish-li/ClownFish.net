@@ -25,7 +25,7 @@ public class EntityProxyFactoryTest : BaseTest
     public void Test_Register()
     {
         using( DbContext dbContext = DbContext.Create() ) {
-            Product product = dbContext.Entity.BeginEdit<Product>();
+            Product product = dbContext.Entity.CreateProxy<Product>();
             Type t1 = product.GetType();
 
             Assert.AreEqual(typeof(Product), t1.BaseType);
@@ -34,7 +34,7 @@ public class EntityProxyFactoryTest : BaseTest
             // 覆盖初始化时的注册，结果其实是一样的
             EntityProxyFactory.Register(t1);
 
-            Product product2 = dbContext.Entity.BeginEdit<Product>();
+            Product product2 = dbContext.Entity.CreateProxy<Product>();
             Type t2 = product2.GetType();
 
             Assert.AreEqual(typeof(Product), t2.BaseType);

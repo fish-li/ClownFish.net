@@ -10,7 +10,7 @@ public class SerializerTest
     public void Test_代理对象序列化_XML()
     {
         using( DbContext db = DbContext.Create() ) {
-            Product p = db.Entity.BeginEdit<Product>();
+            Product p = db.Entity.CreateProxy<Product>();
             p.ProductID = 2;
             p.CategoryID = 3;
             p.ProductName = "汉字";
@@ -35,7 +35,7 @@ public class SerializerTest
     public void Test_代理对象序列化_JSON()
     {
         using( DbContext db = DbContext.Create() ) {
-            Product p = db.Entity.BeginEdit<Product>();
+            Product p = db.Entity.CreateProxy<Product>();
             p.ProductID = 2;
             p.CategoryID = 3;
             p.ProductName = "汉字";

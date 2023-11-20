@@ -35,6 +35,27 @@ WHERE ((ProductID = @p1) AND (CategoryID < @p2))
 ");
     }
 
+    [TestMethod]
+    public void Test_LINQ_获取单个实体_指定表名()
+    {
+        using( DbContext db = DbContext.Create() ) {
+            int a = 5, b = 3;
+            var query = from t in db.Entity.Query<Product>("product_bak2")
+                        where t.ProductID == a && t.CategoryID < b
+                        select t;
+
+            CPQuery query2 = query.GetQuery();
+
+            AssertDbCommand(query2.Command, @"
+SELECT *
+FROM product_bak2
+WHERE ((ProductID = @p1) AND (CategoryID < @p2))
+@p1: (Int32), 5
+@p2: (Int32), 3
+");
+        }
+    }
+
 
     [TestMethod]
     public void Test_LINQ_获取单个实体_追加WHERE条件()

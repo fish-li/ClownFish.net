@@ -29,12 +29,12 @@ internal class LinqParser
 
     #endregion
 
-    internal LinqParser(DbContext dbContext, Type entityType, Expression expression)
+    internal LinqParser(DbContext dbContext, Type entityType, Expression expression, string table)
     {
         _dbContext = dbContext;
         _entityType = entityType;
         _expression = expression;
-        _tableName = dbContext.GetObjectFullName(_entityType.GetDbTableName());
+        _tableName = table;
     }
 
 

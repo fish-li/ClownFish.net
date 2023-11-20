@@ -6,6 +6,22 @@
 [Serializable]
 public abstract partial class Entity
 {
+    private string _targetTableName;
+
+
+    /// <summary>
+    /// 设置当前实体在执行数据库操作时，要使用的数据表名称。
+    /// 通常场景下不需要调用当前方法，【仅当】一个实体类型对应多个数据表时才需要调用。
+    /// 注意：此方法仅允许在实体代理上调用，否则会出现异常！
+    /// </summary>
+    /// <param name="tablename"></param>
+    public void SetDbTableName(string tablename)
+    {
+        if( (this is IEntityProxy) == false )
+            throw new InvalidOperationException("只允许在实体代理上调用当前方法！");
+
+        _targetTableName = tablename;
+    }
 
     /// <summary>
     /// 获取实体对应的数据库表名。
@@ -13,6 +29,9 @@ public abstract partial class Entity
     /// <returns></returns>
     public string GetTableName()
     {
+        if( _targetTableName.HasValue() )
+            return _targetTableName;
+
         Type entityType = (this is IEntityProxy) ? this.GetType().BaseType : this.GetType();
         return entityType.GetDbTableName();
     }

@@ -82,7 +82,7 @@ public class EntityExtensionsTest : BaseTest
             });
 
             MyAssert.IsError<NotSupportedException>(() => {
-                Category c1 = dbContext.Entity.BeginEdit<Category>();
+                Category c1 = dbContext.Entity.CreateProxy<Category>();
                 EntityCudUtils.GetInsertSQL(c1, dbContext);
             });
 
