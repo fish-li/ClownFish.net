@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 
@@ -87,10 +88,39 @@ class Program
         string name = args.Name.Split(',')[0] + ".dll";
         string filePath = Path.Combine(s_dllDirectory, name);
 
-        if( File.Exists(filePath) == false )
-            return null;
+        if( File.Exists(filePath) ) {
+            Console.WriteLine($"=> load assembly [{filePath}]");
+            return Assembly.LoadFrom(filePath);
+        }
+        else {
+            Console.WriteLine($"[{filePath}] not found!");
+        }
 
-        return Assembly.LoadFrom(filePath);
+        if( RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ) {
+            string dotnetVer = Environment.GetEnvironmentVariable("ASPNET_VERSION");
+            if( string.IsNullOrEmpty( dotnetVer ) == false ) {
+
+                filePath = Path.Combine($"/usr/share/dotnet/shared/Microsoft.NETCore.App/{dotnetVer}", name);
+                if( File.Exists(filePath) ) {
+                    Console.WriteLine($"=> load assembly [{filePath}]");
+                    return Assembly.LoadFrom(filePath);
+                }
+                else {
+                    Console.WriteLine($"[{filePath}] not found!");
+                }
+
+                filePath = Path.Combine($"/usr/share/dotnet/shared/Microsoft.AspNetCore.App/{dotnetVer}", name);
+                if( File.Exists(filePath) ) {
+                    Console.WriteLine($"=> load assembly [{filePath}]");
+                    return Assembly.LoadFrom(filePath);
+                }
+                else {
+                    Console.WriteLine($"[{filePath}] not found!");
+                }
+            }
+        }
+
+        return null;
     }
 
 
