@@ -124,7 +124,8 @@ public static class AspnetCoreStarter
         Console2.WriteLine("CurrentCulture  : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
         Console2.WriteLine("ClownFishWebVer : " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
         Console2.WriteLine("Framework  Info : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        
+        Console2.WriteLine("OS Name         : " + OsUtils.GetOsName());
+
         Console2.WriteSeparatedLine();
         Console2.WriteLine("Listening  Urls : " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "");
         Console2.WriteLine("Application started. Press Ctrl+C to shut down.");
