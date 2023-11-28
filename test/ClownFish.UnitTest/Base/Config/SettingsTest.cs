@@ -76,4 +76,25 @@ public class SettingsTest
 
         Assert.AreEqual(1234, Settings.GetUInt("key2"));
     }
+
+
+    [TestMethod]
+    public void Test_ISettings()
+    {
+        Settings.SetImpl(new XSettingsImpl());
+        Assert.AreEqual("key_test_setting_xx", Settings.GetSetting("key_test_setting"));
+
+        Settings.SetImpl(null);
+        Assert.AreEqual("123456789", Settings.GetSetting("key_test_setting"));
+    }
+}
+
+
+
+public sealed class XSettingsImpl : ISettings
+{
+    public string GetSetting(string name, bool checkExist)
+    {
+        return name + "_xx";
+    }
 }

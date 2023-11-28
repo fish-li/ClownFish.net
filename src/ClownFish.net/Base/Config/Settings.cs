@@ -10,18 +10,24 @@ namespace ClownFish.Base;
 
 
 /// <summary>
-/// 供应用程序在运行时获取配置的工具类。
-/// 参数项的读取顺序：环境变量，配置服务，App.config
+/// 读取配置的接口
 /// </summary>
-public static class Settings
+public interface ISettings
 {
     /// <summary>
-    /// 获取一个与指定名称匹配的配置参数值。
+    /// 获取一个配置参数
     /// </summary>
     /// <param name="name"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
-    public static string GetSetting(string name, bool checkExist = false)
+    string GetSetting(string name, bool checkExist);
+}
+
+internal sealed class DefaultSettingsImpl : ISettings
+{
+    public static readonly DefaultSettingsImpl Instance = new DefaultSettingsImpl();
+
+    public string GetSetting(string name, bool checkExist)
     {
         if( string.IsNullOrEmpty(name) )
             throw new ArgumentNullException(nameof(name));
@@ -55,7 +61,7 @@ public static class Settings
         //  所以就把这些参数放在注册表中，并使用各自的 “AppName” 分开存储
 
         if( EnvUtils.IsDevEnv && RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) {
-            value = Microsoft.Win32.Registry.GetValue(LocalSettings.RegPath, name, null)?.ToString();
+            value = Microsoft.Win32.Registry.GetValue(DefaultLocalSettingsImpl.RegPath, name, null)?.ToString();
 
             if( string.IsNullOrEmpty(value) == false )
                 return value;
@@ -66,6 +72,38 @@ public static class Settings
             throw new ConfigurationErrorsException("没有找到配置参数，Name：" + name);
         else
             return null;
+    }
+}
+
+
+/// <summary>
+/// 供应用程序在运行时获取配置的工具类。
+/// 参数项的读取顺序：环境变量，配置服务，App.config
+/// </summary>
+public static class Settings
+{
+    // 这里不使用 volatile，毕竟“更换”操作频次极低
+    private static /* volatile */ ISettings s_instance = DefaultSettingsImpl.Instance;
+
+    /// <summary>
+    /// 设置实现方式
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void SetImpl(ISettings instance)
+    {
+        s_instance = instance ?? DefaultSettingsImpl.Instance;
+    }
+
+    /// <summary>
+    /// 获取一个与指定名称匹配的配置参数值。
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="checkExist"></param>
+    /// <returns></returns>
+    public static string GetSetting(string name, bool checkExist = false)
+    {
+        return s_instance.GetSetting(name, checkExist);
     }
 
 
@@ -78,7 +116,7 @@ public static class Settings
     /// <returns></returns>
     public static string GetSetting(string name, string defaultVal)
     {
-        string value = GetSetting(name);
+        string value = GetSetting(name, false);
         if( string.IsNullOrEmpty(value) == false )
             return value;
 
@@ -156,3 +194,4 @@ public static class Settings
 
 
 }
+

@@ -1,29 +1,25 @@
 ﻿namespace ClownFish.Base;
 
 /// <summary>
-/// 与配置文件相关的工具类
+/// 读取配置文件的接口
 /// </summary>
-public static class ConfigFile
+public interface IConfigFile
 {
     /// <summary>
-    /// 默认的 App.Config 文件名
-    /// </summary>
-    public static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
-
-    /// <summary>
-    /// 默认的 Log.Config 文件名
-    /// </summary>
-    public static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
-
-
-
-    /// <summary>
-    /// 从配置服务或者本地目录中获取指定的配置文件内容
+    /// 读取一个配置文件的全部内容
     /// </summary>
     /// <param name="filename"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
-    public static string GetFile(string filename, bool checkExist = false)
+    string GetFile(string filename, bool checkExist);
+}
+
+
+internal sealed class DefaultConfigFileImpl : IConfigFile
+{
+    public static readonly DefaultConfigFileImpl Instance = new DefaultConfigFileImpl();
+
+    public string GetFile(string filename, bool checkExist)
     {
         if( string.IsNullOrEmpty(filename) )
             throw new ArgumentNullException(nameof(filename));
@@ -63,7 +59,6 @@ public static class ConfigFile
     }
 
 
-
     internal static string GetLocalFile(string filename)
     {
         string fileBody = null;
@@ -86,6 +81,46 @@ public static class ConfigFile
 
         return fileBody;
     }
+}
 
+/// <summary>
+/// 与配置文件相关的工具类
+/// </summary>
+public static class ConfigFile
+{
+    /// <summary>
+    /// 默认的 App.Config 文件名
+    /// </summary>
+    public static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
+
+    /// <summary>
+    /// 默认的 Log.Config 文件名
+    /// </summary>
+    public static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
+
+
+    private static IConfigFile s_instance = DefaultConfigFileImpl.Instance;
+
+    /// <summary>
+    /// 设置实现方式
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void SetImpl(IConfigFile instance)
+    {
+        s_instance = instance ?? DefaultConfigFileImpl.Instance;
+    }
+
+
+    /// <summary>
+    /// 从配置服务或者本地目录中获取指定的配置文件内容
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="checkExist"></param>
+    /// <returns></returns>
+    public static string GetFile(string filename, bool checkExist = false)
+    {
+        return s_instance.GetFile(filename, checkExist);
+    }
 
 }

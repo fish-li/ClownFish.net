@@ -2,22 +2,32 @@
 
 namespace ClownFish.Base;
 
-/// <summary>
-/// 供应用程序在运行时获取配置的工具类。
-/// 
-/// 参数项的读取顺序：环境变量，App.config
-/// </summary>
-public static class LocalSettings
-{
-    internal static readonly string RegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + Path.GetFileNameWithoutExtension(AsmHelper.GetEntryAssembly().Location);
 
+/// <summary>
+/// 读取配置的接口
+/// </summary>
+public interface ILocalSettings
+{
     /// <summary>
-    /// 获取一个与指定名称匹配的配置参数值。
+    /// 获取一个配置参数
     /// </summary>
     /// <param name="name"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
-    public static string GetSetting(string name, bool checkExist = false)
+    string GetSetting(string name, bool checkExist);
+}
+
+
+internal sealed class DefaultLocalSettingsImpl : ILocalSettings
+{
+#if NETFRAMEWORK || NET6_0_OR_GREATER
+    internal static readonly string RegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + Path.GetFileNameWithoutExtension(AsmHelper.GetEntryAssembly().Location);
+#endif
+
+
+    public static readonly DefaultLocalSettingsImpl Instance = new DefaultLocalSettingsImpl();
+
+    public string GetSetting(string name, bool checkExist)
     {
         if( string.IsNullOrEmpty(name) )
             throw new ArgumentNullException(nameof(name));
@@ -56,6 +66,37 @@ public static class LocalSettings
             throw new ConfigurationErrorsException("没有找到参数项，Name：" + name);
         else
             return null;
+    }
+}
+
+/// <summary>
+/// 供应用程序在运行时获取配置的工具类。
+/// 
+/// 参数项的读取顺序：环境变量，App.config
+/// </summary>
+public static class LocalSettings
+{
+    private static ILocalSettings s_instance = DefaultLocalSettingsImpl.Instance;
+
+    /// <summary>
+    /// 设置实现方式
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void SetImpl(ILocalSettings instance)
+    {
+        s_instance = instance ?? DefaultLocalSettingsImpl.Instance;
+    }
+
+    /// <summary>
+    /// 获取一个与指定名称匹配的配置参数值。
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="checkExist"></param>
+    /// <returns></returns>
+    public static string GetSetting(string name, bool checkExist = false)
+    {
+        return s_instance.GetSetting(name, checkExist);
     }
 
 

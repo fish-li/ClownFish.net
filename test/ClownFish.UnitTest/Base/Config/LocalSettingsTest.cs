@@ -70,4 +70,22 @@ public class LocalSettingsTest
             _ = LocalSettings.GetUInt("key2b");
         });
     }
+
+    [TestMethod]
+    public void Test_ILocalSettings()
+    {
+        LocalSettings.SetImpl(new XLocalSettingsImpl());
+        Assert.AreEqual("key_test_setting_xx", LocalSettings.GetSetting("key_test_setting"));
+
+        LocalSettings.SetImpl(null);
+        Assert.AreEqual("123456789", LocalSettings.GetSetting("key_test_setting"));
+    }
+}
+
+public sealed class XLocalSettingsImpl : ILocalSettings
+{
+    public string GetSetting(string name, bool checkExist)
+    {
+        return name + "_xx";
+    }
 }

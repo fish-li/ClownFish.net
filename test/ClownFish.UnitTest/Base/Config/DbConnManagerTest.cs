@@ -76,4 +76,54 @@ public class DbConnManagerTest
         Assert.IsNotNull(db2);
     }
 
+    [TestMethod]
+    public void Test_IDbConnManager()
+    {
+        DbConnManager.SetImpl(new XDbConnManagerImpl());
+        Assert.IsNotNull(DbConnManager.GetAppDbConfig("xx1"));
+        Assert.IsNotNull(DbConnManager.GetTntDbConfig("tnt123"));
+
+
+        DbConnManager.SetImpl(null);
+        Assert.IsNull(DbConnManager.GetAppDbConfig("xx1", false));
+        Assert.IsNull(DbConnManager.GetTntDbConfig("tnt123", null, false, false));
+    }
+}
+
+
+
+internal sealed class XDbConnManagerImpl : IDbConnManager
+{
+    public DbConfig GetAppDbConfig(string connName, bool checkExist)
+    {
+        return new DbConfig {
+            Server = "localpc",
+            Database = "app1",
+            UserName = connName,
+        };
+    }
+
+    public DbConfig GetTntDbConfig(string tenantId, string connType, bool readonlyDB, bool checkExist)
+    {
+        return new DbConfig {
+            Server = "localpc",
+            Database = "app2",
+            UserName = tenantId
+        };
+    }
+
+    public DbContext CreateMaster()
+    {
+        throw new NotImplementedException();
+    }
+
+    public DbContext CreateAppDb(string connName, bool longConnection, string providerName)
+    {
+        throw new NotImplementedException();
+    }
+
+    public DbContext CreateTenant(string tenantId, bool readonlyDB, string providerName)
+    {
+        throw new NotImplementedException();
+    }
 }
