@@ -100,6 +100,9 @@ public static class EnvUtils
         HostName = GetMachineName();
         TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? EvalAppTempPath();
 
+        if( Directory.Exists(TempPath) == false )
+            Directory.CreateDirectory(TempPath);
+
         ReLoad();
     }
 
