@@ -291,7 +291,7 @@ public partial class OprLog
     /// <param name="ex">Exception实例（必选）</param>
     /// <param name="httpContext">HttpContext实例（可选）</param>
     /// <returns></returns>
-    internal static OprLog CreateErrLog(Exception ex, NHttpContext httpContext = null)
+    public static OprLog CreateErrLog(Exception ex, NHttpContext httpContext = null)
     {
         if( ex == null )
             throw new ArgumentNullException(nameof(ex));
