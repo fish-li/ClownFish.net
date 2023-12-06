@@ -119,13 +119,15 @@ public class LogHelperTest
 
         memoryWriter.PullALL();
 
-        long count = ClownFishCounters.Logging.QueueFlushCount.Get();
+        long count1 = ClownFishCounters.Logging.QueueFlushCount.Get();
+        long count2 = ClownFishCounters.Logging.WriteCount.Get();
 
         LogHelper.Write((XMessage)null);
         LogHelper.Write(new XMessage("67130faa9ad54dca98039c3c7307681e"));
         LogHelper.Write(new XMessage("a443b55f10424ef4b279b8edd4970bda"));
 
-        while( count == ClownFishCounters.Logging.QueueFlushCount.Get() )
+        while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get() 
+            || count2 == ClownFishCounters.Logging.WriteCount.Get() )
             Thread.Sleep(200);
 
         List<XMessage> list = memoryWriter.PullALL().Cast<XMessage>().ToList();
@@ -137,21 +139,21 @@ public class LogHelperTest
     [TestMethod]
     public void Test_AsyncWrite_Exception()
     {
-        long count1 = ClownFishCounters.Logging.XmlWriteCount.Get();
-        long count = ClownFishCounters.Logging.QueueFlushCount.Get();
-
+        long count1 = ClownFishCounters.Logging.QueueFlushCount.Get();
+        long count2 = ClownFishCounters.Logging.XmlWriteCount.Get();
+        
         LogHelper.Write((Exception)null);
         LogHelper.Write(ExceptionHelper.CreateException("33333333"));
         LogHelper.Write(ExceptionHelper.CreateException("444444444"));
 
         // 用死循环的方式等待后台线程执行成功
-        while( count == ClownFishCounters.Logging.QueueFlushCount.Get()
-            || count1 == ClownFishCounters.Logging.XmlWriteCount.Get() ) {
-            Thread.Sleep(50);
+        while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get()
+            || count2 == ClownFishCounters.Logging.XmlWriteCount.Get() ) {
+            Thread.Sleep(200);
         }
 
-        long count2 = ClownFishCounters.Logging.XmlWriteCount.Get();
-        Assert.AreEqual(2, count2 - count1);
+        long count3 = ClownFishCounters.Logging.XmlWriteCount.Get();
+        Assert.AreEqual(2, count3 - count2);
     }
 
     [TestMethod]

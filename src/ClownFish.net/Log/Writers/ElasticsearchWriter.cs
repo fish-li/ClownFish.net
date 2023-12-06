@@ -9,7 +9,7 @@ internal sealed class ElasticsearchWriter : ILogWriter
 {
     // 下面3个变量故意不加 readonly，允许在项目中直接修改
     internal static string ElasticsearchSettingName = "ClownFish_Log_Elasticsearch";
-    internal static string IndexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd");  // 建议值：-yyyyMMdd-HH
+    internal static string IndexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd-HH");
     internal static int RequestTimeoutMs = Settings.GetUInt("ClownFish_Log_ES_TimeoutMs", 5_000);
 
     private SimpleEsClient _client;
