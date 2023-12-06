@@ -9,35 +9,42 @@ internal static class ReflectionExtensions
             TypeList.GetTypeName(t)
 
             // 获取完整的名称
-            ?? GetTypeString(t);
+            ?? GetTypeString0(t);
     }
 
 
-    private static string GetTypeString(this Type t)
+    internal static string GetTypeString0(this Type t)
     {
-        if( t.IsGenericType == false || t.ContainsGenericParameters )
-            return t.FullName.Replace('+', '.');
-
-        Type define = t.GetGenericTypeDefinition();
-
-        string defineString = define.FullName;
-        int p = defineString.IndexOf('`');
-
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            sb.Append(defineString.Substring(0, p)).Append('<');
-
-            Type[] paras = t.GetGenericArguments();
-            foreach( Type a in paras )
-                sb.Append(ToTypeString(a)).Append(',');
-
-            sb.Remove(sb.Length - 1, 1);
-            sb.Append('>');
-            return sb.ToString();
+        if( t.IsArray ) {
+            Type elementType = t.GetElementType();
+            return elementType.ToTypeString() + "[]";
         }
-        finally {
-            StringBuilderPool.Return(sb);
+
+        if( t.IsGenericType ) {
+
+            Type define = t.GetGenericTypeDefinition();
+
+            string defineString = define.FullName;
+            int p = defineString.IndexOf('`');
+
+            StringBuilder sb = StringBuilderPool.Get();
+            try {
+                sb.Append(defineString.Substring(0, p)).Append('<');
+
+                Type[] paras = t.GetGenericArguments();
+                foreach( Type a in paras )
+                    sb.Append(ToTypeString(a)).Append(", ");
+
+                sb.Remove(sb.Length - 2, 2);
+                sb.Append('>');
+                return sb.ToString().Replace("System.Collections.Generic.", "");
+            }
+            finally {
+                StringBuilderPool.Return(sb);
+            }
         }
+
+        return t.FullName.Replace('+', '.');
     }
 
     public static bool IsAnonymousType(this Type testType)

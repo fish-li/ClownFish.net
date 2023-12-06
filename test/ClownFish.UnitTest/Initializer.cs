@@ -49,7 +49,7 @@ public class Initializer
     {
         LoadDatabaseClientDlls();
 
-        ClownFishInit.InitDAL();
+        
 
         //string dllName = "ClownFish.UnitTest.EntityProxy.dll";
         //string dllOutPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp", dllName);
@@ -67,6 +67,8 @@ public class Initializer
                         //.LoadXmlCommandFromDirectory()
                         .LoadXmlCommandFromText(string.Empty);
         //.CompileAllEntityProxy(dllOutPath);
+
+        ClownFishInit.InitDAL();
 
 #if NETCOREAPP
         ClownFish.Data.Initializer.Instance.RegisterDamengProvider();

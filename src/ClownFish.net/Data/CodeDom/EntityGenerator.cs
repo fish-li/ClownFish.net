@@ -271,8 +271,8 @@ List<object> list = new List<object>( {0} );
             ColumnInfo column = kvp.Value;
             if( column.PropertyInfo.IsVirtual() ) {
 
-                // 这里的泛型参数就认为是可空类型，因为不允许其它的泛型数据类型
-                if( column.PropertyInfo.PropertyType.IsGenericType ) {
+                // 判断是不是可空类型，例如：int?  long?
+                if( column.PropertyInfo.PropertyType.IsNullableType() ) {
                     _code.AppendFormat(@"
 if( _x_changeFlags[{0}] ) {{
 	if( this.{1}.HasValue )	list.Add(this.{1}.Value);
@@ -387,7 +387,7 @@ if( val.HasValue )  m.{p.Name} = ({column.DataType.ToTypeString()})(val.Value);"
                 }
                 else {
                     // 很有可能是自定义的数据类型
-                    _code.AppendLineRN($"m.{p.Name} = ({p.PropertyType.FullName})DataFieldTypeHandlerFactory.Get(typeof({p.PropertyType.FullName})).GetValue({var}, cols[{column.Index}], s_entityType, \"{p.Name}\");");
+                    _code.AppendLineRN($"m.{p.Name} = ({p.PropertyType.ToTypeString()})DataFieldTypeHandlerFactory.Get(typeof({p.PropertyType.ToTypeString()})).GetValue({var}, cols[{column.Index}], s_entityType, \"{p.Name}\");");
                 }
             }
 

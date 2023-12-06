@@ -208,7 +208,12 @@ internal static class TypeList
         if( typeName.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(typeName));
 
-        return s_methodDict[typeName];
+        try {
+            return s_methodDict[typeName];
+        }
+        catch( KeyNotFoundException ex ) {
+            throw new NotSupportedException("不支持的类型名称：" + typeName, ex);
+        }
     }
 
 

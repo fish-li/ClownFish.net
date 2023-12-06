@@ -14,7 +14,26 @@ public partial class ComplexEntity : Entity
     public virtual EncSaveString SecureString { get; set; }
 }
 
+public partial class ComplexEntity2 : Entity
+{
+    [DbColumn(Alias = "id", PrimaryKey = true, Identity = true)]
+    public virtual int Id { get; set; }
 
+    [DbColumn(Alias = "location")]
+    public virtual System.Drawing.Point Location { get; set; }
+
+    [DbColumn(Alias = "securestring")]
+    public virtual EncSaveString SecureString { get; set; }
+
+    [DbColumn(Alias = "wday")]
+    public virtual DayOfWeek DayOfWeek { get; set; }
+
+    [DbColumn(Alias = "textx")]
+    public virtual List<string> Textx { get; set; }
+
+    [DbColumn(Alias = "countx")]
+    public virtual long? CountX { get; set; }
+}
 
 
 public sealed class EncSaveString
