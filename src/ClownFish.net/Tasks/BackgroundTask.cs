@@ -90,7 +90,7 @@ public abstract class BackgroundTask : BaseBackgroundTask
         while( true ) {
 
             // cron表达式的场景下，第一次执行前必须要“等待”，因为触发时间可能是“每天12点”之类的定点时间。
-            DateTime? nextTime = cron.GetNextTime(DateTime.Now);
+            DateTime? nextTime = cron.GetNextLocalTime(DateTime.Now);
             if( nextTime.HasValue == false ) {
                 ShowWarnning("不能根据 CronValue 计算下次执行时间，任务就此结束执行。");
                 return;

@@ -77,11 +77,15 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             // 触发【发送前】事件
             this.BeforeSend();
 
-            // 发出HTTP请求，获取响应                
+            // 发出HTTP请求，获取响应
             bool checkStatus = typeof(T) != typeof(HttpWebResponse);
             HttpWebResponse response = GetResponse(client, checkStatus);
 
             return ReturnResult<T>(response);
+        }
+        catch( TaskCanceledException ex ) {
+            // “调用超时”  很多时候是由于配置写错造成的，所以这里把地址一起抛出来
+            throw new TaskCanceledException("HTTP call timeout, destination address: " + this.Request.RequestUri.AbsoluteUri, ex);
         }
         finally {
             if( clientFromCache == false )
@@ -113,6 +117,9 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             HttpWebResponse response = await GetResponseAsync(client, checkStatus);
 
             return ReturnResult<T>(response);
+        }
+        catch( TaskCanceledException ex ) {
+            throw new TaskCanceledException("HTTP call timeout, destination address: " + this.Request.RequestUri.AbsoluteUri, ex);
         }
         finally {
             if( clientFromCache == false )

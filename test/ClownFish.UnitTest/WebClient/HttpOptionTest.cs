@@ -447,4 +447,34 @@ Host=www.fish-test.com
         
     }
 
+#if NETCOREAPP
+
+    [TestMethod]
+    public void Test_timeout()
+    {
+        HttpOption option = new HttpOption {
+            Url = "http://127.0.0.1:30000/test1.aspx",
+            Timeout = 30
+        };
+
+        Exception ex = null;
+        try {
+            option.Send();
+        }
+        catch(Exception ex2 ) {
+            ex = ex2;
+        }
+
+        Assert.IsNotNull(ex);
+
+        string exAll = ex.ToString();
+        Console.WriteLine(exAll);
+
+
+        Assert.IsInstanceOfType(ex, typeof(TaskCanceledException));    
+
+        Assert.IsTrue(exAll.Contains("HTTP call timeout, destination address: http://127.0.0.1:30000/test1.aspx"));
+    }
+#endif
+
 }

@@ -13,9 +13,19 @@ internal sealed class NbCronExpression
         _cronExpression = CronExpression.Parse(expression, Cronos.CronFormat.IncludeSeconds);
     }
 
-    public DateTime? GetNextTime(DateTime dateTime)
+    public DateTime? GetNextUtcTime(DateTime dateTime)
     {
         return _cronExpression.GetNextOccurrence(dateTime.ToUniversalTime());
+    }
+
+
+    public DateTime? GetNextLocalTime(DateTime dateTime)
+    {
+        DateTime? value = GetNextUtcTime(dateTime);
+        if( value.HasValue == false )
+            return null;
+        else
+            return value.Value.ToLocalTime();
     }
 }
 #endif

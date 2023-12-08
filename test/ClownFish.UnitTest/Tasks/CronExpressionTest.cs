@@ -10,12 +10,12 @@ public class CronExpressionTest
     public void Test()
     {
         string cronValue = "0/5 * * * * ? ";
-        DateTime now = DateTime.Now;
+        DateTime start = DateTime.Now;
         int count = 100;
 
-        string s1 = Test1(cronValue, now, count);
-        string s2 = Test2(cronValue, now, count);
-        string s3 = Test3(cronValue, now, count);
+        string s1 = Test1(cronValue, start, count);
+        string s2 = Test2(cronValue, start, count);
+        string s3 = Test3(cronValue, start, count);
 
         Console.WriteLine(s1);
         Assert.AreEqual(s1, s2);
@@ -25,10 +25,11 @@ public class CronExpressionTest
     private string Test1(string cronValue, DateTime start, int count)
     {
         StringBuilder sb = new StringBuilder();
+        sb.AppendLine(start.ToTimeString());
+
         Quartz.CronExpression cron = new Quartz.CronExpression(cronValue);
 
         DateTimeOffset current = new DateTimeOffset(start);
-        sb.AppendLine(current.DateTime.ToTimeString());
 
         for( int i = 0; i < count; i++ ) {
             DateTimeOffset? next = cron.GetNextValidTimeAfter(current);
@@ -42,10 +43,11 @@ public class CronExpressionTest
     private string Test2(string cronValue, DateTime start, int count)
     {
         StringBuilder sb = new StringBuilder();
+        sb.AppendLine(start.ToTimeString());
+
         Cronos.CronExpression cron = Cronos.CronExpression.Parse(cronValue, Cronos.CronFormat.IncludeSeconds);
 
-        DateTime current = start;
-        sb.AppendLine(start.ToTimeString());
+        DateTime current = start;        
 
         for( int i = 0; i < count; i++ ) {
             DateTime? next = cron.GetNextOccurrence(current.ToUniversalTime());
@@ -60,13 +62,14 @@ public class CronExpressionTest
     private string Test3(string cronValue, DateTime start, int count)
     {
         StringBuilder sb = new StringBuilder();
-        NbCronExpression cron = new NbCronExpression(cronValue);
-
-        DateTime current = start;
         sb.AppendLine(start.ToTimeString());
 
+        NbCronExpression cron = new NbCronExpression(cronValue);
+
+        DateTime current = start;        
+
         for( int i = 0; i < count; i++ ) {
-            DateTime? next = cron.GetNextTime(current);
+            DateTime? next = cron.GetNextUtcTime(current);
             sb.AppendLine(next.Value.ToTimeString());
 
             current = next.Value;
