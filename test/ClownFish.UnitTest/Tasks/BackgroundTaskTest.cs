@@ -45,10 +45,11 @@ public class BackgroundTaskTest
     [TestMethod]
     public void Test4()
     {
-        MyAssert.IsError<InvalidCodeException>(() => {
-            var task = new BackgroundTask4();
-            task.Run();
-        });
+        var task = new BackgroundTask4();
+        task.Run();
+
+        Assert.IsNotNull(task.UnhandledException);
+        Assert.IsInstanceOfType(task.UnhandledException, typeof(InvalidCodeException));
     }
 
     [TestMethod]

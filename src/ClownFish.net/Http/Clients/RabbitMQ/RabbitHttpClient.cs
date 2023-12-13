@@ -66,7 +66,6 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Id = "ClownFish_RabbitHttpClient_QueueDeclare";
         httpOption.Method = "PUT";
         httpOption.Format = SerializeFormat.Json;
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
         httpOption.Data = new {
             durable,
             exclusive,
@@ -85,7 +84,6 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Id = "ClownFish_RabbitHttpClient_QueueBind";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
         httpOption.Data = new {
             routing_key = routingKey
         };
@@ -129,7 +127,6 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Id = "ClownFish_RabbitHttpClient_SendMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
         httpOption.Data = new {
             properties = basicProperties,
             routing_key = routing,
@@ -195,7 +192,6 @@ public sealed class RabbitHttpClient : IDisposable
         string vhost = _option.VHost.UrlEncode();
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
         httpOption.Id = "ClownFish_RabbitHttpClient_MessageCount";
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
 
         // RabbitMQ 这个接口的返回结构很不固定，很有可能会导致取不到结果，
         // 所以暂时也没有很好的办法对付这个老六
@@ -246,7 +242,6 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Id = "ClownFish_RabbitHttpClient_GetMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
         httpOption.Data = new {
             count = 1,
             ackmode = (autoAck ? "ack_requeue_false" : "ack_requeue_true"),
@@ -275,7 +270,6 @@ public sealed class RabbitHttpClient : IDisposable
         httpOption.Id = "ClownFish_RabbitHttpClient_AckLast";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
-        httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
         httpOption.Data = new {
             count = 1,
             ackmode = "ack_requeue_false",
@@ -315,7 +309,6 @@ public sealed class RabbitHttpClient : IDisposable
     //    HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
     //    httpOption.Id = "ClownFish_RabbitHttpClient_DeleteQueue";
     //    httpOption.Method = "DELETE";
-    //    httpOption.Timeout = HttpClientDefaults.RabbitHttpClientTimeout;
 
     //    httpOption.Send();
     //}

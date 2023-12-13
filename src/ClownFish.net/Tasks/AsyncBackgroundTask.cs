@@ -6,26 +6,36 @@
 public abstract class AsyncBackgroundTask : BaseBackgroundTask
 {
     private static readonly int s_waitSecond60 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds1", 60);
-    private static readonly int s_waitSecond66 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds2", 66);
+    private static readonly int s_waitSecond66 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds2", 66);    
 
     internal async Task RunAsync()
     {
-        this.Status = 2;
+        this.Status = -1;
+        this.LastStatus = -1;
 
-        // 这个方法不做异常处理，因为有可能会包含一些初始化的操作。
-        if( Init() == false )
-            return;
+        try {
+            // 这个方法不做异常处理，因为有可能会包含一些初始化的操作。
+            if( Init0() == false ) {
+                this.Status = 2;
+                return;
+            }
 
-        ClownFishInit.AppExitToken.Register(OnAppExit);
+            ClownFishInit.AppExitToken.Register(OnAppExit);
 
-        if( this.CronValue.HasValue() ) {
-            await RunByCronAsync();
+            if( this.CronValue.HasValue() ) {
+                await RunByCronAsync();
+            }
+            else if( this.SleepSeconds.GetValueOrDefault() > 0 ) {
+                await RunWithSleepSecondsAsync();
+            }
+            else {
+                this.Status = 2;
+                throw new InvalidCodeException("没有设置执行间隔属性：SleepSeconds 或者 CronValue ");
+            }
         }
-        else if( this.SleepSeconds.GetValueOrDefault() > 0 ) {
-            await RunWithSleepSecondsAsync();
-        }
-        else {
-            throw new InvalidCodeException("没有设置执行间隔属性：SleepSeconds 或者 CronValue ");
+        catch( Exception ex ) {
+            this.UnhandledException = ex;
+            Console2.Error(ex);
         }
 
         this.Status = 2;
@@ -186,7 +196,7 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
             await Task.Delay(waitTime, _tokenSource.Token);
         }
         catch( TaskCanceledException ) {
-            // 到达等待超时时间
+            // 到达等待超时时间，或者被 StopWait() 触发
         }
         catch( Exception ex ) {
             if( EnvUtils.IsDevEnv )

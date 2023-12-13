@@ -16,12 +16,12 @@ public sealed class BgTaskStatus
     public int Kind { get; set; }
 
     /// <summary>
-    /// 运行状态。 0: 等待中，1：运行中，2：已停止
+    /// 运行状态。 -1：未开始, 0: 等待中，1：运行中，2：已停止
     /// </summary>
     public int Status { get; set; }
 
     /// <summary>
-    /// 最近运行状态。 0：成功， 1：运行中，2：失败
+    /// 最近运行状态。 -1：未开始, 0：成功， 1：运行中，2：失败
     /// </summary>
     public int LastStatus { get; set; }
 
@@ -32,6 +32,7 @@ public sealed class BgTaskStatus
     public string GetStatusText()
     {
         return this.Status switch {
+            -1 => "未开始",
             0 => "等待中",
             1 => "运行中",
             2 => "已停止",
@@ -47,6 +48,7 @@ public sealed class BgTaskStatus
     public string GetLastStatusText()
     {
         return this.LastStatus switch {
+            -1 => "未开始",
             0 => "成功",
             1 => "运行中",
             2 => "失败",

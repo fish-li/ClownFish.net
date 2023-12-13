@@ -45,10 +45,11 @@ public class AsyncBackgroundTaskTest
     [TestMethod]
     public async Task Test4()
     {
-        await MyAssert.IsErrorAsync<InvalidCodeException>(async () => {
-            var task = new AsyncBackgroundTask4();
-            await task.RunAsync();
-        });
+        var task = new AsyncBackgroundTask4();
+        await task.RunAsync();
+
+        Assert.IsNotNull(task.UnhandledException);
+        Assert.IsInstanceOfType(task.UnhandledException, typeof(InvalidCodeException));
     }
 
     [TestMethod]

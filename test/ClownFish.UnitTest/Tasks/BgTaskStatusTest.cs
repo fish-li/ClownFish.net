@@ -21,6 +21,9 @@ public class BgTaskStatusTest
             pi.SetValue(instance, value, null);
         }
 
+        instance.Status = -1;
+        Assert.AreEqual("未开始", instance.GetStatusText());
+
         instance.Status = 0;
         Assert.AreEqual("等待中", instance.GetStatusText());
 
@@ -33,9 +36,12 @@ public class BgTaskStatusTest
         instance.Status = 3;
         Assert.AreEqual("未知", instance.GetStatusText());
 
-        instance.Status = -1;
+        instance.Status = -2;
         Assert.AreEqual("未知", instance.GetStatusText());
 
+
+        instance.LastStatus = -1;
+        Assert.AreEqual("未开始", instance.GetLastStatusText());
 
         instance.LastStatus = 0;
         Assert.AreEqual("成功", instance.GetLastStatusText());
@@ -49,7 +55,7 @@ public class BgTaskStatusTest
         instance.LastStatus = 3;
         Assert.AreEqual("未知", instance.GetLastStatusText());
 
-        instance.LastStatus = -1;
+        instance.LastStatus = -2;
         Assert.AreEqual("未知", instance.GetLastStatusText());
     }
 }

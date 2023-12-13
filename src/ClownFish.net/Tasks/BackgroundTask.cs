@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Tasks;
+﻿using System.ComponentModel.Design;
+
+namespace ClownFish.Tasks;
 #if NETCOREAPP
 // 设计说明
 // ===========================================
@@ -25,22 +27,31 @@ public abstract class BackgroundTask : BaseBackgroundTask
 {
     internal void Run()
     {
-        this.Status = 2;
+        this.Status = -1;
+        this.LastStatus = -1;
 
-        // 这个方法不做异常处理，因为有可能会包含一些初始化的操作。
-        if( Init() == false )
-            return;
+        try {
+            if( Init0() == false ) {
+                this.Status = 2;
+                return;
+            }
 
-        ClownFishInit.AppExitToken.Register(OnAppExit);
+            ClownFishInit.AppExitToken.Register(OnAppExit);
 
-        if( this.CronValue.HasValue() ) {
-            RunByCron();
+            if( this.CronValue.HasValue() ) {
+                RunByCron();
+            }
+            else if( this.SleepSeconds.GetValueOrDefault() > 0 ) {
+                RunWithSleepSeconds();
+            }
+            else {
+                this.Status = 2;
+                throw new InvalidCodeException("没有设置执行间隔属性：SleepSeconds 或者 CronValue ");
+            }
         }
-        else if( this.SleepSeconds.GetValueOrDefault() > 0 ) {
-            RunWithSleepSeconds();
-        }
-        else {
-            throw new InvalidCodeException("没有设置执行间隔属性：SleepSeconds 或者 CronValue ");
+        catch(Exception ex) {
+            this.UnhandledException = ex;
+            Console2.Error(ex);
         }
 
         this.Status = 2;

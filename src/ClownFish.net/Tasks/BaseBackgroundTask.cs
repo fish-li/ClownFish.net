@@ -5,6 +5,8 @@
 /// </summary>
 public abstract class BaseBackgroundTask : BaseTaskObject
 {
+    internal Exception UnhandledException { get; set; }
+
     internal bool ExitFlag { get; private set; } = false;
 
     /// <summary>
@@ -19,12 +21,12 @@ public abstract class BaseBackgroundTask : BaseTaskObject
 
 
     /// <summary>
-    /// 运行状态。 0: 等待中，1：运行中，2：已停止
+    /// 运行状态。 -1：未开始, 0: 等待中，1：运行中，2：已停止
     /// </summary>
-    internal volatile int Status;        
+    internal volatile int Status;
 
     /// <summary>
-    /// 最近运行状态。 0：成功， 1：运行中，2：失败
+    /// 最近运行状态。 -1：未开始, 0：成功， 1：运行中，2：失败
     /// </summary>
     internal volatile int LastStatus;
 
@@ -71,7 +73,27 @@ public abstract class BaseBackgroundTask : BaseTaskObject
         get => null;
     }
 
+    internal bool Init0()
+    {
+        string cronValue = this.CronValue;
+        if( cronValue.HasValue() ) {
+            try {
+                NbCronExpression cron = new NbCronExpression(cronValue);
+            }
+            catch( Exception ex ) {
+                ShowWarnning($"不正确的Cron表达式：[{cronValue}]，错误描述：" + ex.Message);
+                return false;
+            }
+        }
 
+        try {
+            return Init();
+        }
+        catch( Exception ex ) {
+            Console2.Error(ex);
+            return false;
+        }
+    }
 
     /// <summary>
     /// 执行任务前的初始化。

@@ -125,6 +125,7 @@ public class LogHelperTest
         LogHelper.Write((XMessage)null);
         LogHelper.Write(new XMessage("67130faa9ad54dca98039c3c7307681e"));
         LogHelper.Write(new XMessage("a443b55f10424ef4b279b8edd4970bda"));
+        Thread.Sleep(10);
 
         while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get() 
             || count2 == ClownFishCounters.Logging.WriteCount.Get() )
