@@ -6,12 +6,6 @@
 public sealed class RabbitOption
 {
     /// <summary>
-    /// 默认连接配置名称
-    /// </summary>
-    public static string DefaultSettingName = "ClownFish_Log_Rabbit";
-
-
-    /// <summary>
     /// VHost，默认值："/"
     /// </summary>
     public string VHost { get; set; } = "/";
@@ -37,6 +31,10 @@ public sealed class RabbitOption
     /// </summary>
     public string Password { get; set; }
 
+    /// <summary>
+    /// Http请求超时时间，单位：毫秒
+    /// </summary>
+    public int? HttpTimeoutMs { get; set; }
 
     /// <summary>
     /// ToString
@@ -55,9 +53,12 @@ public sealed class RabbitOption
     public HttpOption GetHttpOption(string urlPath)
     {
         int port = this.HttpPort > 0 ? this.HttpPort : 15672;
+        int timeout = this.HttpTimeoutMs.HasValue && this.HttpTimeoutMs.Value > 0 
+                        ? this.HttpTimeoutMs.Value : HttpClientDefaults.RabbitHttpClientTimeout;
+
         HttpOption httpOption = new HttpOption {
             Url = $"http://{this.Server}:{port}{urlPath}",
-            Timeout = 10 * 1000,
+            Timeout = timeout,
         };
 
         if( this.Username.HasValue() ) {

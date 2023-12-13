@@ -9,7 +9,7 @@ internal class HttpJsonWriter : ILogWriter
 {
     private string _url;
 
-    private static readonly int s_batchSize = Settings.GetUInt("HttpJsonWriter_BatchSize", 5 * 1024 * 1024);
+    private static readonly int s_batchSize = Settings.GetUInt("ClownFish_Log_HttpJsonWriter_BatchSize", 5 * 1024 * 1024);
 
     private readonly StringBuilder _buffer = new StringBuilder(s_batchSize);
 

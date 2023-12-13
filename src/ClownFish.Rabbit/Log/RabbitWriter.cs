@@ -16,16 +16,16 @@ internal sealed class RabbitWriter : ILogWriter
 
     private void InternalInit(LogConfiguration config)
     {
-        string configValue = Settings.GetSetting(RabbitOption.DefaultSettingName);
+        string configValue = Settings.GetSetting(LoggingOptions.RabbitSettingName);
 
         if( configValue.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitWriter 不能初始化，因为没有找到 {RabbitOption.DefaultSettingName} 的连接配置参数。");
+            Console2.Info($"RabbitWriter 不能初始化，因为没有找到 {LoggingOptions.RabbitSettingName} 的连接配置参数。");
             return;
         }
 
         RabbitOption option = configValue.ToObject<RabbitOption>();
         if( option.Server.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitWriter 不能初始化，因为连接配置参数 {RabbitOption.DefaultSettingName} 的 Server 为空。");
+            Console2.Info($"RabbitWriter 不能初始化，因为连接配置参数 {LoggingOptions.RabbitSettingName} 的 Server 为空。");
             return;
         }
 

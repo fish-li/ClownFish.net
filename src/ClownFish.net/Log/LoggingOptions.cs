@@ -6,6 +6,17 @@
 public static class LoggingOptions
 {
     /// <summary>
+    /// RabbitMQ默认连接配置名称
+    /// </summary>
+    public static readonly string RabbitSettingName = "ClownFish_Log_Rabbit";
+
+    /// <summary>
+    /// Elasticsearch默认连接配置名称
+    /// </summary>
+    public static readonly string EsSettingName = "ClownFish_Log_Elasticsearch";
+
+
+    /// <summary>
     /// 日志内存缓冲队列的最大长度，默认值：5000
     /// </summary>
     public static int MaxCacheQueueLength { get; set; } = LocalSettings.GetInt("ClownFish_Log_MaxCacheQueueLength", 5000);

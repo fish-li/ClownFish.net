@@ -7,14 +7,13 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class ElasticsearchWriter : ILogWriter
 {
-    private static readonly string s_settingName = "ClownFish_Log_Elasticsearch";
     private static readonly string s_indexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd-HH");
 
     private SimpleEsClient _client;
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
-        InternalInit(s_settingName);
+        InternalInit(LoggingOptions.EsSettingName);
     }
 
     internal bool InternalInit(string settingName)

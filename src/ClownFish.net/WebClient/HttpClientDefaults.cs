@@ -24,17 +24,17 @@ public static class HttpClientDefaults
     public static /* readonly */ int HttpProxyTimeout = LocalSettings.GetInt("ClownFish_HttpProxy_Timeout", 120 * 1000);
 
     /// <summary>
-    /// Rabbit-HTTP客户端调用的超时时间（单位：毫秒），默认值：10 秒
+    /// Rabbit-HTTP客户端调用的超时时间（单位：毫秒），默认值：30 秒
     /// </summary>
     public static /* readonly */ int RabbitHttpClientTimeout = LocalSettings.GetInt("ClownFish_RabbitHttpClient_Timeout", 30 * 1000);
 
     /// <summary>
-    /// Elasticsearch-HTTP客户端调用的超时时间（单位：毫秒），默认值：10 秒
+    /// Elasticsearch-HTTP客户端调用的超时时间（单位：毫秒），默认值：30 秒
     /// </summary>
     public static /* readonly */ int EsHttpClientTimeout = LocalSettings.GetInt("ClownFish_EsHttpClient_Timeout", 30 * 1000);
 
     /// <summary>
-    /// HttpJsonWriter-HTTP客户端调用的超时时间（单位：毫秒），默认值：10 秒
+    /// HttpJsonWriter-HTTP客户端调用的超时时间（单位：毫秒），默认值：30 秒
     /// </summary>
     public static /* readonly */ int HttpJsonWriterTimeout = LocalSettings.GetInt("ClownFish_HttpJsonWriter_Timeout", 30 * 1000);
 }

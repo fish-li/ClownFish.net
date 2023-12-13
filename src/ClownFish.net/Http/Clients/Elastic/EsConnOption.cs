@@ -29,6 +29,11 @@ public sealed class EsConnOption
     public string Password { get; set; }
 
     /// <summary>
+    /// 请求超时时间，单位：毫秒
+    /// </summary>
+    public int? TimeoutMs { get; set; }
+
+    /// <summary>
     /// 索引名称后缀的时间格式，例如："-yyyyMMdd"
     /// </summary>
     public string IndexNameTimeFormat { get; set; } = "-yyyyMMdd";
@@ -54,6 +59,17 @@ public sealed class EsConnOption
             }
             return _url;
         }
+    }
+
+    /// <summary>
+    /// Set TimeoutMs
+    /// </summary>
+    /// <param name="timeoutMs"></param>
+    /// <returns></returns>
+    public EsConnOption SetTimeoutMs(int timeoutMs)
+    {
+        this.TimeoutMs = timeoutMs;
+        return this;
     }
 
 
@@ -121,12 +137,15 @@ public sealed class EsConnOption
             return null;
 
         var args = dbConfig.Args.ToKVList(';', '=');
+        int timeout = args.GetValue(nameof(TimeoutMs)).TryToInt();
+
         return new EsConnOption {
             Server = dbConfig.Server,
             Port = dbConfig.Port.GetValueOrDefault(),
             UserName = dbConfig.UserName,
             Password = dbConfig.Password,
             Https = args.GetValue(nameof(Https)).TryToBool(),
+            TimeoutMs = timeout > 0 ? timeout : null,
             IndexNameTimeFormat = args.GetValue(nameof(IndexNameTimeFormat))
         };
     }

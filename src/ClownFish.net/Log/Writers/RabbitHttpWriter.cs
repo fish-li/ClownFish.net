@@ -8,11 +8,11 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class RabbitHttpWriter : ILogWriter
 {
-    private RabbitHttpClient _client;    
+    private RabbitHttpClient _client;
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
-        InternalInit(config, RabbitOption.DefaultSettingName);
+        InternalInit(config, LoggingOptions.RabbitSettingName);
     }
 
 

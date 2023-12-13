@@ -12,7 +12,7 @@ public class RabbitOptionTest
     [TestMethod]
     public void Test1()
     {
-        Assert.AreEqual("ClownFish_Log_Rabbit", RabbitOption.DefaultSettingName);
+        Assert.AreEqual("ClownFish_Log_Rabbit", LoggingOptions.RabbitSettingName);
 
         RabbitOption opt = LocalSettings.GetSetting<RabbitOption>("rabbit_config", true);
         string text = opt.ToString();
