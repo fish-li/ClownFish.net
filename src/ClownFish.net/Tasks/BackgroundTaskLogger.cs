@@ -49,7 +49,7 @@ internal static class BackgroundTaskLogger
                 scope.SaveOprLog(context);
             }
             catch( Exception ex ) {
-                Console2.Error("BackgroundTask写OprLog失败", ex);
+                Console2.Error("BackgroundTask写OprLog失败！", ex);
             }
         }
     }

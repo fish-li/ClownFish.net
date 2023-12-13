@@ -195,7 +195,7 @@ public static class RsaHelper
 
         int p = encString.IndexOf('.');
         if( p <= 0 || p == encString.Length - 1 )
-            throw new ArgumentException("字符串参数encString的格式不正确");
+            throw new ArgumentException("字符串参数encString的格式不正确！");
 
 
         string keyString = encString.Substring(0, p);
@@ -206,7 +206,7 @@ public static class RsaHelper
             encKey = Convert.FromBase64String(keyString);
         }
         catch {
-            throw new ArgumentException("字符串参数encString的内容不正确，不能解析密钥。");
+            throw new ArgumentException("字符串参数encString的内容不正确，不能解析密钥！");
         }
 
         // 解密【加密密钥】，结果将用于AES解密
@@ -216,7 +216,7 @@ public static class RsaHelper
             return AesHelper.Decrypt(encData, key.ToHexString());
         }
         catch( Exception ex ) {
-            throw new InvalidDataException("解密数据失败。", ex);
+            throw new InvalidDataException("解密数据失败！", ex);
         }
     }
 

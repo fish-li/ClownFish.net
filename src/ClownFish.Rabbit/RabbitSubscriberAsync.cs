@@ -75,7 +75,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
             await _pipeline.PushMessage(request);
         }
         catch( Exception ex ) {
-            OnError("处理消息失败", ex);
+            OnError("处理消息失败！", ex);
         }
 
         SendAck(message.DeliveryTag);
@@ -92,7 +92,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
             _connection.GetChannel().BasicAck(deliveryTag, false);
         }
         catch( Exception ex ) {
-            OnError("消息确认失败", ex);
+            OnError("消息确认失败！", ex);
         }
     }
 

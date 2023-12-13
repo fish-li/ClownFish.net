@@ -71,7 +71,7 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
             _pipeline.PushMessage(request);
         }
         catch( Exception ex ) {
-            OnError("处理消息失败", ex);
+            OnError("处理消息失败！", ex);
         }
 
         SendAck(message.DeliveryTag);
@@ -88,7 +88,7 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
             _connection.GetChannel().BasicAck(deliveryTag, false);
         }
         catch( Exception ex ) {
-            OnError("消息确认失败", ex);
+            OnError("消息确认失败！", ex);
         }
     }
 

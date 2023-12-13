@@ -39,7 +39,7 @@ internal static class PipelineLogger
                 scope.SaveOprLog(context);
             }
             catch( Exception ex ) {
-                Console2.Error("消息管道写OprLog失败", ex);
+                Console2.Error("消息管道写OprLog失败！", ex);
             }
         }
     }

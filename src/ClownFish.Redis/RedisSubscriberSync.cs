@@ -52,7 +52,7 @@ internal sealed class RedisSubscriberSync<T> where T : class
             _pipeline.PushMessage(request);
         }
         catch( Exception ex ) {
-            OnError("处理消息失败", ex);
+            OnError("处理消息失败！", ex);
         }
     }
 

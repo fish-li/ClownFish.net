@@ -51,7 +51,7 @@ internal sealed class RedisSubscriberAsync<T> where T : class
             await _pipeline.PushMessage(request);
         }
         catch( Exception ex ) {
-            OnError("处理消息失败", ex);
+            OnError("处理消息失败！", ex);
         }
     }
 

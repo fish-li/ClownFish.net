@@ -24,7 +24,7 @@ internal static class RabbitUtils
             };
         }
         catch( Exception ex ) {
-            Console2.Error($"RabbitSubscriber 消息对象反序列化失败。", ex);
+            Console2.Error($"RabbitSubscriber 消息对象反序列化失败！", ex);
             return null;
         }
     }

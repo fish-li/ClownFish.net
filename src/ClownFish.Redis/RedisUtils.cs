@@ -32,7 +32,7 @@ internal static class RedisUtils
             };
         }
         catch( Exception ex ) {
-            Console2.Error($"RedisSubscriber 消息对象反序列化失败。", ex);
+            Console2.Error($"RedisSubscriber 消息对象反序列化失败！", ex);
             return null;
         }
     }

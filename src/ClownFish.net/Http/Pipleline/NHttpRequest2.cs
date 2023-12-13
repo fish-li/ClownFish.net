@@ -96,7 +96,7 @@ public partial class NHttpRequest : ILoggingObject
             return await reader.ReadAllTextAsync(encoding);
         }
         catch( Exception ex ) {
-            Console2.Warnning(ex);
+            Console2.Warnning("ReadBodyAsTextAsync ERROR: " + ex.ToString());
             // 吃异常的原因请参考上面注释
             return string.Empty;
         }
@@ -117,7 +117,7 @@ public partial class NHttpRequest : ILoggingObject
             return this.InputStream.ToArray();
         }
         catch( Exception ex ) {
-            Console2.Warnning(ex);
+            Console2.Warnning("ReadBodyAsBytes ERROR: " + ex.ToString());
             // 吃异常的原因请参考上面注释
             return Empty.Array<byte>();
         }
@@ -138,7 +138,7 @@ public partial class NHttpRequest : ILoggingObject
             return await this.InputStream.ToArrayAsync();
         }
         catch( Exception ex ) {
-            Console2.Warnning(ex);
+            Console2.Warnning("ReadBodyAsBytesAsync ERROR: " + ex.ToString());
             // 吃异常的原因请参考上面注释
             return Empty.Array<byte>();
         }
