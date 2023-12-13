@@ -47,9 +47,12 @@ internal static class DebugReportBlocks
         block.AppendLine("CacheOption.ExpirationScanFrequency: " + CacheOption.ExpirationScanFrequency.ToString());
         block.AppendLine("--------------------------------------------");
 
-        block.AppendLine("HttpClientDefaults.HttpTimeout: " + HttpClientDefaults.HttpTimeout.ToString());
-        block.AppendLine("HttpClientDefaults.ProxyHttpTimeout: " + HttpClientDefaults.ProxyHttpTimeout.ToString());
+        block.AppendLine("HttpClientDefaults.HttpClientTimeout: " + HttpClientDefaults.HttpClientTimeout.ToString());        
         block.AppendLine("HttpClientDefaults.HttpClientCacheSeconds: " + HttpClientDefaults.HttpClientCacheSeconds.ToString());
+        block.AppendLine("HttpClientDefaults.HttpProxyTimeout: " + HttpClientDefaults.HttpProxyTimeout.ToString());
+        block.AppendLine("HttpClientDefaults.RabbitHttpClientTimeout: " + HttpClientDefaults.RabbitHttpClientTimeout.ToString());
+        block.AppendLine("HttpClientDefaults.EsHttpClientTimeout: " + HttpClientDefaults.EsHttpClientTimeout.ToString());
+        block.AppendLine("HttpClientDefaults.HttpJsonWriterTimeout: " + HttpClientDefaults.HttpJsonWriterTimeout.ToString());
 
         return block;
     }

@@ -7,16 +7,14 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class ElasticsearchWriter : ILogWriter
 {
-    // 下面3个变量故意不加 readonly，允许在项目中直接修改
-    internal static string ElasticsearchSettingName = "ClownFish_Log_Elasticsearch";
-    internal static string IndexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd-HH");
-    internal static int RequestTimeoutMs = Settings.GetUInt("ClownFish_Log_ES_TimeoutMs", 5_000);
+    private static readonly string s_settingName = "ClownFish_Log_Elasticsearch";
+    private static readonly string s_indexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd-HH");
 
     private SimpleEsClient _client;
 
     public void Init(LogConfiguration config, WriterConfig section)
     {
-        InternalInit(ElasticsearchSettingName);
+        InternalInit(s_settingName);
     }
 
     internal bool InternalInit(string settingName)
@@ -28,8 +26,7 @@ internal sealed class ElasticsearchWriter : ILogWriter
             return false;
         }
 
-        opt.TimeoutMs = ElasticsearchWriter.RequestTimeoutMs;
-        opt.IndexNameTimeFormat = ElasticsearchWriter.IndexNameTimeFormat;
+        opt.IndexNameTimeFormat = s_indexNameTimeFormat;
         _client = new SimpleEsClient(opt);
 
         Console2.Info(this.GetType().FullName + " Init OK.");

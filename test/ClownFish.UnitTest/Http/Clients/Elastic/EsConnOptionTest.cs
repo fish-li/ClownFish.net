@@ -23,7 +23,6 @@ public class EsConnOptionTest
         Assert.AreEqual(123, opt.Port);
         Assert.AreEqual("http://localhost:123", opt.Url);
         Assert.IsFalse(opt.Https);
-        Assert.AreEqual(0, opt.TimeoutMs);
         Assert.IsNull(opt.IndexNameTimeFormat);
     }
 
@@ -41,7 +40,6 @@ public class EsConnOptionTest
         Assert.AreEqual("localhost", opt.Server);
         Assert.AreEqual(123, opt.Port);
         Assert.AreEqual("https://localhost:123", opt.Url);
-        Assert.AreEqual(0, opt.TimeoutMs);
         Assert.IsNull(opt.IndexNameTimeFormat);
     }
 
@@ -59,7 +57,6 @@ public class EsConnOptionTest
         Assert.AreEqual("localhost", opt.Server);
         Assert.AreEqual(123, opt.Port);
         Assert.AreEqual("https://localhost:123", opt.Url);
-        Assert.AreEqual(3000, opt.TimeoutMs);
         Assert.AreEqual("-yyyyMMdd-HH", opt.IndexNameTimeFormat);
     }
 
@@ -75,7 +72,6 @@ public class EsConnOptionTest
         Assert.AreEqual("localhost", opt.Server);
         Assert.AreEqual(0, opt.Port);
         Assert.AreEqual("http://localhost:9200", opt.Url);
-        Assert.AreEqual(0, opt.TimeoutMs);
         Assert.IsNull(opt.IndexNameTimeFormat);
     }
 
@@ -91,7 +87,6 @@ public class EsConnOptionTest
         Assert.AreEqual("10.5.1.1:9300", opt.Server);
         Assert.AreEqual(0, opt.Port);
         Assert.AreEqual("http://10.5.1.1:9300", opt.Url);
-        Assert.AreEqual(0, opt.TimeoutMs);
         Assert.IsNull(opt.IndexNameTimeFormat);
     }
 
@@ -104,12 +99,9 @@ public class EsConnOptionTest
         };
 
         EsConnOption opt = EsConnOption.Create1(dbConfig);
-
-        opt.SetTimeoutMs(100)
-            .SetIndexNameTimeFormat("abc");
+        opt.SetIndexNameTimeFormat("abc");
 
         Assert.IsNull(opt.Password);
-        Assert.AreEqual(100, opt.TimeoutMs);
         Assert.AreEqual("abc", opt.IndexNameTimeFormat);
 
         string text = opt.ToString();
@@ -121,13 +113,10 @@ public class EsConnOptionTest
     {
         EsConnOption opt = new EsConnOption();
         Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
-        Assert.AreEqual(30_000, opt.TimeoutMs);
 
         opt.IndexNameTimeFormat = null;
-        opt.TimeoutMs = 0;
 
         Assert.IsNull(opt.IndexNameTimeFormat);
-        Assert.AreEqual(0, opt.TimeoutMs);
 
         MyAssert.IsError<ConfigurationErrorsException>(() => {
             opt.Validate();
@@ -137,7 +126,6 @@ public class EsConnOptionTest
         opt.Validate();
 
         Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
-        Assert.AreEqual(30_000, opt.TimeoutMs);
     }
 
     [TestMethod]

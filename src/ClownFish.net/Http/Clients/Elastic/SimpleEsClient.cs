@@ -50,7 +50,7 @@ public sealed class SimpleEsClient
         HttpOption httpOption = new HttpOption {
             Method = method,
             Url = _option.Url + url,
-            Timeout = _option.TimeoutMs
+            Timeout = HttpClientDefaults.EsHttpClientTimeout
         };
 
         return SetAuth(httpOption);
@@ -123,7 +123,7 @@ public sealed class SimpleEsClient
             Url = _option.Url + $"/{index}/_doc/{id}",
             Data = info.ToJson(JsonStyle.CamelCase),
             Format = SerializeFormat.Json,
-            Timeout = _option.TimeoutMs
+            Timeout = HttpClientDefaults.EsHttpClientTimeout
         };
 
         return SetAuth(httpOption);
@@ -180,7 +180,7 @@ public sealed class SimpleEsClient
             Url = _option.Url + $"/{index}/_bulk",
             Data = dataList.ToMultiLineJson(JsonStyle.CamelCase),
             Format = SerializeFormat.Json,
-            Timeout = _option.TimeoutMs
+            Timeout = HttpClientDefaults.EsHttpClientTimeout
         };
 
         return SetAuth(httpOption);
@@ -255,7 +255,7 @@ public sealed class SimpleEsClient
             Url = _option.Url + $"/{index.UrlEncode()}/_search?typed_keys=true",
             Format = SerializeFormat.Json,
             Data = body.ToJson(JsonStyle.UtcTime | JsonStyle.CamelCase),  // 与NEST客户端保持一致
-            Timeout = _option.TimeoutMs
+            Timeout = HttpClientDefaults.EsHttpClientTimeout
         };
 
         return SetAuth(httpOption);

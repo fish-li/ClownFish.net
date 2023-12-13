@@ -43,7 +43,7 @@ internal static class MsHttpClientCache2
         clientHandler.AllowAutoRedirect = false;
 
         HttpClient client = new HttpClient(clientHandler);
-        client.Timeout = TimeSpan.FromMilliseconds(HttpClientDefaults.ProxyHttpTimeout);
+        client.Timeout = TimeSpan.FromMilliseconds(HttpClientDefaults.HttpProxyTimeout);
         return client;
     }
 

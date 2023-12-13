@@ -9,7 +9,7 @@ internal class HttpJsonWriter : ILogWriter
 {
     private string _url;
 
-    private static readonly int s_batchSize = LocalSettings.GetUInt("HttpJsonWriter_BatchSize", 5 * 1024 * 1024);
+    private static readonly int s_batchSize = Settings.GetUInt("HttpJsonWriter_BatchSize", 5 * 1024 * 1024);
 
     private readonly StringBuilder _buffer = new StringBuilder(s_batchSize);
 
@@ -52,7 +52,7 @@ internal class HttpJsonWriter : ILogWriter
             ClownFishCounters.Logging.HttpJsonWriteCount.Add(list.Count);
         }
         catch( Exception ex ) {
-            Console2.Warnning(ex.ToString2());
+            Console2.Warnning("HttpJsonWriter.WriteList ERROR: " + ex.ToString());
         }
     }
 
@@ -65,6 +65,7 @@ internal class HttpJsonWriter : ILogWriter
             Url = url,
             Format = SerializeFormat.None,
             Data = jsonGzip,
+            Timeout = HttpClientDefaults.HttpJsonWriterTimeout
         };
 
         // 说明：json lines 还没有形成【技术标准】，

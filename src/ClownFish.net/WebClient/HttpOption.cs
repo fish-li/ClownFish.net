@@ -19,7 +19,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         Format = SerializeFormat.Form;
 
         // .NET默认的超时时间太长了，当出现故障时容易产生大量阻塞。 这里强制指定超时时间。
-        Timeout = HttpClientDefaults.HttpTimeout;
+        Timeout = HttpClientDefaults.HttpClientTimeout;
 
 #if NETCOREAPP
         CancellationToken = s_useAppExitToken ? ClownFishInit.AppExitToken : CancellationToken.None;
