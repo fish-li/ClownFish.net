@@ -82,25 +82,30 @@ public static class LoggingOptions
     public static class Http
     {
         /// <summary>
+        /// ClownFish_Log_HttpAll = 1
+        /// </summary>
+        public static readonly bool IsLogAll = LocalSettings.GetBool("ClownFish_Log_HttpAll");
+
+        /// <summary>
         /// 是否必须记录 Request（HttpRequest/MqRequest）到日志中，无论当前操作是成功还是失败，否则仅供出现性能慢或者异常时才记录
         /// </summary>
-        public static bool MustLogRequest { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_MustLogRequest");
+        public static bool MustLogRequest { get; set; } = IsLogAll || LocalSettings.GetBool("ClownFish_Log_MustLogRequest");
 
         /// <summary>
         /// 是否必须记录 RequestBody 到日志中
         /// </summary>
-        public static bool LogRequestBody { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_LogRequestBody");
+        public static bool LogRequestBody { get; set; } = IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogRequestBody");
 
 
         /// <summary>
         /// 是否必须记录 Response 到日志中
         /// </summary>
-        public static bool MustLogResponse { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_MustLogResponse");
+        public static bool MustLogResponse { get; set; } = IsLogAll || LocalSettings.GetBool("ClownFish_Log_MustLogResponse");
 
         /// <summary>
         /// 是否必须记录 ResponseBody 到日志中
         /// </summary>
-        public static bool LogResponseBody { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_LogResponseBody");        
+        public static bool LogResponseBody { get; set; } = IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogResponseBody");        
     }
 
 
@@ -112,24 +117,24 @@ public static class LoggingOptions
         ///// <summary>
         ///// 是否必须记录 HttpClient-HttpRequestMessage 到日志中
         ///// </summary>
-        //public static bool MustLogClientRequest { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_MustLogClientRequest");
+        //public static bool MustLogClientRequest { get; set; } = Http.IsLogAll || LocalSettings.GetBool("ClownFish_Log_MustLogClientRequest");
 
         /// <summary>
         /// 是否必须记录 HttpClient-HttpRequestMessage-Body 到日志中
         /// </summary>
-        public static bool LogClientRequestBody { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_LogClientRequestBody");
+        public static bool LogClientRequestBody { get; set; } = Http.IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogClientRequestBody");
 
 
 
         /// <summary>
         /// 是否必须记录 HttpClient-HttpResponseMessage 到日志中
         /// </summary>
-        public static bool MustLogClientResponse { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_MustLogClientResponse");
+        public static bool MustLogClientResponse { get; set; } = Http.IsLogAll || LocalSettings.GetBool("ClownFish_Log_MustLogClientResponse");
         
 
         /// <summary>
         /// 是否必须记录 HttpClient-HttpResponseMessage-Body 到日志中
         /// </summary>
-        public static bool LogClientResponseBody { get; set; } = LocalSettings.GetBool("ClownFish_Log_HttpAll") || LocalSettings.GetBool("ClownFish_Log_LogClientResponseBody");
+        public static bool LogClientResponseBody { get; set; } = Http.IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogClientResponseBody");
     }
 }

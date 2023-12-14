@@ -290,8 +290,8 @@ public sealed class OprLogScope : IDisposable
         this.OprLog.IsLongTask = context.IsLongTask ? 1 : 0;
         this.OprLog.CalcTime(context.PerformanceThresholdMs, context.EndTime);
 
-        // 如果执行时间超过性能阀值
-        if( this.OprLog.IsSlow == 1 ) {
+        // 记录执行过程
+        if( _exObject != null || this.OprLog.IsSlow == 1 ) {
 
             // 填充执行过程中的所有步骤描述
             this.OprLog.StepCount = _steps == null ? 0 : _steps.Count;
