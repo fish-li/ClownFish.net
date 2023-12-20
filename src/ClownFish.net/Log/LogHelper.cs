@@ -101,6 +101,11 @@ public static class LogHelper
         log.Addition = addition;
 
         LogHelper.Write(log);
+
+        if( LoggingOptions.InvokeLogEnable ) {
+            InvokeLog log2 = log.ToInvokeLog();
+            LogHelper.Write(log2);
+        }
     }
 
 

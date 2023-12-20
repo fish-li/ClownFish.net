@@ -119,4 +119,18 @@ public static class JwtUtils
         byte[] bytes = Encoding.UTF8.GetBytes(input);
         return NbJwtBase64UrlEncoder.Encode(bytes);
     }
+
+
+    /// <summary>
+    /// JWT Base64 UrlDecode
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string Base64UrlDecode(string input)
+    {
+        if( input.IsNullOrEmpty() )
+            return input;
+
+        return NbJwtBase64UrlEncoder.Decode(input).ToUtf8String();
+    }
 }

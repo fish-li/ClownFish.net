@@ -21,9 +21,9 @@ public static class ExceptionExtensions
             while( current != null ) {
 
                 if( sb.Length > 0 )
-                    sb.Append("\r\n==>");
+                    sb.Append("\r\n--> ");
 
-                sb.Append($"({current.GetType().FullName}) {current.Message}");
+                sb.Append($"{current.GetType().FullName}: {current.Message}");
                 current = current.InnerException;
             }
 

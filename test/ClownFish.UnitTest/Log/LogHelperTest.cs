@@ -154,7 +154,7 @@ public class LogHelperTest
         }
 
         long count3 = ClownFishCounters.Logging.XmlWriteCount.Get();
-        Assert.AreEqual(2, count3 - count2);
+        Assert.AreEqual(4, count3 - count2);  // 2 Oprlog, 2 InvokeLog
     }
 
     [TestMethod]

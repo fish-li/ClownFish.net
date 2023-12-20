@@ -118,8 +118,8 @@ namespace ClownFish.UnitTest.Base.Exceptions
 
             string[] lines = message.ToLines();
             Assert.AreEqual(2, lines.Length);
-            Assert.AreEqual("(System.InvalidOperationException) x1234567890", lines[0]);
-            Assert.AreEqual("==>(ClownFish.Base.Exceptions.MessageException) 这是个内部异常", lines[1]);
+            Assert.AreEqual("System.InvalidOperationException: x1234567890", lines[0]);
+            Assert.AreEqual("--> ClownFish.Base.Exceptions.MessageException: 这是个内部异常", lines[1]);
         }
 
         //[TestMethod]
