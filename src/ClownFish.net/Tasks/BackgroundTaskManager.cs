@@ -41,12 +41,7 @@ public static class BackgroundTaskManager
         BackgroundTask task = Activator.CreateInstance(t) as BackgroundTask;
         s_taskList.Add(task);
 
-        using( ExecutionContext.SuppressFlow() ) {
-            Thread thread = new Thread(task.Run);
-            thread.Name = task.GetType().Name;
-            thread.IsBackground = true;
-            thread.Start();
-        }
+        ThreadUtils.Run2("BackgroundTask_Start", task.GetType().Name, task.Run);
 
         Console2.Info("Start BackgroundTask: " + t.FullName);
     }
@@ -57,9 +52,7 @@ public static class BackgroundTaskManager
         AsyncBackgroundTask task = Activator.CreateInstance(t) as AsyncBackgroundTask;
         s_taskList.Add(task);
 
-        using( ExecutionContext.SuppressFlow() ) {
-            Task.Run(async () => await task.RunAsync());
-        }
+        ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);
 
         Console2.Info("Start AsyncBackgroundTask: " + t.FullName);
     }

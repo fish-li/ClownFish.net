@@ -7,8 +7,6 @@
 /// </summary>
 public static class MmqSubscriber
 {
-    private static readonly List<Task> s_workers = new List<Task>();
-
     internal static void CheckArgs<TData>(MmqSubscriberArgs<TData> args) where TData : class
     {
         if( args == null )
@@ -39,24 +37,18 @@ public static class MmqSubscriber
     {
         CheckArgs(args);
 
-        using( ExecutionContext.SuppressFlow() ) {
-            // 为每个订阅者创建对应的线程
-            for( int i = 0; i < args.SubscriberCount; i++ ) {
+        for( int i = 0; i < args.SubscriberCount; i++ ) {
+            ThreadUtils.Run("MmqSubscriber_Start", Start0);
+        }
 
-                Task task = Task.Run(() => {
-                    try {
-                        THandler handler = new THandler();
-                        MmqSubscriberSync<TData> subscriber = new MmqSubscriberSync<TData>(handler, args);
-                        subscriber.Start();
-                    }
-                    catch( Exception ex ) {
-                        Console2.Error(ex);
-                    }
-                });
-                s_workers.Add(task);
-            }
+        void Start0()
+        {
+            THandler handler = new THandler();
+            MmqSubscriberSync<TData> subscriber = new MmqSubscriberSync<TData>(handler, args);
+            subscriber.Start();
         }
     }
+
 
 
 
@@ -70,22 +62,15 @@ public static class MmqSubscriber
     {
         CheckArgs(args);
 
-        using( ExecutionContext.SuppressFlow() ) {
-            // 为每个订阅者创建对应的线程
-            for( int i = 0; i < args.SubscriberCount; i++ ) {
+        for( int i = 0; i < args.SubscriberCount; i++ ) {
+            ThreadUtils.RunAsync("MmqSubscriber_StartAsync", Start0Async);
+        }
 
-                Task task = Task.Run(async () => {
-                    try {
-                        THandler handler = new THandler();
-                        MmqSubscriberAsync<TData> subscriber = new MmqSubscriberAsync<TData>(handler, args);
-                        await subscriber.Start();
-                    }
-                    catch( Exception ex ) {
-                        Console2.Error(ex);
-                    }
-                });
-                s_workers.Add(task);
-            }
+        async Task Start0Async()
+        {
+            THandler handler = new THandler();
+            MmqSubscriberAsync<TData> subscriber = new MmqSubscriberAsync<TData>(handler, args);
+            await subscriber.Start();
         }
     }
 }

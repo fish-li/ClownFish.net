@@ -1,6 +1,6 @@
 ﻿namespace PerformanceTest.Utils;
 
-internal static class ThreadUtils
+internal static class ThreadUtils0
 {
     internal static TimeSpan TestMultiThread(int threadCount, Action action)
     {

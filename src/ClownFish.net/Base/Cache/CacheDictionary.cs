@@ -105,9 +105,7 @@ public sealed class CacheDictionary<T> where T : class
                     // 修改最后扫描时间，并开始扫描
                     Interlocked.Exchange(ref _lastScanTime, now);
 
-                    using( ExecutionContext.SuppressFlow() ) {
-                        Task.Run((Action)ClearExpiredItems);  // 这里加 (Action) 是为兼容 C# 7.3
-                    }
+                    ThreadUtils.Run("CacheDictionary_ClearExpiredItems", ClearExpiredItems);
                 }
             }
         }

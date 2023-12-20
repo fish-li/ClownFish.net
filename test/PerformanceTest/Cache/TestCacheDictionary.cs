@@ -19,7 +19,7 @@ public static class TestCacheDictionary
         int count = 1000;
         int threadCount = 10;
         Console.WriteLine("线程数量： " + threadCount);
-        TimeSpan time1 = ThreadUtils.TestMultiThread(threadCount, () => TestStringSetGet(count));
+        TimeSpan time1 = ThreadUtils0.TestMultiThread(threadCount, () => TestStringSetGet(count));
         Console.WriteLine($"CacheDictionary<String>, Set/Get {count * threadCount} 条消息, 耗时: {time1}");
     }
 

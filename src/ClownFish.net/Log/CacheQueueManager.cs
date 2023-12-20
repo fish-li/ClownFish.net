@@ -19,17 +19,11 @@ internal static class CacheQueueManager
         }
 
 
-        using( ExecutionContext.SuppressFlow() ) {
-
-            Thread thread = new Thread(ThreadWorker);
-            thread.IsBackground = true;
-            thread.Name = "ClownFish_Log_Writer";
-            thread.Start();
-        }
+        ThreadUtils.Run2("CacheQueueManager_Flush", "ClownFishLogWriter", ThreadWorker);
     }
 
 
-    private static void ThreadWorker(object xxxx)
+    private static void ThreadWorker()
     {
         int period = LogConfig.Instance?.TimerPeriod ?? 0;
 
