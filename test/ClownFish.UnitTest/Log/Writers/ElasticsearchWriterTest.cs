@@ -31,7 +31,9 @@ public class ElasticsearchWriterTest
 
 
         writer.InternalInit("es_config");
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", ClownFish.Base.Void.Value);
+
+        string esResponse = "{\"took\":6,\"errors\":false,\"items\":[{\"index\":{\"_index\":\"oprlog-20231219-18\",\"_type\":\"_doc\",\"_id\":\"4b617341f22f4e36a631f0eccaab84be\",\"_version\":1,\"result\":\"created\",\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":83599,\"_primary_term\":1,\"status\":201}}]}";
+        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", esResponse);
 
         long count3 = ClownFishCounters.Logging.EsWriteCount.Get();
         writer.Write(list);

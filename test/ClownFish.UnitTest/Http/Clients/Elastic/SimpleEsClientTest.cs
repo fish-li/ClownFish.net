@@ -52,8 +52,8 @@ public class SimpleEsClientTest
         client.WriteOne<InvokeLog>(null);
         await client.WriteOneAsync<InvokeLog>(null);
 
-
         HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteOne", ClownFish.Base.Void.Value, false);
+
         client.WriteOne(new InvokeLog());        
         await client.WriteOneAsync(new InvokeLog());
     }
@@ -69,7 +69,10 @@ public class SimpleEsClientTest
 
 
         list.Add(new InvokeLog());
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", ClownFish.Base.Void.Value, false);
+
+        string esResponse = "{\"took\":6,\"errors\":false,\"items\":[{\"index\":{\"_index\":\"oprlog-20231219-18\",\"_type\":\"_doc\",\"_id\":\"4b617341f22f4e36a631f0eccaab84be\",\"_version\":1,\"result\":\"created\",\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":83599,\"_primary_term\":1,\"status\":201}}]}";
+        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", esResponse, false);
+
         client.WriteList(list);
         await client.WriteListAsync(list);
     }

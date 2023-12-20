@@ -47,6 +47,8 @@ internal static class JsonSerializerSettingsUtils
 
         if( style.HasFlag(JsonStyle.UtcTime) ) {
             settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+            settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+            settings.DateFormatString = null;
         }
         else {
             settings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
