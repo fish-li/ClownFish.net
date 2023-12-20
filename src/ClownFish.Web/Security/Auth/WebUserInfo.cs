@@ -66,11 +66,11 @@ public sealed class WebUserInfo : IUserInfo
         if( this.UserId.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(UserId));
 
-        if( this.UserName.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(UserName));
-
         if( this.UserRole.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(UserRole));
+
+        if( this.UserName.IsNullOrEmpty() )
+            this.UserName = this.UserId;
     }
 
 
