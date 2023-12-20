@@ -25,7 +25,7 @@ public class JwtDecodeTest
 //}
 
         string json = s_jwtV3.DecodePayload(token, null);  // 不做校验
-        LoginTicket ticket = s_jwtV3.DecodeJson(json, false);
+        LoginTicket ticket = s_jwtV3.DecodeJson(token, json, false);
 
         Assert.IsInstanceOfType(ticket.User, typeof(UnknownUserInfo));
 
@@ -52,7 +52,7 @@ public class JwtDecodeTest
 
         byte[] secretKeyBytes = JwtProviderTest.GetSecretKeyBytes();
         string json = s_jwtV3.DecodePayload(token, secretKeyBytes);
-        LoginTicket ticket = s_jwtV3.DecodeJson(json, false);
+        LoginTicket ticket = s_jwtV3.DecodeJson(token, json, false);
 
         Assert.IsNotNull(ticket);
         Assert.IsInstanceOfType(ticket.User, typeof(UnknownUserInfo));
@@ -113,7 +113,7 @@ public class JwtDecodeTest
         //}
 
         string json = s_jwtV3.DecodePayload(token, null);  // 不做校验
-        LoginTicket ticket = s_jwtV3.DecodeJson(json, false);
+        LoginTicket ticket = s_jwtV3.DecodeJson(token, json, false);
 
         Assert.IsNotNull(ticket);
         Assert.IsNull(ticket.User);

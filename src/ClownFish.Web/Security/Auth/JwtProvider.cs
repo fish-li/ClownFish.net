@@ -76,7 +76,10 @@ public sealed class JwtProvider
                         ? DecodePayload2(token, _options.X509Cert)
                         : DecodePayload(token, _options.HashKeyBytes);
 
-        return DecodeJson(json, true);
+        if( json == null )
+            AuthenticationManager.ExecuteEventOnAuthFailed(token, "DecodePayload-error");
+
+        return DecodeJson(token, json, true);
     }
 
 
@@ -92,7 +95,7 @@ public sealed class JwtProvider
 
         string json = DecodePayload(token, null);
 
-        return DecodeJson(json, true);
+        return DecodeJson(token, json, true);
     }
 
 
@@ -129,7 +132,7 @@ public sealed class JwtProvider
     }
 
 
-    internal LoginTicket DecodeJson(string json, bool verifyExpiration)
+    internal LoginTicket DecodeJson(string token, string json, bool verifyExpiration)
     {
         if( string.IsNullOrEmpty(json) )
             return null;
@@ -142,13 +145,16 @@ public sealed class JwtProvider
         }
         catch( Exception ) {
             // 忽略所有错误，防止攻击
+            AuthenticationManager.ExecuteEventOnAuthFailed(token, "DecodeJson-error");
             return null;
         }
 
         if( ticket != null && verifyExpiration && _options.VerifyTokenExpiration ) {
             // 检查过期时间
-            if( ticket.VerifyExpiration() == false )
+            if( ticket.VerifyExpiration() == false ) {
+                AuthenticationManager.ExecuteEventOnAuthFailed(token, "VerifyExpiration-error");
                 return null;
+            }
         }
 
         return ticket;

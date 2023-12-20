@@ -96,6 +96,31 @@ public static class AuthenticationManager
 
 
     /// <summary>
+    /// 身份认证失败时的回调事件
+    /// </summary>
+    public static event EventHandler<OnAuthFailedEventArgs> OnAuthFailed;
+
+
+    internal static void ExecuteEventOnAuthFailed(string token, string reason)
+    {
+        NHttpContext httpContext = HttpPipelineContext.Get()?.HttpContext;
+        if( httpContext == null )
+            return;
+
+        EventHandler<OnAuthFailedEventArgs> handler = OnAuthFailed;
+        if( handler != null ) {
+            OnAuthFailedEventArgs e = new OnAuthFailedEventArgs {
+                RequestId = httpContext.PipelineContext.ProcessId,
+                Url = httpContext.Request.RawUrl,
+                Token = token,
+                Reason = reason
+            };
+            handler(null, e);
+        }
+    }
+
+
+    /// <summary>
     /// 解密登录TOKEN
     /// </summary>
     /// <param name="token"></param>

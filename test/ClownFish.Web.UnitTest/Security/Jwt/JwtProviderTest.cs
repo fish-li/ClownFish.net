@@ -125,7 +125,7 @@ public class JwtProviderTest
         Assert.IsNull(ticket);
 
         string json = s_jwtV3.DecodePayload(token1, null);
-        LoginTicket ticket2 = s_jwtV3.DecodeJson(json, false);
+        LoginTicket ticket2 = s_jwtV3.DecodeJson(token1, json, false);
         Console.WriteLine(ticket2.ToJson(JsonStyle.Indented));
         Assert.IsInstanceOfType(ticket2.User, typeof(WebUserInfo));
     }
@@ -154,9 +154,9 @@ public class JwtProviderTest
         Assert.IsNull(s_jwtV3.DecodePayload("token-xxxxxxxxxxxxx"));
         Assert.IsNull(s_jwtV3.DecodeToken("token-xxxxxxxxxxxxx"));
 
-        Assert.IsNull(s_jwtV3.DecodeJson("", true));
-        Assert.IsNull(s_jwtV3.DecodeJson("json-xxxxxxxxxxx", true));
-        Assert.IsNull(s_jwtV3.DecodeJson("{aa: 1, bb: 2}", true));
+        Assert.IsNull(s_jwtV3.DecodeJson("token", "", true));
+        Assert.IsNull(s_jwtV3.DecodeJson("token", "json-xxxxxxxxxxx", true));
+        Assert.IsNull(s_jwtV3.DecodeJson("token", "{aa: 1, bb: 2}", true));
     }
 
 
