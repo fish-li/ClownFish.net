@@ -12,8 +12,11 @@ public static class JsonExtensions
         if( obj == null )
             throw new ArgumentNullException(nameof(obj));
 
+        // 这里不使用 CreateDefault 方法，因为实际项目中没法预料将 Newtonsoft.Json.JsonConvert.DefaultSettings 设置成什么样子，
+        // 它可能会导致框架不能预期工作~~~
+        //JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(settings);
 
-        JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(settings);
+        JsonSerializer jsonSerializer = JsonSerializer.Create(settings);
 
         StringBuilder sb = StringBuilderPool.Get();
         try {

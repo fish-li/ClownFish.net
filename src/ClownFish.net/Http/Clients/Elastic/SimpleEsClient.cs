@@ -13,6 +13,8 @@ namespace ClownFish.Http.Clients.Elastic;
 /// </summary>
 public sealed class SimpleEsClient
 {
+    internal const JsonStyle EsJsonStyle = JsonStyle.UtcTime | JsonStyle.CamelCase;
+
     private readonly EsConnOption _option;
 
     /// <summary>
@@ -129,7 +131,7 @@ public sealed class SimpleEsClient
             Id = "ClownFish_SimpleEsClient_WriteOne",
             Method = "POST",
             Url = _option.Url + $"/{index}/_doc/{id}",
-            Data = info.ToJson(JsonStyle.UtcTime | JsonStyle.CamelCase),
+            Data = info.ToJson(EsJsonStyle),
             Format = SerializeFormat.Json,
             Timeout = GetTimeout()
         };
@@ -207,7 +209,7 @@ public sealed class SimpleEsClient
             Id = "ClownFish_SimpleEsClient_WriteList",
             Method = "POST",
             Url = _option.Url + $"/{index}/_bulk",
-            Data = dataList.ToMultiLineJson(JsonStyle.UtcTime | JsonStyle.CamelCase),
+            Data = dataList.ToMultiLineJson(EsJsonStyle),
             Format = SerializeFormat.Json,
             Timeout = GetTimeout()
         };
@@ -283,7 +285,7 @@ public sealed class SimpleEsClient
             Method = "POST",
             Url = _option.Url + $"/{index.UrlEncode()}/_search?typed_keys=true",
             Format = SerializeFormat.Json,
-            Data = body.ToJson(JsonStyle.UtcTime | JsonStyle.CamelCase),  // 与NEST客户端保持一致
+            Data = body.ToJson(EsJsonStyle),  // 与NEST客户端保持一致
             Timeout = GetTimeout()
         };
 
