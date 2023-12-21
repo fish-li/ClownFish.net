@@ -26,6 +26,8 @@ internal sealed class JwtJsonSerializer
 
         if( useShortTypeName )
             settings.SerializationBinder = JwtJsonUserTypesBinder.Instance;
+        else
+            settings.SerializationBinder = JwtJsonUserTypesBinder2.Instance;
 
         return settings;
     }

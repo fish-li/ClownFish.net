@@ -25,7 +25,7 @@ internal sealed class JwtJsonUserTypesBinder : ISerializationBinder
         if( assemblyName == null )
             return s_userInfoTypes.SingleOrDefault(t => t.Name == typeName);
         else
-            return Type.GetType(typeName + ", " + assemblyName, true);
+            return TypeHelper.GetType(typeName + ", " + assemblyName, true);
     }
 
     public void BindToName(Type serializedType, out string assemblyName, out string typeName)
@@ -38,5 +38,22 @@ internal sealed class JwtJsonUserTypesBinder : ISerializationBinder
             assemblyName = serializedType.Assembly.GetName().Name;
             typeName = serializedType.FullName;
         }
+    }
+}
+
+
+internal sealed class JwtJsonUserTypesBinder2 : ISerializationBinder
+{
+    public static readonly JwtJsonUserTypesBinder2 Instance = new JwtJsonUserTypesBinder2();
+
+    public Type BindToType(string assemblyName, string typeName)
+    {
+        return TypeHelper.GetType(typeName + ", " + assemblyName, true);
+    }
+
+    public void BindToName(Type serializedType, out string assemblyName, out string typeName)
+    {
+        assemblyName = serializedType.Assembly.GetName().Name;
+        typeName = serializedType.FullName;
     }
 }

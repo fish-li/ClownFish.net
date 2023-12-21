@@ -28,8 +28,9 @@ public static class AspnetCoreStarter
         if( startup.AutoInitAuth )
             ClownFishWebInit.InitAuth();
 
-        CreateWebApp(startup);
+        TypeHelper.Init();
 
+        CreateWebApp(startup);
 
         ApplicationInitializer.Execute();
         startup.AppInit();

@@ -97,14 +97,13 @@ public class ConfigLoaderTest
         Assert.AreEqual("日志配置文件中Types/Type/Writers属性值无效（没有实际内容）。", ex4.Message);
 
 
-        Exception ex5 = MyAssert.IsError<ArgumentOutOfRangeException>(() => {
+        Exception ex5 = MyAssert.IsError<TypeLoadException>(() => {
             LogConfiguration config = GetLogConfiguration();
             config.Types[0].DataType = "xxxxxxxxxx";    // 引发异常
 
             ConfigLoader loader = new ConfigLoader();
             _ = loader.Load(config);
         });
-        Assert.AreEqual("获取类型失败：xxxxxxxxxx", ex5.Message);
     }
 
 

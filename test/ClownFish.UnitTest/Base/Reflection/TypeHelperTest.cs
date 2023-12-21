@@ -3,6 +3,35 @@
 [TestClass]
 public class TypeHelperTest
 {
+    static TypeHelperTest()
+    {
+        string text = @"
+# 格式：alias = dest-type-name
+Nebula.Common.Security.WebUserInfo111, Nebula.net = ClownFish.UnitTest.Base.Reflection.WebUserInfo2, ClownFish.UnitTest
+";
+        TypeHelper.InitFormText(text);
+
+        TypeHelper.RegisterAlias("Nebula.Common.Security.AppClientInfo111, Nebula.net", typeof(AppClientInfo2));
+    }
+
+    [TestMethod]
+    public void Test_CheckInit()
+    {
+        Type t1 = TypeHelper.GetType("Nebula.Common.Security.WebUserInfo111, Nebula.net", false);
+        Assert.IsNotNull(t1);
+        Assert.AreEqual(typeof(WebUserInfo2), t1);
+
+
+        Type t2 = TypeHelper.GetType("Nebula.Common.Security.AppClientInfo111, Nebula.net", false);
+        Assert.IsNotNull(t2);
+        Assert.AreEqual(typeof(AppClientInfo2), t2);
+
+
+        Type t3 = TypeHelper.GetType("Nebula.Common.Security.xxxxxxxxxxx, Nebula.net", false);
+        Assert.IsNull(t3);
+    }
+
+
     [TestMethod]
     public void Test_GetType()
     {
@@ -14,7 +43,7 @@ public class TypeHelperTest
             _ = TypeHelper.GetType(string.Empty, false);
         });
 
-        MyAssert.IsError<ArgumentOutOfRangeException>(() => {
+        MyAssert.IsError<TypeLoadException>(() => {
             _ = TypeHelper.GetType("xx", true);
         });
 
@@ -41,3 +70,8 @@ public class TypeHelperTest
         Assert.AreEqual("XXX", TypeHelper.GetShortName("ClownFish.UnitTest.XXX, ClownFish.UnitTest, rrrrrr"));
     }
 }
+
+
+
+public class WebUserInfo2 { }
+public class AppClientInfo2 { }
