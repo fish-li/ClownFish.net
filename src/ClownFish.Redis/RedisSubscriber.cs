@@ -26,8 +26,6 @@ public static class RedisSubscriber
 
         if( args.RetryWaitMilliseconds < 0 )
             args.RetryWaitMilliseconds = 0;
-
-        PipelineUtils.EnsureIsRootCode();
     }
 
     /// <summary>
@@ -43,12 +41,15 @@ public static class RedisSubscriber
     {
         CheckArgs<TData>(args);
 
+        using( ExecutionContext.SuppressFlow() ) {
+            THandler handler = new THandler();
+            Console2.Info("Start Redis MessageHandler: " + handler.GetType().FullName);
 
-        THandler handler = new THandler();
-        RedisSubscriberSync<TData> subscriber = new RedisSubscriberSync<TData>(handler, args);
-        subscriber.Start();
+            RedisSubscriberSync<TData> subscriber = new RedisSubscriberSync<TData>(handler, args);
+            subscriber.Start();
 
-        s_objects.Add(subscriber);
+            s_objects.Add(subscriber);
+        }
     }
 
 
@@ -65,12 +66,15 @@ public static class RedisSubscriber
     {
         CheckArgs<TData>(args);
 
+        using( ExecutionContext.SuppressFlow() ) {
+            THandler handler = new THandler();
+            Console2.Info("StartAsync Redis StartAsync: " + handler.GetType().FullName);
 
-        THandler handler = new THandler();
-        RedisSubscriberAsync<TData> subscriber = new RedisSubscriberAsync<TData>(handler, args);
-        subscriber.Start();
+            RedisSubscriberAsync<TData> subscriber = new RedisSubscriberAsync<TData>(handler, args);
+            subscriber.Start();
 
-        s_objects.Add(subscriber);
+            s_objects.Add(subscriber);
+        }
     }
 
 }

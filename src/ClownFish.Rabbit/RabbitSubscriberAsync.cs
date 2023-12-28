@@ -38,7 +38,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
         _connection.DispatchConsumersAsync = true;
 
         // 告诉Rabbit服务，订阅客户端一次只能处理一条消息
-        _connection.GetChannel().BasicQos(0, 1, false);
+        _connection.GetChannel().BasicQos(_args.PrefetchSize, _args.PrefetchCount, false);
 
         string consumerTag = $"{EnvUtils.GetAppName()}({EnvUtils.GetHostName()})"; // 显示在 Queues/Consumers 表格中
 

@@ -30,4 +30,14 @@ public sealed class RabbitSubscriberArgs
     /// 最大允许的消息长度。如果超过这个值，消息会直接丢弃。
     /// </summary>
     public int MaxMessageLength { get; set; } = 512 * 1024;
+
+    /// <summary>
+    /// 消息本身的大小 如果设置为0 那么表示对消息本身的大小不限制
+    /// </summary>
+    public uint PrefetchSize { get; set; } = 0;
+
+    /// <summary>
+    /// 告诉rabbitmq不要一次性给消费者推送大于N个消息
+    /// </summary>
+    public ushort PrefetchCount { get; set; } = 1;
 }
