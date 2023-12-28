@@ -47,6 +47,18 @@ public partial class NHttpRequest : ILoggingObject
     // 2, Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Request body too large. The max request body size is xxxxxxxxxx bytes.
 
 
+
+    private void ShowReadBodyException(string method, Exception ex)
+    {
+        if( ex.GetType().Name == "BadHttpRequestException" ) {
+            //这种异常没法解决，显示堆栈也任何作用，反而把 Console 搞得很乱
+            Console2.Warnning(method + " ERROR: " + ex.Message);
+        }
+        else {
+            Console2.Warnning(method + " ERROR: " + ex.ToString());
+        }
+    }
+
     /// <summary>
     /// 按 字符串 形式读取请求体内容。
     /// 【##### 此方法不做结果缓存，因此不要多次调用 #####】
@@ -68,8 +80,7 @@ public partial class NHttpRequest : ILoggingObject
             return reader.ReadAllText(encoding);
         }
         catch( Exception ex ) {
-            Console2.Warnning("ReadBodyAsText ERROR: " + ex.ToString());
-            // 吃异常的原因请参考上面注释
+            ShowReadBodyException(nameof(ReadBodyAsText), ex);
             return string.Empty;
         }
     }
@@ -96,8 +107,7 @@ public partial class NHttpRequest : ILoggingObject
             return await reader.ReadAllTextAsync(encoding);
         }
         catch( Exception ex ) {
-            Console2.Warnning("ReadBodyAsTextAsync ERROR: " + ex.ToString());
-            // 吃异常的原因请参考上面注释
+            ShowReadBodyException(nameof(ReadBodyAsTextAsync), ex);
             return string.Empty;
         }
     }
@@ -117,8 +127,7 @@ public partial class NHttpRequest : ILoggingObject
             return this.InputStream.ToArray();
         }
         catch( Exception ex ) {
-            Console2.Warnning("ReadBodyAsBytes ERROR: " + ex.ToString());
-            // 吃异常的原因请参考上面注释
+            ShowReadBodyException(nameof(ReadBodyAsBytes), ex);
             return Empty.Array<byte>();
         }
     }
@@ -138,8 +147,7 @@ public partial class NHttpRequest : ILoggingObject
             return await this.InputStream.ToArrayAsync();
         }
         catch( Exception ex ) {
-            Console2.Warnning("ReadBodyAsBytesAsync ERROR: " + ex.ToString());
-            // 吃异常的原因请参考上面注释
+            ShowReadBodyException(nameof(ReadBodyAsBytesAsync), ex);
             return Empty.Array<byte>();
         }
     }
