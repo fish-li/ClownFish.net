@@ -11,21 +11,6 @@ namespace ClownFish.UnitTest.MQ.Pipeline;
 public class PipelineUtilsTest
 {
     [TestMethod]
-    public void Test_EnsureIsRootCode()
-    {
-        PipelineUtils.EnsureIsRootCode();
-
-
-        //--------------------------------------------------
-        using OprLogScope scope = OprLogScope.Start(null);
-
-        MyAssert.IsError<InvalidOperationException>(() => {
-            PipelineUtils.EnsureIsRootCode();
-        });
-    }
-
-
-    [TestMethod]
     public void Test_SafeCall()
     {
         // 不抛异常就算测试通过

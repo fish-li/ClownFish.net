@@ -20,10 +20,10 @@ public sealed class ProxyRuleManager
             return false;
 
         if( LocalSettings.GetBool("ProxyRuleManager_ShowConfig", 1) ) {
-            string title = $"======================= {filename} ============================";
+            string title = $"----------------------- {filename} ----------------------------";
             Console2.WriteLine(title);
             Console2.WriteLine(rule.ToXml2());
-            Console2.WriteLine(new string('=', title.Length));
+            Console2.WriteLine(new string('-', title.Length));
         }
 
         // 忽略无效的规则

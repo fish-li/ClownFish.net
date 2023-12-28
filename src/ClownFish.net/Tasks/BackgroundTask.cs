@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace ClownFish.Tasks;
+﻿namespace ClownFish.Tasks;
 #if NETCOREAPP
 // 设计说明
 // ===========================================

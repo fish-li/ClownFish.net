@@ -25,13 +25,13 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
 
         OprLog log = scope.OprLog;
         log.RootId = this.ProcessId;
-        log.OprKind = "task";
+        log.OprKind = "code";
 
         log.Module = executorType.Namespace;
         log.Controller = executorType.Name;
         log.Action = "Execute";
         log.OprName = operName.HasValue() ? operName : (executorType.Name + "/Execute");
-        log.Url = log.OprName + "/" + this.ProcessId;
+        log.Url = $"code://{log.Controller}/{log.OprName}";
     }
 
 

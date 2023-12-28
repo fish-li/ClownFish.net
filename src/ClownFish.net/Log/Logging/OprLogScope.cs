@@ -59,6 +59,7 @@ public sealed class OprLogScope : IDisposable
         // 所以这个类不允许在外部实例化，只允许用 Start 方法来创建。
     }
 
+
     /// <summary>
     /// 开启监控
     /// </summary>
@@ -85,7 +86,7 @@ public sealed class OprLogScope : IDisposable
     {
         OprLogScope scope = s_local.Value;
 
-        // HttpPipelineContext实例可能【逃逸】了，原因是 new Thread/Task.Run 之类的写法导致
+        // OprLogScope 实例可能【逃逸】了，原因是 new Thread/Task.Run 之类的写法导致
         // 所以这里还要检查它的有效性
         if( scope != null && scope._isEnd ) {
             s_local.Value = null;

@@ -7,16 +7,6 @@
 public static class PipelineUtils
 {
     /// <summary>
-    /// 确认当前代码是一个顶层的代码主体
-    /// </summary>
-    /// <exception cref="InvalidOperationException"></exception>
-    public static void EnsureIsRootCode()
-    {
-        if( OprLogScope.Get().IsNull == false )
-            throw new InvalidOperationException("消息订阅只能在程序初始化时启用！");
-    }
-
-    /// <summary>
     /// 安全的执行某个委托方法，如果出现异常会自动处理
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -78,7 +68,9 @@ public static class PipelineUtils
             || lastException is TenantNotFoundException
             || lastException is ConfigurationErrorsException
             || lastException is NotImplementedException
-            || lastException is NotSupportedException ) {
+            || lastException is NotSupportedException 
+            || lastException is OutOfMemoryException  // 出现这个异常时，如果重试，大概率还会出现它，反而影响吞吐量
+            ) {
 
             return false;
         }

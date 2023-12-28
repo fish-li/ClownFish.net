@@ -26,8 +26,6 @@ public static class RabbitSubscriber
 
         if( args.RetryWaitMilliseconds < 0 )
             args.RetryWaitMilliseconds = 0;
-
-        PipelineUtils.EnsureIsRootCode();
     }
 
     /// <summary>
@@ -43,13 +41,16 @@ public static class RabbitSubscriber
     {
         CheckArgs<TData>(args);
 
-        for( int i = 0; i < args.SubscriberCount; i++ ) {
+        using( ExecutionContext.SuppressFlow() ) {
+            for( int i = 0; i < args.SubscriberCount; i++ ) {
 
-            THandler handler = new THandler();
+                THandler handler = new THandler();
+                Console2.Info("Start Rabbit MessageHandler: " + handler.GetType().FullName);
 
-            RabbitSubscriberSync<TData> subscriber = new RabbitSubscriberSync<TData>(handler, args);
-            subscriber.Start();
-            s_objects.Add(subscriber);
+                RabbitSubscriberSync<TData> subscriber = new RabbitSubscriberSync<TData>(handler, args);
+                subscriber.Start();
+                s_objects.Add(subscriber);
+            }
         }
     }
 
@@ -67,13 +68,16 @@ public static class RabbitSubscriber
     {
         CheckArgs<TData>(args);
 
-        for( int i = 0; i < args.SubscriberCount; i++ ) {
+        using( ExecutionContext.SuppressFlow() ) {
+            for( int i = 0; i < args.SubscriberCount; i++ ) {
 
-            THandler handler = new THandler();
+                THandler handler = new THandler();
+                Console2.Info("StartAsync Rabbit MessageHandler: " + handler.GetType().FullName);
 
-            RabbitSubscriberAsync<TData> subscriber = new RabbitSubscriberAsync<TData>(handler, args);
-            subscriber.Start();
-            s_objects.Add(subscriber);
+                RabbitSubscriberAsync<TData> subscriber = new RabbitSubscriberAsync<TData>(handler, args);
+                subscriber.Start();
+                s_objects.Add(subscriber);
+            }
         }
     }
 

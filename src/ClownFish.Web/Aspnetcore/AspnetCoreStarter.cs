@@ -22,7 +22,11 @@ public static class AspnetCoreStarter
         if( startup.AutoInitDAL )
             ClownFishInit.InitDAL();
 
-        if( startup.AutoInitLog )
+        if( startup.AutoInitTracing )
+            TracingUtils.CheckLogConfig();
+
+        // 监控必须使用日志组件
+        if( startup.AutoInitLog || startup.AutoInitTracing )
             ClownFishInit.InitLogAsDefault();
 
         if( startup.AutoInitAuth )
@@ -32,23 +36,24 @@ public static class AspnetCoreStarter
 
         CreateWebApp(startup);
 
-        ApplicationInitializer.Execute();
-        startup.AppInit();
-
         // 初始化经典风格的ASP.NET管道
         InitNHttpApplication();
 
+        // 开启性能监控
+        // 放在这里调用，可以监控 ApplicationInit 的执行过程（需要配合 CodeSnippetContext 来实现）
+        // 但是这样做也有一个【隐患】：如果在那里 开启后台线程（3种方式），【默认】会导致 OprLogScope 传递到那些后台线程
         if( startup.AutoInitTracing )
             TracingUtils.Init();
 
+        Console2.WriteLine("----------------------- Application Initializer ----------------------------");
+        ApplicationInitializer.Execute();
+        startup.AppInit();
 
         WriteDebugReport();
         RunAspnetcore();
 
         ClownFishInit.ApplicationEnd();
     }
-
-    
 
     private static void ConfigClownFish()
     {
@@ -152,7 +157,7 @@ public static class AspnetCoreStarter
 
 
         if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", 1) ) {
-            Console2.WriteSeparatedLine();
+            Console2.WriteLine("----------------------- HttpModules ----------------------------");
             foreach( var module in NHttpApplication.Instance.GetModules() ) {
                 Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
             }
