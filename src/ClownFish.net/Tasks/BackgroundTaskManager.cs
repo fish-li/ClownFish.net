@@ -22,6 +22,12 @@ public static class BackgroundTaskManager
             throw new InvalidOperationException("此方法不允许多次调用！");
 
         foreach(Type t in types ) {
+
+            if( NHttpModuleFactory.ModuleIsEnable(t) == false ) {
+                Console2.Info($"BackgroundTask {t.FullName} 已配置为 不启用");
+                continue;
+            }
+
             if( t.IsSubclassOf(typeof(BackgroundTask)) ) {
                 StartSyncTask(t);
                 continue;

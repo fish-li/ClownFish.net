@@ -131,6 +131,7 @@ public class LogHelperTest
             || count2 == ClownFishCounters.Logging.WriteCount.Get() )
             Thread.Sleep(200);
 
+        Thread.Sleep(200);
         List<XMessage> list = memoryWriter.PullALL().Cast<XMessage>().ToList();
         Assert.AreEqual(2, list.Count);
         Assert.AreEqual("67130faa9ad54dca98039c3c7307681e", list[0].Message.ToString());
@@ -153,6 +154,7 @@ public class LogHelperTest
             Thread.Sleep(200);
         }
 
+        Thread.Sleep(200);
         long count3 = ClownFishCounters.Logging.XmlWriteCount.Get();
         Assert.AreEqual(4, count3 - count2);  // 2 Oprlog, 2 InvokeLog
     }
