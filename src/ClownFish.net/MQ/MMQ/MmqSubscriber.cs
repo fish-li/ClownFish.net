@@ -35,6 +35,8 @@ public static class MmqSubscriber
     {
         CheckArgs(args);
 
+        Console2.Info($"Start {args.SubscriberCount} MMQ MessageHandler: {typeof(THandler).FullName}");
+
         for( int i = 0; i < args.SubscriberCount; i++ ) {
             ThreadUtils.Run("MmqSubscriber_Start", Start0);
         }
@@ -42,8 +44,6 @@ public static class MmqSubscriber
         void Start0()
         {
             THandler handler = new THandler();
-            Console2.Info("Start MMQ MessageHandler: " + handler.GetType().FullName);
-
             MmqSubscriberSync<TData> subscriber = new MmqSubscriberSync<TData>(handler, args);
             subscriber.Start();
         }
@@ -62,6 +62,8 @@ public static class MmqSubscriber
     {
         CheckArgs(args);
 
+        Console2.Info($"StartAsync {args.SubscriberCount} MMQ MessageHandler: {typeof(THandler).FullName}");
+
         for( int i = 0; i < args.SubscriberCount; i++ ) {
             ThreadUtils.RunAsync("MmqSubscriber_StartAsync", Start0Async);
         }
@@ -69,8 +71,6 @@ public static class MmqSubscriber
         async Task Start0Async()
         {
             THandler handler = new THandler();
-            Console2.Info("StartAsync MMQ MessageHandler: " + handler.GetType().FullName);
-
             MmqSubscriberAsync<TData> subscriber = new MmqSubscriberAsync<TData>(handler, args);
             await subscriber.Start();
         }

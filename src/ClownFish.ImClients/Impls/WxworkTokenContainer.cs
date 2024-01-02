@@ -29,7 +29,7 @@ internal class WxworkTokenContainer
         token = result.Token;
 
         _cache.Set(cacheKey, token, DateTime.Now.AddMinutes(50));
-        Console2.Info("obtain a new WxWork token: " + token);
+        Console2.Debug("obtain a new WxWork token: " + token);
 
         return token;
     }

@@ -41,12 +41,12 @@ public static class RabbitSubscriber
     {
         CheckArgs<TData>(args);
 
+        Console2.Info($"Start {args.SubscriberCount} Rabbit MessageHandler: {typeof(THandler).FullName}, Queue: {args.QueueName}");
+
         using( ExecutionContext.SuppressFlow() ) {
             for( int i = 0; i < args.SubscriberCount; i++ ) {
 
                 THandler handler = new THandler();
-                Console2.Info("Start Rabbit MessageHandler: " + handler.GetType().FullName);
-
                 RabbitSubscriberSync<TData> subscriber = new RabbitSubscriberSync<TData>(handler, args);
                 subscriber.Start();
                 s_objects.Add(subscriber);
@@ -68,12 +68,12 @@ public static class RabbitSubscriber
     {
         CheckArgs<TData>(args);
 
+        Console2.Info($"StartAsync {args.SubscriberCount} Rabbit MessageHandler: {typeof(THandler).FullName}, Queue: {args.QueueName}");
+
         using( ExecutionContext.SuppressFlow() ) {
             for( int i = 0; i < args.SubscriberCount; i++ ) {
 
                 THandler handler = new THandler();
-                Console2.Info("StartAsync Rabbit MessageHandler: " + handler.GetType().FullName);
-
                 RabbitSubscriberAsync<TData> subscriber = new RabbitSubscriberAsync<TData>(handler, args);
                 subscriber.Start();
                 s_objects.Add(subscriber);

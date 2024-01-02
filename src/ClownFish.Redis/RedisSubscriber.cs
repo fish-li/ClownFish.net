@@ -41,10 +41,10 @@ public static class RedisSubscriber
     {
         CheckArgs<TData>(args);
 
+        Console2.Info($"Start 1 Redis MessageHandler: {typeof(THandler).FullName}, Channel: {args.Channel}");
+
         using( ExecutionContext.SuppressFlow() ) {
             THandler handler = new THandler();
-            Console2.Info("Start Redis MessageHandler: " + handler.GetType().FullName);
-
             RedisSubscriberSync<TData> subscriber = new RedisSubscriberSync<TData>(handler, args);
             subscriber.Start();
 
@@ -66,10 +66,10 @@ public static class RedisSubscriber
     {
         CheckArgs<TData>(args);
 
+        Console2.Info($"StartAsync 1 Redis MessageHandler: {typeof(THandler).FullName}, Channel: {args.Channel}");
+
         using( ExecutionContext.SuppressFlow() ) {
             THandler handler = new THandler();
-            Console2.Info("StartAsync Redis StartAsync: " + handler.GetType().FullName);
-
             RedisSubscriberAsync<TData> subscriber = new RedisSubscriberAsync<TData>(handler, args);
             subscriber.Start();
 
