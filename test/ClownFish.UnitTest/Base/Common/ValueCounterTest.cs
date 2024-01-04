@@ -10,8 +10,12 @@ public class ValueCounterTest
         Assert.AreEqual("abc", counter.Label);
         Assert.AreEqual(0L, counter.Get());
 
-        counter.Increment();
-        counter.Increment();
+        long count1 = counter.Increment();
+        Assert.AreEqual(1L, count1);
+
+        long count2 = counter.Increment();
+        Assert.AreEqual(2L, count2);
+
         Assert.AreEqual(2L, counter.Get());
 
         Assert.AreEqual("2", counter.AsString());
@@ -38,5 +42,14 @@ public class ValueCounterTest
         DateTime time2 = counter.GetAsDateTime();
         Assert.AreEqual(now, time2);
 
+
+        counter.Set(2L);
+        long count3 = counter.Decrement();
+        Assert.AreEqual(1L, count3);
+
+        long count4 = counter.Decrement();
+        Assert.AreEqual(0L, count4);
+
+        Assert.AreEqual(0L, counter.Get());
     }
 }

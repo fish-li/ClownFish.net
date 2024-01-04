@@ -60,19 +60,6 @@ public sealed class NHttpApplication
     }
 
 
-    internal DebugReportBlock GetDebugReportBlock()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = nameof(NHttpApplication), Order = 100 };
-        block.AppendLine($"Modules:");
-
-        int i = 1;
-        foreach( var x in _modules ) {
-            block.AppendLine($"{i++,3}: {x.GetType().FullName}, order: {x.Order}");
-        }
-
-        return block;
-    }
-
     /// <summary>
     /// EnableCors
     /// </summary>
@@ -355,6 +342,18 @@ public sealed class NHttpApplication
         }
     }
 
-
+    /// <summary>
+    /// 显示已加载的 HttpModule 清单
+    /// </summary>
+    /// <param name="defaultShow">配置参数的默认值</param>
+    public void ShowModules(int defaultShow = 0)
+    {
+        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", defaultShow) ) {
+            Console2.WriteLine("----------------------- HttpModules ----------------------------");
+            foreach( var module in _modules ) {
+                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
+            }
+        }
+    }
 
 }

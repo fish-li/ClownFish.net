@@ -68,7 +68,7 @@ public static class RabbitSubscriber
     {
         CheckArgs<TData>(args);
 
-        Console2.Info($"StartAsync {args.SubscriberCount} Rabbit MessageHandler: {typeof(THandler).FullName}, Queue: {args.QueueName}");
+        Console2.Info($"Start {args.SubscriberCount} Rabbit MessageHandler: {typeof(THandler).FullName}, Queue: {args.QueueName}");
 
         using( ExecutionContext.SuppressFlow() ) {
             for( int i = 0; i < args.SubscriberCount; i++ ) {

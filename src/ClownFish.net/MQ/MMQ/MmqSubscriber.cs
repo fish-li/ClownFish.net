@@ -62,7 +62,7 @@ public static class MmqSubscriber
     {
         CheckArgs(args);
 
-        Console2.Info($"StartAsync {args.SubscriberCount} MMQ MessageHandler: {typeof(THandler).FullName}");
+        Console2.Info($"Start {args.SubscriberCount} MMQ MessageHandler: {typeof(THandler).FullName}");
 
         for( int i = 0; i < args.SubscriberCount; i++ ) {
             ThreadUtils.RunAsync("MmqSubscriber_StartAsync", Start0Async);

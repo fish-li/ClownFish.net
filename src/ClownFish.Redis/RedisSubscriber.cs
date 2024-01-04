@@ -66,7 +66,7 @@ public static class RedisSubscriber
     {
         CheckArgs<TData>(args);
 
-        Console2.Info($"StartAsync 1 Redis MessageHandler: {typeof(THandler).FullName}, Channel: {args.Channel}");
+        Console2.Info($"Start 1 Redis MessageHandler: {typeof(THandler).FullName}, Channel: {args.Channel}");
 
         using( ExecutionContext.SuppressFlow() ) {
             THandler handler = new THandler();

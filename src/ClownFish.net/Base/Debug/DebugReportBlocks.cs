@@ -268,4 +268,21 @@ internal static class DebugReportBlocks
 
         return block;
     }
+
+
+    public static DebugReportBlock GetDebugReportBlock(this NHttpApplication httpApplication)
+    {
+        if( httpApplication == null )
+            return null;
+
+        DebugReportBlock block = new DebugReportBlock { Category = nameof(NHttpApplication), Order = 100 };
+        block.AppendLine($"HttpModules:");
+
+        int i = 1;
+        foreach( var x in httpApplication.GetModules() ) {
+            block.AppendLine($"{i++,3}: {x.GetType().FullName}, order: {x.Order}");
+        }
+
+        return block;
+    }
 }

@@ -47,9 +47,9 @@ public static class BackgroundTaskManager
         BackgroundTask task = Activator.CreateInstance(t) as BackgroundTask;
         s_taskList.Add(task);
 
-        ThreadUtils.Run2("BackgroundTask_Start", task.GetType().Name, task.Run);
-
         Console2.Info("Start BackgroundTask: " + t.FullName);
+
+        ThreadUtils.Run2("BackgroundTask_Start", task.GetType().Name, task.Run);
     }
 
 
@@ -58,9 +58,9 @@ public static class BackgroundTaskManager
         AsyncBackgroundTask task = Activator.CreateInstance(t) as AsyncBackgroundTask;
         s_taskList.Add(task);
 
-        ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);
+        Console2.Info("Start BackgroundTask: " + t.FullName);
 
-        Console2.Info("Start AsyncBackgroundTask: " + t.FullName);
+        ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);        
     }
 
     internal static DebugReportBlock GetReportBlock()

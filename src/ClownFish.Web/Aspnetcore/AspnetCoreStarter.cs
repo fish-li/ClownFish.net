@@ -155,13 +155,7 @@ public static class AspnetCoreStarter
         // 启动 HTTP管线
         NHttpApplication.Start();
 
-
-        if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", 1) ) {
-            Console2.WriteLine("----------------------- HttpModules ----------------------------");
-            foreach( var module in NHttpApplication.Instance.GetModules() ) {
-                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
-            }
-        }
+        NHttpApplication.Instance.ShowModules(1);
     }
 
 

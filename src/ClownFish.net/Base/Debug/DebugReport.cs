@@ -39,7 +39,7 @@ public static class DebugReport
                     AddSysInfoBlock(DebugReportBlocks.GetSystemInfo());
                     AddSysInfoBlock(AppConfig.GetDebugReportBlock());
                     AddSysInfoBlock(LogConfig.GetDebugReportBlock());
-                    AddSysInfoBlock(NHttpApplication.Instance?.GetDebugReportBlock());
+                    AddSysInfoBlock(NHttpApplication.Instance.GetDebugReportBlock());
 
                     AddSysInfoBlock(DebugReportBlocks.GetEnvironmentVariables());
                     AddSysInfoBlock(DebugReportBlocks.GetNetworkInfo());
