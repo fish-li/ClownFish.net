@@ -29,24 +29,13 @@ public static class NHttpModuleFactory
             throw new InvalidOperationException("RegisterModule方法只允许在程序初始化时调用。");
 
         // 允许运行时以配置方式取消某个模块
-        if( ModuleIsEnable(moduleType) == false )
+        if( moduleType.ModuleIsEnable() == false )
             return;
 
         if( s_moduleTypeList.Contains(moduleType) == false ) 
             s_moduleTypeList.Add(moduleType);
     }
 
-
-    /// <summary>
-    /// 判断某个module类型是否允许启用
-    /// </summary>
-    /// <param name="moduleType"></param>
-    /// <returns></returns>
-    public static bool ModuleIsEnable(Type moduleType)
-    {
-        string configName = moduleType.FullName.Replace('.', '_') + "_Enable";
-        return LocalSettings.GetBool(configName, 1);
-    }
 
     /// <summary>
     /// 注册HTTP模块

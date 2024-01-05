@@ -197,5 +197,18 @@ public static class TypeExtensionsCF
     }
 
 
+    /// <summary>
+    /// 检查本地配置，判断某个模块是否启用。如果不指定，默认返回true
+    /// </summary>
+    /// <param name="moduleType"></param>
+    /// <returns></returns>
+    public static bool ModuleIsEnable(this Type moduleType)
+    {
+        if( moduleType == null )
+            throw new ArgumentNullException(nameof(moduleType));
+
+        string configName = moduleType.FullName.Replace('.', '_') + "_Enable";
+        return LocalSettings.GetBool(configName, 1);
+    }
 
 }

@@ -4,8 +4,8 @@
         <TargetFrameworks>net48;net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.104.1</Version>
-        <FileVersion>8.24.104.1</FileVersion>
+        <Version>8.24.105.1</Version>
+        <FileVersion>8.24.105.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

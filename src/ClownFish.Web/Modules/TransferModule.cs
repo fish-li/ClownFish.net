@@ -8,7 +8,7 @@ public sealed class TransferModule : HttpProxyModule
         
     public static bool IsEnable()
     {
-        if( NHttpModuleFactory.ModuleIsEnable(typeof(TransferModule)) == false )
+        if( typeof(TransferModule).ModuleIsEnable() == false )
             return false;
 
         string filePath1 = EnvUtils.GetAppName() + ".TransferMapRule.xml";
