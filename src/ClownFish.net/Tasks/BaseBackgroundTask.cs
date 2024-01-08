@@ -12,12 +12,12 @@ public abstract class BaseBackgroundTask : BaseTaskObject
     /// <summary>
     /// 任务的执行次数
     /// </summary>
-    internal ValueCounter ExecuteCount = new ValueCounter("ExecuteCount");
+    public readonly ValueCounter ExecuteCount = new ValueCounter("ExecuteCount");
 
     /// <summary>
     /// 任务执行失败的次数
     /// </summary>
-    internal ValueCounter ErrorCount = new ValueCounter("ErrorCount");
+    public readonly ValueCounter ErrorCount = new ValueCounter("ErrorCount");
 
 
     /// <summary>
