@@ -30,8 +30,8 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
         log.Module = executorType.Namespace;
         log.Controller = executorType.Name;
         log.Action = "Execute";
-        log.OprName = operName.HasValue() ? operName : (executorType.Name + "/Execute");
-        log.Url = $"code://{log.Controller}/{log.OprName}";
+        log.OprName = operName.HasValue() ? operName : executorType.Name;
+        log.Url = $"code://{executorType.Name}";
     }
 
 

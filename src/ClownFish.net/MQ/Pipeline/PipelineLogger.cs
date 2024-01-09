@@ -20,7 +20,7 @@ internal static class PipelineLogger
         log.Module = handlerType.Namespace;
         log.Controller = handlerType.Name;
         log.Action = "HandleMessage";
-        log.OprName = handlerType.Name + "/Execute";
+        log.OprName = handlerType.Name;
         log.Url = context.GetTitle();
 
         log.RetryCount = context.RetryN;

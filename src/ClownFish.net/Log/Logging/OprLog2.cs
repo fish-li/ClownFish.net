@@ -96,9 +96,9 @@ public partial class OprLog
             this.Controller = a1?.Name ?? controllerType.Name;
             this.Action = a2?.Name ?? actionMethod.Name;
 
-            //if( this.OprName.IsNullOrEmpty() ) {
-            //    this.OprName = controllerType.Name + "/" + actionMethod.Name;
-            //}
+            if( this.OprName.IsNullOrEmpty() ) {
+                this.OprName = controllerType.Name + "/" + actionMethod.Name;
+            }
         }
 
         if( this.OprName.IsNullOrEmpty() ) {
