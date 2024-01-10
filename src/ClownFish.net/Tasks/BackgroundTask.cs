@@ -50,6 +50,7 @@ public abstract class BackgroundTask : BaseBackgroundTask
         catch(Exception ex) {
             this.UnhandledException = ex;
             Console2.Error(ex);
+            Console2.Info($"##### BackgroundTask {this.GetType().FullName} 出现未预期异常，它不会继续运行！");
         }
 
         this.Status = 2;

@@ -82,6 +82,7 @@ public abstract class BaseBackgroundTask : BaseTaskObject
             }
             catch( Exception ex ) {
                 ShowWarnning($"不正确的Cron表达式：[{cronValue}]，错误描述：" + ex.Message);
+                Console2.Info($"##### BackgroundTask {this.GetType().FullName} 由于Cron表达式无效，它不会继续运行！");
                 return false;
             }
         }
@@ -91,6 +92,7 @@ public abstract class BaseBackgroundTask : BaseTaskObject
         }
         catch( Exception ex ) {
             Console2.Error(ex);
+            Console2.Info($"##### BackgroundTask {this.GetType().FullName} 由于初始化失败，它不会继续运行！");
             return false;
         }
     }
