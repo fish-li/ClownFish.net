@@ -235,7 +235,7 @@ public static class ClownFishInit
 
         if( LocalSettings.GetBool("Show_ClownFish_Log_Config") ) {
             string configXml = XmlHelper.XmlSerialize(config, Encoding.UTF8);
-            Console2.WriteLine("----------------------- ClownFish_Log_Config ----------------------------");
+            Console2.WriteLine("----------------------- ClownFish.Log.config ----------------------------");
             Console2.WriteLine(configXml);
             Console2.WriteLine("-------------------------------------------------------------------------");
         }
