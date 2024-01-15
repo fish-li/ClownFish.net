@@ -8,7 +8,7 @@ public abstract class BasePipelineContext
     /// <summary>
     /// 操作ID，唯一不重复。对于有重试类操作，每次操作或者重试都生成一个ID
     /// </summary>
-    public string ProcessId { get; } = Guid.NewGuid().ToString("N");
+    public string ProcessId { get; }
 
 
     // 下面2个时间属性用于各类日志中的时间取值保持一致，
@@ -17,7 +17,7 @@ public abstract class BasePipelineContext
     /// <summary>
     /// 代码执行主体(含框架部分)的开始执行时间
     /// </summary>
-    public DateTime StartTime { get; } = DateTime.Now;
+    public DateTime StartTime { get; }
     /// <summary>
     /// 代码执行主体(含框架部分)的结束执行时间
     /// </summary>
@@ -53,6 +53,17 @@ public abstract class BasePipelineContext
     public OprLogScope OprLogScope { get; private set; } = OprLogScope.NullObject;
 
     // 说明：默认使用 NullObject 可以避免 NullReferenceException 的可能性，代码写起来也更容易。
+
+
+    /// <summary>
+    /// ctor
+    /// </summary>
+    public BasePipelineContext()
+    {
+        this.StartTime = DateTime.Now;
+        this.ProcessId = OprLog.GetNewId(this.StartTime);
+    }
+
 
     internal void SetOprLogScope(OprLogScope scope)
     {

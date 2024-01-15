@@ -20,7 +20,7 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
 
     private void CreateOprLogScope(Type executorType, string operName)
     {
-        OprLogScope scope = OprLogScope.Start();
+        OprLogScope scope = OprLogScope.Start(this);
         this.SetOprLogScope(scope);
 
         OprLog log = scope.OprLog;

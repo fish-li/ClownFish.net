@@ -22,7 +22,7 @@ public sealed class TempFile : IDisposable
         if( body == null )
             throw new ArgumentNullException(nameof(body));
 
-        string filePath = Path.Combine(EnvUtils.GetTempPath(), Guid.NewGuid().ToString("N") + ".tmp");
+        string filePath = GenTempFileFullName(".tmp");
 
         File.WriteAllBytes(filePath, body);
 
@@ -62,7 +62,7 @@ public sealed class TempFile : IDisposable
         if( stream.CanSeek )
             stream.Position = 0;
 
-        string filePath = Path.Combine(EnvUtils.GetTempPath(), Guid.NewGuid().ToString("N") + ".tmp");
+        string filePath = GenTempFileFullName(".tmp");
 
         using( FileStream fileStream = File.Create(filePath) ) {
             stream.CopyTo(fileStream);
@@ -94,5 +94,17 @@ public sealed class TempFile : IDisposable
                 }
             }
         }
+    }
+
+
+    /// <summary>
+    /// 获取一个新的临时文件全路径名称
+    /// </summary>
+    /// <param name="extName"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GenTempFileFullName(string extName)
+    {
+        return Path.Combine(EnvUtils.GetTempPath(), OprLog.GetNewId() + extName);
     }
 }

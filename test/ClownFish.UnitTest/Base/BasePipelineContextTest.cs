@@ -18,7 +18,7 @@ public class BasePipelineContextTest
         ctx.PerformanceThresholdMs = 50;
 
         Assert.AreEqual(200, ctx.GetStatus());
-        Assert.AreEqual(32, ctx.ProcessId.Length);
+        Assert.AreEqual(49, ctx.ProcessId.Length);
         Assert.AreEqual(50, ctx.PerformanceThresholdMs);
         Assert.AreEqual(string.Empty, ctx.GetTitle());
         Assert.IsNull(ctx.GetRequest());

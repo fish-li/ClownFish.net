@@ -1,6 +1,26 @@
 ﻿namespace ClownFish.Log.Logging;
 public partial class OprLog
 {
+    /// <summary>
+    /// 创建一个新的日志ID
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GetNewId()
+    {
+        return DateTime.Now.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
+    /// 创建一个新的日志ID
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GetNewId(DateTime time)
+    {
+        return time.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
+    }
+
     internal static OprLog CreateNew(BasePipelineContext context)
     {
         OprLog log = new OprLog();
@@ -16,13 +36,13 @@ public partial class OprLog
     /// <param name="context"></param>
     public void SetBaseInfo(BasePipelineContext context = null)
     {
-        if( context == null ) {
-            this.OprId = Guid.NewGuid().ToString("N");
+        if( context == null ) {            
             this.StartTime = DateTime.Now;
+            this.OprId = GetNewId(this.StartTime);
         }
-        else {
-            this.OprId = context.ProcessId;
+        else {            
             this.StartTime = context.StartTime;
+            this.OprId = context.ProcessId;
         }
 
         this.Status = 200;

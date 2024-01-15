@@ -66,7 +66,7 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
         this.Body = body;
 
         this.Headers[ComplexMessage.CreateTime] = DateTime.Now.ToTimeString();
-        this.Headers[ComplexMessage.MessageId] = Guid.NewGuid().ToString("N");
+        this.Headers[ComplexMessage.MessageId] = OprLog.GetNewId();
     }
 
 

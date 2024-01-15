@@ -20,7 +20,7 @@ public class MqRequestTest
             MessageObject = null
         };
 
-        Assert.AreEqual(32, req.MessageId.Length);
+        Assert.AreEqual(49, req.MessageId.Length);
         Assert.AreEqual("rabbit", req.MqKind);
         Assert.IsNotNull(req.Original);
         Assert.IsNull(req.MessageObject);
