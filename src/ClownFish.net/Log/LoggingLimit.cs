@@ -35,7 +35,7 @@ public static class LoggingLimit
         /// <summary>
         /// 每个 StepItem.Detail 字段 允许的最大长度
         /// </summary>
-        public static int StepDetailMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_OprLog_StepDetailMaxLen", 1024 * 6);
+        public static int StepDetailMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_OprLog_StepDetailMaxLen", 1024 * 4);
 
         /// <summary>
         /// OprLog.Detail 字段 允许的最大长度。

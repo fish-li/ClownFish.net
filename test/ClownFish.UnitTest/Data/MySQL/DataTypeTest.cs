@@ -99,6 +99,7 @@ public class DataTypeTest
 
 
     [TestMethod]
+    [Obsolete]
     public async Task Test_MySQL_各种数据库类型_读取写入()
     {
         using( DbContext dbContext = DbContext.Create("mysql") ) {

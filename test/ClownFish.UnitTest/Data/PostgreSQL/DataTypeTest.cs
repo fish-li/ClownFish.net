@@ -106,6 +106,7 @@ public class DataTypeTest
 
 
     [TestMethod]
+    [Obsolete]
     public async Task Test_PostgreSQL_各种数据库类型()
     {
         using( DbContext dbContext = DbContext.Create("postgresql") ) {

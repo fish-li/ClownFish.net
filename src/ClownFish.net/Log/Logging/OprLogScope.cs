@@ -315,7 +315,7 @@ public sealed class OprLogScope : IDisposable
         this.OprLog.Logs = GetLogsText();
 
         // 检查并截断一些较长的文本字段
-        this.OprLog.TruncateTextnField();
+        this.OprLog.TruncateTextFields();
     }
 
 
@@ -334,16 +334,15 @@ public sealed class OprLogScope : IDisposable
 
                 // 如果内容过大，就立即停止拼接
                 if( sb.Length > LoggingLimit.OprLog.DetailsMaxLen ) {
-                    StepItem step = CreateCutoffStep(x);
-                    string text = step.GetLogText1();
-                    sb.AppendLineRN(text);
-
-                    // 跳出循环，结束拼接
                     break;
                 }
-                else {
-                    string text = x.GetLogText1();
-                    sb.AppendLineRN(text);
+
+                string text = x.GetLogText1();
+                sb.AppendLineRN(text);
+
+                // 如果内容过大，就立即停止拼接
+                if( sb.Length > LoggingLimit.OprLog.DetailsMaxLen ) {
+                    break;
                 }
             }
 
@@ -374,16 +373,16 @@ public sealed class OprLogScope : IDisposable
     }
 
 
-    private StepItem CreateCutoffStep(StepItem x)
-    {
-        StepItem step = StepItem.CreateNew(x.StartTime);
-        step.StepKind = "ext";
-        step.StepName = "已截断";
-        step.Detail = "执行步骤过多，剩余部分已丢弃！";
-        step.End(x.StartTime);
+    //private StepItem CreateCutoffStep(StepItem x)
+    //{
+    //    StepItem step = StepItem.CreateNew(x.StartTime);
+    //    step.StepKind = "ext";
+    //    step.StepName = "已截断";
+    //    step.Detail = "执行步骤过多，剩余部分已丢弃！";
+    //    step.End(x.StartTime);
 
-        return step;
-    }
+    //    return step;
+    //}
 
 
 

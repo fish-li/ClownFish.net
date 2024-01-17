@@ -438,7 +438,7 @@ public class OprLogTest
         log.Text4 = text;
         log.Text5 = text;
 
-        log.TruncateTextnField();
+        log.TruncateTextFields();
 
         Assert.IsTrue(log.CtxData.Length < 102400);
         Assert.IsTrue(log.Addition.Length < 102400);

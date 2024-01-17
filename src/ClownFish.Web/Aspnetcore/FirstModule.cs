@@ -7,6 +7,8 @@ public class FirstModule
     private static readonly bool s_logExecutTime = LocalSettings.GetBool("ClownFish_Aspnet_LogExecutTime");
     private static readonly bool s_show404Page = LocalSettings.GetBool("ClownFish_Aspnet_Show404Page");
 
+    public static readonly int MaxRequestBodySize = LocalSettings.GetUInt("AspNetCore_Kestrel_MaxRequestBodySize", 1080 * 1024);
+
     private readonly RequestDelegate _next;
 
     public FirstModule(RequestDelegate next)
@@ -35,7 +37,6 @@ public class FirstModule
         if( s_debugHttpLine )
             Console2.Debug(httpContextNetCore.Request.HttpMethod + " " + httpContextNetCore.Request.FullUrl);
 
-
         // 设置一些上下文及日志作用域
         using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore) ) {
 
@@ -52,6 +53,8 @@ public class FirstModule
         NHttpContext httpContextNetCore = pipelineContext.HttpContext;
 
         try {
+            CheckMaxRequestBodySize(httpContextNetCore);
+
             string origin = httpContextNetCore.Request.Header("Origin");
             if( origin.HasValue() && IsAllowCors(httpContextNetCore, origin) )
                 app.EnableCors(httpContextNetCore, origin);
@@ -61,9 +64,9 @@ public class FirstModule
 
             // 允许 body 多次读取
             SetRequestBuffering(httpContextNetCore);
-
+            
             flag = await app.ExecuteHttpHandlerAsync(httpContextNetCore);
-            if( flag == false ) {                
+            if( flag == false ) {
 
                 app.AuthenticateRequest(httpContextNetCore);
                 app.PostAuthenticateRequest(httpContextNetCore);
@@ -109,6 +112,14 @@ public class FirstModule
         httpContext.SetRequestBuffering();
     }
 
+    private void CheckMaxRequestBodySize(NHttpContext httpContext)
+    {
+        if( httpContext.Request.ContentLength > MaxRequestBodySize ) {
 
+            httpContext.HttpReply(413, $"Request body too large.");
+
+            throw new AbortRequestException();
+        }
+    }
 
 }

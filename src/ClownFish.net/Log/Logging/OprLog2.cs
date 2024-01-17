@@ -272,14 +272,22 @@ public partial class OprLog
     }
 
 
-    internal void TruncateTextnField()
+    /// <summary>
+    /// 检查并截断一些较长的文本字段
+    /// </summary>
+    public void TruncateTextFields()
     {
+        if( this.Url != null && this.Url.Length > 1024 )
+            this.Url = this.Url.Substring(0, 1024);
+
+        if( this.HttpRef != null && this.HttpRef.Length > 1024 )
+            this.HttpRef = this.HttpRef.Substring(0, 1024);
+
         if( this.Request != null && this.Request.Length > LoggingLimit.HttpBodyMaxLen )
             this.Request = this.Request.SubstringN(LoggingLimit.HttpBodyMaxLen);
 
         if( this.Response != null && this.Response.Length > LoggingLimit.HttpBodyMaxLen )
             this.Response = this.Response.SubstringN(LoggingLimit.HttpBodyMaxLen);
-
 
         if( this.CtxData != null && this.CtxData.Length > LoggingLimit.OprLog.TextnMaxLen )
             this.CtxData = this.CtxData.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
@@ -287,7 +295,7 @@ public partial class OprLog
         if( this.Addition != null && this.Addition.Length > LoggingLimit.OprLog.TextnMaxLen )
             this.Addition = this.Addition.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
 
-        
+
 
         if( this.Text1 != null && this.Text1.Length > LoggingLimit.OprLog.TextnMaxLen )
             this.Text1 = this.Text1.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
@@ -303,6 +311,16 @@ public partial class OprLog
 
         if( this.Text5 != null && this.Text5.Length > LoggingLimit.OprLog.TextnMaxLen )
             this.Text5 = this.Text5.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
+
+
+        // 注释下面二段是因为：这样粗鲁的做法可能会破坏“内容格式”，造成后续解析出错
+        //int logsLen = LoggingLimit.OprLog.LogsTextMaxLen * LoggingLimit.OprLog.LogsMaxCount;
+        //if( this.Logs != null && this.Logs.Length > logsLen )
+        //    this.Logs = this.Logs.Substring(0, logsLen);
+
+        //int detailLen = LoggingLimit.OprLog.DetailsMaxLen + LoggingLimit.OprLog.StepDetailMaxLen * 2;
+        //if( this.OprDetails != null && this.OprDetails.Length > detailLen )
+        //    this.OprDetails = this.OprDetails.Substring(0, detailLen);
     }
 
     /// <summary>
