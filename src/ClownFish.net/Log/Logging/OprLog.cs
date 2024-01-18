@@ -184,7 +184,8 @@ public partial class OprLog : IMsgObject
     #region 大文本
 
     /// <summary>
-    /// 在性能日志中记录所有耗时的操作
+    /// 记录本次操作中的耗时过程，例如：SQL查询/Http调用/Redis调用/等等。
+    /// 【注意】此字段对格式有要求，如果不清楚，请不要随意赋值！
     /// </summary>
     public string OprDetails { get; set; }
 

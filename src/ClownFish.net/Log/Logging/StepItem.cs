@@ -1,6 +1,4 @@
-﻿using ClownFish.Base;
-
-namespace ClownFish.Log.Logging;
+﻿namespace ClownFish.Log.Logging;
 
 /// <summary>
 /// 表示一个操作步骤
@@ -144,15 +142,6 @@ public sealed class StepItem
         }
     }
 
-
-    private string GetCmdxText()
-    {
-        if( this.Cmdx == null )
-            return string.Empty;
-
-        return this.Cmdx.GetLogText();
-    }
-
     internal string GetLogText1()
     {
         StringBuilder sb = StringBuilderPool.Get();
@@ -179,14 +168,9 @@ public sealed class StepItem
             if( this.Detail.IsNullOrEmpty() == false ) {
                 sb.AppendLineRN(this.Detail.SubstringN(LoggingLimit.OprLog.StepDetailMaxLen));
             }
-            else {
+            else  {
                 sb.AppendLineRN(this.GetCmdxText().SubstringN(LoggingLimit.OprLog.StepDetailMaxLen));
             }
-
-            //if( this.ExceptionObject != null ) {
-            //    sb.AppendLineRN(TextUtils.SeparatedLine);
-            //    sb.AppendLineRN(this.ExceptionObject.ToString());
-            //}
 
             return sb.ToString();
         }
@@ -196,7 +180,13 @@ public sealed class StepItem
     }
 
 
-    internal string GetLogText2()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string GetCmdxText()
+    {
+        return this.Cmdx?.GetLogText() ?? string.Empty;
+    }
+
+    internal string GetLogText2()   // 单元测试专用
     {
         if( this.Detail.IsNullOrEmpty() )
             this.Detail = this.GetCmdxText();

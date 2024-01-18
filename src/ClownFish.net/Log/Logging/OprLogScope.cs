@@ -324,6 +324,7 @@ public sealed class OprLogScope : IDisposable
         if( _steps == null || _steps.Count == 0 )
             return string.Empty;
 
+        string result = null;
         StringBuilder sb = StringBuilderPool.Get();
         try {
             foreach( var x in _steps ) {
@@ -346,11 +347,12 @@ public sealed class OprLogScope : IDisposable
                 }
             }
 
-            return sb.ToString();
+            result = sb.ToString();
         }
         finally {
             StringBuilderPool.Return(sb);
         }
+        return GzipHelper.Compress(result);
     }
 
     private string GetLogsText()
