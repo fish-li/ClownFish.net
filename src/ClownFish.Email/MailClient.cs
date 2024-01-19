@@ -4,7 +4,7 @@ using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
 
-namespace ClownFish.EMail;
+namespace ClownFish.Email;
 
 /// <summary>
 /// 邮件发送工具

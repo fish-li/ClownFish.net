@@ -1,4 +1,4 @@
-﻿namespace ClownFish.EMail;
+﻿namespace ClownFish.Email;
 
 internal class EmailAttachment
 {

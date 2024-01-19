@@ -1,6 +1,4 @@
-﻿using ClownFish.EMail;
-
-namespace ClownFish.Email;
+﻿namespace ClownFish.Email;
 
 /// <summary>
 /// EMail日志工具类

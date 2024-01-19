@@ -1,6 +1,6 @@
 ﻿using MimeKit;
 
-namespace ClownFish.EMail;
+namespace ClownFish.Email;
 
 internal static class MailClientEvent
 {

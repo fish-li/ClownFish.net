@@ -1,4 +1,4 @@
-﻿namespace ClownFish.EMail;
+﻿namespace ClownFish.Email;
 
 /// <summary>
 /// 邮箱发送参数
