@@ -11,21 +11,14 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
     public override int Order => -1000;
 
     /// <summary>
-    /// BeginRequest
+    /// <inheritdoc/>
     /// </summary>
     /// <param name="httpContext"></param>
     public override void BeginRequest(NHttpContext httpContext)
     {
-        // 开启一个日志监控范围
-        // 注意：如果针对 HttpAction 的日志不开启，OprLogModule就不会加载运行
-
-        OprLogScope scope = OprLogScope.Start(httpContext.PipelineContext);
-        httpContext.PipelineContext.SetOprLogScope(scope);
+        OprLogScope scope = httpContext.PipelineContext.OprLogScope;
 
         HttpTraceUtils.SetRootParent(httpContext, scope);
-
-        //httpContext.Items["OprLogModule_OprLogScope"] = scope;
-        httpContext.RegisterForDispose(scope);
     }
 
 

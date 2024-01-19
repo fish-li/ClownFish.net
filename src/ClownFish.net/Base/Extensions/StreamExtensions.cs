@@ -3,7 +3,7 @@
 /// <summary>
 /// Stream扩展方法工具类
 /// </summary>
-internal static class StreamExtensions
+public static class StreamExtensions
 {
     private static void CheckStreamRead(Stream stream)
     {

@@ -138,7 +138,7 @@ public class OprLogScopeTest
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
 
-        using OprLogScope scope = OprLogScope.Start();
+        OprLogScope scope = mock.PipelineContext.OprLogScope;
 
         for(int i= 0; i < LoggingLimit.OprLog.StepsMaxCount + 10; i++) {
             scope.AddStep(DateTime.Now, $"s{i}", new string('a', 10240), DateTime.Now, ExceptionHelper.CreateException());
@@ -175,7 +175,7 @@ public class OprLogScopeTest
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
 
-        using OprLogScope scope = OprLogScope.Start();
+        OprLogScope scope = mock.PipelineContext.OprLogScope;
 
         for( int i = 0; i <  10; i++ ) {
             scope.AddStep(DateTime.Now, $"s{i}", new string('a', 10240), DateTime.Now, ExceptionHelper.CreateException());
@@ -205,7 +205,7 @@ public class OprLogScopeTest
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
 
-        using OprLogScope scope = OprLogScope.Start();
+        OprLogScope scope = mock.PipelineContext.OprLogScope;
 
         for( int i = 0; i < LoggingLimit.OprLog.LogsMaxCount + 10; i++ ) {
             scope.Log(Guid.NewGuid().ToString());

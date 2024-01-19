@@ -24,9 +24,20 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     {
         var context =  new HttpPipelineContext(httpContext);
         s_local.Value = context;
+
+        // 开启日志监控
+        context.CreateOprLogScope();
+
         return context;
     }
 
+    private void CreateOprLogScope()
+    {
+        if( LoggingOptions.HttpActionEnableLog ) {
+            OprLogScope scope = OprLogScope.Start(this);
+            this.SetOprLogScope(scope);
+        }
+    }
 
     /// <summary>
     /// Dispose
