@@ -1,18 +1,40 @@
-﻿namespace ClownFish.UnitTest.Http.Mock;
+﻿namespace ClownFish.Http.MockTest;
 
+/// <summary>
+/// 
+/// </summary>
 public class MockRequestData
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string HttpMethod { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Uri Url { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public NameValueCollection Headers { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public byte[] Body { get; set; }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public string GetHeader(string name) => this.Headers?.Get(name);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Stream InputStream {
         get {
             if( _inputStream != null )
@@ -28,12 +50,19 @@ public class MockRequestData
 
     private Stream _inputStream;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stream"></param>
     public void SetInputStream(Stream stream)
     {
         _inputStream = stream;
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public string ToText()
     {
         StringBuilder sb = new StringBuilder();
@@ -57,7 +86,13 @@ public class MockRequestData
         return sb.ToString();
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="requestText"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public static MockRequestData FromText(string requestText)
     {
         if( requestText.IsNullOrEmpty() )
@@ -71,7 +106,7 @@ public class MockRequestData
             string requestLine = reader.ReadLine();
             string[] items = requestLine.ToArray(' ');
             if( items.Length != 3 )
-                throw new ArgumentException("请求行格式不正确。");
+                throw new FormatException("开始行格式不正确!");
 
             data.HttpMethod = items[0];
             data.Url = new Uri(items[1]);
@@ -83,7 +118,7 @@ public class MockRequestData
                 else {
                     int p = line.IndexOf(':');
                     if( p <= 0 )
-                        throw new ArgumentException("请求头格式不正确。");
+                        throw new FormatException("请求头格式不正确!");
 
                     string name = line.Substring(0, p).Trim();
                     string value = line.Substring(p + 1).Trim();
@@ -103,25 +138,5 @@ public class MockRequestData
     }
 
 
-    //public static RequestData FromText(string requestText)
-    //{
-    //    if( requestText.IsNullOrEmpty() )
-    //        throw new ArgumentNullException(nameof(requestText));
-
-    //    HttpOption httpOption = HttpOption.FromRawText(requestText);
-
-    //    RequestData data = new RequestData();
-    //    data.HttpMethod = httpOption.Method;
-    //    data.Url = new Uri(httpOption.Url);
-    //    data.Headers = httpOption.Headers;
-
-    //    if( HttpUtils.RequestHasBody(httpOption.Method) ) {
-    //        if( httpOption.Data != null ) {
-    //            data.Body = httpOption.Data.ToString().GetBytes();
-    //        }
-    //    }
-
-    //    return data;
-    //}
 
 }

@@ -1,14 +1,29 @@
-﻿namespace ClownFish.UnitTest.Http.Mock;
+﻿namespace ClownFish.Http.MockTest;
 
-class MockPrincipal : IPrincipal
+/// <summary>
+/// 
+/// </summary>
+public class MockPrincipal : IPrincipal
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public IIdentity Identity { get; private set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="role"></param>
+    /// <returns></returns>
     public bool IsInRole(string role)
     {
         return false;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="value"></param>
     public MockPrincipal(bool? value)
     {
         if( value.HasValue == false )
@@ -21,11 +36,23 @@ class MockPrincipal : IPrincipal
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public class MockIdentity : IIdentity
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string AuthenticationType => "MOCK";
 
+    /// <summary>
+    /// 
+    /// </summary>
     public bool IsAuthenticated { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public string Name => "TestUser";
 }

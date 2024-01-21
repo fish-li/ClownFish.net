@@ -1,6 +1,4 @@
-﻿using ClownFish.UnitTest.Http.Mock;
-
-namespace ClownFish.UnitTest.Http.Pipleline.Test;
+﻿namespace ClownFish.UnitTest.Http.Pipleline.Test;
 
 [TestClass]
 public class HttpTest1

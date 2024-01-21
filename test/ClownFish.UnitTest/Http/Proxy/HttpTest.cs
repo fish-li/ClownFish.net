@@ -1,5 +1,4 @@
 ﻿using ClownFish.Http.Proxy;
-using ClownFish.UnitTest.Http.Mock;
 
 namespace ClownFish.UnitTest.Http.Proxy;
 

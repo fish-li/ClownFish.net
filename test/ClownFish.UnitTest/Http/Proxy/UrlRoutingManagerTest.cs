@@ -1,6 +1,4 @@
-﻿using ClownFish.UnitTest.Http.Mock;
-
-namespace ClownFish.UnitTest.Http.Proxy;
+﻿namespace ClownFish.UnitTest.Http.Proxy;
 
 [TestClass]
 public class UrlRoutingManagerTest

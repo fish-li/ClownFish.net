@@ -1,6 +1,4 @@
-﻿using ClownFish.UnitTest.Http.Mock;
-
-namespace ClownFish.UnitTest.Log.Logging;
+﻿namespace ClownFish.UnitTest.Log.Logging;
 
 [TestClass]
 public class OprLogScopeTest

@@ -7,7 +7,7 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class ElasticsearchWriter : ILogWriter
 {
-    private static readonly string s_indexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd-HH");
+    private static readonly string s_indexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd");
 
     private SimpleEsClient _client;
 

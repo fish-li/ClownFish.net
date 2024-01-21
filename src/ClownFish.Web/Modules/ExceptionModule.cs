@@ -2,7 +2,7 @@
 
 public sealed class ExceptionModule : NHttpModule
 {
-    public override int Order => base.Order + 5000;   // 尽量放在最后面，允许项目中定义自己的ExceptionModule抢先执行异常处理
+    public override int Order => 99999;   // 尽量放在最后面，允许项目中定义自己的ExceptionModule抢先执行异常处理
 
     internal static bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
 

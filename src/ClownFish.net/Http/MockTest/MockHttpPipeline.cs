@@ -1,37 +1,62 @@
-﻿using ClownFish.UnitTest.Http.Proxy;
+﻿namespace ClownFish.Http.MockTest;
 
-namespace ClownFish.UnitTest.Http.Mock;
-
+/// <summary>
+/// MockHttpPipeline
+/// </summary>
 public class MockHttpPipeline : IDisposable
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public readonly HttpPipelineContext PipelineContext;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public readonly MockHttpContext HttpContext;
 
     internal NHttpApplication Application { get; private set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Exception LastException { get; private set; }
 
-
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="requestData"></param>
     public MockHttpPipeline(MockRequestData requestData)
     {
+        if( requestData == null )
+            throw new ArgumentNullException(nameof(requestData));
+
         HttpContext = new MockHttpContext(requestData);
         PipelineContext = HttpPipelineContext.Start(HttpContext);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void Dispose()
     {
         ((IDisposable)this.PipelineContext).Dispose();
         NHttpModuleFactory.Clear();
-        UrlRoutingManager.ClearRules();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void Init()
     {
         if( this.Application == null )
             Application = NHttpApplication.Start(false);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public async Task ProcessRequest()
     {
         // 此处代码源头：ClownFish.netfx\WebHost\WebHostSpacer.cs

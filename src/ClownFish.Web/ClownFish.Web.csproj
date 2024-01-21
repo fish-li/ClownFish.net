@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.119.1</Version>
-        <FileVersion>8.24.119.1</FileVersion>
+        <Version>8.24.121.1</Version>
+        <FileVersion>8.24.121.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -22,6 +22,12 @@
         <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
         <Description>一个“小而美”的.NET工具类库</Description>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Mock\**" />
+      <EmbeddedResource Remove="Mock\**" />
+      <None Remove="Mock\**" />
+    </ItemGroup>
 
     <ItemGroup>
       <None Remove="ExecHttp.html" />

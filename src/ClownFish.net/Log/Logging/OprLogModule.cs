@@ -8,7 +8,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
     /// <summary>
     /// Order
     /// </summary>
-    public override int Order => -1000;
+    public override int Order => -99999;
 
     /// <summary>
     /// <inheritdoc/>

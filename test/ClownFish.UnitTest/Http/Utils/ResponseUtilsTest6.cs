@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Http.Pipleline;
-using ClownFish.UnitTest.Http.Mock;
 using ClownFish.UnitTest.Http.Pipleline.Test;
 using ClownFish.UnitTest.WebClient;
 using ClownFish.WebClient.V2;

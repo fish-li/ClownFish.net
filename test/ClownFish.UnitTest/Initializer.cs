@@ -1,5 +1,6 @@
 ﻿global using System.Data.SqlClient;
 global using ClownFish.UnitTest._Common;
+global using ClownFish.Http.MockTest;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
 using ClownFish.UnitTest.Base;

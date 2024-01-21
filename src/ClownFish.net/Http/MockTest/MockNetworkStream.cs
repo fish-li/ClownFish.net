@@ -1,63 +1,83 @@
-﻿namespace ClownFish.UnitTest.Http.Mock;
+﻿namespace ClownFish.Http.MockTest;
 
+/// <summary>
+/// 
+/// </summary>
 public sealed class MockNetworkStream : Stream
 {
-    //private readonly byte[] _data;
-    //private int _index;
-
     private readonly MemoryStream _stream;
 
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="data"></param>
     public MockNetworkStream(byte[] data)
     {
+        if( data == null )
+            throw new ArgumentNullException(nameof(data));
+
         _stream = new MemoryStream(data, false);
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override bool CanRead => true;
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override bool CanSeek => false;
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override bool CanWrite => false;
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override long Length => throw new NotImplementedException();
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Flush()
     {
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override int Read(byte[] buffer, int offset, int count)
     {
-        //// EOF
-        //if( _index + 1 >= _data.Length )
-        //    return 0;
-
-        //// 长度不够，只能返回部分内容
-        //if( _index + 1 + count > _data.Length ) {
-        //    int count2 = _data.Length - _index;
-        //    Array.Copy(_data, _index, buffer, offset, count2);
-        //    _index += count2;
-        //    return count2;
-        //}
-
-        //// 返回指定的长度
-        //Array.Copy(_data, _index, buffer, offset, count);
-        //_index += count;
-        //return count;
-
         return _stream.Read(buffer, offset, count);
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override long Seek(long offset, SeekOrigin origin)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void SetLength(long value)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public override void Write(byte[] buffer, int offset, int count)
     {
         throw new NotImplementedException();
