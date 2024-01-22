@@ -42,7 +42,7 @@ public sealed class DbActionInfo
     public static string Serialize(DbActionInfo info)
     {
         if( info == null )
-            throw new ArgumentNullException("info");
+            throw new ArgumentNullException(nameof(info));
 
         string json = Newtonsoft.Json.JsonConvert.SerializeObject(info);
         return GzipHelper.Compress(json);
@@ -55,7 +55,7 @@ public sealed class DbActionInfo
     public static DbActionInfo Deserialize(string base64)
     {
         if( string.IsNullOrEmpty(base64) )
-            throw new ArgumentNullException("base64");
+            throw new ArgumentNullException(nameof(base64));
 
         string json = GzipHelper.Decompress(base64);
         return Newtonsoft.Json.JsonConvert.DeserializeObject<DbActionInfo>(json);

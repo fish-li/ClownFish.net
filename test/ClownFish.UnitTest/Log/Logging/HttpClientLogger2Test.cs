@@ -27,11 +27,6 @@ public class HttpClientLogger2Test
         Assert.AreEqual(2, steps.Count);
 
         string details = scope.GetOprDetails();
-#if NETCOREAPP
-        details = BrotliHelper.Decompress(details);
-#else
-        details = GzipHelper.Decompress(details);
-#endif
         Console.WriteLine(details);
 
         Assert.IsTrue(details.Contains("[ExceptionMessage]: 调用超时."));

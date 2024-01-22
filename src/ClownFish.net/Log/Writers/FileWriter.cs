@@ -57,11 +57,11 @@ internal abstract class FileWriter : ILogWriter
     /// 写入单条日志信息
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="info"></param>
-    public virtual void Write<T>(T info) where T : class, IMsgObject
+    /// <param name="msg"></param>
+    public virtual void Write<T>(T msg) where T : class, IMsgObject
     {
         // 数据对象序列化
-        string text = ObjectToText(info);
+        string text = ObjectToText(msg);
 
         // 数据日志内容写入到文件
         WriteToFile<T>(text, true);
@@ -80,8 +80,8 @@ internal abstract class FileWriter : ILogWriter
         string block = null;
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            foreach( T info in list ) {
-                string line = ObjectToText(info);
+            foreach( T msg in list ) {
+                string line = ObjectToText(msg);
                 sb.AppendLine(line);
             }
             block = sb.ToString();
@@ -110,7 +110,7 @@ internal abstract class FileWriter : ILogWriter
 
         // 一个 writer 实例在运行时只负责一种数据类型，所以持续使用文件名是没有问题的
         if( _currentFile == null ) {
-            // 注意：取类型名称时，不采用 info.GetType().Name ，因为可能有继承情况
+            // 注意：取类型名称时，不采用 msg.GetType().Name ，因为可能有继承情况
             _currentFile = GetFilePath(typeof(T), DateTime.Now);
         }
 

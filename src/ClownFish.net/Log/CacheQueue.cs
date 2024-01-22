@@ -7,7 +7,7 @@ namespace ClownFish.Log;
 /// </summary>
 internal interface ICacheQueue
 {
-    int Add(object info);
+    int Add(object msg);
 
     int Flush();
 }
@@ -39,27 +39,27 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
 
     #region ICacehQueue 成员
 
-    public int Add(object info)
+    public int Add(object msg)
     {
         // 将弱类型变成强类型
-        T tInfo = (T)info;
-        return Add(tInfo);
+        T msg2 = (T)msg;
+        return Add(msg2);
     }
 
     #endregion
 
     /// <summary>
-    /// 写入一条日志信息到缓冲队列
+    /// 写入一条日志消息到缓冲队列
     /// </summary>
-    /// <param name="info"></param>
-    public int Add(T info)
+    /// <param name="msg"></param>
+    public int Add(T msg)
     {
-        // 外部调用写日志时，其实只是将日志信息写入静态队列，用于缓冲写入压力
+        // 外部调用写日志时，其实只是将日志消息写入静态队列，用于缓冲写入压力
         lock( _lock ) {
 
             // 先判断列表长度，避免Writer遇到故障导致消息大量堆积，占用大量内存
             if( _list.Count < LoggingOptions.MaxCacheQueueLength ) {
-                _list.Add(info);
+                _list.Add(msg);
                 ClownFishCounters.Logging.InQueueCount.Increment();
                 return 1;
             }

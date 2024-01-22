@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClownFish.Log;
+﻿namespace ClownFish.Log;
 
 /// <summary>
 /// 基本的 "消息/日志" 对象接口
@@ -20,4 +14,16 @@ public interface IMsgObject
     /// 对象的创建时间
     /// </summary>
     DateTime GetTime();
+}
+
+
+/// <summary>
+/// IMsgBeforeWrite
+/// </summary>
+public interface IMsgBeforeWrite
+{
+    /// <summary>
+    /// 日志对象即将被写入到持久化之前
+    /// </summary>
+    void BeforeWrite();
 }

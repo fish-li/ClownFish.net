@@ -40,7 +40,7 @@ public static class LogHelper
     }
 
 
-    internal static bool InitCheck<T>(T info)
+    internal static bool InitCheck<T>(T msg)
     {
         // 检查并确保日志组件初始化
         if( LogConfig.IsInited == false )
@@ -50,38 +50,41 @@ public static class LogHelper
         if( LogConfig.Instance.Enable == false )
             return false;
 
-        // 执行过滤委托
-        if( s_filterDelegate != null && s_filterDelegate(info) == false )
-            return false;
-
         // 所有需要记录到日志的数据类型必须配置，否则不知道以什么方式执行写入！
         if( WriterFactory.IsSupport(typeof(T)) == false )
             throw new NotSupportedException("不支持未配置的数据类型：" + typeof(T).Name);
+
+        // 执行过滤委托
+        if( s_filterDelegate != null && s_filterDelegate(msg) == false )
+            return false;
 
         return true;
     }
 
 
     /// <summary>
-    /// 记录指定的日志信息
+    /// 记录指定的日志消息
     /// 说明：此方法是一个异步版本，内部维护一个缓冲队列，每 XXms 执行一次写入动作
     /// </summary>
-    /// <typeparam name="T">日志信息的类型参数</typeparam>
-    /// <param name="info">要写入的日志信息</param>
-    public static void Write<T>(T info) where T : class, IMsgObject
+    /// <typeparam name="T">日志消息的类型参数</typeparam>
+    /// <param name="msg">要写入的日志消息</param>
+    public static void Write<T>(T msg) where T : class, IMsgObject
     {
-        if( info == null )
+        if( msg == null )
             return;
 
-        if( InitCheck(info) == false )
+        if( InitCheck(msg) == false )
             return;
 
+        if( msg is IMsgBeforeWrite msg2 ) {
+            msg2.BeforeWrite();
+        }
 
         ClownFishCounters.Logging.WriteCount.Increment();
 
         // 获取指定消息类型的写入队列，并将日志信息放入队列
         ICacheQueue queue = CacheQueueManager.GetCacheQueue<T>();
-        queue.Add(info);
+        queue.Add(msg);
     }
 
 
