@@ -313,6 +313,9 @@ public sealed class OprLogScope : IDisposable
         }
 
         this.OprLog.Logs = GetLogsText();
+
+        // 检查并截断一些较长的文本字段
+        this.OprLog.TruncateTextFields();
     }
 
 

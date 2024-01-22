@@ -36,11 +36,11 @@ public partial class OprLog
     /// <param name="context"></param>
     public void SetBaseInfo(BasePipelineContext context = null)
     {
-        if( context == null ) {            
+        if( context == null ) {
             this.StartTime = DateTime.Now;
             this.OprId = GetNewId(this.StartTime);
         }
-        else {            
+        else {
             this.StartTime = context.StartTime;
             this.OprId = context.ProcessId;
         }
@@ -321,6 +321,29 @@ public partial class OprLog
         //int detailLen = LoggingLimit.OprLog.DetailsMaxLen + LoggingLimit.OprLog.StepDetailMaxLen * 2;
         //if( this.OprDetails != null && this.OprDetails.Length > detailLen )
         //    this.OprDetails = this.OprDetails.Substring(0, detailLen);
+    }
+
+    private void CompressOprDetails()
+    {
+        if( this.OprDetails.IsNullOrEmpty() )
+            return;
+
+        // 此字段已做过压缩，表示对于当前日志对象，已执行过BeforeWrite
+        if( this.OprDetails.StartsWith0("[StepId]") == false )
+            return;
+
+
+        // .NET48的标准库中没有支持 Brotli 算法，
+        // ClownFish又不想为了日志而引入第三方的包，所以对于 netfx 项目，就使用 Gzip 压缩
+        // 目前发现一个规律，Gzip 压缩的结果，总是以 H4sIAAAAAAA 开头，Venus将使用这个特殊标记来识别是使用的哪种压缩算法，
+        // 当然了，最稳妥的做法是增加一个前缀，例如：gzip:xxxxxxxx or br:xxxxxxxxxxx，但是这种方式比较浪费性能和内存，
+        // 考虑到日志基本上是在微服务项目中使用，所以没有必要浪费这些性能，因此这里采用简化的做法！
+
+#if NETCOREAPP
+        this.OprDetails = BrotliHelper.Compress(this.OprDetails);
+#else
+        this.OprDetails = GzipHelper.Compress(this.OprDetails);
+#endif
     }
 
     /// <summary>
