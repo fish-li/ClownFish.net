@@ -75,6 +75,10 @@ public static class LoggingOptions
     /// </summary>
     public static int AppKindDefaultValue = LocalSettings.GetInt("Default_Oprlog_AppKind", 0);
 
+    /// <summary>
+    /// 是否记录 UserAgent
+    /// </summary>
+    public static /* 允许程序修改 */ bool LogUserAgent = LocalSettings.GetBool("ClownFish_Log_LogUserAgent", 0);
 
     /// <summary>
     /// 

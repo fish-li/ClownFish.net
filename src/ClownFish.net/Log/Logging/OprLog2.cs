@@ -86,10 +86,14 @@ public partial class OprLog
         NHttpRequest request = httpContext.Request;
 
         this.HttpMethod = request.HttpMethod;
-        this.Url = request.FullUrl;
-        this.UserAgent = request.Header(HttpHeaders.Request.UserAgent);
+        this.Url = request.FullUrl;        
         this.HttpRef = request.Header(HttpHeaders.Request.Referer);
         this.InSize = request.ContentLength;
+
+        if( LoggingOptions.LogUserAgent ) {
+            // UserAgent 这个东西在绝大部分情况下根本没有作用，并且这个东西通常很巨大，导致日志会占用大量存储空间
+            this.UserAgent = request.Header(HttpHeaders.Request.UserAgent);
+        }
     }
 
 
