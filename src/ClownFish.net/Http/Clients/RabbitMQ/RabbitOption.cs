@@ -42,7 +42,11 @@ public sealed class RabbitOption
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Server={Server};Port={Port};HttpPort={HttpPort};Username={Username};VHost={VHost}";
+        string port = this.Port != 0 ? this.Port.ToString() : "";
+        string hport = this.HttpPort != 0 ? this.HttpPort.ToString() : "";
+        string vhost = (this.VHost.IsNullOrEmpty() || this.VHost == "/") ? "" : this.VHost;
+
+        return $"Server={Server};Port={port};HttpPort={hport};Username={Username};VHost={vhost}";
     }
 
     /// <summary>

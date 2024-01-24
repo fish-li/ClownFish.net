@@ -25,7 +25,7 @@ public class ElasticsearchWriterTest
 
 
         long count1 = ClownFishCounters.Logging.EsWriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count2 = ClownFishCounters.Logging.EsWriteCount.Get();
         Assert.AreEqual(count1, count2);
 
@@ -36,7 +36,7 @@ public class ElasticsearchWriterTest
         HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", esResponse);
 
         long count3 = ClownFishCounters.Logging.EsWriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.EsWriteCount.Get();
         Assert.AreEqual(count3 +1, count4);
     }

@@ -210,12 +210,12 @@ public class ConfigLoaderTest
             InitCount++;
         }
 
-        public void Write<T>(T info)
+        public void WriteOne<T>(T info)
         {
             throw new NotImplementedException();
         }
 
-        void ILogWriter.Write<T>(List<T> list)
+        void ILogWriter.WriteList<T>(List<T> list)
         {
             throw new NotImplementedException();
         }

@@ -26,7 +26,7 @@ public class RabbitHttpWriterTest
         list.Add(new InvokeLog());
 
         long count1 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count2 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         Assert.AreEqual(count1, count2);
 
@@ -37,7 +37,7 @@ public class RabbitHttpWriterTest
 
         HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         Assert.AreEqual(count3 + 1, count4);
     }
@@ -76,7 +76,7 @@ public class RabbitHttpWriterTest
 
         HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         Assert.AreEqual(count3 + 1, count4);
     }
@@ -98,7 +98,7 @@ public class RabbitHttpWriterTest
 
         HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value, false);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
-        writer.Write(list);
+        writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         Assert.AreEqual(count3 + 100, count4);
     }

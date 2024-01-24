@@ -58,7 +58,7 @@ internal abstract class FileWriter : ILogWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="msg"></param>
-    public virtual void Write<T>(T msg) where T : class, IMsgObject
+    public virtual void WriteOne<T>(T msg) where T : class, IMsgObject
     {
         // 数据对象序列化
         string text = ObjectToText(msg);
@@ -75,7 +75,7 @@ internal abstract class FileWriter : ILogWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
-    public virtual void Write<T>(List<T> list) where T : class, IMsgObject
+    public virtual void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         string block = null;
         StringBuilder sb = StringBuilderPool.Get();

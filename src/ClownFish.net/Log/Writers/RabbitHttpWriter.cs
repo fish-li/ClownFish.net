@@ -41,7 +41,7 @@ internal sealed class RabbitHttpWriter : ILogWriter
         // 为每种日志的数据类型创建对应的队列
         AutoCreateQueue(config);
 
-        Console2.Info(this.GetType().FullName + " Init OK.");
+        Console2.Info(this.GetType().FullName + " Init OK, config: " + option.ToString());
         return 1;
     }
 
@@ -68,7 +68,7 @@ internal sealed class RabbitHttpWriter : ILogWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
-    public void Write<T>(List<T> list) where T : class, IMsgObject
+    public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         if( _client == null )
             return;
@@ -80,7 +80,7 @@ internal sealed class RabbitHttpWriter : ILogWriter
         }
         else {
             foreach( T x in list ) {
-                _client.SendMessage(x);
+                SendMessage0(x);
             }
         }
 
@@ -93,15 +93,25 @@ internal sealed class RabbitHttpWriter : ILogWriter
         string routingKey = typeof(T).GetQueueName();
 
         if( list.Count <= batchSize ) {
-            _client.SendMessage(list, null, routingKey);
+            SendMessage0(list, null, routingKey);
         }
         else {
             List<List<T>> listlist = list.SplitList(int.MaxValue, batchSize);
 
             foreach( List<T> listX in listlist ) {
-                _client.SendMessage(listX, null, routingKey);
+                SendMessage0(listX, null, routingKey);
             }
         }
     }
 
+    private void SendMessage0(object data, string exchange = null, string routingKey = null)
+    {
+        try {
+            _client.SendMessage(data, exchange, routingKey);
+        }
+        catch( Exception ex ) {
+            // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
+            Console2.Warnning("RabbitHttpWriter.SendMessage0 ERROR: " + ex.Message);
+        }
+    }
 }

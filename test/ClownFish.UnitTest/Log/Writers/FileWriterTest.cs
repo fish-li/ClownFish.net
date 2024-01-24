@@ -30,7 +30,7 @@ public class FileWriterTest
         foreach( ILogWriter w in writers ) {
             if( w is FileWriter fileWriter ) {
 
-                fileWriter.Write(log);
+                fileWriter.WriteOne(log);
                 string filePath = (string)fileWriter.GetFieldValue("_currentFile");
                 string body = RetryFile.ReadAllText(filePath);
                 Assert.IsTrue(body.Contains(title));
@@ -54,7 +54,7 @@ public class FileWriterTest
         foreach( ILogWriter w in writers ) {
             if( w is FileWriter fileWriter ) {
 
-                fileWriter.Write(list);
+                fileWriter.WriteList(list);
                 string filePath = (string)fileWriter.GetFieldValue("_currentFile");
                 string body = RetryFile.ReadAllText(filePath);
                 Assert.IsTrue(body.Contains(title1));
@@ -117,7 +117,7 @@ public class FileWriterTest
             s_field.SetValue(writer, outFilePath);
 
             log.OprId = i.ToString() + "_" + Guid.NewGuid().ToString("N");
-            writer.Write(log);
+            writer.WriteOne(log);
         }
 
 
@@ -150,7 +150,7 @@ public class FileWriterTest
         for( int i = 0; i < 200; i++ ) {
             log.OprId = Guid.NewGuid().ToString("N");
             string text = XmlHelper.XmlSerialize(log, Encoding.UTF8);
-            writer.Write(log);
+            writer.WriteOne(log);
             results.Add(writer.LastWriteResult);
         }
 

@@ -12,7 +12,7 @@ internal class XFileWriter : FileWriter
 
     protected override ValueCounter WriteCounter => throw new NotImplementedException();
 
-    public override void Write<T>(T info)
+    public override void WriteOne<T>(T info)
     {
         string line = XmlHelper.XmlSerialize(info, Encoding.UTF8);
 

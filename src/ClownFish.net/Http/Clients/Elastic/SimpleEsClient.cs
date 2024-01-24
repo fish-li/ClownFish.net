@@ -173,7 +173,6 @@ public sealed class SimpleEsClient
     {
         // 这里为了简单且减少不必要的性能损耗，就直接判断“特征字符串”
         if( response != null && response.Contains("\"errors\":true,") ) {
-            Console2.Warnning("写Elasticsearch失败！" + response);
             throw new EsHttpException("写Elasticsearch失败！", response);
         }
     }

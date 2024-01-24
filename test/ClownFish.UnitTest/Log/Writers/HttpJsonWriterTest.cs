@@ -27,7 +27,7 @@ public class HttpJsonWriterTest
 
         HttpJsonWriter2 writer = new HttpJsonWriter2();
         writer.SetUrl("http://xxxxxxxxxxxxxxxxxxx");
-        (writer as ILogWriter).Write(logs);
+        (writer as ILogWriter).WriteList(logs);
 
         string response = writer.ResponseOut.ToString();
         Console.WriteLine(response);
@@ -46,7 +46,7 @@ public class HttpJsonWriterTest
         HttpJsonWriter3 writer = new HttpJsonWriter3();
         writer.SetUrl("http://xxxxxxxxxxxxxxxxxxx");
 
-        (writer as ILogWriter).Write(logs);
+        (writer as ILogWriter).WriteList(logs);
 
         // 确认异常不会抛出
     }

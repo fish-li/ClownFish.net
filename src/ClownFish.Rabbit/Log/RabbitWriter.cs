@@ -39,7 +39,7 @@ internal sealed class RabbitWriter : ILogWriter
         // 为每种日志的数据类型创建对应的队列
         AutoCreateQueue(config);
 
-        Console2.Info(this.GetType().FullName + " Init OK.");
+        Console2.Info(this.GetType().FullName + " Init OK, config: " + option.ToString());
         _inited = true;
     }
 
@@ -63,7 +63,7 @@ internal sealed class RabbitWriter : ILogWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
-    public void Write<T>(List<T> list) where T : class, IMsgObject
+    public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         if( _inited == false )
             return;

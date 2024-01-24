@@ -19,7 +19,7 @@ public sealed class MemoryWriter : ILogWriter
     }
 
 
-    public void Write<T>(List<T> list) where T : class, IMsgObject
+    public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         _list.AddRange(list);
     }

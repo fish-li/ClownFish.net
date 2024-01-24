@@ -19,7 +19,7 @@ public interface ILogWriter
     /// </summary>
     /// <typeparam name="T">消息的数据类型</typeparam>
     /// <param name="list">要写入的日志信息</param>
-    void Write<T>(List<T> list) where T : class, IMsgObject;
+    void WriteList<T>(List<T> list) where T : class, IMsgObject;
 
 
 }

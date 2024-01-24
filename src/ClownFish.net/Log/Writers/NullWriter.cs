@@ -21,7 +21,7 @@ internal sealed class NullWriter : ILogWriter
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
-    public void Write<T>(List<T> list) where T : class, IMsgObject
+    public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         // 不执行写入操作
     }

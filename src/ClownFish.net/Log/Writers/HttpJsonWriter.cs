@@ -23,12 +23,12 @@ internal class HttpJsonWriter : ILogWriter
         }
 
         _url = url.AddUrlQueryArgs("app", EnvUtils.GetAppName());
-        Console2.Info(this.GetType().FullName + " Init OK.");
+        Console2.Info(this.GetType().FullName + " Init OK, upload url: " + url);
     }
 
     internal void SetUrl(string url) => _url = url;
 
-    void ILogWriter.Write<T>(List<T> list)
+    void ILogWriter.WriteList<T>(List<T> list)
     {
         if( _url.IsNullOrEmpty() || list.IsNullOrEmpty() )
             return;
@@ -82,6 +82,12 @@ internal class HttpJsonWriter : ILogWriter
 
     protected virtual void SendRequest(HttpOption httpOption)
     {
-        httpOption.Send(HttpRetry.Create(2, 500));
+        try {
+            httpOption.Send(HttpRetry.Create(2, 500));
+        }
+        catch(Exception ex) {
+            // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
+            Console2.Warnning("HttpJsonWriter.SendRequest ERROR: " + ex.Message);
+        }
     }
 }

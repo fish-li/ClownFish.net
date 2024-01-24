@@ -119,7 +119,7 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
     {
         foreach( var writer in _writers ) {
             try {
-                writer.Write(tempList);
+                writer.WriteList(tempList);
             }
             catch( Exception ex ) {
                 LogHelper.RaiseErrorEvent(ex);

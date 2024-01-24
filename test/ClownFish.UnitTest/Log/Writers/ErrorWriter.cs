@@ -8,7 +8,7 @@ public class ErrorWriter : ILogWriter
     {
     }
 
-    public void Write<T>(List<T> list) where T : class, IMsgObject
+    public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         throw new NotImplementedException();
     }
