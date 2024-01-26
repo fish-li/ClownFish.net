@@ -350,8 +350,9 @@ public sealed class NHttpApplication
     {
         if( LocalSettings.GetBool("ClownFish_Aspnet_ShowHttpModules", defaultShow) ) {
             Console2.WriteLine("----------------------- HttpModules ----------------------------");
+            int i = 1;
             foreach( var module in _modules ) {
-                Console2.WriteLine($"NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
+                Console2.WriteLine($"{i++}, NHttpModule: {module.GetType().FullName}  loaded, Order={module.Order}");
             }
         }
     }

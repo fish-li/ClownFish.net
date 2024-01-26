@@ -125,4 +125,21 @@ public static class MemoryConfig
         AddFile(filename, xml);
     }
 
+
+    internal static DebugReportBlock GetDebugReportBlock()
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = nameof(MemoryConfig), Order = 100 };
+
+        block.AppendLine("---Setting---");
+        foreach( var name in s_settings.GetKeys()) {
+            block.AppendLine($"{name} = {s_settings[name]?.ToString2()}");
+        }
+
+        block.AppendLine("---DbConfig---");
+        foreach( var name in s_db.GetKeys() ) {
+            block.AppendLine($"{name} = {s_db[name]?.ToString()}");
+        }
+
+        return block;
+    }
 }

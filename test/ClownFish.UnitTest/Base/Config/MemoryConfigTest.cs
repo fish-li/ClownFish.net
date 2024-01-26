@@ -29,6 +29,9 @@ public class MemoryConfigTest
             _ = MemoryConfig.GetDbConfig("");
         });
         MyAssert.IsError<ArgumentNullException>(() => {
+            MemoryConfig.AddDbConfig("", new DbConfig());
+        });
+        MyAssert.IsError<ArgumentNullException>(() => {
             MemoryConfig.AddDbConfig("key1", null);
         });
 
@@ -53,6 +56,9 @@ public class MemoryConfigTest
     {
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = MemoryConfig.GetFile("");
+        });
+        MyAssert.IsError<ArgumentNullException>(() => {
+            MemoryConfig.AddFile("", "xxxxxxxxxxxxx");
         });
         MyAssert.IsError<ArgumentNullException>(() => {
             MemoryConfig.AddFile("key1", null);
@@ -85,5 +91,23 @@ public class MemoryConfigTest
 
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.App.Config"));
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.Log.Config"));
+    }
+
+    [TestMethod]
+    public void Test_GetDebugReportBlock()
+    {
+        MemoryConfig.AddSetting("s95398", "95398a3cd942459cbcf1dd88e0a58d7f");
+        MemoryConfig.AddFile("f6ecf0e", "6ecf0ebdc30140adb1d5e8d0b2a2240173f11958a9da43cfb561f304db270b4b");
+        MemoryConfig.AddDbConfig("d9b22ee9", new DbConfig {
+            Name = "d9b22ee9",
+            DbType = DatabaseType.MySQL,
+            Database = "9b22ee9385cd4c90be4833343c8b465c"
+        });
+
+        DebugReportBlock block = MemoryConfig.GetDebugReportBlock();
+        string text = block.ToString2();
+
+        Assert.IsTrue(text.Contains("s95398 = 95398a3cd942459cbcf1dd88e0a58d7f"));
+        Assert.IsTrue(text.Contains("9b22ee9385cd4c90be4833343c8b465c"));
     }
 }

@@ -43,6 +43,7 @@ public class InsertTest
 
 
     [TestMethod]
+    [Obsolete]
     public void Test_Duplicate_insert2()
     {
         using( DbContext dbContext = DbContext.Create("postgresql") ) {

@@ -48,6 +48,7 @@ public class InsertTest
      
 
     [TestMethod]
+    [Obsolete]
     public void Test_Duplicate_insert2()
     {
         using( DbContext dbContext = DbContext.Create("mysql") ) {
@@ -72,6 +73,7 @@ public class InsertTest
 
 
     [TestMethod]
+    [Obsolete]
     public async Task Test_Duplicate_insert2Async()
     {
         using( DbContext dbContext = DbContext.Create("mysql") ) {

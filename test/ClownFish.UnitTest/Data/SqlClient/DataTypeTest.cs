@@ -101,6 +101,7 @@ public class DataTypeTest
 
 
     [TestMethod]
+    [Obsolete]
     public async Task Test_SQLSERVER_各种数据库类型()
     {
         using( DbContext dbContext = DbContext.Create("sqlserver") ) {

@@ -203,7 +203,7 @@ public static class AspnetCoreStarter
 
 
         // 获取所有的诊断信息，并写入到临时文件中
-        string text = DebugReport.GetAllData().ToText();
+        string text = DebugReport.GetReport("ALL");
         string filePath = Path.Combine(EnvUtils.GetTempPath(), "DebugReport.txt");
         RetryFile.WriteAllText(filePath, text);
     }

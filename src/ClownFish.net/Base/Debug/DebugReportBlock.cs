@@ -40,7 +40,7 @@ public sealed class DebugReportBlock
     /// <param name="sb"></param>
     public void GetText(StringBuilder sb)
     {
-        sb.AppendLineRN($"##### {this.Category ?? "NONE"} #####{this.Order}");
+        sb.AppendLineRN($"##### {this.Category ?? "title"} #####");
 
         if( this.Lines != null ) {
             foreach( var line in Lines )
@@ -54,10 +54,14 @@ public sealed class DebugReportBlock
     /// <returns></returns>
     public override string ToString()
     {
-        return this.Category ?? "NONE";
+        return this.Category ?? "title";
     }
 
-    internal string ToString2()  // for test
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public string ToString2()  // for test
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {

@@ -118,26 +118,9 @@ public sealed class AppConfiguration
 
 
 
-    internal DebugReportBlock GetDebugReportBlock()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = AppConfig.ClownFishAppconfig, Order = 100 };
-
-
-        if( this.AppSettings != null ) {
-            foreach( var x in this.AppSettings )
-                block.AppendLine($"{x.Key} = {x.Value}");
-        }
-
-        //if( this.ConnectionStrings != null ) {
-        //    foreach( var x in this.ConnectionStrings )
-        //        block.AppendLine($"{x.Name} = ({x.ProviderName}) {ConnectionStringUtils.HidePwd(x.ConnectionString)}");
-        //}
-
-        return block;
-    }
 }
 
-    
+
 
 
 

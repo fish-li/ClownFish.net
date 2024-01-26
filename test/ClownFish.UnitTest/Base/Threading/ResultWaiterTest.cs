@@ -79,7 +79,9 @@ public class ResultWaiterTest
         string id = (string)state;
         Thread.Sleep(1000);
         ResultWaiter waiter = ResultWaiter.GetById(id);
-        waiter.SetResult(new NameInt64("key1", 123));
+        if( waiter != null ) {
+            waiter.SetResult(new NameInt64("key1", 123));
+        }
     }
 
     [TestMethod]
@@ -101,7 +103,9 @@ public class ResultWaiterTest
         Exception ex = ExceptionHelper.CreateException();
 
         ResultWaiter waiter = ResultWaiter.GetById(id);
-        waiter.SetException(ex);
+        if( waiter != null ) {
+            waiter.SetException(ex);
+        }
     }
 
 

@@ -170,15 +170,20 @@ public static class ThreadUtils
 
     internal static void LogError(string operatorName, Exception ex)
     {
-        OprLog log = OprLog.CreateErrLog(ex);
-        log.OprName = operatorName;
-        log.Controller = nameof(ThreadUtils);
+        try {
+            OprLog log = OprLog.CreateErrLog(ex);
+            log.OprName = operatorName;
+            log.Controller = nameof(ThreadUtils);
 
-        LogHelper.Write(log);
+            LogHelper.Write(log);
 
-        if( LoggingOptions.InvokeLogEnable ) {
-            InvokeLog log2 = log.ToInvokeLog();
-            LogHelper.Write(log2);
+            if( LoggingOptions.InvokeLogEnable ) {
+                InvokeLog log2 = log.ToInvokeLog();
+                LogHelper.Write(log2);
+            }
+        }
+        catch(Exception ex2 ) {
+            Console2.Error(ex2);
         }
     }
 

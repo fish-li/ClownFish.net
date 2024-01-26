@@ -7,6 +7,8 @@ public static class AuthenticationManager
 {
     private static JwtProvider s_jwtImpl;
 
+    internal static JwtOptions GetJwtOptions() => s_jwtImpl?.GetJwtOptions();
+
     internal static bool Inited => s_jwtImpl != null;
 
     public static void Init(JwtProvider provider, ICheckRights checkRights)
@@ -19,6 +21,9 @@ public static class AuthenticationManager
         if( checkRights != null ) {
             AuthorizeAttribute.SetCheckRightsImpl(checkRights);
         }
+
+        DebugReport.OptionList.Add(typeof(ClownFish.Web.Security.Auth.AuthOptions));
+        DebugReport.OptionList.Add(AuthenticationManager.GetJwtOptions());
     }
 
 

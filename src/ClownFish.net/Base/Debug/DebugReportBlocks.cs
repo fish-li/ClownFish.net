@@ -1,14 +1,11 @@
 ﻿using System.Runtime.InteropServices;
+using ClownFish.Base.Config.Models;
 
 namespace ClownFish.Base;
 
 
 internal static class DebugReportBlocks
 {
-    /// <summary>
-    ///  
-    /// </summary>
-    /// <returns></returns>
     public static DebugReportBlock GetLoggingCounters()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Logging Counters" };
@@ -35,32 +32,6 @@ internal static class DebugReportBlocks
     }
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public static DebugReportBlock GetSomeOptionsInfo()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = "Some Options" };
-
-        block.AppendLine("CacheOption.AppCacheSeconds: " + CacheOption.AppCacheSeconds.ToString());
-        block.AppendLine("CacheOption.ExpirationScanFrequency: " + CacheOption.ExpirationScanFrequency.ToString());
-        block.AppendLine("--------------------------------------------");
-
-        block.AppendLine("HttpClientDefaults.HttpClientTimeout: " + HttpClientDefaults.HttpClientTimeout.ToString());        
-        block.AppendLine("HttpClientDefaults.HttpClientCacheSeconds: " + HttpClientDefaults.HttpClientCacheSeconds.ToString());
-        block.AppendLine("HttpClientDefaults.HttpProxyTimeout: " + HttpClientDefaults.HttpProxyTimeout.ToString());
-        block.AppendLine("HttpClientDefaults.RabbitHttpClientTimeout: " + HttpClientDefaults.RabbitHttpClientTimeout.ToString());
-        block.AppendLine("HttpClientDefaults.EsHttpClientTimeout: " + HttpClientDefaults.EsHttpClientTimeout.ToString());
-        block.AppendLine("HttpClientDefaults.HttpJsonWriterTimeout: " + HttpClientDefaults.HttpJsonWriterTimeout.ToString());
-
-        return block;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
     public static DebugReportBlock GetCacheStatus()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Cache Status" };
@@ -74,20 +45,16 @@ internal static class DebugReportBlocks
         return block;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetSystemInfo()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "System Information", Order = 100 };
 
-        //block.AppendLine("CLR Version: " + Environment.Version);                                // 6.0.5
+        //block.AppendLine("Runtime Version: " + Environment.Version);                                // 6.0.5
         block.AppendLine("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);   // .NET 6.0.5
         //block.AppendLine("CLR SystemVersion: " + RuntimeEnvironment.GetSystemVersion());      // v4.0.30319
 
-        //block.AppendLine("OS Name: " + SystemHelper.GetOsName());                 // Linux
-        //block.AppendLine("OSVersion: " + Environment.OSVersion);                // Unix 3.10.0.957
+        block.AppendLine("OS Name: " + OsUtils.GetOsName());                      // Ubuntu 22.04.3 LTS
         block.AppendLine("OSDescription: " + RuntimeInformation.OSDescription);   // Linux 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018            
 
         block.AppendLine("RuntimeDirectory: " + RuntimeEnvironment.GetRuntimeDirectory());     // /usr/share/dotnet/shared/Microsoft.NETCore.App/6.0.5/
@@ -113,10 +80,6 @@ internal static class DebugReportBlocks
 
 #if NETCOREAPP
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
     public static DebugReportBlock GetThreadPoolInfo()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "ThreadPool Information" };
@@ -142,10 +105,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetGCInfo()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "GC Information" };
@@ -172,10 +132,7 @@ internal static class DebugReportBlocks
     }
 #endif
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetNetworkInfo()
     {
         // 如果是在容器中部署，网络信息就没什么参考价值了
@@ -196,10 +153,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetEnvironmentVariables()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Environment Variables", Order = 100 };
@@ -228,10 +182,7 @@ internal static class DebugReportBlocks
     }
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetEntityProxyLoaderList()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Entity/Loader List", Order = 1003 };
@@ -248,10 +199,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+
     public static DebugReportBlock GetAssemblyListInfo()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Load Assembly List", Order = 1004 };
@@ -285,4 +233,81 @@ internal static class DebugReportBlocks
 
         return block;
     }
+
+    internal static DebugReportBlock GetDebugReportBlock(this AppConfiguration appconfig)
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = AppConfig.ClownFishAppconfig, Order = 100 };
+
+        // 按照开发要求，app.config 中是不允许有敏感信息参数的，所以这里不做过滤，直接用XML展示
+        block.AppendLine(appconfig.ToXml2());
+        return block;
+    }
+
+    internal static DebugReportBlock GetDebugReportBlock(this LogConfiguration logconfig)
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = LogConfig.ConfigFileName, Order = 100 };
+
+        block.AppendLine(logconfig.ToXml2());
+        return block;
+    }
+
+
+    internal static void AddFieldValues1(DebugReportBlock block, Type optType)
+    {
+        PropertyInfo[] ps = optType.GetProperties(BindingFlags.Static | BindingFlags.Public);
+        FieldInfo[] fs = optType.GetFields(BindingFlags.Static | BindingFlags.Public);
+
+        foreach( PropertyInfo p in ps ) {
+            object value = p.GetValue(null, null);
+            block.AppendLine($"{p.Name} = {value.ToString2()}");
+        }
+
+        foreach( FieldInfo f in fs ) {
+            object value = f.GetValue(null);
+            block.AppendLine($"{f.Name} = {value.ToString2()}");
+        }
+    }
+
+    internal static void AddFieldValues2(DebugReportBlock block, object opt)
+    {
+        Type optType = opt.GetType();
+
+        PropertyInfo[] ps = optType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        FieldInfo[] fs = optType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+
+        foreach( PropertyInfo p in ps ) {
+            object value = p.GetValue(opt, null);
+            block.AppendLine($"{p.Name} = {value.ToString2()}");
+        }
+
+        foreach( FieldInfo f in fs ) {
+            object value = f.GetValue(opt);
+            block.AppendLine($"{f.Name} = {value.ToString2()}");
+        }
+    }
+
+
+    public static DebugReportBlock GetStaticVariablesReportBlock()
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = "Runtime Static Variables" };
+
+        foreach( var x in DebugReport.OptionList.Where(a=>a != null) ) {
+            if( x is Type type ) {
+                block.AppendLine($"------------------{type.FullName}--------------------------");
+                AddFieldValues1(block, type);
+            }
+            else if( x is Func<NameValue> func ) {
+                NameValue nv = func.Invoke();
+                block.AppendLine($"------------------{nv.Name}--------------------------");
+                block.AppendLine(nv.Value);
+            }
+            else {
+                block.AppendLine($"------------------{x.GetType().FullName}--------------------------");
+                AddFieldValues2(block, x);
+            }
+            block.AppendLine(" ");
+        }
+        return block;
+    }
+
 }

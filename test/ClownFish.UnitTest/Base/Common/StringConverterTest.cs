@@ -159,6 +159,8 @@ Amount=3.14;Week={DayOfWeek.Saturday};time2={time2};bytes={base64};x1=1qaz";
 
         TimeSpan time3 = StringConverter.ToTimeSpan("123f");
         Assert.AreEqual(TimeSpan.FromMilliseconds(123), time3);
+
+        Assert.AreEqual(TimeSpan.Zero, StringConverter.ToTimeSpan(""));
     }
 
 
@@ -258,5 +260,16 @@ Amount=3.14;Week={DayOfWeek.Saturday};time2={time2};bytes={base64};x1=1qaz";
         Assert.AreEqual("db1", config.Database);
         Assert.AreEqual("sa", config.UserName);
         Assert.AreEqual("abcd", config.Password);
+    }
+
+    [TestMethod]
+    public void Test_ParseEnumName()
+    {
+        DayOfWeek week = (DayOfWeek)StringConverter.ParseEnumName("Friday", typeof(DayOfWeek));
+        Assert.AreEqual(DayOfWeek.Friday, week);
+
+        MyAssert.IsError<ArgumentException>(() => {
+            DayOfWeek w2 = (DayOfWeek)StringConverter.ParseEnumName("xxxx", typeof(DayOfWeek));
+        });        
     }
 }

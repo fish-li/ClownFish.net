@@ -14,12 +14,24 @@ public static class DebugReport
     /// <summary>
     /// 系统环境信息
     /// </summary>
-    private static readonly List<DebugReportBlock> s_sysInfoList = new List<DebugReportBlock>(30);
+    internal static readonly List<DebugReportBlock> SysInfoList = new List<DebugReportBlock>(5);
 
     /// <summary>
-    /// 类型相关信息，这部分数据可能会比较大！
+    /// 配置参数
     /// </summary>
-    private static readonly List<DebugReportBlock> s_typeInfoList = new List<DebugReportBlock>(10);
+    internal static readonly List<DebugReportBlock> ConfigList = new List<DebugReportBlock>(5);
+
+    /// <summary>
+    /// 类型相关信息
+    /// </summary>
+    internal static readonly List<DebugReportBlock> TypeInfoList = new List<DebugReportBlock>(5);
+
+
+    /// <summary>
+    /// 配置参数对象清单，允许：Type, object
+    /// </summary>
+    public static readonly List<object> OptionList = new(20);
+
 
     /// <summary>
     /// 
@@ -30,26 +42,37 @@ public static class DebugReport
 =============================================================
 ".TrimStart();
 
-    private static void Init()
+    /// <summary>
+    /// Init
+    /// </summary>
+    public static void Init()
     {
         if( s_inited == false ) {
             lock( s_lock ) {
                 if( s_inited == false ) {
 
-                    AddSysInfoBlock(DebugReportBlocks.GetSystemInfo());
-                    AddSysInfoBlock(AppConfig.GetDebugReportBlock());
-                    AddSysInfoBlock(LogConfig.GetDebugReportBlock());
-                    AddSysInfoBlock(NHttpApplication.Instance.GetDebugReportBlock());
+                    SysInfoList.Add(DebugReportBlocks.GetSystemInfo());
+                    SysInfoList.Add(NHttpApplication.Instance.GetDebugReportBlock());
+                    SysInfoList.Add(DebugReportBlocks.GetNetworkInfo());
 
-                    AddSysInfoBlock(DebugReportBlocks.GetEnvironmentVariables());
-                    AddSysInfoBlock(DebugReportBlocks.GetNetworkInfo());
-                    AddSysInfoBlock(DebugReportBlocks.GetSomeOptionsInfo());
-                    
+                    ConfigList.Add(DebugReportBlocks.GetEnvironmentVariables());
+                    ConfigList.Add(MemoryConfig.GetDebugReportBlock());
+                    ConfigList.Add(AppConfig.GetDebugReportBlock());
+                    ConfigList.Add(LogConfig.GetDebugReportBlock());
 
-                    AddTypeInfoBlock(ProxyLoader.EntityProxyAssemblyListReportBlock);
-                    AddTypeInfoBlock(ProxyBuilder.CompileEntityListReportBlock);                                                
-                    AddTypeInfoBlock(DebugReportBlocks.GetEntityProxyLoaderList());
-                    AddTypeInfoBlock(DebugReportBlocks.GetAssemblyListInfo());
+                    TypeInfoList.Add(ProxyLoader.EntityProxyAssemblyListReportBlock);
+                    TypeInfoList.Add(ProxyBuilder.CompileEntityListReportBlock);
+                    TypeInfoList.Add(DebugReportBlocks.GetEntityProxyLoaderList());
+                    TypeInfoList.Add(DebugReportBlocks.GetAssemblyListInfo());
+
+                    OptionList.Add(typeof(LoggingOptions));
+                    OptionList.Add(typeof(LoggingOptions.Http));
+                    OptionList.Add(typeof(LoggingOptions.HttpClient));
+                    OptionList.Add(typeof(LoggingLimit));
+                    OptionList.Add(typeof(LoggingLimit.OprLog));
+                    OptionList.Add(typeof(LoggingLimit.SQL));
+                    OptionList.Add(typeof(HttpClientDefaults));
+                    OptionList.Add(typeof(CacheOption));
 
                     s_inited = true;
                 }
@@ -59,33 +82,27 @@ public static class DebugReport
 
 
     /// <summary>
-    /// 
+    /// 获取某个部分报告
     /// </summary>
-    /// <param name="block"></param>
-    public static void AddSysInfoBlock(DebugReportBlock block)
-    {
-        if( block == null )
-            return;
-
-        lock( s_sysInfoList ) {
-            s_sysInfoList.Add(block);
-        }
-    }
-
-
-    private static void AddTypeInfoBlock(DebugReportBlock block)
-    {
-        if( block == null )
-            return;
-
-        s_typeInfoList.Add(block);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <param name="name"></param>
     /// <returns></returns>
-    public static List<DebugReportBlock> GetStatusInfo()
+    public static string GetReport(string name)
+    {
+        Init();
+
+        return name switch {
+            "ALL" => GetAllData().ToText(),
+            "StatusInfo" => GetStatusInfo().ToText(),
+            "SysInfo" => GetSysInfo().ToText(),
+            "AsmInfo" => GetAsmInfo().ToText(),
+            "ConfigInfo" => GetConfigInfo().ToText(),
+            "StaticVariables" => GetStaticVariables().ToText(),
+            _ => "_NULL_"
+        };
+    }
+
+
+    internal static List<DebugReportBlock> GetStatusInfo()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(30);
 #if NETCOREAPP
@@ -95,55 +112,51 @@ public static class DebugReport
 #endif
 
         blocks.Add(DebugReportBlocks.GetLoggingCounters());
-        blocks.Add(DebugReportBlocks.GetCacheStatus());        
+        blocks.Add(DebugReportBlocks.GetCacheStatus());
 
         return blocks;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public static List<DebugReportBlock> GetSysInfo()
+    internal static List<DebugReportBlock> GetSysInfo()
     {
-        Init();
-        List<DebugReportBlock> blocks = new List<DebugReportBlock>(30);
-        return blocks.AddRange2(s_sysInfoList);
+        List<DebugReportBlock> blocks = new List<DebugReportBlock>(10);
+        return blocks.AddRange2(SysInfoList);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public static List<DebugReportBlock> GetAsmInfo()
+    internal static List<DebugReportBlock> GetConfigInfo()
     {
-        Init();
-        List<DebugReportBlock> blocks = new List<DebugReportBlock>(30);
-        return blocks.AddRange2(s_typeInfoList);
+        List<DebugReportBlock> blocks = new List<DebugReportBlock>(5);
+        return blocks.AddRange2(ConfigList);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public static List<DebugReportBlock> GetAllData()
+    internal static List<DebugReportBlock> GetStaticVariables()
     {
-        Init();
-        return GetStatusInfo().AddRange2(s_sysInfoList).AddRange2(s_typeInfoList);
+        List<DebugReportBlock> blocks = new List<DebugReportBlock>(1);
+        DebugReportBlock block = DebugReportBlocks.GetStaticVariablesReportBlock();
+        blocks.Add(block);
+        return blocks;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="blocks"></param>
-    /// <returns></returns>
-    public static string ToText(this List<DebugReportBlock> blocks)
+
+    internal static List<DebugReportBlock> GetAsmInfo()
     {
-         StringBuilder sb = StringBuilderPool.Get();
+        List<DebugReportBlock> blocks = new List<DebugReportBlock>(5);
+        return blocks.AddRange2(TypeInfoList);
+    }
+
+
+    internal static List<DebugReportBlock> GetAllData()
+    {
+        return GetStatusInfo().AddRange2(SysInfoList).AddRange2(ConfigList).AddRange2(TypeInfoList);
+    }
+
+    internal static string ToText(this List<DebugReportBlock> blocks)
+    {
+        StringBuilder sb = StringBuilderPool.Get();
         try {
             sb.AppendLineRN(HeaderText);
 
-            foreach( var b in blocks ) {
+            foreach( var b in blocks.Where(x => x != null).OrderBy(x => x.Order) ) {
                 b.GetText(sb);
                 sb.AppendLine("\r\n");
             }

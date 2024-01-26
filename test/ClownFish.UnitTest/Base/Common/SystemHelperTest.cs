@@ -1,4 +1,6 @@
-﻿namespace ClownFish.UnitTest.Base.Common;
+﻿using System.Net.NetworkInformation;
+
+namespace ClownFish.UnitTest.Base.Common;
 
 [TestClass]
 public class SystemHelperTest
@@ -13,7 +15,9 @@ public class SystemHelperTest
         var x = SystemHelper.GetCurrentNetworkInfo();
         Console.WriteLine(x.GetMac());
         Console.WriteLine(x.GetIPv4());
-        
 
+
+        Assert.AreEqual("NOTFOUND", SystemHelper.GetMac((NetworkInterface)null));
+        Assert.AreEqual("NOTFOUND", SystemHelper.GetIPv4((NetworkInterface)null));
     }
 }

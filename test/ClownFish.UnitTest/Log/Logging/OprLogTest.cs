@@ -428,6 +428,8 @@ public class OprLogTest
         OprLog log = new OprLog();
         log.CtxData = text;
         log.Addition = text;
+        log.Url = new string('a', 3000);
+        log.HttpRef = new string('b', 3000);
         log.Request = text;
         log.Response = text;
         log.Text1 = text;
@@ -440,6 +442,8 @@ public class OprLogTest
 
         Assert.IsTrue(log.CtxData.Length < 102400);
         Assert.IsTrue(log.Addition.Length < 102400);
+        Assert.IsTrue(log.Url.Length == 1024);
+        Assert.IsTrue(log.HttpRef.Length == 1024);
         Assert.IsTrue(log.Request.Length < 102400);
         Assert.IsTrue(log.Response.Length < 102400);
         Assert.IsTrue(log.Text1.Length < 102400);

@@ -8,6 +8,8 @@ public sealed class JwtProvider
     private readonly JwtJsonSerializer _serializer;
     private readonly JwtOptions _options;
 
+    public JwtOptions GetJwtOptions() => _options;
+
     public JwtProvider(JwtOptions options)
     {
         if( options == null) 

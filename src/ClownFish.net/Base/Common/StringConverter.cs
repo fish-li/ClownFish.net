@@ -145,7 +145,7 @@ public static class StringConverter
     }
 
 
-    private static object ParseEnumName(string value, Type conversionType)
+    internal static object ParseEnumName(string value, Type conversionType)
     {
         Array values = Enum.GetValues(conversionType);
         string[] names = Enum.GetNames(conversionType);

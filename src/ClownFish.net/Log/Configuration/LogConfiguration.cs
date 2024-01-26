@@ -81,16 +81,6 @@ public sealed class LogConfiguration
     }
 
 
-    internal DebugReportBlock GetDebugReportBlock()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = LogConfig.ConfigFileName, Order = 100 };
-
-        // 合并后的日志配置
-        block.AppendLine(this.ToXml());
-        return block;
-    }
-
-
 
     /// <summary>
     /// 合并二个配置对象，以config1为基础，用config2覆盖config1

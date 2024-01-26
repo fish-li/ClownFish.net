@@ -22,6 +22,7 @@ public class Initializer
         EnvironmentVariables.Set("RUNTIME_ENVIRONMENT", "FishDev");
         EnvironmentVariables.Set("ClownFish_Console2_Trace_Enabled", "1");
         EnvironmentVariables.Set("x1.y1.z1", "123");
+        EnvironmentVariables.Set("DebugReport_HideEnvNames", "api-key;xx-SecretKey");
 
 
         ClownFishInit.InitBase();

@@ -118,8 +118,8 @@ public class AppConfigTest
 
         DebugReportBlock block = AppConfig.GetDebugReportBlock();
         string text = block.ToString2();
-        Assert.IsTrue(text.Contains("key1 = abcd"));
-        Assert.IsTrue(text.Contains("key2 = 1234"));
+        Assert.IsTrue(text.Contains("<add key=\"key1\" value=\"abcd\" />"));
+        Assert.IsTrue(text.Contains("<add key=\"key2\" value=\"1234\" />"));
 
 
         MyAssert.IsError<ArgumentNullException>(() => {

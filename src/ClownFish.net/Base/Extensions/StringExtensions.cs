@@ -649,14 +649,11 @@ public static class StringExtensions
         if( value == null )
             return string.Empty;
 
-
-        if( value is IToString2 x2 ) {
+        if( value is IToString2 x2 )
             return x2.ToString2();
-        }
 
-        if( value is System.Reflection.TargetInvocationException ex2 ) {
-            return ex2.InnerException.ToString2();
-        }
+        if( value is bool flag )
+            return flag ? "true" : "false";
 
         if( value is DateTime time )
             return time.ToTimeString();
@@ -666,6 +663,15 @@ public static class StringExtensions
 
         if( value is long x4 )
             return x4.ToWString();
+
+        if( value is byte[] bb )
+            return "byte[], len=" + bb.Length;
+
+        if( value is System.Security.Cryptography.X509Certificates.X509Certificate2 x509 )
+            return x509.Subject;
+
+        if( value is System.Reflection.TargetInvocationException ex2 )
+            return ex2.InnerException.ToString2();
 
         // 以后再完善
 
