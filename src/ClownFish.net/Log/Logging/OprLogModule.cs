@@ -66,7 +66,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
             
 
             if( httpContext.IsTransfer ) {
-                log.OprKind = OprKinds.HttpProxy;
+                log.OprKind = OprKinds.Proxy;
             }
             else {
                 // 有一种情况：异常被Action的代理拦截了，外层框架没有捕获到异常

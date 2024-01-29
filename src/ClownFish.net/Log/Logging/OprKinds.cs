@@ -6,14 +6,14 @@
 public static class OprKinds
 {
     /// <summary>
-    /// string "httpin"，表示一次HTTP请求的处理过程
+    /// string "http"，表示一次HTTP请求的处理过程
     /// </summary>
-    public static readonly string HttpIn = "httpin";
+    public static readonly string Http = "http";
 
     /// <summary>
-    /// string "httpproxy"，表示一次HTTP代理转发
+    /// string "proxy"，表示一次HTTP代理转发
     /// </summary>
-    public static readonly string HttpProxy = "httpproxy";
+    public static readonly string Proxy = "proxy";
 
     /// <summary>
     /// string "msg"，表示一次队列消息的处理过程
@@ -23,7 +23,7 @@ public static class OprKinds
     /// <summary>
     /// string "btask"，表示一次后台任务的执行过程
     /// </summary>
-    public static readonly string BTask = "btask";
+    public static readonly string Btask = "btask";
 
     /// <summary>
     /// string "gevent"，表示处理了一个全局事件

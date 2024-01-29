@@ -211,7 +211,7 @@ public class OprLogTest
 
         Assert.AreEqual(128, log.OutSize);
         Assert.AreEqual(208, log.Status);
-        Assert.AreEqual("httpin", log.OprKind);
+        Assert.AreEqual("http", log.OprKind);
 
         Assert.AreEqual(thisType.Namespace, log.Module);
         Assert.AreEqual(thisType.Name, log.Controller);
@@ -244,7 +244,7 @@ public class OprLogTest
 
         Assert.AreEqual(128, log.OutSize);
         Assert.AreEqual(208, log.Status);
-        Assert.AreEqual("httpin", log.OprKind);
+        Assert.AreEqual("http", log.OprKind);
 
         Assert.AreEqual("测试模块A1", log.Module);
         Assert.AreEqual("测试类型B1", log.Controller);
@@ -269,7 +269,7 @@ public class OprLogTest
 
         Assert.AreEqual(0, log.OutSize);
         Assert.AreEqual(0, log.Status);
-        Assert.AreEqual("httpin", log.OprKind);
+        Assert.AreEqual("http", log.OprKind);
 
         Assert.IsNull(log.Module);
         Assert.IsNull(log.Controller);
@@ -456,11 +456,11 @@ public class OprLogTest
     [TestMethod]
     public void Test_GetActionType()
     {
-        Assert.AreEqual(100, OprLog.GetActionType(OprKinds.HttpIn));
-        Assert.AreEqual(100, OprLog.GetActionType(OprKinds.HttpProxy));
+        Assert.AreEqual(100, OprLog.GetActionType(OprKinds.Http));
+        Assert.AreEqual(100, OprLog.GetActionType(OprKinds.Proxy));
 
         Assert.AreEqual(200, OprLog.GetActionType(OprKinds.Msg));
-        Assert.AreEqual(300, OprLog.GetActionType(OprKinds.BTask));
+        Assert.AreEqual(300, OprLog.GetActionType(OprKinds.Btask));
 
         Assert.AreEqual(400, OprLog.GetActionType("code"));
         Assert.AreEqual(400, OprLog.GetActionType("test"));

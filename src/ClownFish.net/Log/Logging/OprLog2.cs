@@ -103,7 +103,7 @@ public partial class OprLog
         this.Status = httpContext.Response.StatusCode;
 
         if( this.OprKind.IsNullOrEmpty() ) {
-            this.OprKind = OprKinds.HttpIn;
+            this.OprKind = OprKinds.Http;
         }
 
 
@@ -407,13 +407,13 @@ public partial class OprLog
 
     internal static int GetActionType(string oprKind)
     {
-        if( oprKind == OprKinds.HttpIn || oprKind == OprKinds.HttpProxy )
+        if( oprKind == OprKinds.Http || oprKind == OprKinds.Proxy )
             return 100;
 
         if( oprKind == OprKinds.Msg )
             return 200;
 
-        if( oprKind == OprKinds.BTask )
+        if( oprKind == OprKinds.Btask )
             return 300;
 
 

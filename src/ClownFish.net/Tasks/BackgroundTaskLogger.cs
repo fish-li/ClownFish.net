@@ -22,7 +22,7 @@ internal static class BackgroundTaskLogger
 
         OprLog log = scope.OprLog;
         log.RootId = context.ProcessId;
-        log.OprKind = OprKinds.BTask;
+        log.OprKind = OprKinds.Btask;
  
         Type executorType = context.Executor.GetType();
         log.Module = executorType.Namespace;

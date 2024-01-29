@@ -28,7 +28,7 @@ public class OprLogScopeTest
             RetryFile.WriteAllText("./temp/OprLogScopeTest_test1.json", oprLogScope.OprLog.ToJson(JsonStyle.Indented));
 
             OprLog log = oprLogScope.OprLog;
-            Assert.AreEqual("httpin", log.OprKind);
+            Assert.AreEqual("http", log.OprKind);
             Assert.AreEqual("HttpRequest", log.OprName);
             Assert.AreEqual(1, log.HasError);
             Assert.AreEqual(1, log.IsSlow);
