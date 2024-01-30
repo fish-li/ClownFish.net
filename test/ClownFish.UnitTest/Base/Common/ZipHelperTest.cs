@@ -6,21 +6,26 @@ public class ZipHelperTest
     [TestMethod]
     public void Test()
     {
-        string path = Path.Combine(Environment.CurrentDirectory, "temp");
+        string path = Path.Combine(Environment.CurrentDirectory, "temp");        
+
+        // 添加一个子目录，并包含一个文件
+        string newFile = Path.Combine(Environment.CurrentDirectory, @"temp\aa\bb.txt");
+        RetryFile.WriteAllText(newFile, "aaaaaaaaaaaa");
+
+        // 添加一个空目录
+        RetryDirectory.CreateDirectory(Path.Combine(path, "empty"));
+
         string tempPath2 = Path.Combine(Environment.CurrentDirectory, "temp2");
         Directory.CreateDirectory(tempPath2);
 
-        string newFile = Path.Combine(Environment.CurrentDirectory, @"temp\aa\bb.txt");
-        RetryFile.WriteAllText(newFile, "aaaaaaaaaaaa");
-        
-
         string zipFile = Path.Combine(tempPath2, "test.zip");
-        ZipHelper.CompressDirectory(path, zipFile);
+
+        ZipHelper.CompressDirectory(path, zipFile);  // 压缩 temp 目录到 temp2/test.zip
 
         string tempPath3 = Path.Combine(Environment.CurrentDirectory, "temp3");
         RetryDirectory.Delete(tempPath3, true);  // 这个目录会自动创建
 
-        ZipHelper.ExtractFiles(zipFile, tempPath3);
+        ZipHelper.ExtractFiles(zipFile, tempPath3);   // 解压缩到 temp3
 
 
         string[] files1 = Directory.GetFiles(path);

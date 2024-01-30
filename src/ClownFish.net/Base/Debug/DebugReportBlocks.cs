@@ -133,27 +133,6 @@ internal static class DebugReportBlocks
 #endif
 
 
-    public static DebugReportBlock GetNetworkInfo()
-    {
-        // 如果是在容器中部署，网络信息就没什么参考价值了
-        if( EnvUtils.IsInDocker )
-            return null;
-
-        DebugReportBlock block = new DebugReportBlock { Category = "Network Information", Order = 100 };
-
-        try {
-            var x = SystemHelper.GetCurrentNetworkInfo();
-            block.AppendLine($"MAC Address: " + x.GetMac());
-            block.AppendLine($"IP Address: " + x.GetIPv4());
-        }
-        catch( Exception ex ) {
-            block.AppendLine(ex.Message);
-        }
-
-        return block;
-    }
-
-
     public static DebugReportBlock GetEnvironmentVariables()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Environment Variables", Order = 100 };

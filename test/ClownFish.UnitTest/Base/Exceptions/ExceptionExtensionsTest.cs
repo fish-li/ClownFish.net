@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using ClownFish.Base;
 using ClownFish.Base.Exceptions;
@@ -10,6 +11,11 @@ namespace ClownFish.UnitTest.Base.Exceptions
     [TestClass]
     public class ExceptionExtensionsTest
     {
+        static ExceptionExtensionsTest()
+        {
+            ExceptionExtensions.GetErrorCodeCallbackFunc = GetErrorCodeCallback;
+        }
+
         [TestMethod]
         public void Test_GetErrorCode()
         {
@@ -29,6 +35,16 @@ namespace ClownFish.UnitTest.Base.Exceptions
 
             BusinessLogicException ex5 = new BusinessLogicException("xx");
             Assert.AreEqual(651, ExceptionExtensions.GetErrorCode(ex5));
+
+#if NET6_0_OR_GREATER
+            HttpRequestException ex6 = new HttpRequestException("xxx");
+            Assert.AreEqual(500, ExceptionExtensions.GetErrorCode(ex6));
+
+            HttpRequestException ex7 = new HttpRequestException("xxx", null, HttpStatusCode.ExpectationFailed);
+            Assert.AreEqual(417, ExceptionExtensions.GetErrorCode(ex7));
+#endif
+
+            Assert.AreEqual(444, ExceptionExtensions.GetErrorCode(new ApplicationException("xx_15532221d0bb478cafa4db482b8b34a3")));
         }
 
         [TestMethod]
@@ -141,5 +157,14 @@ namespace ClownFish.UnitTest.Base.Exceptions
         //    string message = ExceptionExtensions.GetMessage(sqlException);
         //    Assert.IsTrue(message.StartsWith("(SqlException) 错误编号"));
         //}
+
+
+        private static int? GetErrorCodeCallback(Exception ex)
+        {
+            if( ex.Message.EndsWith0("15532221d0bb478cafa4db482b8b34a3") )
+                return 444;
+
+            return null;
+        }
     }
 }

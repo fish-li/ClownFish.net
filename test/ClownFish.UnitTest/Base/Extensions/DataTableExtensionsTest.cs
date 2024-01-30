@@ -39,5 +39,23 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             Assert.AreEqual(2, table2.Rows.Count);
         }
+
+        [TestMethod]
+        public void Test2()
+        {
+            MyAssert.IsError<ArgumentNullException>(() => { 
+                _ = ClownFish.Base.DataTableExtensions.TableToXml(null);
+            });
+
+            MyAssert.IsError<ArgumentNullException>(() => {
+                _ = ClownFish.Base.DataTableExtensions.XmlToTable("");
+            });
+
+            // 没有行和列，也可以调用
+            DataTable table = new DataTable();
+            table.TableName = "";
+            string xml = table.TableToXml();
+            Console.WriteLine(xml);
+        }
     }
 }

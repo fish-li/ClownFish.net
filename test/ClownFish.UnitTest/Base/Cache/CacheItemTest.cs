@@ -86,6 +86,28 @@ public class CacheItemTest
         Assert.IsNull(itemWeakObject);
     }
 
+    [TestMethod]
+    public void Test_Dispose()
+    {
+        int count1 = TestData.Count;
+
+        using(CacheItem<TestData> item = new CacheItem<TestData>(new TestData(), DateTime.Now.AddDays(1), false) ) {
+            Assert.IsNull(item.GetFieldValue("_weakObject"));
+            Assert.IsNotNull(item.GetFieldValue("_value"));
+        }
+
+        int count2 = TestData.Count;
+        Assert.AreEqual(count1+1, count2);
+
+        using( CacheItem<TestData> item = new CacheItem<TestData>(new TestData(), DateTime.Now.AddDays(1), true) ) {
+            Assert.IsNull(item.GetFieldValue("_value"));
+            Assert.IsNotNull(item.GetFieldValue("_weakObject"));
+        }
+
+        int count3 = TestData.Count;
+        Assert.AreEqual(count2 + 1, count3);
+    }
+
 
 
     private class TestData : IDisposable

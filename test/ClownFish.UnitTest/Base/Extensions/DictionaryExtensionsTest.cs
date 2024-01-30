@@ -284,6 +284,41 @@ public class DictionaryExtensionsTest
         Assert.IsTrue(dict4.ContainsKey("AAA"));
         Assert.IsTrue(dict4.ContainsKey("bbb"));
         Assert.IsTrue(dict4.ContainsKey("Bbb"));
+
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            List<NameValue> list = null;
+            Func<NameValue, string> keySelector = x => x.Name;
+            _ = DictionaryExtensions.ToDictionary2<NameValue, string>(list, 128, keySelector);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            List<NameValue> list = new List<NameValue>();
+            Func<NameValue, string> keySelector = null; //    x => x.Name;
+            _ = DictionaryExtensions.ToDictionary2<NameValue, string>(list, 128, keySelector);
+        });
+
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            List<NameValue> list = null;
+            Func<NameValue, string> keySelector = x => x.Name;
+            Func<NameValue, string> elementSelector = x => x.Value;
+            _ = DictionaryExtensions.ToDictionary2<NameValue, string, string>(list, 128, keySelector, elementSelector);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            List<NameValue> list = new List<NameValue>();
+            Func<NameValue, string> keySelector = null; //    x => x.Name;
+            Func<NameValue, string> elementSelector = x => x.Value;
+            _ = DictionaryExtensions.ToDictionary2<NameValue, string, string>(list, 128, keySelector, elementSelector);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            List<NameValue> list = new List<NameValue>();
+            Func<NameValue, string> keySelector = x => x.Name;
+            Func<NameValue, string> elementSelector = null; //    x => x.Value;
+            _ = DictionaryExtensions.ToDictionary2<NameValue, string, string>(list, 128, keySelector, elementSelector);
+        });
     }
 }
 

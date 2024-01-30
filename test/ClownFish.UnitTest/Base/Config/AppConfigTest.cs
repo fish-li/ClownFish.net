@@ -156,4 +156,31 @@ public class AppConfigTest
     }
 
 
+    [TestMethod]
+    public void Test_init()
+    {
+        FieldInfo field = typeof(AppConfig).GetField("s_inited", BindingFlags.Static | BindingFlags.NonPublic);
+
+        field.SetValue(null, false);
+        DebugReportBlock block = AppConfig.GetDebugReportBlock();
+        Assert.IsNotNull(block);
+
+        field.SetValue(null, false);
+        string s1 = AppConfig.GetSetting("key_test_setting");
+        Assert.AreEqual("123456789", s1);
+
+        field.SetValue(null, false);
+        ConnectionStringSetting connection = AppConfig.GetConnectionString("mysql2");
+        Assert.IsNotNull(connection);
+        Assert.AreEqual("MySql.Data.MySqlClient", connection.ProviderName);
+
+        field.SetValue(null, false);
+        DbConfig config = AppConfig.GetDbConfig("pg1");
+        Assert.IsNotNull(config);
+        Assert.AreEqual("PgSqlHost", config.Server);
+
+        bool value2 = (bool)field.GetValue(null);
+        Assert.IsTrue(value2);
+    }
+
 }

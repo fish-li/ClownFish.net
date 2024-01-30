@@ -33,5 +33,15 @@ public class ConsoleEndWaiterTest
         Assert.AreEqual(1, flag);
         waiter.Dispose();
     }
+
+
+    [TestMethod]
+    public void Test2()
+    {
+        ConsoleEndWaiter waiter = new ConsoleEndWaiter();
+
+        // 为了单元测试覆盖，只要调用不出异常就算通过
+        waiter.Dispose();
+    }
 }
 #endif

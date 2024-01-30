@@ -101,5 +101,31 @@ public class CacheDictionaryTest
         dict.Remove(null);
     }
 
+    [TestMethod]
+    public void Test_ctor()
+    {
+        CacheDictionary<string> cache1 = new CacheDictionary<string>();
+        Assert.IsTrue((bool)cache1.GetFieldValue("_autoExpiredClean"));
+
+        CacheDictionary<string> cache2 = new CacheDictionary<string>(true);
+        Assert.IsTrue((bool)cache2.GetFieldValue("_autoExpiredClean"));
+
+        CacheDictionary<string> cache3 = new CacheDictionary<string>(false);
+        Assert.IsFalse((bool)cache3.GetFieldValue("_autoExpiredClean"));
+
+        CacheDictionary<string> cache4 = new CacheDictionary<string>(100, false, true);
+        Assert.IsTrue((bool)cache4.GetFieldValue("_autoExpiredClean"));
+
+        CacheDictionary<string> cache5 = new CacheDictionary<string>(100, false, false);
+        Assert.IsFalse((bool)cache5.GetFieldValue("_autoExpiredClean"));
+    }
+
+    [TestMethod]
+    public void Test_set_null()
+    {
+        var dict = new CacheDictionary<string>();
+        dict.Set("aa", null);
+        Assert.AreEqual(0, dict.GetCount());
+    }
 
 }

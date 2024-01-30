@@ -99,6 +99,8 @@ namespace ClownFish.UnitTest.Base.Debug
 
             DebugReport.OptionList.Add(config);
             DebugReport.OptionList.Add((object)GetXxxOptions);
+            DebugReport.OptionList.Add(new XxxOptions1());
+            DebugReport.OptionList.Add(typeof(XxxOptions2));
 
             DebugReportBlock block = DebugReportBlocks.GetStaticVariablesReportBlock();
             string text = block.ToString2();
@@ -106,6 +108,8 @@ namespace ClownFish.UnitTest.Base.Debug
 
             Assert.IsTrue(text.Contains("--ClownFish.Data.DbConfig--"));
             Assert.IsTrue(text.Contains("--DbConfig_db2---"));
+            Assert.IsTrue(text.Contains("--ClownFish.UnitTest.Base.Debug.XxxOptions1--"));
+            Assert.IsTrue(text.Contains("--ClownFish.UnitTest.Base.Debug.XxxOptions2--"));
         }
 
         private static NameValue GetXxxOptions()
@@ -118,5 +122,21 @@ namespace ClownFish.UnitTest.Base.Debug
         }
 
     }    
+
+
+    internal class XxxOptions1
+    {
+        public int Aaa = 1;
+
+        public bool Bbb { get; private set; } = true;
+    }
+
+
+    internal static class XxxOptions2
+    {
+        public static int Aaa = 1;
+
+        public static bool Bbb { get; private set; } = true;
+    }
 }
 

@@ -59,12 +59,6 @@ public class DebugReportBlocksTest
 
 #endif
 
-    [TestMethod]
-    public void Test_GetNetworkInfo()
-    {
-        string text = DebugReportBlocks.GetNetworkInfo().ToString2();
-        Console.WriteLine(text);
-    }
 
     [TestMethod]
     public void Test_GetEnvironmentVariables()

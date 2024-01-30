@@ -48,7 +48,19 @@ public class AliWebApiQueryBuilderTest
         MyAssert.IsError<ArgumentNullException>(() => {
             var x = new AliWebApiQueryBuilder("AccessKeyId_xxxxx", "AccessKeySecret_xxxxxxxx");
             x.AddParam(null, "xxx");
-        });
-        
+        });        
+    }
+
+    [TestMethod]
+    public void Test3()
+    {
+        string query = new AliWebApiQueryBuilder("AccessKeyId_xxxxx", "AccessKeySecret_xxxxxxxx")
+                                        .AddParam("Action", "RecognizeGeneral")
+                                        .AddParam("Version", "2021-07-07")
+                                        .AddParam("TestNull", null)
+                                        .GetQueryString("POST");
+
+        Console.WriteLine(query);
+        Assert.IsTrue(query.Contains("TestNull="));
     }
 }

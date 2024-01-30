@@ -40,10 +40,9 @@ public static class StringBuilderPool
     /// <param name="sb"></param>
     public static void Return(StringBuilder sb)
     {
-        if( sb == null )
-            return;
-
-        s_pool.Return(sb);
+        if( sb != null ) {
+            s_pool.Return(sb);
+        }
     }
 
 #else

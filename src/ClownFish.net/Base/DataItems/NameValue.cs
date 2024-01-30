@@ -53,8 +53,8 @@ public sealed class NameValue
         string name = line.Substring(0, p).Trim();
         string value = line.Substring(p + 1).Trim();
 
-        if( string.IsNullOrEmpty(name) )
-            return null;
+        //if( string.IsNullOrEmpty(name) )   // if( p < 1 ) 可以确保 name 不空
+        //    return null;
 
         return new NameValue(name, value);
     }
