@@ -15,6 +15,11 @@ public static class LoggingLimit
     /// </summary>
     public static int HttpBodyMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_HttpBodyMaxLen", 1024 * 4);
 
+    /// <summary>
+    /// URL 所允许的最大长度。超出部分将被截断。
+    /// </summary>
+    public static int UrlMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_UrlMaxLen", 200);
+
 
     /// <summary>
     /// OprLog相关限制参数

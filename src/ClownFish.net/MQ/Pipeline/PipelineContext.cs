@@ -84,7 +84,7 @@ public class PipelineContext<T> : BasePipelineContext, IDisposable where T : cla
     {
         string typeName = this.Handler.GetType().Name;
         string flag = this.IsAsync ? "async" : "sync";
-        return $"msg://{this.Request.MqKind}/{flag}/{typeName}/{this.Request.MessageId}/{this.RetryN}";
+        return $"msg://{this.Request.MqKind}/{flag}/{typeName}";
     }
 
    

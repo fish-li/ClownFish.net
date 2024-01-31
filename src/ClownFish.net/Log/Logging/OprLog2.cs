@@ -281,11 +281,11 @@ public partial class OprLog
     /// </summary>
     public void TruncateTextFields()
     {
-        if( this.Url != null && this.Url.Length > 1024 )
-            this.Url = this.Url.Substring(0, 1024);
+        if( this.Url != null && this.Url.Length > LoggingLimit.UrlMaxLen )
+            this.Url = this.Url.Substring(0, LoggingLimit.UrlMaxLen);
 
-        if( this.HttpRef != null && this.HttpRef.Length > 1024 )
-            this.HttpRef = this.HttpRef.Substring(0, 1024);
+        if( this.HttpRef != null && this.HttpRef.Length > LoggingLimit.UrlMaxLen )
+            this.HttpRef = this.HttpRef.Substring(0, LoggingLimit.UrlMaxLen);
 
         if( this.Request != null && this.Request.Length > LoggingLimit.HttpBodyMaxLen )
             this.Request = this.Request.SubstringN(LoggingLimit.HttpBodyMaxLen);
