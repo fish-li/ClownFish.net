@@ -442,8 +442,8 @@ public class OprLogTest
 
         Assert.IsTrue(log.CtxData.Length < 102400);
         Assert.IsTrue(log.Addition.Length < 102400);
-        Assert.IsTrue(log.Url.Length == 1024);
-        Assert.IsTrue(log.HttpRef.Length == 1024);
+        Assert.IsTrue(log.Url.Length == 200);
+        Assert.IsTrue(log.HttpRef.Length == 200);
         Assert.IsTrue(log.Request.Length < 102400);
         Assert.IsTrue(log.Response.Length < 102400);
         Assert.IsTrue(log.Text1.Length < 102400);

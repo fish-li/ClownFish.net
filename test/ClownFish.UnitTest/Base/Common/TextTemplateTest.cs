@@ -34,10 +34,27 @@ xx-int5: {rand.int5}
 xx-int9: {rand.int9}
 xx-int10: {rand.int10}
 xx-time1: {rand.now}
-xx-time2: {rand.5秒前}
-xx-time3: {rand.5分钟前}
-xx-time4: {rand.5小时前}
-xx-time5: {rand.5天前}
+xx-time2: {5秒前}
+xx-time3: {5分钟前}
+xx-time4: {5小时前}
+xx-time5: {5天前}
+xx-time6: {2月前}
+xx-value01: {rand}
+xx-value02: {now}
+xx-value03: {昨天}
+xx-value04: {今天}
+xx-value05: {明天}
+xx-value06: {月初}
+xx-value07: {下月初}
+xx-value08: {季度初}
+xx-value09: {下季度初}
+xx-value10: {年初}
+xx-value11: {明年初}
+xx-value12: {周一}
+xx-value13: {下周一}
+xx-local1: {LocalSetting_key1}
+xx-local2: {LocalSetting_key2}
+xx-local3: {LocalSetting_keyxx}
 
 {data}
 ";
@@ -120,6 +137,10 @@ xx-time5: {rand.5天前}
         string[] names = TextTemplate.GetArgumentNames("xxxxxxxxxxx");
         Assert.IsNotNull(names);
         Assert.AreEqual(0, names.Length);
+
+        string[] names2 = TextTemplate.GetArgumentNames("");
+        Assert.IsNotNull(names2);
+        Assert.AreEqual(0, names2.Length);
 
         TextTemplate template = new TextTemplate();
         Assert.IsNull(template.Populate(null, "xxxxx"));

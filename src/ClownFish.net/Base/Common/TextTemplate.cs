@@ -7,9 +7,6 @@ public sealed class TextTemplate
 {
     private static readonly Regex s_regex = new Regex(@"\{(?<name>[\w\.\(\)]+)\}", RegexOptions.Compiled);
 
-    private readonly DateTime _now = DateTime.Now;
-    private XRandom _rand;
-
     private IDictionary<string, object> _data;
     private string _json;
 
@@ -103,17 +100,9 @@ public sealed class TextTemplate
             case "data":
                 return _json ?? _data.ToJson();
 
-            case "rand":
-                return _now.Ticks.ToString();
-
-            case "guid":
-                return Guid.NewGuid().ToString();
-
-            case "guid32":
-                return Guid.NewGuid().ToString("N");
+            default:
+               return XRandom.GetValue(name);
         }
-
-        return null;
     }
 
 
@@ -121,12 +110,8 @@ public sealed class TextTemplate
     private string GetRandValue(string name)
     {
         if( name.StartsWith("rand.", StringComparison.Ordinal) ) {
-
-            if( _rand == null )
-                _rand = new XRandom();
-
             string name2 = name.Substring(5);   // rand.xxx => xxx
-            return _rand.GetValue(name2);
+            return XRandom.GetValue(name2);
         }
 
         return null;
