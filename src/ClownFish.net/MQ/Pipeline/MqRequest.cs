@@ -9,7 +9,7 @@ public sealed class MqRequest
     /// <summary>
     /// MessageId
     /// </summary>
-    public string MessageId { get; } = OprLog.GetNewId();
+    public string MessageId { get; } = LogIdMaker.GetNewId();
 
     /// <summary>
     /// 消息队列类别，例如：RabbitMQ, Kafka

@@ -88,7 +88,7 @@ public class OprLogTest
             Assert.IsNotNull(log.ExAll);
 
             Assert.AreEqual("error", log.OprKind);
-            Assert.AreEqual("NULL", log.OprName);
+            Assert.AreEqual("err", log.OprName);
 
             Assert.AreEqual("DELETE", log.HttpMethod);
             Assert.AreEqual("http://www.abc.com:14752/aaa/bb/ccc.aspx?id=3", log.Url);
@@ -160,7 +160,7 @@ public class OprLogTest
             await mock.ProcessRequest();
 
             OprLog log = mock.PipelineContext.OprLogScope.OprLog;
-            Assert.AreEqual("HttpRequest", log.OprName);
+            Assert.AreEqual("req", log.OprName);
         }
     }
 
@@ -274,7 +274,7 @@ public class OprLogTest
         Assert.IsNull(log.Module);
         Assert.IsNull(log.Controller);
         Assert.IsNull(log.Action);
-        Assert.AreEqual("HttpRequest", log.OprName);
+        Assert.AreEqual("req", log.OprName);
     }
 
 

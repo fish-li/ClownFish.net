@@ -29,22 +29,11 @@ public class NbJwtBase64UrlEncoderTest
 
 
     [TestMethod]
-    public void Test_Error()
+    public void Test_null()
     {
-        MyAssert.IsError<ArgumentException>(() => {
-            _ = NbJwtBase64UrlEncoder.Encode((byte[])null);
-        });
-
-        MyAssert.IsError<ArgumentException>(() => {
-            _ = NbJwtBase64UrlEncoder.Encode(Empty.Array<byte>());
-        });
-
-        MyAssert.IsError<ArgumentException>(() => {
-            _ = NbJwtBase64UrlEncoder.Decode(null);
-        });
-
-        MyAssert.IsError<ArgumentException>(() => {
-            _ = NbJwtBase64UrlEncoder.Decode("");
-        });
+        Assert.AreEqual(string.Empty, NbJwtBase64UrlEncoder.Encode((byte[])null));
+        Assert.AreEqual(string.Empty, NbJwtBase64UrlEncoder.Encode(Empty.Array<byte>()));
+        Assert.IsTrue(NbJwtBase64UrlEncoder.Decode(null).Length ==0);
+        Assert.IsTrue(NbJwtBase64UrlEncoder.Decode("").Length == 0);
     }
 }

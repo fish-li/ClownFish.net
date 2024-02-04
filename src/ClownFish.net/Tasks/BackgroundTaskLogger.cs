@@ -27,7 +27,7 @@ internal static class BackgroundTaskLogger
         Type executorType = context.Executor.GetType();
         log.Module = executorType.Namespace;
         log.Controller = executorType.Name;
-        log.Action = "ExecuteTask";
+        log.Action = "m";
         log.OprName = executorType.Name;
         log.Url = context.GetTitle();
     }

@@ -109,7 +109,7 @@ public sealed class StepItem
     public static StepItem CreateNew(DateTime? startTime = null, string stepId = null)
     {
         StepItem item = new StepItem();
-        item.StepId = stepId ?? Guid.NewGuid().ToString("N");
+        item.StepId = stepId ?? LogIdMaker.GetNewId();
         item.StartTime = startTime.HasValue ? startTime.Value : DateTime.Now;
         item.Status = 200;
         return item;
@@ -163,7 +163,7 @@ public sealed class StepItem
             if( this.IsolationLevel.HasValue )
                 sb.AppendLineRN($"[Transaction]: {this.IsolationLevel.Value}");
 
-            sb.AppendLineRN(TextUtils.StepDetailSeparatedLine);
+            sb.AppendLineRN(TextUtils.StepDetailSeparatedLine3);
 
             if( this.Detail.IsNullOrEmpty() == false ) {
                 sb.AppendLineRN(this.Detail.SubstringN(LoggingLimit.OprLog.StepDetailMaxLen));

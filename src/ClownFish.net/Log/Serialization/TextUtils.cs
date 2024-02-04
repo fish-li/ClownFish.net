@@ -6,19 +6,24 @@
 public static class TextUtils
 {
     /// <summary>
-    /// 步骤step之间的分隔行符
+    /// 多个step步骤 之间 的分隔行符
     /// </summary>
     public static readonly string StepSeparatedLine = "---de34e591f12843febb84a8274498bc00-";
 
     /// <summary>
-    /// 一个步骤step内的片段分隔行符（老版本，不建议再使用）
+    /// 一个step步骤 内 的片段分隔行符（老版本不建议使用，TODO：以后删除）
     /// </summary>
-    public static readonly string StepDetailSeparatedLineOld = "------------------------------------";
+    public static readonly string StepDetailSeparatedLine1 = "------------------------------------";
 
     /// <summary>
-    /// 一个步骤step内的片段分隔行符
+    /// 一个step步骤 内 的片段分隔行符（老版本不建议使用，TODO：以后删除）
     /// </summary>
-    public static readonly string StepDetailSeparatedLine = "------------------------------------3aea3d12823847bba74bc1594430afe1";
+    public static readonly string StepDetailSeparatedLine2 = "------------------------------------3aea3d12823847bba74bc1594430afe1";
+
+    /// <summary>
+    /// 一个step步骤 内 的片段分隔行符
+    /// </summary>
+    public static readonly string StepDetailSeparatedLine3 = "----b7YQJpLFTUK6KEaN1knyag";
 
 
     /// <summary>

@@ -105,6 +105,7 @@ public sealed class TempFile : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GenTempFileFullName(string extName)
     {
-        return Path.Combine(EnvUtils.GetTempPath(), OprLog.GetNewId() + extName);
+        string filename = DateTime.Now.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
+        return Path.Combine(EnvUtils.GetTempPath(), filename + extName);
     }
 }

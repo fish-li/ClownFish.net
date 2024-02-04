@@ -42,7 +42,7 @@ internal static class DbCommandSerializer
             if( parameters.IsNullOrEmpty() == false ) {
 
                 // SQL和参数之间增加一个特殊的分隔行
-                sb.AppendLineRN(TextUtils.StepDetailSeparatedLine);
+                sb.AppendLineRN(TextUtils.StepDetailSeparatedLine3);
 
                 for( int i = 0; i < parameters.Count; i++ ) {
                     if( i < LoggingLimit.SQL.ParametersMaxCount ) {

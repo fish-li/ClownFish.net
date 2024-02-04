@@ -1,26 +1,6 @@
 ﻿namespace ClownFish.Log.Logging;
 public partial class OprLog
 {
-    /// <summary>
-    /// 创建一个新的日志ID
-    /// </summary>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNewId()
-    {
-        return DateTime.Now.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
-    }
-
-    /// <summary>
-    /// 创建一个新的日志ID
-    /// </summary>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetNewId(DateTime time)
-    {
-        return time.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
-    }
-
     internal static OprLog CreateNew(BasePipelineContext context)
     {
         OprLog log = new OprLog();
@@ -38,7 +18,7 @@ public partial class OprLog
     {
         if( context == null ) {
             this.StartTime = DateTime.Now;
-            this.OprId = GetNewId(this.StartTime);
+            this.OprId = LogIdMaker.GetNewId(this.StartTime);
         }
         else {
             this.StartTime = context.StartTime;
@@ -126,7 +106,7 @@ public partial class OprLog
         }
 
         if( this.OprName.IsNullOrEmpty() ) {
-            this.OprName = "HttpRequest";
+            this.OprName = "req";
         }
     }
 
@@ -365,7 +345,7 @@ public partial class OprLog
         log.SetBaseInfo();
 
         log.OprKind = OprKinds.Error;
-        log.OprName = "NULL";
+        log.OprName = "err";
 
         if( httpContext != null ) {
             log.SetHttpRequest(httpContext);

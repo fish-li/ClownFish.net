@@ -64,7 +64,7 @@ public sealed class BgTaskExecuteContext : BasePipelineContext, IDisposable
     public override string GetTitle()
     {
         string typeName = this.Executor.GetType().Name;
-        return "task://" + typeName + "/Execute";
+        return "task://" + typeName;
     }
 
     

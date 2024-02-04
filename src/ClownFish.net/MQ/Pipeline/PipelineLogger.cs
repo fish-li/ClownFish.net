@@ -19,7 +19,7 @@ internal static class PipelineLogger
         Type handlerType = context.Handler.GetType();
         log.Module = handlerType.Namespace;
         log.Controller = handlerType.Name;
-        log.Action = "HandleMessage";
+        log.Action = "m";
         log.OprName = handlerType.Name;
         log.Url = context.GetTitle();
 

@@ -61,7 +61,7 @@ public abstract class BasePipelineContext
     public BasePipelineContext()
     {
         this.StartTime = DateTime.Now;
-        this.ProcessId = OprLog.GetNewId(this.StartTime);
+        this.ProcessId = LogIdMaker.GetNewId(this.StartTime);
     }
 
 

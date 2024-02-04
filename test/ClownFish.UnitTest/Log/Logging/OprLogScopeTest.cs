@@ -29,7 +29,7 @@ public class OprLogScopeTest
 
             OprLog log = oprLogScope.OprLog;
             Assert.AreEqual("http", log.OprKind);
-            Assert.AreEqual("HttpRequest", log.OprName);
+            Assert.AreEqual("req", log.OprName);
             Assert.AreEqual(1, log.HasError);
             Assert.AreEqual(1, log.IsSlow);
             Assert.AreEqual("ClownFish.Data.DbExceuteException", log.ExType);
@@ -54,7 +54,7 @@ public class OprLogScopeTest
             RetryFile.WriteAllText("./temp/OprLogScopeTest_test1_list.json", list.ToJson(JsonStyle.Indented));
             Assert.IsTrue(list.Count > 0);
             Assert.IsTrue(list.Count(x => x.StepKind == "sqlconn") > 0);
-            Assert.IsTrue(list.Count(x => x.StepKind == "sqlcommand") > 0);
+            Assert.IsTrue(list.Count(x => x.StepKind == "sqlcmd") > 0);
             Assert.IsTrue(list.Count(x => x.StepKind == "sqltrans") > 0);
             Assert.IsTrue(list.Count(x => x.StepKind == "httprpc") > 0);
 

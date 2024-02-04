@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Base;
+﻿using ClownFish.Jwt;
+
+namespace ClownFish.Base;
 
 /// <summary>
 /// 二进制数据操作的工具类
@@ -89,5 +91,25 @@ public static class ByteExtensions
             return Empty.Array<byte>();
 
         return Encoding.UTF8.GetBytes(text);
+    }
+
+    /// <summary>
+    /// 将二进制数据做 Base64 + UrlEncode 编码
+    /// </summary>
+    /// <param name="bytes"></param>
+    /// <returns></returns>
+    public static string ToUrlBase64(this byte[] bytes)
+    {
+        return NbJwtBase64UrlEncoder.Encode(bytes);
+    }
+
+    /// <summary>
+    /// 从一个  Base64 + UrlEncode 编码的字符串中还原 二进制数据
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static byte[] FromUrlBase64(this string text)
+    {
+        return NbJwtBase64UrlEncoder.Decode(text);
     }
 }

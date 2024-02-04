@@ -307,7 +307,7 @@ public sealed class OprLogScope : IDisposable
                 this.OprLog.Request = context.GetRequest()?.GetLogText();
             }
             catch(Exception ex) {
-                this.OprLog.Request = "### 不能读取 Request，原因：" + ex.ToString();
+                this.OprLog.Request = "###不能读取Request，已发生错误：" + ex.ToString();
                 // 忽略读取错误
             }
         }

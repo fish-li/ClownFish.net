@@ -23,12 +23,12 @@ public static class OprKinds
     /// <summary>
     /// string "btask"，表示一次后台任务的执行过程
     /// </summary>
-    public static readonly string Btask = "btask";
+    public static readonly string Btask = "task";
 
     /// <summary>
     /// string "gevent"，表示处理了一个全局事件
     /// </summary>
-    public static readonly string GlobalEvent = "gevent";
+    public static readonly string GlobalEvent = "gvt";
 
     /// <summary>
     /// string "error"，表示一条独立的异常日志

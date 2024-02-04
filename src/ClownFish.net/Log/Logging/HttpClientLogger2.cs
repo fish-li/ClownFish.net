@@ -71,7 +71,7 @@ internal class HttpClientEventData : ILoggingObject
 
             if( this.Response != null && LoggingOptions.HttpClient.MustLogClientResponse ) {
 
-                sb.AppendLineRN(TextUtils.StepDetailSeparatedLine);
+                sb.AppendLineRN(TextUtils.StepDetailSeparatedLine3);
                 this.Response.ToLoggingText(sb);
             }
             return sb.ToString();

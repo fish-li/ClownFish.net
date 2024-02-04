@@ -4,10 +4,9 @@ internal static class NbJwtBase64UrlEncoder
 {
     public static string Encode(byte[] input)
     {
-        if( input == null || input.Length == 0 ) {
-            throw new ArgumentNullException(nameof(input));
-        }
-
+        if( input == null || input.Length == 0 )
+            return string.Empty;
+        
         //return Convert.ToBase64String(input).FirstSegment('=').Replace('+', '-').Replace('/', '_');
 
         StringBuilder sb = StringBuilderPool.Get();
@@ -28,48 +27,10 @@ internal static class NbJwtBase64UrlEncoder
     }
 
 
-    //public static string FirstSegment(this string input, char separator)
-    //{
-    //    int num = input.IndexOf(separator);
-    //    if( num == -1 ) {
-    //        return input;
-    //    }
-    //    return input.Substring(0, num);
-    //}
-
-
-    //public static byte[] Decode(string input)
-    //{
-    //    if( string.IsNullOrWhiteSpace(input) ) {
-    //        throw new ArgumentException(nameof(input));
-    //    }
-    //    string text = input;
-    //    text = text.Replace('-', '+');
-    //    text = text.Replace('_', '/');
-    //    switch( text.Length % 4 ) {
-    //        case 2:
-    //            text += "==";
-    //            break;
-    //        case 3:
-    //            text += "=";
-    //            break;
-    //        default:
-    //            throw new FormatException("Illegal base64url string.");
-    //        case 0:
-    //            break;
-    //    }
-
-    //    return Convert.FromBase64String(text);
-    //}
-
-
     public static byte[] Decode(string input)
     {
-        if( string.IsNullOrEmpty(input) ) {
-            throw new ArgumentNullException(nameof(input));
-        }
-
-        // 解密TOKEN的调用次数较多，所以优化下性能
+        if( string.IsNullOrEmpty(input) ) 
+            return Empty.Array<byte>();
 
         string text = null;
         StringBuilder sb = StringBuilderPool.Get();

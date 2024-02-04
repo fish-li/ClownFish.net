@@ -13,7 +13,7 @@ public static class StepKinds
     /// <summary>
     /// 
     /// </summary>
-    public static readonly string SQLExec = "sqlcommand";
+    public static readonly string SQLExec = "sqlcmd";
 
 
     /// <summary>
