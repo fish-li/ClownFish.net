@@ -11,14 +11,22 @@ public static class LogIdMaker
     /// 生成一个新的日志ID
     /// </summary>
     /// <returns></returns>
-    public static string GetNewId() => LogIdMakerV2.Instance.GetNewId();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GetNewId() => GetNewId(DateTime.Now);
 
     /// <summary>
     /// 根据时间生成一个新的日志ID
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>
-    public static string GetNewId(DateTime time) => LogIdMakerV2.Instance.GetNewId(time);
+    public static string GetNewId(DateTime time)
+    {
+#if NETCOREAPP
+        return LogIdMakerV2.Instance.GetNewId2(time);
+#else
+        return LogIdMakerV2.Instance.GetNewId(time);
+#endif
+    }
 
     /// <summary>
     /// 从日志ID中提取时间
@@ -45,12 +53,6 @@ public static class LogIdMaker
 internal interface ILogIdMaker
 {
     /// <summary>
-    /// 生成一个新的日志ID
-    /// </summary>
-    /// <returns></returns>
-    string GetNewId();
-
-    /// <summary>
     /// 根据时间生成一个新的日志ID
     /// </summary>
     /// <param name="time"></param>
@@ -70,11 +72,6 @@ internal class LogIdMakerV2 : ILogIdMaker
 
     private static readonly RandomNumberGenerator s_randomGenerator = RandomNumberGenerator.Create();
 
-    public string GetNewId()
-    {
-        return GetNewId(DateTime.Now);
-    }
-
     public string GetNewId(DateTime time)
     {
         // 这里参考了 GuidHelper 的实现方式
@@ -89,12 +86,33 @@ internal class LogIdMakerV2 : ILogIdMaker
             Array.Reverse(timestampBytes);
         }
 
-        byte[] resultBytes = new byte[18];
-        Buffer.BlockCopy(timestampBytes, 2, resultBytes, 0, 6);
+        byte[] resultBytes = new byte[18];  // 18位byte 可以确保生成的字符串结果长度是 固定长度 24
+        Buffer.BlockCopy(timestampBytes, 2, resultBytes, 0, 6); // 丢弃开头2位
         Buffer.BlockCopy(randomBytes, 0, resultBytes, 6, 12);
 
         return resultBytes.ToUrlBase64();
     }
+
+#if NETCOREAPP
+    public string GetNewId2(DateTime time)
+    {
+        long timestamp = time.Ticks / 10000L;
+        byte[] timestampBytes = BitConverter.GetBytes(timestamp);
+
+        if( BitConverter.IsLittleEndian ) {
+            Array.Reverse(timestampBytes);
+        }
+
+        Span<byte> resultBytes = stackalloc byte[18];  // 18位byte 可以确保生成的字符串结果长度是 固定长度 24
+
+        Span<byte> timeSpan = new Span<byte>(timestampBytes, 2, 6); // 丢弃开头2位
+        timeSpan.CopyTo(resultBytes.Slice(0, 6));
+
+        s_randomGenerator.GetBytes(resultBytes.Slice(6));
+
+        return ((ReadOnlySpan<byte>)resultBytes).ToUrlBase64();
+    }
+#endif
 
     public DateTime? ExtractTime(string logId)
     {
@@ -124,11 +142,6 @@ internal class LogIdMakerV2 : ILogIdMaker
 internal class LogIdMakerV1 : ILogIdMaker
 {
     internal static readonly LogIdMakerV1 Instance = new LogIdMakerV1();
-
-    public string GetNewId()
-    {
-        return DateTime.Now.ToString("yyyyMMddHHmmssfff") + Guid.NewGuid().ToString("N");
-    }
 
     public string GetNewId(DateTime time)
     {

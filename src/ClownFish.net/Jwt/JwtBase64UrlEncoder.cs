@@ -6,12 +6,15 @@ internal static class NbJwtBase64UrlEncoder
     {
         if( input == null || input.Length == 0 )
             return string.Empty;
-        
-        //return Convert.ToBase64String(input).FirstSegment('=').Replace('+', '-').Replace('/', '_');
 
+        return ReplaceChars(Convert.ToBase64String(input));
+    }
+
+    private static string ReplaceChars(string base64String)
+    {
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            foreach( char c in Convert.ToBase64String(input) ) {
+            foreach( char c in base64String ) {
                 if( c == '+' )
                     sb.Append('-');
                 else if( c == '/' )
@@ -25,6 +28,16 @@ internal static class NbJwtBase64UrlEncoder
             StringBuilderPool.Return(sb);
         }
     }
+
+#if NETCOREAPP
+    public static string Encode(ReadOnlySpan<byte> input)
+    {
+        if( input == null || input.Length == 0 )
+            return string.Empty;
+
+        return ReplaceChars(Convert.ToBase64String(input));
+    }
+#endif
 
 
     public static byte[] Decode(string input)
@@ -46,7 +59,7 @@ internal static class NbJwtBase64UrlEncoder
                     sb.Append('=');
                     break;
                 default:
-                    throw new FormatException("Illegal base64url string.");
+                    throw new FormatException("Illegal base64 string.");
             }
 
             sb.Replace('-', '+').Replace('_', '/');
