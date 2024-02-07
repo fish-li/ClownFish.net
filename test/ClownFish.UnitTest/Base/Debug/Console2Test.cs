@@ -138,5 +138,16 @@ Server: Kestrel";
             Assert.IsTrue(text.Contains("493abe3fa542401eaf21de2fc50e47c9"));
             Assert.IsTrue(text.Contains("4c2e0d6268294accae8a44a85e52293e"));
         }
+
+        [TestMethod]
+        public void Test_OomError()
+        {
+            long count1 = ClownFishCounters.Status.OomError;
+
+            Console2.Error(new OutOfMemoryException());
+
+            long count2 = ClownFishCounters.Status.OomError;
+            Assert.AreEqual(count1 + 1, count2);
+        }
     }
 }

@@ -32,7 +32,19 @@ public class CodeSnippetContextTest
         OprLogScope s1 = OprLogScope.Get();
         Assert.IsNotNull(s1);
         Assert.IsTrue(s1.IsNull);
+    }
 
+    [TestMethod]
+    public void Test_OomError()
+    {
+        long count1 = ClownFishCounters.Status.OomError;
 
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(CodeSnippetContextTest), "Test_OomError") ) {
+            ctx.SetException(new OutOfMemoryException());
+            ctx.ClearErrors();
+        }
+
+        long count2 = ClownFishCounters.Status.OomError;
+        Assert.AreEqual(count1 + 1, count2);
     }
 }

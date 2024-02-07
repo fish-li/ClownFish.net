@@ -92,6 +92,16 @@ public static class ClownFishCounters
 
     }
 
+    /// <summary>
+    /// 运行状态相关计数器
+    /// </summary>
+    public static class Status
+    {
+        /// <summary>
+        /// OOM异常发生的次数
+        /// </summary>
+        public static readonly ValueCounter OomError = new ValueCounter("OomError");
+    }
 
     /// <summary>
     /// 并发执行相关的计数器

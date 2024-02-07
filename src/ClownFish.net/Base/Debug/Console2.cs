@@ -90,6 +90,9 @@ public static class Console2
 
         ClownFishCounters.Console2.Error.Increment();
 
+        if( ex is OutOfMemoryException )
+            ClownFishCounters.Status.OomError.Increment();
+
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
         Console2.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
     }

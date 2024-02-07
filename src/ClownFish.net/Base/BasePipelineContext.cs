@@ -99,6 +99,9 @@ public abstract class BasePipelineContext
     {
         if( ex != null ) {
             this.LastException = ex;
+
+            if( ex is OutOfMemoryException )
+                ClownFishCounters.Status.OomError.Increment();
         }
     }
     /// <summary>

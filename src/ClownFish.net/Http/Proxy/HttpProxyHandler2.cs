@@ -57,6 +57,9 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         }
         catch( Exception ex ) {
 
+            if( ex is OutOfMemoryException )
+                ClownFishCounters.Status.OomError.Increment();
+
             await WriteExceptionAsync(httpContext, ex);
         }
     }
