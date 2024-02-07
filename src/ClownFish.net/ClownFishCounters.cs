@@ -13,6 +13,7 @@ public static class ClownFishCounters
         ResetCounters(typeof(ClownFishCounters.ExecuteTimes));
         ResetCounters(typeof(ClownFishCounters.Console2));
         ResetCounters(typeof(ClownFishCounters.Logging));
+        ResetCounters(typeof(ClownFishCounters.Status));
     }
 
     internal static void ResetCounters(Type type)
@@ -36,6 +37,7 @@ public static class ClownFishCounters
         FillValues(typeof(ClownFishCounters.ExecuteTimes), list);
         FillValues(typeof(ClownFishCounters.Console2), list);
         FillValues(typeof(ClownFishCounters.Logging), list);
+        FillValues(typeof(ClownFishCounters.Status), list);
 
         return list;
     }
