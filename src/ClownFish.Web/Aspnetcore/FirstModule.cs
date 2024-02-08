@@ -52,6 +52,9 @@ public class FirstModule
         NHttpApplication app = NHttpApplication.Instance;
         NHttpContext httpContextNetCore = pipelineContext.HttpContext;
 
+        ClownFishCounters.Concurrents.HttpConcurrent.Increment();
+        ClownFishCounters.ExecuteTimes.HttpCount.Increment();
+
         try {
             CheckMaxRequestBodySize(httpContextNetCore);
 
@@ -93,6 +96,11 @@ public class FirstModule
         }
         finally {
             app.EndRequest(httpContextNetCore);
+
+            ClownFishCounters.Concurrents.HttpConcurrent.Decrement();
+
+            if( httpContextNetCore.IsTransfer == false && StatusCodeUtils.IsServerError(httpContext.Response.StatusCode) )
+                ClownFishCounters.ExecuteTimes.HttpError.Increment();
         }
 
 

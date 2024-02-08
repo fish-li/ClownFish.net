@@ -115,9 +115,6 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void BeginRequest(NHttpContext httpContext)
     {
-        ClownFishCounters.Concurrents.HttpConcurrent.Increment();
-        ClownFishCounters.ExecuteTimes.HttpCount.Increment();
-
         httpContext.LogFxEvent(new NameTime(nameof(BeginRequest)));
 
         foreach( NHttpModule module in _modules ) {
@@ -310,10 +307,6 @@ public sealed class NHttpApplication
                 }
             }
         }
-
-        ClownFishCounters.Concurrents.HttpConcurrent.Decrement();
-        if( httpContext.IsTransfer == false && StatusCodeUtils.IsServerError(httpContext.Response.StatusCode) )
-            ClownFishCounters.ExecuteTimes.HttpError.Increment();
 
         httpContext.LogFxEvent(new NameTime("framework end"));
     }
