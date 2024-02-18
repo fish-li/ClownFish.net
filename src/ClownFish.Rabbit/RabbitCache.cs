@@ -10,7 +10,7 @@ internal static class RabbitCache
                     = new TSafeDictionary<string, RabbitConnection>(31, StringComparer.OrdinalIgnoreCase);
 
     private static readonly TSafeDictionary<string, RabbitOption> s_optionCache 
-                        = new TSafeDictionary<string, RabbitOption>();
+                        = new TSafeDictionary<string, RabbitOption>(31, StringComparer.OrdinalIgnoreCase);
 
 
     static RabbitCache()
