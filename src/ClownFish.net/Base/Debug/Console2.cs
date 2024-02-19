@@ -10,6 +10,8 @@ public static class Console2
     /// </summary>
     public static bool InfoEnabled = true;
 
+    private static readonly object s_lock = new object();
+
     /// <summary>
     /// 分隔行
     /// </summary>
@@ -73,10 +75,14 @@ public static class Console2
         ClownFishCounters.Console2.Error.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
 
-        if( ex != null )
-            Console2.WriteLine(ex.ToString());
+        // 确保 “二行” 文本 **紧挨** 在一起
+        lock( s_lock ) {
+            Console2.WriteLine($"[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+
+            if( ex != null )
+                Console2.WriteLine(ex.ToString());
+        }
     }
 
     /// <summary>
@@ -94,7 +100,7 @@ public static class Console2
             ClownFishCounters.Status.OomError.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[ERROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
+        Console2.WriteLine($"[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
     }
 
     /// <summary>
@@ -179,25 +185,28 @@ public static class Console2
     /// <param name="success"></param>
     public static void ShowHTTP(HttpOption request, HttpResult<string> response, bool success)
     {
-        Console2.WriteLine("================================ Request =============================================");
+        // 确保 多行文本 **紧挨** 在一起
+        lock( s_lock ) {
+            Console2.WriteLine("================================ Request =============================================");
 
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console2.WriteLine(request.ToRawText());
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console2.WriteLine(request.ToRawText());
 
-        Console.ResetColor();
-        Console2.WriteLine("================================ Response ============================================");
+            Console.ResetColor();
+            Console2.WriteLine("================================ Response ============================================");
 
-        if( success ) {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console2.WriteLine(response?.ToAllText(true));
+            if( success ) {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console2.WriteLine(response?.ToAllText(true));
+            }
+            else {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console2.WriteLine(response?.ToAllText(true));
+            }
+
+            Console.ResetColor();
+            Console2.WriteLine("================================ Response END ============================================");
         }
-        else {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console2.WriteLine(response?.ToAllText(true));
-        }
-
-        Console.ResetColor();
-        Console2.WriteLine("================================ Response END ============================================");
         System.Threading.Thread.Sleep(500);
     }
 
