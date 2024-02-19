@@ -43,12 +43,8 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
             HttpRequestMessage requestMessage = CreateRequest(httpContext.Request, requestUri);
             this.Request = requestMessage;
 
-            // 获取HttpClient实例，相同站点的请求共用一个实例
-            HttpClient client = MsHttpClientCache2.GetCachedOrCreate(requestUri);
-
-
             // 发送HTTP请求
-            using( HttpResponseMessage responseMessage = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead) ) {
+            using( HttpResponseMessage responseMessage = await SendRequest(requestMessage) ) {
                 this.Response = responseMessage;
 
                 // 复制: 响应头，响应头，响应体
@@ -63,6 +59,31 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
             await WriteExceptionAsync(httpContext, ex);
         }
     }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="requestMessage"></param>
+    /// <returns></returns>
+    protected virtual async Task<HttpResponseMessage> SendRequest(HttpRequestMessage requestMessage)
+    {
+        // 获取HttpClient实例，相同站点的请求共用一个实例
+        HttpClient client = GetHttpClient(requestMessage);
+
+        return await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="requestMessage"></param>
+    /// <returns></returns>
+    protected virtual HttpClient GetHttpClient(HttpRequestMessage requestMessage)
+    {
+        return MsHttpClientCache2.GetCachedOrCreate(requestMessage.RequestUri);
+    }
+
 
     /// <summary>
     /// 
@@ -140,8 +161,12 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         requestMessage.Headers.TryAddWithoutValidation("X-CfProxy-OrgUrl", httpRequest.FullPath);
     }
 
-
-    private HttpContent CreateRequestBody(NHttpRequest httpRequest)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="httpRequest"></param>
+    /// <returns></returns>
+    protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
     {
         Stream srcStream = httpRequest.InputStream;
 
@@ -170,8 +195,13 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         }
     }
 
-
-    private async Task WriteExceptionAsync(NHttpContext httpContext, Exception ex)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="ex"></param>
+    /// <returns></returns>
+    protected virtual async Task WriteExceptionAsync(NHttpContext httpContext, Exception ex)
     {
         try {
             if( httpContext.Response.HasStarted == false ) {
@@ -187,7 +217,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         }
         catch( Exception ex2 ) {
             // 实在是不能发送就只能忽略异常
-            Console2.Info($@"HttpProxyHandler2.WriteException ERROR: 
+            Console2.Warnning($@"HttpProxyHandler2.WriteException ERROR: 
 -->ex1.Message : {ex.Message}
 -->ex2.Message : {ex2.Message}");
         }
