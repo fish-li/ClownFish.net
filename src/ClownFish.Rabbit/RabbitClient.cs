@@ -43,7 +43,7 @@ public sealed class RabbitClient : IDisposable
 
         _autoClose = shareConnectionName.IsNullOrEmpty();
         _clientShowName = "RabbitClient-" + settingName;
-        _connectionName = settingName + "_" + (shareConnectionName.IsNullOrEmpty() ? null : shareConnectionName);
+        _connectionName = shareConnectionName.HasValue() ? (settingName + "#" + shareConnectionName) : null;
     }
 
 
