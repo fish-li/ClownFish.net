@@ -49,11 +49,6 @@ public abstract class HttpProxyModule : NHttpModule
     /// <param name="httpContext"></param>
     private void TrySetProxyHandler(NHttpContext httpContext)
     {
-        string xh = httpContext.Request.Header("X-CfProxy-OrgUrl");
-        if( xh.HasValue() )   // 避免进入死循环
-            return;
-
-
         NHttpRequest request = httpContext.Request;
 
         // 尝试从配置规则中获取目标地址
