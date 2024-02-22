@@ -95,10 +95,11 @@ public static class AspnetCoreStarter
         startup.AfterApplicationBuild(app);
 
         // 配置ASP.NET管道
-        app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来!
+        app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来放在第一位!
         startup.ConfigureWeb(app);
 
         WebApplication = app;
+        app.Lifetime.ApplicationStopping.Register(ClownFishInit.ApplicationEnd);
         return app;
     }
 

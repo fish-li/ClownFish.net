@@ -21,6 +21,9 @@ public static class ClownFishInit
     /// </summary>
     public static void ApplicationEnd()
     {
+        if( s_exitTokenSource.IsCancellationRequested )
+            return;
+
         Console2.WriteSeparatedLine();
 
         // 通知所有后台线程，应用程序即将退出
@@ -28,7 +31,6 @@ public static class ClownFishInit
 
         Console2.WriteLine("Application End!");
     }
-
 
     /// <summary>
     /// 执行一些最基础的初始化，不包含 Data/Log 部分

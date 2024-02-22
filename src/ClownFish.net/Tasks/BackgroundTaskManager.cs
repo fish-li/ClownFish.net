@@ -24,7 +24,7 @@ public static class BackgroundTaskManager
         foreach(Type t in types ) {
 
             if( t.ModuleIsEnable() == false ) {
-                Console2.Info($"BackgroundTask {t.FullName} 已配置为 不启用");
+                Console2.Info($"BackgroundTask {t.FullName} has been disabled.");
                 continue;
             }
 

@@ -53,7 +53,7 @@ public sealed class ConsoleEndWaiter : IDisposable
 
     internal void HandlePosixSignal(PosixSignalContext context)
     {
-        Console2.WriteLine($"###### {DateTime.Now.ToTime23String()} PosixSignal: {context.Signal}");
+        Console2.Info($"##### PosixSignal: {context.Signal}");
         context.Cancel = true;
         _exitEvent.Set();
     }
