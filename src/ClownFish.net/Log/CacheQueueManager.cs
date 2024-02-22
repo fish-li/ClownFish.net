@@ -32,6 +32,10 @@ internal static class CacheQueueManager
 
         while( true ) {
 
+            if( ClownFishInit.AppExitToken.IsCancellationRequested ) {
+                return;
+            }
+
             Thread.Sleep(period);
 
             try {

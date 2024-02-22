@@ -206,6 +206,8 @@ public class LogHelperTest
         while( count == ClownFishCounters.Logging.QueueFlushCount.Get() )
             Thread.Sleep(50);
 
+        Thread.Sleep(50);
+
         long failureCount2 = ClownFishCounters.Logging.WriterErrorCount.Get();
 
         Assert.AreEqual(1, failureCount2 - failureCount1);

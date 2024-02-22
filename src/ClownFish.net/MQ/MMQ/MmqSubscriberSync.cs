@@ -22,10 +22,10 @@ internal class MmqSubscriberSync<T>  where T : class
 
         _pipeline = new MessagePipeline<T>(handler, args.RetryCount, args.RetryWaitMilliseconds);
 
-        if( _args.CancellationToken.HasValue == false )
-            _cancellationToken = ClownFishInit.AppExitToken;
-        else
+        if( _args.CancellationToken.HasValue )
             _cancellationToken = _args.CancellationToken.Value;
+        else
+            _cancellationToken = ClownFishInit.AppExitToken;
     }
 
     /// <summary>

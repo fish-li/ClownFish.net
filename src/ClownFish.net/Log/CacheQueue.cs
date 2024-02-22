@@ -92,6 +92,9 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
         if( tempList.IsNullOrEmpty() )
             return 0;         // 没有需要写入的日志信息
 
+        if( ClownFishInit.AppExitToken.IsCancellationRequested ) {
+            return -2;
+        }
 
         if( tempList.Count > ClownFishCounters.Logging.MaxBatchSize.Get() ) 
             ClownFishCounters.Logging.MaxBatchSize.Set(tempList.Count);
