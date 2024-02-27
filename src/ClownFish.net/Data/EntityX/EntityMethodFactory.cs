@@ -98,21 +98,21 @@ public sealed class EntityMethodFactory
 
         bool getNewId = flags.HasFlag(InsertOption.GetNewId);
 
-        if( flags.HasFlag(InsertOption.IgnoreDuplicateError) == false ) {
-            return EntityCudUtils.ExecuteInsert(query, getNewId, entity);
-        }
-
-
-        try {
-            return EntityCudUtils.ExecuteInsert(query, getNewId, entity);
-        }
-        catch( Exception ex ) {
-            if( _dbContext.IsDuplicateInsert(ex) ) {
-                return -1;
+        if( flags.HasFlag(InsertOption.IgnoreDuplicateError) ) {
+            try {
+                return EntityCudUtils.ExecuteInsert(query, getNewId, entity);
             }
-            else {
-                throw;
+            catch( Exception ex ) {
+                if( _dbContext.IsDuplicateInsert(ex) ) {
+                    return -1;
+                }
+                else {
+                    throw;
+                }
             }
+        }
+        else {
+            return EntityCudUtils.ExecuteInsert(query, getNewId, entity);
         }
     }
 
@@ -136,21 +136,21 @@ public sealed class EntityMethodFactory
 
         bool getNewId = flags.HasFlag(InsertOption.GetNewId);
 
-        if( flags.HasFlag(InsertOption.IgnoreDuplicateError) == false ) {
-            return await EntityCudUtils.ExecuteInsertAsync(query, getNewId, entity);
-        }
-
-
-        try {
-            return await EntityCudUtils.ExecuteInsertAsync(query, getNewId, entity);
-        }
-        catch( Exception ex ) {
-            if( _dbContext.IsDuplicateInsert(ex) ) {
-                return -1;
+        if( flags.HasFlag(InsertOption.IgnoreDuplicateError) ) {
+            try {
+                return await EntityCudUtils.ExecuteInsertAsync(query, getNewId, entity);
             }
-            else {
-                throw;
+            catch( Exception ex ) {
+                if( _dbContext.IsDuplicateInsert(ex) ) {
+                    return -1;
+                }
+                else {
+                    throw;
+                }
             }
+        }
+        else {
+            return await EntityCudUtils.ExecuteInsertAsync(query, getNewId, entity);
         }
     }
 

@@ -114,10 +114,6 @@ public class EsConnOptionTest
         EsConnOption opt = new EsConnOption();
         Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
 
-        opt.IndexNameTimeFormat = null;
-
-        Assert.IsNull(opt.IndexNameTimeFormat);
-
         MyAssert.IsError<ConfigurationErrorsException>(() => {
             opt.Validate();
         });
@@ -125,7 +121,12 @@ public class EsConnOptionTest
         opt.Server = "s1";
         opt.Validate();
 
-        Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
+        opt.SetIndexNameTimeFormat("-yyyyMM");
+        Assert.AreEqual("-yyyyMM", opt.IndexNameTimeFormat);
+
+        opt.SetIndexNameTimeFormat(null);
+        opt.Validate();
+        Assert.IsNull(opt.IndexNameTimeFormat);
     }
 
     [TestMethod]

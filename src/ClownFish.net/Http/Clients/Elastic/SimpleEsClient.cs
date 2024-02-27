@@ -30,6 +30,8 @@ public sealed class SimpleEsClient
         _option = option;
     }
 
+    #region 基础方法
+
     private HttpOption SetAuth(HttpOption httpOption)
     {
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/http-clients.html
@@ -67,8 +69,6 @@ public sealed class SimpleEsClient
     }
 
 
-    #region 写数据
-
     /// <summary>
     /// 获取索引名称，
     /// 默认返回：name-yyyyMMdd
@@ -77,7 +77,22 @@ public sealed class SimpleEsClient
     /// <returns></returns>
     private string GetIndexName(Type dataType)
     {
-        return dataType.Name.NameToLower() + DateTime.Now.ToString(_option.IndexNameTimeFormat);
+        // IndexNameTimeFormat 这个参数应该跟随 dataType 才是最恰当的，但是这样不太好设计…………
+        // 如果采用最简单的做法 [Attribute]，就会让这个参数失去灵活性。
+        // 因为 IndexNameTimeFormat 是要和 ES 的 Index Lifecycle Policies 配合使用的，
+        // 例如 如果希望OprLog保留 6小时，那么 IndexNameTimeFormat 就应该设置为 "-yyyyMMdd-HH"
+        // 如果希望保留 30天，最好将 IndexNameTimeFormat 就应该设置为 "-yyyyMMdd"
+        // 反之，如果设置为保留 N小时，IndexNameTimeFormat 就【不能】设置为 "-yyyyMM"
+
+        // 现在这个做法就将 【灵活性】转移到类型之外了，由调用方来控制，
+        // 此外，当前设计并不完美，_option.IndexNameTimeFormat 将影响所有的 dataType 调用参数，
+        // 会导致不同的 日志数据类型 使用相同的 IndexNameTimeFormat ！
+        // 因此如果希望能独立控制 IndexNameTimeFormat，可以创建多个 SimpleEsClient 实例，传递不同的 _option 参数
+
+        if( _option.IndexNameTimeFormat.IsNullOrEmpty() )
+            return dataType.Name.NameToLower();   // 这种情况使用一个索引
+        else
+            return dataType.Name.NameToLower() + DateTime.Now.ToString(_option.IndexNameTimeFormat);
     }
 
     /// <summary>
@@ -90,7 +105,9 @@ public sealed class SimpleEsClient
         return data.GetId();
     }
 
+    #endregion
 
+    #region 写数据 One
 
     /// <summary>
     /// Write one
@@ -104,7 +121,8 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
-        httpOption.Send();   //TODO: 没有检查返回结果是否正确
+        string response = httpOption.GetResult();
+        CheckCreateResponse(response);
     }
 
     /// <summary>
@@ -119,7 +137,15 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
-        await httpOption.SendAsync();     //TODO: 没有检查返回结果是否正确
+        string response = await httpOption.GetResultAsync();
+        CheckCreateResponse(response);
+
+        //HttpResult<string> result = await httpOption.GetResultAsync<HttpResult<string>>();
+        //Console2.WriteLine("====================== Write Elasticsearch Request =====================================");
+        //Console.WriteLine(httpOption.ToAllText());
+        //Console2.WriteLine("====================== Write Elasticsearch Response =====================================");
+        //Console.WriteLine(result.ToAllText());
+        //Console2.WriteLine("====================== Write Elasticsearch Response END =====================================");
     }
 
     private HttpOption GetWriteOneHttpOption<T>(T info, string indexName) where T : class, IMsgObject
@@ -127,10 +153,12 @@ public sealed class SimpleEsClient
         string index = indexName ?? GetIndexName(typeof(T));
         string id = GetDocumentId(info);
 
+        // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-index_.html
+
         HttpOption httpOption = new HttpOption {
             Id = "ClownFish_SimpleEsClient_WriteOne",
             Method = "POST",
-            Url = _option.Url + $"/{index}/_doc/{id}",
+            Url = _option.Url + $"/{index}/_create/{id}",
             Data = info.ToJson(EsJsonStyle),
             Format = SerializeFormat.Json,
             Timeout = GetTimeout()
@@ -139,9 +167,32 @@ public sealed class SimpleEsClient
         return SetAuth(httpOption);
     }
 
+    private void CheckCreateResponse(string response)
+    {
+        if( response.HasValue() ) {
+            CreateResponse resp = response.FromJson<CreateResponse>();
+            if( resp != null && resp.Shards != null ) {
+                if( resp.Shards.Failed > 0 )
+                    throw new EsHttpException("写Elasticsearch失败！", response);
+            }
+        }
+    }
 
+    internal class CreateResponse
+    {
+        public CreateResponseShards Shards { get; set; }
+    }
 
+    internal class CreateResponseShards
+    {
+        //public long Total {  get; set; }
+        //public long Successful { get; set; }
+        public long Failed { get; set; }
+    }
 
+    #endregion
+
+    #region 写数据 List/Bulk
 
     /// <summary>
     /// Write list
@@ -155,10 +206,8 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName);
-        //httpOption.Send();
-        
         string response = httpOption.GetResult();
-        CheckWriteListResponse(response);
+        CheckBulkResponse(response);
 
         //HttpResult<string> result = httpOption.GetResult<HttpResult<string>>();
         //Console2.WriteLine("====================== Write Elasticsearch Request =====================================");
@@ -166,15 +215,6 @@ public sealed class SimpleEsClient
         //Console2.WriteLine("====================== Write Elasticsearch Response =====================================");
         //Console.WriteLine(result.ToAllText());
         //Console2.WriteLine("====================== Write Elasticsearch Response END =====================================");
-    }
-
-
-    private void CheckWriteListResponse(string response)
-    {
-        // 这里为了简单且减少不必要的性能损耗，就直接判断“特征字符串”
-        if( response != null && response.Contains("\"errors\":true,") ) {
-            throw new EsHttpException("写Elasticsearch失败！", response);
-        }
     }
 
     /// <summary>
@@ -190,7 +230,7 @@ public sealed class SimpleEsClient
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName);
         string response = await httpOption.GetResultAsync();
-        CheckWriteListResponse(response);
+        CheckBulkResponse(response);
     }
 
     private HttpOption GetWriteListHttpOption<T>(List<T> list, string indexName) where T : class, IMsgObject
@@ -204,6 +244,8 @@ public sealed class SimpleEsClient
 
         string index = indexName ?? GetIndexName(typeof(T));
 
+        // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-bulk.html
+
         HttpOption httpOption = new HttpOption {
             Id = "ClownFish_SimpleEsClient_WriteList",
             Method = "POST",
@@ -215,6 +257,23 @@ public sealed class SimpleEsClient
 
         return SetAuth(httpOption);
     }
+
+    private void CheckBulkResponse(string response)
+    {
+        // ES 这个傻屌不使用状态码，只能JSON反序列化 ResponseBody 读取里面的内容才能知道是否调用成功，
+        // 但是Bulk的 ResponseBody 会比较大，所以这样做的成本太高…………
+        // 绝大多数情况下，写入都会成功，除非 ES 挂了，磁盘空间不够这，网络不通，这些特殊情况发生。
+
+        // 这里为了简单且减少不必要的性能损耗，就直接判断“特征字符串”
+        if( response != null && response.Contains("\"errors\":true,") ) {
+            throw new EsHttpException("写Elasticsearch失败！", response);
+        }
+    }
+
+    //internal class BulkResponse
+    //{
+    //    public bool Errors { get; set; }
+    //}
 
     #endregion
 

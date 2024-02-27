@@ -101,9 +101,6 @@ public sealed class EsConnOption
     {
         if( this.Server.IsNullOrEmpty() )
             throw new ConfigurationErrorsException("Elasticsearch连接配置中没有指定 Server 参数。");
-
-        if( this.IndexNameTimeFormat.IsNullOrEmpty() )
-            this.IndexNameTimeFormat = "-yyyyMMdd";
     }
 
     /// <summary>
@@ -116,8 +113,14 @@ public sealed class EsConnOption
     {
         EsConnOption opt = Create1(DbConnManager.GetAppDbConfig(connName, false))
                             ?? Settings.GetSetting<EsConnOption>(connName, false);
-        if( opt != null )
+        if( opt != null ) {
+
+            // 添加默认值
+            if( opt.IndexNameTimeFormat.IsNullOrEmpty() )
+                opt.IndexNameTimeFormat = "-yyyyMMdd";
+
             return opt;
+        }
 
         if( checkExist )
             throw new ConfigurationErrorsException("没有找到指定的连接配置参数，connName：" + connName);

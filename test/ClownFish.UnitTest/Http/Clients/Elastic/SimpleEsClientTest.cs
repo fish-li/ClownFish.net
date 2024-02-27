@@ -34,15 +34,10 @@ public class SimpleEsClientTest
 
     private SimpleEsClient CreateClient()
     {
-        DbConfig dbConfig = new DbConfig {
-            Server = "localpc",
-            Port = 12345,
-            UserName = "root",
-            Password = "xxxx"
-        };
-        EsConnOption opt = EsConnOption.Create1(dbConfig);
-        SimpleEsClient client = new SimpleEsClient(opt);
-        return client;
+        EsConnOption opt = EsConnOption.Create("es_conn");
+        Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
+
+        return new SimpleEsClient(opt);
     }
 
     [TestMethod]
@@ -52,7 +47,7 @@ public class SimpleEsClientTest
         client.WriteOne<InvokeLog>(null);
         await client.WriteOneAsync<InvokeLog>(null);
 
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteOne", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteOne", "", false);
 
         client.WriteOne(new InvokeLog());        
         await client.WriteOneAsync(new InvokeLog());
@@ -91,5 +86,34 @@ public class SimpleEsClientTest
 
         var result1 = client.Search<NameInt64>("111", new object());
         var result2 = await client.SearchAsync<NameInt64>("222", new object());
+    }
+
+    [TestMethod]
+    public void Test_GetIndexName_1()
+    {
+        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn"));
+
+        string postfix = DateTime.Today.ToString("-yyyyMMdd");
+        string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
+        Assert.AreEqual("oprlog" + postfix, s1);
+    }
+
+    [TestMethod]
+    public void Test_GetIndexName_2()
+    {
+        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn").SetIndexNameTimeFormat(null));
+
+        string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
+        Assert.AreEqual("oprlog", s1);
+    }
+
+    [TestMethod]
+    public void Test_GetIndexName_3()
+    {
+        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn").SetIndexNameTimeFormat("-yyyy"));
+
+        string postfix = DateTime.Today.Year.ToString();
+        string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
+        Assert.AreEqual("oprlog-" + postfix, s1);
     }
 }
