@@ -89,6 +89,22 @@ public class JsonExtensionsTest
     {
         JsonSerializerSettings jss = JsonStyle.Indented.ToJsonSerializerSettings();
         Assert.AreEqual(Formatting.Indented, jss.Formatting);
-
     }
+
+#if NET8_0_OR_GREATER
+    [TestMethod]
+    public void Test_ToJson_UtcTime()
+    {
+        TestData11 d1 = new TestData11("abc", new DateTime(2024, 2, 3, 4, 5, 6, 789), 33.445m);
+        string json1 = d1.ToJson(JsonStyle.UtcTime);
+        Console.WriteLine(json1);
+
+        Assert.IsTrue(json1.Contains("2024-02-03T04:05:06.789Z"));
+    }
+
+
+    internal record class TestData11(string Name, DateTime Time, decimal Account);
+
+#endif
+
 }

@@ -86,7 +86,15 @@ public sealed class TextTemplate
         if( template.IsNullOrEmpty() || json.IsNullOrEmpty() )
             return template;
 
-        ExpandoObject data = json.FromJson<ExpandoObject>();
+        ExpandoObject data;
+
+        try {
+            data = json.FromJson<ExpandoObject>();
+        }
+        catch( Exception ex ) {
+            throw new ArgumentException("Argument [json] is not json string", nameof(json), ex);
+        }
+
         _json = json;
 
         return Populate(template, data);
