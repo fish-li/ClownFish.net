@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Reflection;
 
 /// <summary>
 /// 缓存反射读取到的Attribute对象

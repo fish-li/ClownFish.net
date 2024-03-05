@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Reflection;
 
 /// <summary>
 /// 扩展方法工具类

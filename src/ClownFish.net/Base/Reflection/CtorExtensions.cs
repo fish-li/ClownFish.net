@@ -1,6 +1,6 @@
 ﻿using ClownFish.Base.Reflection;
 
-namespace ClownFish.Base;
+namespace ClownFish.Base.Reflection;
 
 /// <summary>
 /// Type 相关的扩展方法，用于性能优化。

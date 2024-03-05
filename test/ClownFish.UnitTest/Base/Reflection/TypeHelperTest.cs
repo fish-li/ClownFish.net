@@ -12,6 +12,8 @@ Nebula.Common.Security.WebUserInfo111, Nebula.net = ClownFish.UnitTest.Base.Refl
         TypeHelper.InitFormText(text);
 
         TypeHelper.RegisterAlias("Nebula.Common.Security.AppClientInfo111, Nebula.net", typeof(AppClientInfo2));
+
+        TypeHelper.Init();
     }
 
     [TestMethod]
@@ -31,6 +33,17 @@ Nebula.Common.Security.WebUserInfo111, Nebula.net = ClownFish.UnitTest.Base.Refl
         Assert.IsNull(t3);
     }
 
+    [TestMethod]
+    public void Test_RegisterAlias()
+    {
+        MyAssert.IsError<ArgumentNullException>(() => {
+            TypeHelper.RegisterAlias(null, typeof(TypeHelperTest));
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            TypeHelper.RegisterAlias("xxxxxxxxx", (Type)null);
+        });
+    }
 
     [TestMethod]
     public void Test_GetType()

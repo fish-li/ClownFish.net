@@ -30,7 +30,7 @@ public sealed class InitAttribute : Attribute
             if( method != null ) {
                 Console2.Info($"Execute: {type.FullName}.{methodName}()");
                 try {
-                    method.Invoke(null, null);
+                    method.InvokeAndLog(null, null);
                 }
                 catch( TargetInvocationException ex ) {
                     throw ex.InnerException;   // 将原始异常抛出来

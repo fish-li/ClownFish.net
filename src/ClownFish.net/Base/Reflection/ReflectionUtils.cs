@@ -15,6 +15,11 @@ public static class ReflectionUtils
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static T Get<T>(this object data, string propName)
     {
+        if( data == null)
+            throw new ArgumentNullException(nameof(data));
+        if( propName.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(propName));
+
         PropertyInfo p = data.GetType().GetProperty(propName, BindingFlags.Instance | BindingFlags.Public);
         if( p == null )
             throw new ArgumentOutOfRangeException(nameof(propName));
@@ -31,6 +36,11 @@ public static class ReflectionUtils
     /// <returns></returns>
     public static int CallStaticMethod(string typeFullName, string methodName)
     {
+        if( typeFullName.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(typeFullName));
+        if( methodName.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(methodName));
+
         Type type = Type.GetType(typeFullName, false, true);
         if( type == null )
             return -1;

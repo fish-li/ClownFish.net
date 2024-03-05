@@ -2,7 +2,7 @@
 using Microsoft.CSharp;
 
 
-namespace ClownFish.Base;
+namespace ClownFish.Base.Reflection;
 
 /// <summary>
 /// 包含一些与类型相关的扩展方法

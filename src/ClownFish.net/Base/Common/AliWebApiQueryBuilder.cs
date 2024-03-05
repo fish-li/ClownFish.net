@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 /// <summary>
 /// 构造阿里云WebAPI查询字符串的工具类

@@ -36,6 +36,7 @@ public static class DbClientFactory
         if( provider == null )
             throw new ArgumentNullException(nameof(provider));
 
+        // 这里直接修改集合，允许多次调用
         s_dict[providerName] = provider;
 
         if( providerName == DatabaseClients.SqlClient ) {

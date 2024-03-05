@@ -532,6 +532,9 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.AreEqual("12'3456", 123456.ToString2());
 
             Assert.AreEqual("12'3456", 123456L.ToString2());
+
+            Assert.AreEqual("true", true.ToString2());
+            Assert.AreEqual("false", false.ToString2());
         }
 
 

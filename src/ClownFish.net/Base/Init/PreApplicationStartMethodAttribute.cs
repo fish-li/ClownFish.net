@@ -79,7 +79,7 @@ public sealed class PreApplicationStartMethodAttribute : Attribute
 
         Console2.Info($"Execute {attr.Type.FullName}.{method.Name}()");
         try {
-            method.Invoke(null, null);
+            method.InvokeAndLog(null, null);
         }
         catch( TargetInvocationException ex ) {
             throw ex.InnerException;   // 将原始异常抛出来

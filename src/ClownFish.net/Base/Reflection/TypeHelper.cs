@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Base;
+﻿namespace ClownFish.Base.Reflection;
 
 /// <summary>
 /// Type相关操作的工具类

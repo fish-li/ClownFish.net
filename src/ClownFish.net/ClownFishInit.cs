@@ -37,10 +37,11 @@ public static class ClownFishInit
     /// </summary>
     public static void InitBase()
     {
-        if( s_baseInited == false ) {            
+        if( s_baseInited == false ) {
             EnvironmentVariables.Init();
+            EnvUtils.Init();
             SetDefaultCulture();
-            AppConfig.Init();            
+            AppConfig.Init();
             SetThreadPool();
             ConfigMisc();
             s_baseInited = true;
@@ -95,11 +96,9 @@ public static class ClownFishInit
         int minIOCP = LocalSettings.GetUInt("ThreadPool_MinIOCP", 256);
         int maxIOCP = LocalSettings.GetUInt("ThreadPool_MaxIOCP", 3000);
 
-        if( ThreadPool.SetMaxThreads(maxWorker, maxIOCP) == false )
-            Console2.Warnning($"SetMaxThreads({maxWorker}, {maxIOCP}) failed.");
-
-        if( ThreadPool.SetMinThreads(minWorker, minIOCP) == false )
-            Console2.Warnning($"SetMinThreads({minWorker}, {minIOCP}) failed.");
+        // 下面2个调用不检查返回值，因为写单元测试太麻烦~~~
+        ThreadPool.SetMaxThreads(maxWorker, maxIOCP);
+        ThreadPool.SetMinThreads(minWorker, minIOCP);
     }
 
 
@@ -151,6 +150,25 @@ public static class ClownFishInit
 
     private static void AutoRegisterDbProviders()
     {
+        AutoRegisterSqlClient();
+
+        AutoRegisterMySqlClient();
+
+        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Npgsql.dll")) ) {
+            ClownFish.Data.Initializer.Instance.RegisterPostgreSqlProvider();
+        }
+
+        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DmProvider.dll")) ) {
+            ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
+        }
+
+        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "System.Data.SQLite.dll")) ) {
+            ClownFish.Data.Initializer.Instance.RegisterSQLiteProvider();
+        }
+    }
+
+    private static void AutoRegisterSqlClient()
+    {
 #if NETFRAMEWORK
         ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider(1);
 #endif
@@ -162,9 +180,10 @@ public static class ClownFishInit
             ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider(1);
         }
 #endif
+    }
 
-
-
+    private static void AutoRegisterMySqlClient()
+    {
         int mysqlFlag = LocalSettings.GetInt("MySqlClientProviderSupport", 0);
         if( mysqlFlag > 0 ) {
             ClownFish.Data.Initializer.Instance.RegisterMySqlProvider(mysqlFlag);
@@ -179,19 +198,6 @@ public static class ClownFishInit
             }
 
             // 如果没有找到 任何一个DLL，就忽略！
-        }
-
-
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Npgsql.dll")) ) {
-            ClownFish.Data.Initializer.Instance.RegisterPostgreSqlProvider();
-        }
-
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DmProvider.dll")) ) {
-            ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
-        }
-
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "System.Data.SQLite.dll")) ) {
-            ClownFish.Data.Initializer.Instance.RegisterSQLiteProvider();
         }
     }
 

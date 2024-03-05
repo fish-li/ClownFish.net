@@ -70,4 +70,19 @@ namespace ClownFish.UnitTest.Base;
         ClownFishInit.InitLog("ClownFish.Log.config");
         ClownFishInit.InitLog("ClownFish.Log.config");
     }
+
+    [TestMethod]
+    public void Test_AutoRegisterMySqlClient()
+    {
+        int mysqlFlag = LocalSettings.GetInt("MySqlClientProviderSupport", 0);
+
+        EnvironmentVariables.Set("MySqlClientProviderSupport", "0");
+
+        // 强制走另外的分支
+        typeof(ClownFishInit).GetMethod("AutoRegisterMySqlClient", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
+
+        // 恢复正常配置
+        EnvironmentVariables.Set("MySqlClientProviderSupport", mysqlFlag.ToString());
+        typeof(ClownFishInit).GetMethod("AutoRegisterMySqlClient", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
+    }
 }

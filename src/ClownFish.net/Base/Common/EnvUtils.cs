@@ -106,6 +106,14 @@ public static class EnvUtils
         ReLoad();
     }
 
+    /// <summary>
+    /// Init
+    /// </summary>
+    public static void Init()
+    {
+        // 调用这个方法是为了触发 cctor
+    }
+
     // 注意：这个类不使用配置服务，因为它可能会很“早”被调用，甚至在初始化 配置服务客户端 之前，
     //       所以，它仅访问 “本地配置”，如果在集群中运行，可再调用 ReLoad 方法。
 
