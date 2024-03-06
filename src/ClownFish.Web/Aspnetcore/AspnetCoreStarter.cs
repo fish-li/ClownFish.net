@@ -108,7 +108,7 @@ public static class AspnetCoreStarter
         Console2.WriteSeparatedLine();
         Console2.WriteLine("ApplicationName : " + EnvUtils.GetAppName());
         Console2.WriteLine("AppRuntimeId    : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTimeString());
+        Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTime23String());
         Console2.WriteLine("EntryAssembly   : " + Assembly.GetEntryAssembly().Location);
         Console2.WriteLine("EnvironmentName : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
         Console2.WriteLine("ApplicationPath : " + AppContext.BaseDirectory);

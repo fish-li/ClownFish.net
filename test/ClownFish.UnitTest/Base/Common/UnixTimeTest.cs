@@ -42,4 +42,12 @@ public class UnixTimeTest
         Assert.AreEqual(time1, time2);
         Assert.AreEqual(now, UnixTime.ToDateTime(time1));
     }
+
+    [TestMethod]
+    public void Test_ToPhpTime()
+    {
+        DateTime time = new DateTime(2024, 1, 2, 11, 22, 33, 456);
+        long phptime = time.ToUniversalTime().ToPhpTime();
+        Assert.AreEqual(1704165753, phptime);
+    }
 }

@@ -72,6 +72,14 @@ public static class UnixTime
     }
 
 
-
+    /// <summary>
+    /// 将一个 本地 DateTime 转成 PHP 的时间戳 
+    /// </summary>
+    /// <param name="utcTime"></param>
+    /// <returns></returns>
+    public static long ToPhpTime(this DateTime utcTime)
+    {
+        return (utcTime.Ticks - 621355968000000000L) / 10000000;
+    }
 
 }

@@ -61,7 +61,7 @@ public class MessageLogger
         if( string.IsNullOrEmpty(category) )
             category = "INFO";
 
-        string time = DateTime.Now.ToTimeString();
+        string time = DateTime.Now.ToTime23String();
         Thread currentThread = Thread.CurrentThread;
         string threadId = currentThread.Name ?? "th_" + currentThread.ManagedThreadId.ToString();
 

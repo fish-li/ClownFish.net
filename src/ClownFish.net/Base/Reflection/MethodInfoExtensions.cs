@@ -54,7 +54,7 @@ public static class MethodInfoExtensions
 
 
 
-        string stepName = $"{method.DeclaringType.FullName}.{method.Name}";
+        string stepName = $"{method.DeclaringType.FullName}.{method.Name}()";
         DateTime start = DateTime.Now;
         Exception lastError = null;
         try {

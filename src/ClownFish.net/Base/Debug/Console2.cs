@@ -38,6 +38,8 @@ public static class Console2
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static void BeginListen()
     {
+        EnvUtils.Init();
+
         if( s_listenLines == null )
             s_listenLines = new StringBuilder(1024 * 16);
     }
