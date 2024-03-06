@@ -51,7 +51,7 @@ public static class AsmHelper
     }
 
 
-    private static Assembly[] GetAssemblies()
+    private static Assembly[] GetCurrentDomainAssemblies()
     {
         if( s_inited == false ) {
             lock( s_lock ) {
@@ -72,11 +72,10 @@ public static class AsmHelper
     /// <returns></returns>
     public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
     {
-        Assembly[] assemblies = GetAssemblies();
-
+        Assembly[] assemblies = GetCurrentDomainAssemblies();
 
         // 过滤一些反射中几乎用不到的程序集
-        List<Assembly> list = new List<Assembly>(128);
+        List<Assembly> list = new List<Assembly>(assemblies.Length);
 
         foreach( Assembly assembly in assemblies ) {
 
@@ -108,18 +107,9 @@ public static class AsmHelper
     /// <returns></returns>
     public static List<Assembly> GetAssemblyList<T>() where T : Attribute
     {
-        List<Assembly> list = new List<Assembly>(128);
+        Assembly[] assemblies = GetLoadAssemblies(true);
 
-        var assemblies = GetLoadAssemblies(true);
-        foreach( Assembly assembly in assemblies ) {
-
-            if( assembly.GetAttributes<T>().Length == 0 )
-                continue;
-
-            list.Add(assembly);
-        }
-
-        return list;
+        return assemblies.Where(x => x.GetAttributes<T>().Length > 0).ToList();
     }
 
 

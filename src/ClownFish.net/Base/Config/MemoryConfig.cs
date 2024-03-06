@@ -26,6 +26,11 @@ public static class MemoryConfig
         s_settings.Set(name, value);
     }
 
+    internal static bool RemoveSetting(string name)
+    {
+        return s_settings.TryRemove(name, out var _);
+    }
+
     /// <summary>
     /// 获取某个配置参数
     /// </summary>

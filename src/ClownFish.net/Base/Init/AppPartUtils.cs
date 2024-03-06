@@ -19,25 +19,44 @@ public static class AppPartUtils
                 if( s_list == null ) {
 
                     List<Assembly> list = AsmHelper.GetAssemblyList<ApplicationPartAssemblyAttribute>();
-                    Assembly exeAsm = AsmHelper.GetEntryAssembly();
 
-                    if( list.Contains(exeAsm) == false )
-                        list.Add(exeAsm);
-
-                    // 允许排除一些应用程序模块
-                    // 例如：一些 AllInOne 项目，在某个部署环境下可能就需要禁用其中的个另模块
-                    string ignores = LocalSettings.GetSetting("ClownFish_IgnoreAppParts");
-                    if( ignores.HasValue() ) {
-                        string[] names = ignores.ToArray2();
-                        s_list = list.Where(x => names.Contains(x.GetName().Name) == false).ToList();
-                    }
-                    else {
-                        s_list = list;
-                    }
+                    s_list = GetApplicationPartAsmList0(list);
                 }
             }
         }
 
         return s_list;
+    }
+
+
+    internal static List<Assembly> GetApplicationPartAsmList0(List<Assembly> list)
+    {
+        List<Assembly> result = null;
+
+        // 允许/排除  一些应用程序模块
+        // 例如：对于 AllInOne 的程序，在实际部署时可能需要 [禁用] 或者 [只启用] 其中的个别模块
+
+        string allows = LocalSettings.GetSetting("ClownFish_EnableAppParts");
+        if( allows.HasValue() ) {
+            string[] names = allows.ToArray2();
+            result = list.Where(x => names.Contains(x.GetName().Name)).ToList();
+        }
+        else {
+            string ignores = LocalSettings.GetSetting("ClownFish_IgnoreAppParts");
+            if( ignores.HasValue() ) {
+                string[] names = ignores.ToArray2();
+                result = list.Where(x => names.Contains(x.GetName().Name) == false).ToList();
+            }
+            else {
+                result = list;
+            }
+        }
+
+        // 无论如何，程序启动入口的程序集总是应该包含的
+        Assembly exeAsm = AsmHelper.GetEntryAssembly();
+        if( result.Contains(exeAsm) == false )
+            result.Add(exeAsm);
+
+        return result;
     }
 }
