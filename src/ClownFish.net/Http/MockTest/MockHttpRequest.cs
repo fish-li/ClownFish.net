@@ -18,7 +18,9 @@ public class MockHttpRequest : NHttpRequest
 
         _queryString = System.Web.HttpUtility.ParseQueryString(requestData.Url.Query);
 
-        if( requestData.Body != null ) {
+        string contentType = requestData.GetHeader(HttpHeaders.Request.ContentType);
+
+        if( requestData.Body != null && contentType.HasValue() && contentType.StartsWith0(RequestContentType.Form) ) {
             string bodyText = Encoding.UTF8.GetString(requestData.Body);
             _form = System.Web.HttpUtility.ParseQueryString(bodyText);
         }
@@ -99,6 +101,11 @@ public class MockHttpRequest : NHttpRequest
     /// <inheritdoc/>
     /// </summary>
     public override string ContentType => _requestData.GetHeader(HttpHeaders.Request.ContentType);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public long BodyLength => _requestData.Body?.Length ?? -1;
 
     /// <summary>
     /// <inheritdoc/>

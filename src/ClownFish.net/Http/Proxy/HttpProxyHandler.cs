@@ -115,16 +115,26 @@ public class HttpProxyHandler : IAsyncNHttpHandler
         if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
             webRequest.KeepAlive = true;
 
+        string destRoot = null;
 
         string referer = httpRequest.Header("Referer");
         if( string.IsNullOrEmpty(referer) == false ) {
             if( referer.IndexOf("://", StringComparison.Ordinal) > 0 ) {
                 string refererRoot = Urls.GetWebSiteRoot(referer);
-                string requestRoot = Urls.GetWebSiteRoot(webRequest.RequestUri.AbsoluteUri);
-
-                string referer2 = requestRoot + referer.Substring(refererRoot.Length);
+                if( destRoot == null ) {
+                    destRoot = Urls.GetWebSiteRoot(_destUr);
+                }
+                string referer2 = destRoot + referer.Substring(refererRoot.Length);
                 SetRequestHeader(webRequest, "Referer", referer2);
             }
+        }
+
+        string origin = httpRequest.Header("Origin");
+        if( string.IsNullOrEmpty(origin) == false ) {
+            if( destRoot == null ) {
+                destRoot = Urls.GetWebSiteRoot(_destUr);
+            }
+            SetRequestHeader(webRequest, "Origin", destRoot);
         }
 
         // 设置2个代理相关的请求头

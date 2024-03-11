@@ -64,7 +64,7 @@ internal static class ParameterResolver
         // 2、直接使用参数类型，不做可空类型处理
         // 3、仅支持 JSON, XML 的数据格式
 
-        SerializeFormat format = RequestContentType.GetFormat(requst.ContentType);
+        SerializeFormat format = ContenTypeUtils.GetFormat(requst.ContentType);
         if( format == SerializeFormat.Json ) {
             return JsonExtensions.FromJson(requst.GetBodyText(), p.ParameterType);
         }

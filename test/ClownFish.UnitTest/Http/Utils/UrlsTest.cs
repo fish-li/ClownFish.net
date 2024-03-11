@@ -6,10 +6,23 @@ public class UrlsTest
     [TestMethod]
     public void Test_GetWebSiteRoot()
     {
-        string url = "http://www.abc.com/test/callback.aspx";
-        Assert.AreEqual("http://www.abc.com", Urls.GetWebSiteRoot(url));
+        Assert.AreEqual("http://www", Urls.GetWebSiteRoot("http://www"));
+        Assert.AreEqual("http://www.abc.com", Urls.GetWebSiteRoot("http://www.abc.com"));
+        Assert.AreEqual("https://www.abc.com", Urls.GetWebSiteRoot("https://www.abc.com/"));
 
-        Assert.IsNull(Urls.GetWebSiteRoot("/test/callback.aspx"));
+        Assert.AreEqual("http://www.abc.com", Urls.GetWebSiteRoot("http://www.abc.com/test/callback.aspx"));
+        Assert.AreEqual("https://www.abc.com", Urls.GetWebSiteRoot("https://www.abc.com/test/callback.aspx"));
+
+        Assert.AreEqual("http://www.abc.com:123", Urls.GetWebSiteRoot("http://www.abc.com:123/test/callback.aspx"));
+        Assert.AreEqual("http://www.abc.com:123", Urls.GetWebSiteRoot("http://www.abc.com:123/test/callback.aspx"));
+
+        Assert.AreEqual("", Urls.GetWebSiteRoot("/test/callback.aspx"));
+        Assert.AreEqual("", Urls.GetWebSiteRoot("http/test/callback.aspx"));
+        Assert.AreEqual("", Urls.GetWebSiteRoot("http:/test/callback.aspx"));
+        Assert.AreEqual("", Urls.GetWebSiteRoot("::/test/callback.aspx"));
+
+        Assert.AreEqual("", Urls.GetWebSiteRoot(""));
+        Assert.IsNull(Urls.GetWebSiteRoot(null));
     }
 
     [TestMethod]

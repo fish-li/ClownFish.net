@@ -16,12 +16,15 @@ public static class Urls
     /// <returns></returns>
     public static string GetWebSiteRoot(string absoluteUrl)
     {
+        if( absoluteUrl.IsNullOrEmpty() )
+            return absoluteUrl;
+
         Match m = s_urlRootRegex.Match(absoluteUrl);
 
         if( m.Success )
             return m.Groups[0].Value;
         else
-            return null;
+            return string.Empty;
     }
 
 

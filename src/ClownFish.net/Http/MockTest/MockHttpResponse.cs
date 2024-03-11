@@ -114,6 +114,20 @@ public class MockHttpResponse : NHttpResponse
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public string GetHeader(string name)
+    {
+        string[] values = this.OutHeaders.GetValues(name);
+        if( values == null )
+            return null;
+        else
+            return string.Join(", ", values);
+    }
+
+    /// <summary>
     /// <inheritdoc/>
     /// </summary>
     public override bool RemoveHeader(string name)

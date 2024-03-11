@@ -99,7 +99,7 @@ internal static class HttpObjectUtils
 
         HttpContent content = new StreamContent(srcStream);
 
-        string contentType = RequestContentType.GetByFormat(format);
+        string contentType = ContenTypeUtils.GetByFormat(format);
         if( contentType.IsNullOrEmpty() == false )
             content.Headers.TryAddWithoutValidation(HttpHeaders.Request.ContentType, contentType);
 
@@ -111,7 +111,7 @@ internal static class HttpObjectUtils
     {
         HttpContent content = new ByteArrayContent(bytes);
 
-        string contentType = RequestContentType.GetByFormat(format);
+        string contentType = ContenTypeUtils.GetByFormat(format);
         if( contentType.IsNullOrEmpty() == false )
             content.Headers.TryAddWithoutValidation(HttpHeaders.Request.ContentType, contentType);
 

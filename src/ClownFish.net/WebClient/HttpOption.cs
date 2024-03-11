@@ -378,7 +378,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
             return null;
 
         // 有可能 contetType 在请求头中直接指定的，而不是设置的 Format 属性
-        string contetType = RequestContentType.GetByFormat(this.Format);
+        string contetType = ContenTypeUtils.GetByFormat(this.Format);
 
         if( contetType.IsNullOrEmpty() )
             contetType = this.Headers[HttpHeaders.Request.ContentType];
@@ -422,7 +422,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         }
 
         if( HttpUtils.RequestHasBody(this.Method) ) {
-            string contentType = RequestContentType.GetByFormat(this.Format);
+            string contentType = ContenTypeUtils.GetByFormat(this.Format);
             if( contentType.IsNullOrEmpty() == false )
                 sb.AppendLineRN($"{HttpHeaders.Request.ContentType}: {contentType}");
         }

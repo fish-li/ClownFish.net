@@ -6,43 +6,43 @@ public class RequestContentTypeTest
     [TestMethod]
     public void Test_GetFormat()
     {
-        Assert.AreEqual(SerializeFormat.None, RequestContentType.GetFormat(null));
-        Assert.AreEqual(SerializeFormat.None, RequestContentType.GetFormat(string.Empty));
+        Assert.AreEqual(SerializeFormat.None, ContenTypeUtils.GetFormat(null));
+        Assert.AreEqual(SerializeFormat.None, ContenTypeUtils.GetFormat(string.Empty));
 
-        Assert.AreEqual(SerializeFormat.Json, RequestContentType.GetFormat("application/json"));
-        Assert.AreEqual(SerializeFormat.Json, RequestContentType.GetFormat("application/json; charset=utf-8"));
+        Assert.AreEqual(SerializeFormat.Json, ContenTypeUtils.GetFormat("application/json"));
+        Assert.AreEqual(SerializeFormat.Json, ContenTypeUtils.GetFormat("application/json; charset=utf-8"));
 
-        Assert.AreEqual(SerializeFormat.Xml, RequestContentType.GetFormat("application/xml"));
-        Assert.AreEqual(SerializeFormat.Xml, RequestContentType.GetFormat("application/xml; charset=utf-8"));
+        Assert.AreEqual(SerializeFormat.Xml, ContenTypeUtils.GetFormat("application/xml"));
+        Assert.AreEqual(SerializeFormat.Xml, ContenTypeUtils.GetFormat("application/xml; charset=utf-8"));
 
-        Assert.AreEqual(SerializeFormat.Form, RequestContentType.GetFormat("application/x-www-form-urlencoded"));
-        Assert.AreEqual(SerializeFormat.Form, RequestContentType.GetFormat("application/x-www-form-urlencoded; charset=utf-8"));
+        Assert.AreEqual(SerializeFormat.Form, ContenTypeUtils.GetFormat("application/x-www-form-urlencoded"));
+        Assert.AreEqual(SerializeFormat.Form, ContenTypeUtils.GetFormat("application/x-www-form-urlencoded; charset=utf-8"));
 
-        Assert.AreEqual(SerializeFormat.Multipart, RequestContentType.GetFormat("multipart/form-data; boundary=xxxxx"));
+        Assert.AreEqual(SerializeFormat.Multipart, ContenTypeUtils.GetFormat("multipart/form-data; boundary=xxxxx"));
 
-        Assert.AreEqual(SerializeFormat.Binary, RequestContentType.GetFormat("application/octet-stream"));
+        Assert.AreEqual(SerializeFormat.Binary, ContenTypeUtils.GetFormat("application/octet-stream"));
 
-        Assert.AreEqual(SerializeFormat.Text, RequestContentType.GetFormat("text/plain"));
-        Assert.AreEqual(SerializeFormat.Text, RequestContentType.GetFormat("text/plain; charset=utf-8"));
+        Assert.AreEqual(SerializeFormat.Text, ContenTypeUtils.GetFormat("text/plain"));
+        Assert.AreEqual(SerializeFormat.Text, ContenTypeUtils.GetFormat("text/plain; charset=utf-8"));
 
-        Assert.AreEqual(SerializeFormat.Unknown, RequestContentType.GetFormat("application/xx"));
-        Assert.AreEqual(SerializeFormat.Unknown, RequestContentType.GetFormat("multipart/xx"));
-        Assert.AreEqual(SerializeFormat.Unknown, RequestContentType.GetFormat("text/xx"));
-        Assert.AreEqual(SerializeFormat.Unknown, RequestContentType.GetFormat("xx/xx"));
+        Assert.AreEqual(SerializeFormat.Unknown, ContenTypeUtils.GetFormat("application/xx"));
+        Assert.AreEqual(SerializeFormat.Unknown, ContenTypeUtils.GetFormat("multipart/xx"));
+        Assert.AreEqual(SerializeFormat.Unknown, ContenTypeUtils.GetFormat("text/xx"));
+        Assert.AreEqual(SerializeFormat.Unknown, ContenTypeUtils.GetFormat("xx/xx"));
     }
 
     [TestMethod]
     public void Test_GetByFormat()
     {
-        Assert.AreEqual(RequestContentType.Text, RequestContentType.GetByFormat(SerializeFormat.Text));
-        Assert.AreEqual(RequestContentType.Json, RequestContentType.GetByFormat(SerializeFormat.Json));
-        Assert.AreEqual(RequestContentType.Json, RequestContentType.GetByFormat(SerializeFormat.Json2));
-        Assert.AreEqual(RequestContentType.Xml, RequestContentType.GetByFormat(SerializeFormat.Xml));
-        Assert.AreEqual(RequestContentType.Form, RequestContentType.GetByFormat(SerializeFormat.Form));
-        Assert.AreEqual(RequestContentType.Multipart, RequestContentType.GetByFormat(SerializeFormat.Multipart));
-        Assert.AreEqual(RequestContentType.Binary, RequestContentType.GetByFormat(SerializeFormat.Binary));
-        Assert.AreEqual(string.Empty, RequestContentType.GetByFormat(SerializeFormat.None));
-        Assert.AreEqual(string.Empty, RequestContentType.GetByFormat(SerializeFormat.Auto));
-        Assert.AreEqual(string.Empty, RequestContentType.GetByFormat(SerializeFormat.Unknown));
+        Assert.AreEqual(ResponseContentType.TextUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Text));
+        Assert.AreEqual(ResponseContentType.JsonUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Json));
+        Assert.AreEqual(ResponseContentType.JsonUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Json2));
+        Assert.AreEqual(ResponseContentType.XmlUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Xml));
+        Assert.AreEqual(RequestContentType.Form, ContenTypeUtils.GetByFormat(SerializeFormat.Form));
+        Assert.AreEqual(RequestContentType.Multipart, ContenTypeUtils.GetByFormat(SerializeFormat.Multipart));
+        Assert.AreEqual(RequestContentType.Binary, ContenTypeUtils.GetByFormat(SerializeFormat.Binary));
+        Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.None));
+        Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.Auto));
+        Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.Unknown));
     }
 }

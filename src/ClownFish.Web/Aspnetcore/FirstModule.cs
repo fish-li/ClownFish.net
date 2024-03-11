@@ -125,7 +125,7 @@ public class FirstModule
         if( httpContext.Request.ContentLength > MaxRequestBodySize ) {
 
             // 上传文件可以不检查
-            SerializeFormat format = RequestContentType.GetFormat(httpContext.Request.ContentType);
+            SerializeFormat format = ContenTypeUtils.GetFormat(httpContext.Request.ContentType);
             if( format == SerializeFormat.Binary || format == SerializeFormat.Multipart )
                 return;
 

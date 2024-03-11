@@ -130,8 +130,8 @@ public class MockRequestData
             string postText = reader.ReadToEnd();
             if( string.IsNullOrEmpty(postText) == false )
                 data.Body = Encoding.UTF8.GetBytes(postText);
-            else
-                data.Body = Array.Empty<byte>();
+            //else
+            //    data.Body = Array.Empty<byte>();
         }
 
         return data;

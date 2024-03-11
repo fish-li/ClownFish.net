@@ -98,7 +98,7 @@ public static class LoggingOptions
         /// <summary>
         /// 是否必须记录 RequestBody 到日志中
         /// </summary>
-        public static readonly bool LogRequestBody = IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogRequestBody");
+        public static readonly bool LogRequestBody = IsLogAll || LocalSettings.GetBool("ClownFish_Log_LogRequestBody", 1);
 
 
         /// <summary>

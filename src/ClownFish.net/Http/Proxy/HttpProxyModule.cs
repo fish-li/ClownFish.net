@@ -9,9 +9,9 @@ public abstract class HttpProxyModule : NHttpModule
     /// 不需要处理的请求头
     /// </summary>
     public static readonly HashSet<string> IgnoreRequestHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
-        "Connection", "Referer",    // 这2个头会有特殊的处理方式，所以在复制时直接忽略。
-        "Content-Length",           // 这个头基本上没用，发送请求时会自动计算请求体长度
-        "Host"                      // 这个头也不需要，如果保留反而会出现和完整URL不匹配的情况，所以忽略它会更合适。
+        "Connection", "Referer", "Origin",    // 这3个头会有特殊的处理方式，所以在复制时直接忽略。
+        "Content-Length",                     // 这个头基本上没用，发送请求时会自动计算请求体长度
+        "Host"                                // 这个头也不需要，如果保留反而会出现和完整URL不匹配的情况，所以忽略它会更合适。
     };
 
     /// <summary>

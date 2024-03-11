@@ -37,10 +37,10 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     public async Task ProcessRequestAsync(NHttpContext httpContext)
     {
         try {
-            Uri requestUri = new Uri(_destUr);
+            Uri destUri = new Uri(_destUr);
 
             // 构造请求消息，包含 headers, body
-            HttpRequestMessage requestMessage = CreateRequest(httpContext.Request, requestUri);
+            HttpRequestMessage requestMessage = CreateRequest(httpContext.Request, destUri);
             this.Request = requestMessage;
 
             // 发送HTTP请求
@@ -89,11 +89,11 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// 
     /// </summary>
     /// <param name="httpRequest"></param>
-    /// <param name="requestUri"></param>
+    /// <param name="destUri"></param>
     /// <returns></returns>
-    protected virtual HttpRequestMessage CreateRequest(NHttpRequest httpRequest, Uri requestUri)
+    internal protected virtual HttpRequestMessage CreateRequest(NHttpRequest httpRequest, Uri destUri)
     {
-        HttpRequestMessage requestMessage = new HttpRequestMessage(new HttpMethod(httpRequest.HttpMethod), requestUri);
+        HttpRequestMessage requestMessage = new HttpRequestMessage(new HttpMethod(httpRequest.HttpMethod), destUri);
         requestMessage.Headers.TransferEncodingChunked = false;
         requestMessage.Version = HttpVersion.Version11;
 
@@ -138,15 +138,26 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
             requestMessage.SetKeepAlive(true);
 
+        string destRoot = null;
+
         string referer = httpRequest.Header("Referer");
         if( string.IsNullOrEmpty(referer) == false ) {
             if( referer.IndexOf("://", StringComparison.Ordinal) > 0 ) {
                 string refererRoot = Urls.GetWebSiteRoot(referer);
-                string requestRoot = Urls.GetWebSiteRoot(_destUr);
-
-                string referer2 = requestRoot + referer.Substring(refererRoot.Length);
+                if( destRoot == null ) {
+                    destRoot = Urls.GetWebSiteRoot(_destUr);
+                }
+                string referer2 = destRoot + referer.Substring(refererRoot.Length);
                 requestMessage.Headers.TryAddWithoutValidation("Referer", referer2);
             }
+        }
+
+        string origin = httpRequest.Header("Origin");
+        if( string.IsNullOrEmpty(origin) == false ) {
+            if( destRoot == null ) {
+                destRoot = Urls.GetWebSiteRoot(_destUr);
+            }
+            requestMessage.Headers.TryAddWithoutValidation("Origin", destRoot);
         }
 
         // 设置2个代理相关的请求头
@@ -166,7 +177,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// </summary>
     /// <param name="httpRequest"></param>
     /// <returns></returns>
-    protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
+    internal protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
     {
         Stream srcStream = httpRequest.InputStream;
 

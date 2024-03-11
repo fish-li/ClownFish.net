@@ -4,8 +4,8 @@
         <TargetFrameworks>net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.NRedis</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.306.3</Version>
-        <FileVersion>8.24.306.3</FileVersion>
+        <Version>8.24.311.1</Version>
+        <FileVersion>8.24.311.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

@@ -254,7 +254,7 @@ internal sealed class HttpClient : BaseHttpClient
 
         srcStream.CopyTo(destStream);
 
-        string contentType = RequestContentType.GetByFormat(this.HttpOption.Format);
+        string contentType = ContenTypeUtils.GetByFormat(this.HttpOption.Format);
         if( contentType.IsNullOrEmpty() == false )
             this.Request.ContentType = contentType;
     }
@@ -263,7 +263,7 @@ internal sealed class HttpClient : BaseHttpClient
     {
         destStream.Write(bytes, 0, bytes.Length);
 
-        string contentType = RequestContentType.GetByFormat(this.HttpOption.Format);
+        string contentType = ContenTypeUtils.GetByFormat(this.HttpOption.Format);
         if( contentType.IsNullOrEmpty() == false )
             this.Request.ContentType = contentType;
     }

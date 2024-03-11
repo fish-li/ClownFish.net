@@ -23,14 +23,6 @@ public static class HttpClientLogger2
             HttpClientLogger.Init();
     }
 
-    internal static string GetHeader(this HttpRequestMessage request, string name)
-    {
-        if( request.Headers.TryGetValues(name, out var values) ) {
-            return values.FirstOrDefault();
-        }
-
-        return null;
-    }
 }
 
 

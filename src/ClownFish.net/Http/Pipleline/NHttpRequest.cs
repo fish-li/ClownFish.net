@@ -139,7 +139,7 @@ public abstract partial class NHttpRequest
     /// 获取请求体的长度。
     /// 如果没有指定 Content-Length 则返回 -1
     /// </summary>
-    public long ContentLength {
+    public virtual long ContentLength {
         get => this.Header(HttpHeaders.Request.ContentLength)?.TryToLong() ?? -1;
     }
 
