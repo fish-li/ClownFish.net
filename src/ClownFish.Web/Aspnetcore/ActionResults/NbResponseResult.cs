@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http;
-using Microsoft.AspNetCore.Http;
 
 namespace ClownFish.Web.AspnetCore.ActionResults;
 
@@ -11,7 +9,6 @@ public sealed class NbResponseResult : ActionResult
 {
     private readonly HttpResult<string> _httpResult;
     private readonly HttpResponseMessage _responseMessage;
-    private readonly HttpWebResponse _webResponse;
 
     /// <summary>
     /// 构造方法
@@ -46,7 +43,7 @@ public sealed class NbResponseResult : ActionResult
         if( webResponse == null )
             throw new ArgumentNullException(nameof(webResponse));
 
-        _webResponse = webResponse;
+        _responseMessage = webResponse.ToResponseMessage();
     }
 
     /// <summary>
@@ -56,7 +53,7 @@ public sealed class NbResponseResult : ActionResult
     /// <returns></returns>
     public override async Task ExecuteResultAsync(ActionContext context)
     {
-        NHttpContext httpContextNetCore = new HttpContextNetCore(context.HttpContext);
+        NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
 
         if( _httpResult != null ) {
             await httpContextNetCore.HttpReplyAsync(_httpResult);
@@ -65,11 +62,6 @@ public sealed class NbResponseResult : ActionResult
 
         if( _responseMessage != null ) {
             await httpContextNetCore.HttpReplyAsync(_responseMessage);
-            return;
-        }
-
-        if( _webResponse != null ) {
-            await httpContextNetCore.HttpReplyAsync(_webResponse);
             return;
         }
     }
@@ -85,4 +77,4 @@ public sealed class NbResponseResult : ActionResult
         throw new NotImplementedException();
     }
 
-}
+ }

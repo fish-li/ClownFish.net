@@ -2,7 +2,7 @@
 
 namespace ClownFish.Web.Aspnetcore.Filters;
 
-public sealed class MvcLogFilter : IAsyncActionFilter
+public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 {
     private static readonly int s_frameworkBeforePerformanceThresholdMs = LocalSettings.GetInt("MVC_FrameworkBefore_PerformanceThresholdMs", 10);
 
@@ -64,8 +64,6 @@ public sealed class MvcLogFilter : IAsyncActionFilter
         httpContext.EndExecuteTime = DateTime.Now;
         httpContext.LogFxEvent(new NameTime("UserCode end", httpContext.EndExecuteTime));
 
-        pipelineContext.ActionResult = context.Result;
-
         app.PostRequestExecute(httpContext);
     }
 
@@ -103,4 +101,22 @@ public sealed class MvcLogFilter : IAsyncActionFilter
 
         pipelineContext.OprLogScope.AddStep(step);
     }
+
+    public void OnResultExecuting(ResultExecutingContext context)
+    {
+        // 最先  执行的过滤器方法
+        // 注意：这里得到的结果，有可能会在后续过滤器中修改~~~
+    }
+
+    public void OnResultExecuted(ResultExecutedContext context)
+    {
+        // 最后  执行的过滤器方法
+        // 这个过滤器注册在最前面(order = int.MinValue)，所以为了保证能得到最终的 ActionResult，所以只能使用这个方法
+        // 注意：当前类型实现的是 IAlwaysRunResultFilter ，可以保证此方法不会被短路
+
+        HttpPipelineContext pipelineContext = HttpPipelineContext.Get();
+        pipelineContext.SetResponseResult(context.Result);
+    }
+
+    
 }

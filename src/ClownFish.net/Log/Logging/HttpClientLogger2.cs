@@ -61,8 +61,7 @@ internal class HttpClientEventData : ILoggingObject
         try {
             this.Request.ToLoggingText(sb);
 
-            if( this.Response != null && LoggingOptions.HttpClient.MustLogClientResponse ) {
-
+            if( this.Response != null) {
                 sb.AppendLineRN(TextUtils.StepDetailSeparatedLine3);
                 this.Response.ToLoggingText(sb);
             }
@@ -209,8 +208,16 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         if( request == null )
             return 0;
 
+        if( LoggingOptions.HttpClient.MustLogRequest == false )
+            return -1;
+
+        // 如果 body 本身就是 MemoryStream，那就不需要替换了
+        if( request.Content.BodyIsMemoryStream() ) {
+            return 3;
+        }
+
         // 如果参数不允许记录，或者根本没有 body，就忽略
-        if( request.RequestBodyCanLog() ) {
+        if( request.CanLogBody() ) {
 
             // 替换 body
             HttpContent content2 = CloneBody(request.Content);
@@ -223,6 +230,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         }
     }
 
+   
 
     internal static void TryReplaceContent(HttpResponseMessage response)
     {
@@ -231,31 +239,30 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         //    at Azure.Response.get_Content()
         //    at Azure.AI.OpenAI.Embeddings.FromResponse(Response response)
 
-        //if( response == null )
-        //    return;
+        if( response == null )
+            return;
 
-        //// 如果参数不允许记录，或者根本没有 body，就忽略
-        //if( response.ResponseBodyCanLog() ) {
+        if( LoggingOptions.HttpClient.MustLogResponse == false )
+            return;
+               
 
-        //    // 替换 body
-        //    HttpContent content2 = CloneBody(response.Content);
-        //    response.Content.Dispose();
-        //    response.Content = content2;
-        //}
+        // 如果参数不允许记录，或者根本没有 body，就忽略
+        if( response.CanLogBody() ) {
+
+            // 替换 body
+            HttpContent content2 = CloneBody(response.Content);
+            response.Content.Dispose();
+            response.Content = content2;
+        }
     }
 
     internal static HttpContent CloneBody(HttpContent content)
     {
         MemoryStream ms = new MemoryStream();
-
-#if NET6_0_OR_GREATER
         content.CopyTo(ms, null, CancellationToken.None);
-#else
-        content.CopyToAsync(ms).ConfigureAwait(false).GetAwaiter().GetResult();
-#endif
 
         ms.Position = 0;
-        HttpContent content2 = new StreamContent(ms);
+        StreamContent content2 = new StreamContent(ms);
 
         foreach( KeyValuePair<string, IEnumerable<string>> kvp in content.Headers ) {
             foreach( var value in kvp.Value ) {

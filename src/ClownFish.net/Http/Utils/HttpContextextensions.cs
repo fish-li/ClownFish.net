@@ -27,7 +27,9 @@ public static partial class HttpContextExtensions
         else {
             response.StatusCode = 200;
             response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
             response.WriteAll(body.GetBytes());
+            httpContext.PipelineContext.RespResult = body;
         }
     }
 
@@ -52,7 +54,9 @@ public static partial class HttpContextExtensions
         else {
             response.StatusCode = 200;
             response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
             await response.WriteAllAsync(body.GetBytes());
+            httpContext.PipelineContext.RespResult = body;
         }
     }
 
@@ -71,9 +75,6 @@ public static partial class HttpContextExtensions
         if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
 
-        if( statusCode >= 300 && httpContext.PipelineContext != null )
-            httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
-
         if( string.IsNullOrEmpty(body) ) {
             httpContext.Response.StatusCode = 204;
         }
@@ -81,7 +82,9 @@ public static partial class HttpContextExtensions
             NHttpResponse response = httpContext.Response;
             response.StatusCode = statusCode;
             response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
             response.WriteAll(body.GetBytes());
+            httpContext.PipelineContext.RespResult = body;
         }
     }
 
@@ -99,9 +102,6 @@ public static partial class HttpContextExtensions
         if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
 
-        if( statusCode >= 300 && httpContext.PipelineContext != null )
-            httpContext.PipelineContext.OprLogScope.OprLog.Addition = body;
-
         if( string.IsNullOrEmpty(body) ) {
             httpContext.Response.StatusCode = 204;
         }
@@ -109,7 +109,9 @@ public static partial class HttpContextExtensions
             NHttpResponse response = httpContext.Response;
             response.StatusCode = statusCode;
             response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
             await response.WriteAllAsync(body.GetBytes());
+            httpContext.PipelineContext.RespResult = body;
         }
     }
 
@@ -142,6 +144,7 @@ public static partial class HttpContextExtensions
             return;
 
         await response.WriteAllAsync(httpResult.Result.GetBytes());
+        httpContext.PipelineContext.RespResult = httpResult.Result;
     }
 
 
@@ -161,11 +164,15 @@ public static partial class HttpContextExtensions
 
         //httpContext.Response.Clear();
 
+        string body = ex.ToString();
+
         NHttpResponse response = httpContext.Response;
         response.StatusCode = 500;
         response.SetHeader(HttpHeaders.XResponse.ExceptionType, ex.GetType().FullName);
         response.ContentType = ResponseContentType.TextUtf8;
-        await response.WriteAllAsync(ex.ToString().GetBytes());
+
+        await response.WriteAllAsync(body.GetBytes());
+        httpContext.PipelineContext.RespResult = body;
     }
 
 

@@ -9,7 +9,7 @@ internal class ActionExecutor
     public virtual async Task ExecuteAction(HttpPipelineContext pipelineContext)
     {
         // 允许在框架外部直接指定结果
-        if( pipelineContext.ActionResult != null )
+        if( pipelineContext.RespResult != null )
             return;
 
 
@@ -66,12 +66,12 @@ internal class ActionExecutor
         }
 
 
-        pipelineContext.ActionResult = ResultConverter.Convert(result);
+        pipelineContext.RespResult = ResultConverter.Convert(result);
     }
 
     public virtual void SendResult(HttpPipelineContext pipelineContext)
     {
-        object result = pipelineContext.ActionResult;
+        object result = pipelineContext.RespResult;
 
         // 没有执行结果，直接返回（不产生输出）
         if( result == null )

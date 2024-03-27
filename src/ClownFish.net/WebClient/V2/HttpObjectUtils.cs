@@ -78,14 +78,14 @@ internal static class HttpObjectUtils
 
 
         if( postData is Stream srcStream ) {
-            return CreateRequestMessageBody1(httpOption.Format, srcStream);
+            return CreateRequestMessageBody1(httpOption.Format, srcStream);   // StreamContent
         }
 
         if( postData is byte[] bytes ) {
-            return CreateRequestMessageBody2(httpOption.Format, bytes);
+            return CreateRequestMessageBody2(httpOption.Format, bytes);     // ByteArrayContent
         }
 
-        return CreateRequestMessageBody3(httpOption.Format, postData);
+        return CreateRequestMessageBody3(httpOption.Format, postData);      // StreamContent
     }
 
 

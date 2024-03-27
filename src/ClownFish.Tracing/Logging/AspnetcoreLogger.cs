@@ -202,8 +202,8 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
         if( pipelineContext == null )
             return;
 
-        ResultExecutedContext resultExecutedContext = eventData.Get<ResultExecutedContext>("ResultExecutedContext");
-        pipelineContext.ActionResult = resultExecutedContext.Result;
+        ResultExecutedContext context = eventData.Get<ResultExecutedContext>("ResultExecutedContext");
+        pipelineContext.SetResponseResult(context.Result);
     }
 
     private void UnhandledException(object eventData)

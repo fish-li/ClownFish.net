@@ -29,7 +29,7 @@ public class OprLogTest
         Assert.IsNotNull(log.ExMessage);
         Assert.IsNotNull(log.ExAll);
 
-        log.SetHttpRequest(null);
+        log.SetHttpFields(null);
         Assert.IsNull(log.Url);
 
         Assert.AreEqual(0, log.SetMCA(-1000));
@@ -177,12 +177,12 @@ public class OprLogTest
     public void Test_SetHttpRequest()
     {
         OprLog log = new OprLog();
-        log.SetHttpRequest(EmptyHttpContext.Instance);
+        log.SetHttpFields(EmptyHttpContext.Instance);
 
         Assert.IsNull(log.Url);
 
         log.Url = "http://www.abc.com/aa/bb.aspx";
-        log.SetHttpRequest(EmptyHttpContext.Instance);
+        log.SetHttpFields(EmptyHttpContext.Instance);
 
         Assert.AreEqual("http://www.abc.com/aa/bb.aspx", log.Url);
     }
@@ -207,7 +207,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetHttpData(mock.HttpContext);
+        log.SetSomeFields(mock.HttpContext);
 
         Assert.AreEqual(128, log.OutSize);
         Assert.AreEqual(208, log.Status);
@@ -240,7 +240,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetHttpData(mock.HttpContext);
+        log.SetSomeFields(mock.HttpContext);
 
         Assert.AreEqual(128, log.OutSize);
         Assert.AreEqual(208, log.Status);
@@ -265,7 +265,7 @@ public class OprLogTest
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
         
         OprLog log = new OprLog();
-        log.SetHttpData(mock.HttpContext);
+        log.SetSomeFields(mock.HttpContext);
 
         Assert.AreEqual(0, log.OutSize);
         Assert.AreEqual(0, log.Status);
@@ -323,7 +323,7 @@ public class OprLogTest
             Url = new Uri($"http://www.abc.com:14752/aa/bb/cc.aspx?id=3")
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
-        mock.PipelineContext.ActionResult = "xxxxxxxxxxxxxxxxx";
+        mock.PipelineContext.RespResult = "xxxxxxxxxxxxxxxxx";
 
         mock.HttpContext.Response.StatusCode = 200;
         mock.HttpContext.Response.ContentType = ResponseContentType.TextUtf8;
@@ -331,7 +331,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetResponseData(mock.HttpContext);
+        log.SetResponse(mock.HttpContext);
 
         Console.WriteLine(log.Response);
 
@@ -348,7 +348,7 @@ public class OprLogTest
             Url = new Uri($"http://www.abc.com:14752/aa/bb/cc.aspx?id=3")
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
-        mock.PipelineContext.ActionResult = new {
+        mock.PipelineContext.RespResult = new {
             Id = 2,
             Count = 3
         };
@@ -359,7 +359,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetResponseData(mock.HttpContext);
+        log.SetResponse(mock.HttpContext);
 
         Console.WriteLine(log.Response);
 
@@ -375,7 +375,7 @@ public class OprLogTest
             Url = new Uri($"http://www.abc.com:14752/aa/bb/cc.aspx?id=3")
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
-        mock.PipelineContext.ActionResult = new {
+        mock.PipelineContext.RespResult = new {
             Id = 2,
             Count = 3
         };
@@ -386,7 +386,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetResponseData(mock.HttpContext);
+        log.SetResponse(mock.HttpContext);
 
         Console.WriteLine(log.Response);
 
@@ -402,7 +402,7 @@ public class OprLogTest
             Url = new Uri($"http://www.abc.com:14752/aa/bb/cc.aspx?id=3")
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
-        mock.PipelineContext.ActionResult = new NameValue("abc", "123");
+        mock.PipelineContext.RespResult = new NameValue("abc", "123");
 
         mock.HttpContext.Response.StatusCode = 200;
         mock.HttpContext.Response.ContentType = ResponseContentType.XmlUtf8;
@@ -410,7 +410,7 @@ public class OprLogTest
 
 
         OprLog log = new OprLog();
-        log.SetResponseData(mock.HttpContext);
+        log.SetResponse(mock.HttpContext);
 
         Console.WriteLine(log.Response);
 

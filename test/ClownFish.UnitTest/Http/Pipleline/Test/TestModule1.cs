@@ -52,7 +52,7 @@ public class TestModule1 : NHttpModule
     {
         base.PostRequestExecute(httpContext);
 
-        httpContext.PipelineContext.ActionResult = "OK/1533";
+        httpContext.PipelineContext.RespResult = "OK/1533";
     }
 
     public override void UpdateRequestCache(NHttpContext httpContext)

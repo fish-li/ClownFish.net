@@ -303,12 +303,14 @@ public sealed class OprLogScope : IDisposable
         // 如果过程中出现异常，或者执行时间超过性能阀值
         // 填充当前操作的详细描述，例如：httpRequest
         if( _exObject != null || this.OprLog.IsSlow == 1 || LoggingOptions.Http.MustLogRequest ) {
-            try {
-                this.OprLog.Request = context.GetRequest()?.GetLogText();
-            }
-            catch(Exception ex) {
-                this.OprLog.Request = "###不能读取Request，已发生错误：" + ex.ToString();
-                // 忽略读取错误
+            if( this.OprLog.Request.IsNullOrEmpty() ) {
+                try {
+                    this.OprLog.Request = context.GetRequest()?.GetLogText();
+                }
+                catch( Exception ex ) {
+                    this.OprLog.Request = "###不能读取Request，已发生错误：" + ex.ToString();
+                    // 忽略读取错误
+                }
             }
         }
 

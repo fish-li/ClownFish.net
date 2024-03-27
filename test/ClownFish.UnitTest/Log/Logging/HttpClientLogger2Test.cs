@@ -128,6 +128,31 @@ public class HttpClientLogger2Test
         HttpRequestMessage requestMessage = HttpObjectUtils.CreateRequestMessage(httpOption);
         HttpContent content1 = requestMessage.Content;
 
+        Assert.AreEqual(3, HttpClientEventObserver.TryReplaceContent(requestMessage));
+        HttpContent content2 = requestMessage.Content;
+
+        Assert.IsTrue(object.ReferenceEquals(content1, content2));
+    }
+
+    [TestMethod]
+    public void Test_TryReplaceContent1()
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "POST",
+            Url = "http://www.abc.com/aa/bb",
+            Data = new {
+                a = 2,
+                b = 3,
+            }.ToJson().GetBytes(),
+            Format = SerializeFormat.Json,
+            Header = new {
+                Content_Length = 20
+            }
+        };
+
+        HttpRequestMessage requestMessage = HttpObjectUtils.CreateRequestMessage(httpOption);
+        HttpContent content1 = requestMessage.Content;
+
         Assert.AreEqual(1, HttpClientEventObserver.TryReplaceContent(requestMessage));
         HttpContent content2 = requestMessage.Content;
 

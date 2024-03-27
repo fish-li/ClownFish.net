@@ -86,16 +86,8 @@ public sealed class NbTextResult : ActionResult
     /// <returns></returns>
     public override async Task ExecuteResultAsync(ActionContext context)
     {
-        HttpResponse response = context.HttpContext.Response;
-        response.StatusCode = StatusCode;
-        response.ContentType = ContentType ?? ResponseContentType.TextUtf8;
-
-        if( Content.IsNullOrEmpty() )
-            return;
-
-        byte[] bytes = Content.GetBytes();
-        response.ContentLength = bytes.Length;
-        await response.Body.WriteAsync(bytes, 0, bytes.Length);
+        NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
+        await httpContextNetCore.HttpReplyAsync(this.StatusCode, this.Content, this.ContentType);
     }
 
     /// <summary>
@@ -107,4 +99,5 @@ public sealed class NbTextResult : ActionResult
     {
         throw new NotImplementedException();
     }
+
 }

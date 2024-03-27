@@ -16,11 +16,6 @@ public static class TextUtils
     public static readonly string StepDetailSeparatedLine1 = "------------------------------------";
 
     /// <summary>
-    /// 一个step步骤 内 的片段分隔行符（老版本不建议使用，TODO：以后删除）
-    /// </summary>
-    public static readonly string StepDetailSeparatedLine2 = "------------------------------------3aea3d12823847bba74bc1594430afe1";
-
-    /// <summary>
     /// 一个step步骤 内 的片段分隔行符
     /// </summary>
     public static readonly string StepDetailSeparatedLine3 = "----b7YQJpLFTUK6KEaN1knyag";
@@ -42,10 +37,7 @@ public static class TextUtils
         try {
             if( value is DbCommand dbCommand )
                 return dbCommand.ToLoggingText();
-#if NETCOREAPP
-            if( value is System.Net.Http.HttpRequestMessage request )
-                return request.ToLoggingText();
-#endif
+
 #if NET6_0_OR_GREATER
             if( value is DbBatch dbBatch )
                 return dbBatch.ToLoggingText();

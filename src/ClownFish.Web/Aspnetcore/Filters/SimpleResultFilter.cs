@@ -27,11 +27,10 @@ public sealed class SimpleResultFilter : IResultFilter
     private static bool IsSimpleType(Type t)
     {
         // 下面几种类型比较常用，所以就做特殊处理，实际上不止这几个类型
-        return t == typeof(int)
-            || t == typeof(long)
-            || t == typeof(string)
+        return t == typeof(string)
             || t == typeof(Guid)
-            || t == typeof(double)
+            || t == typeof(int) || t == typeof(long)
+            || t == typeof(double) || t == typeof(float)
             || t == typeof(decimal);
     }
 

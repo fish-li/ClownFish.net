@@ -16,6 +16,7 @@ public class HttpContextExtensionsTest
     {
         MockRequestData requestData = HttpTest1.GetRequestData();
         MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
 
         httpContext.HttpReply("abc");
 
@@ -80,6 +81,7 @@ public class HttpContextExtensionsTest
     {
         MockRequestData requestData = HttpTest1.GetRequestData();
         MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
 
         await httpContext.HttpReplyAsync("abc");
 
@@ -98,6 +100,7 @@ public class HttpContextExtensionsTest
     {
         MockRequestData requestData = HttpTest1.GetRequestData();
         MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
 
         await httpContext.HttpReplyAsync("");
 
@@ -217,7 +220,7 @@ public class HttpContextExtensionsTest
             await HttpContextExtensions6.HttpReplyAsync((MockHttpContext)null, webResponse);
         });
     }
-        
+
 
     private HttpResponseMessage CreateHttpResponseMessage()
     {

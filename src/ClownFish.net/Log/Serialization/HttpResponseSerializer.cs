@@ -4,7 +4,7 @@ using System.Net.Http;
 namespace ClownFish.Log;
 internal static class HttpResponseSerializer
 {
-    public static string ToLoggingText(this HttpResponseMessage response)
+    internal static string ToLoggingText(this HttpResponseMessage response)
     {
         if( response == null )
             return string.Empty;
@@ -19,33 +19,55 @@ internal static class HttpResponseSerializer
         }
     }
 
+    private static readonly Type s_type = typeof(HttpContent).Assembly.GetType("System.Net.Http.DecompressionHandler+DecompressedContent", true, false);
 
     public static void ToLoggingText(this HttpResponseMessage response, StringBuilder sb)
     {
+        // HttpResponseMessage 写到日志有3个范围：
+        // 1，记录 “响应行”， “响应头”，“响应体”    MustLogResponse == true && LogResponseBody == true
+        // 2，记录 “响应行”， “响应头”             MustLogResponse == true && LogResponseBody == false
+        // 3，记录 “响应行”                       MustLogResponse == false 
+
         int statusCode = (int)response.StatusCode;
         string statusMessage = HttpUtils.GetStatusReasonPhrase(statusCode);
         sb.Append("HTTP/1.1 ").Append(statusCode).Append(' ').Append(statusMessage).AppendLineRN();
 
-        if( response.Headers != null ) {
-            foreach( var x in response.Headers ) {
-                foreach( var v in x.Value ) {
-                    sb.AppendLineRN($"{x.Key}: {v}");
-                }
+        if( LoggingOptions.HttpClient.MustLogResponse == false )
+            return;
+
+        foreach( var x in response.Headers ) {
+            foreach( var v in x.Value ) {
+                sb.AppendLineRN($"{x.Key}: {v}");
             }
         }
 
-        if( response.Content != null && response.Content.Headers != null ) {
-            foreach( var x in response.Content.Headers ) {
-                foreach( var v in x.Value ) {
-                    sb.AppendLineRN($"{x.Key}: {v}");
-                }
+        if( response.Content == null )
+            return;
+
+        // 当服务端返回 压缩数据 时，System.Net.Http.DecompressionHandler 会修改 response.Content
+        // 并且比较坑的是 DecompressedContent 的派生类会删除2个头：Content-Length,Content-Encoding
+        // 考虑到这里 response._disposed = true，所以就把原始的 response.Content 找出来（只读取响应头）
+
+        HttpContent content2 = response.Content;
+
+        if( response.Content.GetType().IsSubclassOf(s_type) ) {
+            FieldInfo field = s_type.GetField("_originalContent", BindingFlags.Instance | BindingFlags.NonPublic);
+            content2 = (HttpContent)field.GetValue(response.Content);
+        }
+
+        foreach( var x in content2.Headers ) {
+            foreach( var v in x.Value ) {
+                sb.AppendLineRN($"{x.Key}: {v}");
             }
         }
 
-        if( response.Content != null && response.ResponseBodyCanLog() ) {
+        //sb.Append("## response.Content: ").AppendLineRN(response.Content.GetType().FullName);
 
-            // 有些情况下可能读不到数据~~~~~~~~~~
-            string body = HttpRequestSerializer.ReadBody(response.Content);
+        if( response.CanLogBody() ) {
+
+            // 有些情况下可能读不到数据~~~~~~~~~~            
+            string body = response.Content.ReadBodyAsText();
+
             if( body != null ) {
                 sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
             }
@@ -53,24 +75,39 @@ internal static class HttpResponseSerializer
     }
 
 
-    internal static bool ResponseBodyCanLog(this HttpResponseMessage response)
+    internal static bool CanLogBody(this HttpResponseMessage response)
     {
-        if( LoggingOptions.HttpClient.LogClientResponseBody
-            && response.Content != null
-            && response.Content.Headers != null
-            && response.Content.BodyIsText()
-            && response.LoggingIgnoreBody() == false
-            && response.Content.GetBodySize().IsBetween(1, LoggingLimit.HttpBodyMaxLen)
-            ) {
+        if( LoggingOptions.HttpClient.LogResponseBody == false )
+            return false;
 
-            return true;
-        }
+        if( LoggingOptions.RequestBodyBufferSize <= 0 )
+            return false;
 
-        return false;
+        if( response.Content == null )
+            return false;
+
+        if( response.Content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
+            return false;
+
+        if( response.Headers.TransferEncoding.Count > 0 )          // Transfer-Encoding: chunked
+            return false;
+
+        if( response.Content.BodyIsText() == false )
+            return false;
+
+        if( response.IsIgnoreBody() )
+            return false;
+
+        long size = response.Content.GetBodySize();
+        if( size.IsBetween(1, LoggingOptions.RequestBodyBufferSize) == false )
+            return false;
+
+        return true;
     }
 
 
-    internal static bool LoggingIgnoreBody(this HttpResponseMessage response)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool IsIgnoreBody(this HttpResponseMessage response)
     {
         return response.RequestMessage?.GetRequestOption<string>(LoggingIgnoreNames.IgnoreResponseBody) == "1";
     }

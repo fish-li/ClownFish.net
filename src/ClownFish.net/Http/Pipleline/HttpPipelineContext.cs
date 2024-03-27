@@ -52,7 +52,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
         // 释放引用
         this.HttpContext = null;
         this.Action = null;
-        this.ActionResult = null;
+        this.RespResult = null;
         this.DisposeOprLogScope();
     }
 
@@ -107,9 +107,9 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
 
 
     /// <summary>
-    /// Action执行结果
+    /// HTTP请求的输出结果，也可以理解为 MVC-Action 的返回值。
     /// </summary>
-    public object ActionResult { get; set; }
+    public object RespResult { get; set; }
 
     /// <summary>
     /// HttpContext instance

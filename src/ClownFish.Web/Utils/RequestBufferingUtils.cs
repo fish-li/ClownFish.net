@@ -7,9 +7,6 @@ namespace ClownFish.Web.Utils;
 /// </summary>
 public static class RequestBufferingUtils
 {
-    private static readonly int s_requestBufferSize = LocalSettings.GetUInt("ClownFish_Aspnet_RequestBufferSize", 0);
-
-
     /// <summary>
     /// 设置请求体为缓冲模式，可用于多次读取请求体
     /// </summary>
@@ -17,7 +14,7 @@ public static class RequestBufferingUtils
     /// <param name="checkBodyFunc">检查请求体是否可以被缓冲的委托。强烈建议：【不要指定这个参数】，或者检查【请求体是小于bufferSize的文本数据】</param>
     public static int SetRequestBuffering(this NHttpContext httpContextNetCore, Func<NHttpContext, int, bool> checkBodyFunc = null)
     {
-        if( s_requestBufferSize <= 0 )
+        if( LoggingOptions.RequestBodyBufferSize <= 0 )
             return 0;
 
         if( httpContextNetCore.Request.HasBody == false )
@@ -38,21 +35,21 @@ public static class RequestBufferingUtils
         if( checkBodyFunc == null )
             checkBodyFunc = BodyIsSmallText;
 
-        if( checkBodyFunc.Invoke(httpContextNetCore, s_requestBufferSize) == false )
+        if( checkBodyFunc.Invoke(httpContextNetCore, LoggingOptions.RequestBodyBufferSize) == false )
             return -4;
 
 
         // 下面这种方式得到的流对象，在遇到请求转发时，会产生莫名奇妙的BUG（读不到请求体内容）
         //httpContext.Request.EnableBuffering(_requestBufferSize);
 
-        MemoryStream ms = MemoryStreamPool.GetStream("RequestBuffering", s_requestBufferSize);
+        MemoryStream ms = MemoryStreamPool.GetStream("RequestBuffering", LoggingOptions.RequestBodyBufferSize);
 
         httpContext.Request.Body.CopyTo(ms);
         ms.Position = 0;
         httpContext.Request.Body = ms;
         httpContextNetCore.RegisterForDispose(ms);
 
-        return s_requestBufferSize;  // 返回缓冲区长度，表示设置成功
+        return LoggingOptions.RequestBodyBufferSize;  // 返回缓冲区长度，表示设置成功
     }
 
 

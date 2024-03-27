@@ -44,6 +44,7 @@ public class HttpResponseSerializerTest
         HttpResponseMessage response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
         response.Headers.Add("x-name1", "11111111");
         response.Content = HttpObjectUtils.CreateRequestMessageBody3(SerializeFormat.Form, new { a = 2, b = 3, c = "abc" });
+        response.Content.Headers.ContentLength = 20;
 
         string text = response.ToLoggingText();
         Console.WriteLine(text);
@@ -51,7 +52,7 @@ public class HttpResponseSerializerTest
         Assert.IsTrue(text.Contains("HTTP/1.1 200 OK"));
         Assert.IsTrue(text.Contains("x-name1: 11111111"));
         Assert.IsTrue(text.Contains("Content-Type: application/x-www-form-urlencoded"));
-        Assert.IsFalse(text.Contains("a=2&b=3&c=abc"));
+        Assert.IsTrue(text.Contains("a=2&b=3&c=abc"));
     }
 
     [TestMethod]

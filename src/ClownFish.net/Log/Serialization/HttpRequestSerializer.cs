@@ -22,32 +22,40 @@ internal static class HttpRequestSerializer
 
     public static void ToLoggingText(this HttpRequestMessage request, StringBuilder sb)
     {
+        // HttpRequestMessage 写到日志有3个范围：
+        // 1，记录 “请求行”， “请求头”，“请求体”    MustLogRequest == true && LogRequestBody == true
+        // 2，记录 “请求行”， “请求头”             MustLogRequest == true && LogRequestBody == false
+        // 3，记录 “请求行”                       MustLogRequest == false 
+
         sb.Append(request.Method).Append(' ')
                 .Append(request.RequestUri.AbsoluteUri)
                 .Append(" HTTP/").AppendLineRN(request.Version.ToString());
 
-        if( request.Headers != null ) {
-            foreach( var x in request.Headers ) {
-                foreach( var v in x.Value ) {
-                    sb.AppendLineRN($"{x.Key}: {v}");
-                }
+        if( LoggingOptions.HttpClient.MustLogRequest == false )
+            return;
+
+        // 说明：request.Headers, response.Headers, content.Headers 永远不为null，所以代码中不做判断。
+
+        foreach( var x in request.Headers ) {
+            foreach( var v in x.Value ) {
+                sb.AppendLineRN($"{x.Key}: {v}");
             }
         }
 
-        if( request.Content != null && request.Content.Headers != null ) {
-            foreach( var x in request.Content.Headers ) {
-                foreach( var v in x.Value ) {
-                    sb.AppendLineRN($"{x.Key}: {v}");
-                }
+        if( request.Content == null )
+            return;
+
+        foreach( var x in request.Content.Headers ) {
+            foreach( var v in x.Value ) {
+                sb.AppendLineRN($"{x.Key}: {v}");
             }
         }
 
-        if( request.Content != null && request.RequestBodyCanLog() ) {
+        //sb.Append("## request.Content: ").AppendLineRN(request.Content.GetType().FullName);
 
-            // 大多数情况下，request.Content 的内容放在 MemoryStream 中，但是有可能在这个时候被 Dispose 了，所以再按非常规方式来读取
-            string body = ReadBody(request.Content)
-                          ?? TryReadBodyFromMemoryStream(request.Content);
+        if( request.CanLogBody() ) {
 
+            string body = request.Content.ReadBodyAsText();
             if( body != null ) {
                 sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
             }
@@ -60,64 +68,46 @@ internal static class HttpRequestSerializer
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    internal static bool RequestBodyCanLog(this HttpRequestMessage request)
+    internal static bool CanLogBody(this HttpRequestMessage request)
     {
-        if( LoggingOptions.HttpClient.LogClientRequestBody
-            && request.Content != null
-            && request.Content.Headers != null
-            && request.HasBody()
-            && request.Content.BodyIsText()
-            && request.LoggingIgnoreBody() == false
-            && request.Content.GetBodySize().IsBetween(1, LoggingLimit.HttpBodyMaxLen)
-            ) {
+        if( LoggingOptions.HttpClient.LogRequestBody == false )
+            return false;
 
-            return true;
-        }
+        if( LoggingOptions.RequestBodyBufferSize <= 0)
+            return false;
 
-        return false;
+        if( request.Content == null )
+            return false;
+
+        if( request.HasBody() == false )
+            return false;
+
+        if( request.Content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
+            return false;
+
+        if( request.Content.BodyIsText() == false )
+            return false;
+
+        if( request.IsIgnoreBody() )
+            return false;
+
+        long size = request.Content.GetBodySize();
+        if( size.IsBetween(1, LoggingOptions.RequestBodyBufferSize) == false )
+            return false;
+
+        return true;
     }
 
-    internal static string TryReadBodyFromMemoryStream(HttpContent content)
-    {
-        if( content == null )
-            return null;
+    
 
-        StreamContent content2 = content as StreamContent;
-        if( content2 == null )
-            return null;
 
-        FieldInfo filed1 = typeof(StreamContent).GetField("_content", BindingFlags.Instance | BindingFlags.NonPublic);
-        if( filed1 != null ) {
-            MemoryStream ms = filed1.GetValue(content2) as MemoryStream;
-            if( ms != null ) {
-                try {
-                    byte[] bytes = ms.ToArray();
-                    return Encoding.UTF8.GetString(bytes);
-                }
-                catch {
-                    // 不能读取就不读
-                }
-            }
-        }
-        return null;
-    }
-
-    internal static string ReadBody(HttpContent content)
-    {
-        try {
-            return content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        }
-        catch {
-            // 不能读取就算了~~~
-        }
-        return null;
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool HasBody(this HttpRequestMessage request)
     {
         return HttpUtils.RequestHasBody(request.Method.ToString());
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool BodyIsText(this HttpContent content)
     {
         if( content.Headers.TryGetValues(HttpHeaders.Request.ContentType, out IEnumerable<string> values) ) {
@@ -129,6 +119,7 @@ internal static class HttpRequestSerializer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static long GetBodySize(this HttpContent content)
     {
         if( content.Headers.TryGetValues(HttpHeaders.Request.ContentLength, out IEnumerable<string> values) ) {
@@ -136,11 +127,13 @@ internal static class HttpRequestSerializer
             return contentLength.TryToLong();
         }
         else {
-            return 0L;
+            // 有些情况就是不指定 ContentLength ，例如： Transfer-Encoding: chunked
+            return -1L;
         }
     }
 
-    internal static bool LoggingIgnoreBody(this HttpRequestMessage request)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool IsIgnoreBody(this HttpRequestMessage request)
     {
         return request.GetRequestOption<string>(LoggingIgnoreNames.IgnoreRequestBody) == "1";
     }

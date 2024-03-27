@@ -59,10 +59,10 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
 
             // 填充 HTTP 相关信息
             OprLog log = scope.OprLog;
-            log.SetHttpRequest(httpContext);
-            log.SetHttpData(httpContext);
-            log.SetResponseData(httpContext);
             log.TryGetBizInfo(httpContext);
+            log.SetHttpFields(httpContext);
+            log.SetSomeFields(httpContext);
+            log.SetResponse(httpContext);
             
 
             if( httpContext.IsTransfer ) {

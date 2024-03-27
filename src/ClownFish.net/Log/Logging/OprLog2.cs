@@ -48,7 +48,7 @@ public partial class OprLog
     /// 绑定 HttpRequest 信息
     /// </summary>
     /// <param name="httpContext"></param>
-    public void SetHttpRequest(NHttpContext httpContext)
+    public void SetHttpFields(NHttpContext httpContext)
     {
         if( this.Url != null )  // 避免多次调用
             return;
@@ -77,7 +77,7 @@ public partial class OprLog
     }
 
 
-    internal void SetHttpData(NHttpContext httpContext)
+    internal void SetSomeFields(NHttpContext httpContext)
     {
         this.OutSize = httpContext.Response.ContentLength;
         this.Status = httpContext.Response.StatusCode;
@@ -87,7 +87,10 @@ public partial class OprLog
         }
 
 
-        if( httpContext.IsTransfer == false && this.Module == null && this.Controller == null && this.Action == null && httpContext.PipelineContext.Action != null ) {
+        if( httpContext.IsTransfer == false 
+            && this.Module == null && this.Controller == null && this.Action == null 
+            && httpContext.PipelineContext.Action != null ) {
+
             ActionDescription action = httpContext.PipelineContext.Action;
 
             MethodBase actionMethod = action.MethodInfo;
@@ -151,7 +154,20 @@ public partial class OprLog
         }
     }
 
-    internal void SetResponseData(NHttpContext httpContext)
+    internal void SetRequest(NHttpContext httpContext)
+    {
+        if( this.Request.HasValue() )
+            return;
+
+        try {
+            this.Request = httpContext.Request.GetLogText();
+        }
+        catch( Exception ex ) {
+            this.Request = "###ClownFish.net在记录Request时出现异常：" + ex.ToString();
+        }
+    }
+
+    internal void SetResponse(NHttpContext httpContext)
     {
         if( this.Response.HasValue() )
             return;
@@ -159,7 +175,7 @@ public partial class OprLog
         if( LoggingOptions.Http.MustLogResponse == false )
             return;
 
-        if( httpContext.PipelineContext.ActionResult == null )
+        if( httpContext.PipelineContext.RespResult == null )
             return;
 
         string contentType = httpContext.Response.ContentType;
@@ -175,16 +191,22 @@ public partial class OprLog
             httpContext.Response.AccessHeaders((k, v) => sb.Append(k).Append(": ").AppendLineRN(v));
 
             if( LoggingOptions.Http.LogResponseBody ) {
+
+                // 说明：这种方式实现记录 ResponseBody 并不是完美的方案，有些请求可能就没办法记录到 !
+                // 如果想记录所有请求的 ResponseBody，那需要修改 HttpResponse.Body，并自行实现一个 Stream，
+                // 但是过早地修改 HttpResponse.Body，有可能收到的是 bin 数据，而且长度未知，假如是下载一个大文件，怎么办？
+                // 所以，目前没有想到很完美的解决方案，先就这样吧~~~
+
                 sb.AppendLineRN();
 
-                if( contentType.Contains("json") ) {
-                    sb.Append(httpContext.PipelineContext.ActionResult.ToJson());
+                if( httpContext.PipelineContext.RespResult is string text1 ) {
+                    sb.Append(text1);
                 }
-                else if( contentType.Contains("xml") ) {
-                    sb.Append(httpContext.PipelineContext.ActionResult.ToXml2());
+                else if( contentType.StartsWith0(ResponseContentType.Json) ) {
+                    sb.Append(httpContext.PipelineContext.RespResult.ToJson());
                 }
-                else {
-                    sb.Append(httpContext.PipelineContext.ActionResult.ToString());
+                else if( contentType.StartsWith0(ResponseContentType.Xml) ) {
+                    sb.Append(httpContext.PipelineContext.RespResult.ToXml2());
                 }
             }
         }
@@ -348,15 +370,15 @@ public partial class OprLog
         log.OprName = "err";
 
         if( httpContext != null ) {
-            log.SetHttpRequest(httpContext);
-            log.Request = httpContext.Request.ToLoggingText().SubstringN(LoggingLimit.HttpBodyMaxLen);
+            log.SetHttpFields(httpContext);
+            log.SetRequest(httpContext);
         }
         else {
             log.Url = "error://" + ex.GetType().FullName;
         }
 
         log.SetException(ex);
-
+        log.TruncateTextFields();
         return log;
     }
 

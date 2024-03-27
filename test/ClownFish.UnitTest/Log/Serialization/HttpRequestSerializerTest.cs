@@ -9,7 +9,7 @@ public class HttpRequestSerializerTest
     public void Test_1()
     {
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://www.abc.com/aa/bb.aspx");
-        string text = TextUtils.GetLogText(request);
+        string text = request.ToLoggingText();
         Console.WriteLine(text);
 
         Assert.AreEqual("GET http://www.abc.com/aa/bb.aspx HTTP/1.1", text.Trim());
@@ -30,7 +30,7 @@ public class HttpRequestSerializerTest
         };
         HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
-        string text = TextUtils.GetLogText(request);
+        string text = request.ToLoggingText();
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("POST http://www.abc.com/aa/bb.aspx HTTP/1.1"));
@@ -55,7 +55,7 @@ public class HttpRequestSerializerTest
 
         request.Dispose();    // 注意这里！ ##################
 
-        string text = TextUtils.GetLogText(request);
+        string text = request.ToLoggingText();
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("POST http://www.abc.com/aa/bb.aspx HTTP/1.1"));
@@ -78,7 +78,7 @@ public class HttpRequestSerializerTest
         };
         HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
-        string text = TextUtils.GetLogText(request);
+        string text = request.ToLoggingText();
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("POST http://www.abc.com/aa/bb.aspx HTTP/1.1"));
@@ -100,7 +100,7 @@ public class HttpRequestSerializerTest
         };
         HttpRequestMessage request = ClownFish.WebClient.V2.HttpObjectUtils.CreateRequestMessage(http);
 
-        string text = TextUtils.GetLogText(request);
+        string text = request.ToLoggingText();
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("POST http://www.abc.com/aa/bb.aspx HTTP/1.1"));

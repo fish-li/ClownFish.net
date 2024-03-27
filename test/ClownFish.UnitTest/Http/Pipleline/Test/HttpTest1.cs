@@ -102,7 +102,7 @@ public class HttpTest1
             Assert.AreEqual(json, handler1.RequestBodyText);
             Assert.AreEqual(json, Encoding.UTF8.GetString(handler1.RequestBodyBytes));
 
-            Assert.AreEqual("OK/1533", mock.PipelineContext.ActionResult.ToString());
+            Assert.AreEqual("OK/1533", mock.PipelineContext.RespResult.ToString());
         }
     }
 

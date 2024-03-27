@@ -26,7 +26,7 @@ public sealed class NbErrorResult : ActionResult
     /// <returns></returns>
     public override async Task ExecuteResultAsync(ActionContext context)
     {
-        NHttpContext httpContextNetCore = new HttpContextNetCore(context.HttpContext);
+        NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
 
         await httpContextNetCore.Http500Async(_exception);
     }
@@ -39,4 +39,5 @@ public sealed class NbErrorResult : ActionResult
     {
         throw new NotImplementedException();
     }
+
 }
