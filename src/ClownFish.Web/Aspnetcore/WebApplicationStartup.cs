@@ -65,7 +65,7 @@ public class WebApplicationStartup
             // https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
             options.AllowSynchronousIO = true;
             options.AddServerHeader = false;
-            options.Limits.MaxRequestBodySize = FirstModule.MaxRequestBodySize;
+            options.Limits.MaxRequestBodySize = ClownFishWebOptions.MaxRequestBodySize;
         });
         services.Configure<IISServerOptions>(options => {
             options.AllowSynchronousIO = true;

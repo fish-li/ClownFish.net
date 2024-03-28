@@ -14,13 +14,13 @@ public static class StringBuilderPool
     private static readonly DefaultObjectPool<StringBuilder> s_pool = new DefaultObjectPool<StringBuilder>(
             new StringBuilderPooledObjectPolicy {
                 // StringBuilder 实例的初始容量
-                InitialCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_InitialCapacity", 32 * 1024),
+                InitialCapacity = ClownFishOptions.StringBuilderPool_InitialCapacity,
 
                 // 归还时接受的 StringBuilder 实例最大容量，如果超过将不接受（放弃）
-                MaximumRetainedCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetainedCapacity", 1024 * 512)
+                MaximumRetainedCapacity = ClownFishOptions.StringBuilderPool_MaximumRetainedCapacity
             },
             // 缓存池中最多保留多少个 StringBuilder 实例
-            LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetained", Environment.ProcessorCount * 6)
+            ClownFishOptions.StringBuilderPool_MaximumRetained
         );
 
 

@@ -8,8 +8,6 @@ namespace ClownFish.WebClient;
 /// </summary>
 public sealed class HttpOption : ILoggingObject, IToAllText
 {
-    private static readonly bool s_useAppExitToken = LocalSettings.GetBool("ClownFish_HttpClient_UseAppExitToken", 1);
-
     /// <summary>
     /// 构造方法
     /// </summary>
@@ -22,7 +20,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         Timeout = HttpClientDefaults.HttpClientTimeout;
 
 #if NETCOREAPP
-        CancellationToken = s_useAppExitToken ? ClownFishInit.AppExitToken : CancellationToken.None;
+        CancellationToken = HttpClientDefaults.UseAppExitToken ? ClownFishInit.AppExitToken : CancellationToken.None;
 #endif
     }
 

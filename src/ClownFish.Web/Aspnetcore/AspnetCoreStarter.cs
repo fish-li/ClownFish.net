@@ -16,6 +16,7 @@ public static class AspnetCoreStarter
 
         ClownFishInit.InitBase();
         ConfigClownFish();
+        TypeHelper.Init();
 
         ShowSysEnvInfo();
 
@@ -31,10 +32,7 @@ public static class AspnetCoreStarter
         if( startup.AutoInitLog || startup.AutoInitTracing )
             ClownFishInit.InitLogAsDefault();
 
-        if( startup.AutoInitAuth )
-            ClownFishWebInit.InitAuth();
-
-        TypeHelper.Init();
+        ClownFishWebInit.Init(startup.AutoInitAuth);
 
         CreateWebApp(startup);
 

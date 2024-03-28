@@ -72,6 +72,7 @@ public static class DebugReport
                     OptionList.Add(typeof(LoggingLimit.SQL));
                     OptionList.Add(typeof(HttpClientDefaults));
                     OptionList.Add(typeof(CacheOption));
+                    OptionList.Add(typeof(ClownFishOptions));
 
                     s_inited = true;
                 }

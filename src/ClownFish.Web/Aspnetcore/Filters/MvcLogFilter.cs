@@ -4,8 +4,6 @@ namespace ClownFish.Web.Aspnetcore.Filters;
 
 public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 {
-    private static readonly int s_frameworkBeforePerformanceThresholdMs = LocalSettings.GetInt("MVC_FrameworkBefore_PerformanceThresholdMs", 10);
-
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         HttpPipelineContext pipelineContext = HttpPipelineContext.Get2();
@@ -89,7 +87,7 @@ public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
         TimeSpan time = endTime - pipelineContext.StartTime;
 
         // 如果框架部分的执行时间较短就不记录到日志中
-        if( time.TotalMilliseconds < s_frameworkBeforePerformanceThresholdMs )
+        if( time.TotalMilliseconds < ClownFishWebOptions.Framework_PerformanceThresholdMs )
             return;
 
 

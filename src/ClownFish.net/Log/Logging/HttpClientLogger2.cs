@@ -22,7 +22,6 @@ public static class HttpClientLogger2
         else
             HttpClientLogger.Init();
     }
-
 }
 
 

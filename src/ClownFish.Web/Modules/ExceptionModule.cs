@@ -4,8 +4,6 @@ public sealed class ExceptionModule : NHttpModule
 {
     public override int Order => 99999;   // 尽量放在最后面，允许项目中定义自己的ExceptionModule抢先执行异常处理
 
-    internal static bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
-
     /// <summary>
     /// 决定在异常发生时，是否要给客户端输出异常详情的回调委托
     /// </summary>
@@ -13,7 +11,7 @@ public sealed class ExceptionModule : NHttpModule
 
     private static bool IsShowFullException(NHttpContext httpContext, Exception ex)
     {
-        return AlwaysShowFullException;
+        return ClownFishWebOptions.AlwaysShowFullException;
     }
 
     public override void OnError(NHttpContext httpContext)

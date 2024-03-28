@@ -22,7 +22,6 @@ public static class AuthenticationManager
             AuthorizeAttribute.SetCheckRightsImpl(checkRights);
         }
 
-        DebugReport.OptionList.Add(typeof(ClownFish.Web.Security.Auth.AuthOptions));
         DebugReport.OptionList.Add(AuthenticationManager.GetJwtOptions());
     }
 

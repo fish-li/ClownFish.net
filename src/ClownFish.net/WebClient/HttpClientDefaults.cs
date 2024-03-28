@@ -37,4 +37,9 @@ public static class HttpClientDefaults
     /// HttpJsonWriter-HTTP客户端调用的超时时间（单位：毫秒），默认值：30 秒
     /// </summary>
     public static /* readonly */ int HttpJsonWriterTimeout = LocalSettings.GetInt("ClownFish_HttpJsonWriter_Timeout", 30 * 1000);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly bool UseAppExitToken = LocalSettings.GetBool("ClownFish_HttpClient_UseAppExitToken", 1);
 }

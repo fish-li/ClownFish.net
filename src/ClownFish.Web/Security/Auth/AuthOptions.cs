@@ -18,4 +18,8 @@ public static class AuthOptions
     /// </summary>
     public static bool JwtTokenExpirationRenewal { get; set; } = LocalSettings.GetBool("ClownFish_JwtToken_ExpirationRenewal", 1);
 
+    internal static void Init()
+    {
+        // 不需要实际代码，用于触发 cctor
+    }
 }

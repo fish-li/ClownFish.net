@@ -2,13 +2,6 @@
 
 public class FirstModule
 {
-    private static readonly bool s_debugHttpLine = LocalSettings.GetBool("ClownFish_Aspnet_DebugHttpLine");
-    private static readonly bool s_deleteUselessHeaders = LocalSettings.GetBool("ClownFish_Aspnet_DeleteUselessHeaders", 1);
-    private static readonly bool s_logExecutTime = LocalSettings.GetBool("ClownFish_Aspnet_LogExecutTime");
-    private static readonly bool s_show404Page = LocalSettings.GetBool("ClownFish_Aspnet_Show404Page");
-
-    public static readonly int MaxRequestBodySize = LocalSettings.GetUInt("AspNetCore_Kestrel_MaxRequestBodySize", 1080 * 1024);
-
     private readonly RequestDelegate _next;
 
     public FirstModule(RequestDelegate next)
@@ -18,11 +11,11 @@ public class FirstModule
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        if( s_logExecutTime ) {
+        if( ClownFishWebOptions.LogExecutTime ) {
             HttpContextUtils.LogExecutTime(httpContext);
         }
 
-        if( s_deleteUselessHeaders ) {
+        if( ClownFishWebOptions.DeleteUselessHeaders ) {
             HttpHeaderUtils.DeleteUselessHeaders(httpContext.Request);
         }
 
@@ -34,7 +27,7 @@ public class FirstModule
 
         NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
 
-        if( s_debugHttpLine )
+        if( ClownFishWebOptions.DebugHttpLine )
             Console2.Debug(httpContextNetCore.Request.HttpMethod + " " + httpContextNetCore.Request.FullUrl);
 
         // 设置一些上下文及日志作用域
@@ -104,7 +97,7 @@ public class FirstModule
         }
 
 
-        if( httpContext.Response.StatusCode == 404 && s_show404Page && httpContext.Response.HasStarted == false ) {
+        if( httpContext.Response.StatusCode == 404 && ClownFishWebOptions.Show404Page && httpContext.Response.HasStarted == false ) {
             await Http404Handler.Instance.ProcessRequestAsync(httpContextNetCore);
         }
     }
@@ -122,7 +115,7 @@ public class FirstModule
 
     private void CheckMaxRequestBodySize(NHttpContext httpContext)
     {
-        if( httpContext.Request.ContentLength > MaxRequestBodySize ) {
+        if( httpContext.Request.ContentLength > ClownFishWebOptions.MaxRequestBodySize ) {
 
             // 上传文件可以不检查
             SerializeFormat format = ContenTypeUtils.GetFormat(httpContext.Request.ContentType);

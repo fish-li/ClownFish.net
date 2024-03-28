@@ -5,9 +5,6 @@
 /// </summary>
 public abstract class AsyncBackgroundTask : BaseBackgroundTask
 {
-    private static readonly int s_waitSecond60 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds1", 60);
-    private static readonly int s_waitSecond66 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds2", 66);    
-
     internal async Task RunAsync()
     {
         this.Status = -1;
@@ -168,11 +165,11 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
                 break;
 
             // 如果等待时间不是特别长，就使用这个【时间参数】去等待
-            if( span1.TotalSeconds <= s_waitSecond66 )
+            if( span1.TotalSeconds <= ClownFishOptions.AsyncBackgroundTask_WaitSeconds2 )
                 await Wait0(span1);
             else
                 // 否则，先等待 60 秒，下次循环时再计算剩余等待时间，再等待…………
-                await Wait0(TimeSpan.FromSeconds(s_waitSecond60));
+                await Wait0(TimeSpan.FromSeconds(ClownFishOptions.AsyncBackgroundTask_WaitSeconds1));
 
             // 如果用户在界面点击了【立即执行】，此时需要立即结束等待
             if( _tokenSource.IsCancellationRequested )

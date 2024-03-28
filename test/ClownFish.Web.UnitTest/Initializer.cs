@@ -16,7 +16,7 @@ public class Initializer
         System.Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Initializer).Assembly.Location);
 
         ClownFishInit.InitBase();
-        ClownFish.Web.ClownFishWebInit.InitAuth();
+        ClownFishWebInit.Init(true);
     }
 
 

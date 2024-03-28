@@ -46,13 +46,11 @@ public partial class NHttpRequest : ILoggingObject
     //             As of "07/27/2023 03:47:51 +00:00", the heartbeat has been running for "00:00:01.0234029" which is longer than "00:00:01". This could be caused by thread pool starvation.
     // 2, Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Request body too large. The max request body size is xxxxxxxxxx bytes.
 
-    internal static bool ShowBadHttpRequestException = LocalSettings.GetBool("ClownFish_ShowBadHttpRequestException", 1);
-
 
     private void ShowReadBodyException(string method, Exception ex)
     {
         if( ex.GetType().Name == "BadHttpRequestException" ) {
-            if( ShowBadHttpRequestException ) {
+            if( ClownFishOptions.ShowBadHttpRequestException ) {
                 //这种异常没法解决，显示堆栈也任何作用，反而把 Console 搞得很乱
                 Console2.Warnning(method + " ERROR: " + ex.Message);
             }

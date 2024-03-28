@@ -4,11 +4,18 @@ namespace ClownFish.Web;
 
 public static class ClownFishWebInit
 {
-    public static void InitAuth()
+    public static void Init(bool initAuth)
     {
-        AuthOptions.CookieName = LocalSettings.GetSetting("ClownFish_Authentication_CookieName", "x-token");
-        AuthOptions.HeaderName = LocalSettings.GetSetting("ClownFish_Authentication_HeaderName", "xtoken");
+        AuthOptions.Init();
+        DebugReport.OptionList.Add(typeof(ClownFish.Web.Security.Auth.AuthOptions));
+        DebugReport.OptionList.Add(typeof(ClownFish.Web.ClownFishWebOptions));
 
+        if( initAuth )
+            InitAuth();
+    }
+
+    internal static void InitAuth()
+    {
         JwtOptions jwtOptions = new JwtOptions {
             AlgorithmName = LocalSettings.GetSetting("ClownFish_JwtToken_AlgorithmName").IfEmpty(JwtUtils.DefaultAlgorithm),
             IssuerName = EnvUtils.GetAppName(),
@@ -32,7 +39,7 @@ public static class ClownFishWebInit
         AuthenticationManager.Init(provider, null);
     }
 
-    public static X509Certificate2 GetAuthX509Cert()
+    public static X509Certificate2 GetAuthX509Cert()  // nebula也要调用这个方法
     {
         // 允许用户指定一个 “包含密码和证书” 的配置文件
         // 注意：这个方法要给Nebula调用，所以获取配置时，使用 Settings 而不是 LocalSettings
