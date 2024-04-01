@@ -13,16 +13,23 @@ internal static class JsonSerializerSettingsUtils
     private static readonly JsonSerializerSettings s_jsonSettingsCamelCase = Get0(JsonStyle.CamelCase);
     private static readonly JsonSerializerSettings s_jsonSettingsElasticsearch = Get0(SimpleEsClient.EsJsonStyle);
 
+    internal static bool EnableCache = true;  // 单元测试可修改
+
     internal static JsonSerializerSettings Get(JsonStyle style = JsonStyle.None)
     {
-        return style switch {
-            JsonStyle.None => s_jsonSettingsNone,
-            JsonStyle.Indented => s_jsonSettingsIndented,
-            JsonStyle.CamelCase => s_jsonSettingsCamelCase,
-            SimpleEsClient.EsJsonStyle => s_jsonSettingsElasticsearch,
+        if( EnableCache ) {
+            return style switch {
+                JsonStyle.None => s_jsonSettingsNone,
+                JsonStyle.Indented => s_jsonSettingsIndented,
+                JsonStyle.CamelCase => s_jsonSettingsCamelCase,
+                SimpleEsClient.EsJsonStyle => s_jsonSettingsElasticsearch,
 
-            _ => s_dict.GetOrAdd(style, Get0)
-        };
+                _ => s_dict.GetOrAdd(style, Get0)
+            };
+        }
+        else {
+            return Get0(style);
+        }
     }
 
     private static JsonSerializerSettings Get0(JsonStyle style)
@@ -41,15 +48,24 @@ internal static class JsonSerializerSettingsUtils
         if( style.HasFlag(JsonStyle.Indented) )
             settings.Formatting = Formatting.Indented;
 
+
         if( style.HasFlag(JsonStyle.CamelCase) ) {
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
         else if( style.HasFlag(JsonStyle.NameToLower) ) {
             settings.ContractResolver = new LowerCaseContractResolver();
         }
+        else if( ClownFishOptions.JsonSerializer_CamelCase ) {
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        }
+        //else {
+        //    默认值：new Newtonsoft.Json.Serialization.DefaultContractResolver() ，采用C#的大驼峰风格
+        //}
+
 
         if( style.HasFlag(JsonStyle.UtcTime) ) {
             settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+            settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
             settings.DateFormatString = null;
         }
         else {

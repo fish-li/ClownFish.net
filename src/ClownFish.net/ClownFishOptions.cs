@@ -17,5 +17,8 @@ internal static class ClownFishOptions
 
     public static readonly int MinMessageLength = LocalSettings.GetUInt("ClownFish_MQ_MessageLength_Min", 5);
 
+    public static bool JsonSerializer_CreateDefault = LocalSettings.GetBool("ClownFish_JsonSerializer_CreateDefault");
+
+    public static bool JsonSerializer_CamelCase = LocalSettings.GetBool("ClownFish_JsonSerializer_CamelCase");
 
 }

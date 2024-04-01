@@ -27,7 +27,7 @@ public enum JsonStyle
     CamelCase = 4,
 
     /// <summary>
-    /// 使用本地时区，日期格式：yyyy-MM-dd HH:mm:ss
+    /// 日期格式：yyyy-MM-dd HH:mm:ss
     /// </summary>
     TimeFormat19 = 8,
 
@@ -42,7 +42,7 @@ public enum JsonStyle
     KeepNull = 32,
 
     /// <summary>
-    /// 使用UTC时区
+    /// 使用UTC时区，如果不指定则使用本地时区
     /// </summary>
     UtcTime = 64,
 
