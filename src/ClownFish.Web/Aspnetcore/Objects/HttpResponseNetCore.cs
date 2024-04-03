@@ -70,21 +70,25 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// <param name="expires"></param>
     public override void SetCookie2(string name, string value, DateTime? expires = null)
     {
-        var httpRequest = HttpContext.Request;
+        var httpRequest = this.HttpContext.Request;
 
-        CookieOptions options = GetCookieOptions(httpRequest);
-        options.Path = "/";
-
-        if( expires != null && expires.HasValue ) {
-            options.Expires = expires;
-        }
+        CookieOptions options = CreateCookieOptions(httpRequest, expires);
 
         _response.Cookies.Append(name, value, options);
     }
 
 
-    private static CookieOptions GetCookieOptions(NHttpRequest request)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="expires"></param>
+    /// <returns></returns>
+    public static CookieOptions CreateCookieOptions(NHttpRequest request, DateTime? expires = null)
     {
+        if( request == null )
+            throw new ArgumentNullException(nameof(request));
+
         // https://docs.microsoft.com/zh-cn/aspnet/core/security/samesite?view=aspnetcore-3.1
         // https://docs.microsoft.com/zh-cn/dotnet/core/compatibility/3.0-3.1
 
@@ -93,8 +97,14 @@ public sealed class HttpResponseNetCore : NHttpResponse
 
         var options = new CookieOptions {
             HttpOnly = true,
-            SameSite = SameSiteMode.Unspecified
+            Path = "/",
+            SameSite = SameSiteMode.Unspecified,
+            // Domain 没有赋值，ASPNET 会取当前请求所在的域名
         };
+
+        if( expires.HasValue ) {
+            options.Expires = expires;
+        }
 
         // 请求在转发时，有可能会从 https 变成 http，所以这里先检查有没有转发相关的请求头，用它来判断原始请求是不是 https
         string xfp = request.Header("X-Forwarded-Proto");

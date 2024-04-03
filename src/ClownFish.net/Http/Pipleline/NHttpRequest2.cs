@@ -47,10 +47,12 @@ public partial class NHttpRequest : ILoggingObject
     // 2, Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Request body too large. The max request body size is xxxxxxxxxx bytes.
 
 
+    internal static readonly bool ShowBadHttpRequestException = LocalSettings.GetBool("ClownFish_ShowBadHttpRequestException", 0);
+
     private void ShowReadBodyException(string method, Exception ex)
     {
         if( ex.GetType().Name == "BadHttpRequestException" ) {
-            if( ClownFishOptions.ShowBadHttpRequestException ) {
+            if( ShowBadHttpRequestException ) {
                 //这种异常没法解决，显示堆栈也任何作用，反而把 Console 搞得很乱
                 Console2.Warnning(method + " ERROR: " + ex.Message);
             }

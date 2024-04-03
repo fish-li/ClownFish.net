@@ -158,8 +158,8 @@ public static partial class ResponseUtils
 
         if( responseMessage.Content != null ) {
             foreach( KeyValuePair<string, IEnumerable<string>> kv2 in responseMessage.Content.Headers ) {
-                //if( ignoreResponseHeaders.Contains(kv2.Key) )
-                //    continue;
+                if( ignoreResponseHeaders.Contains(kv2.Key) )
+                    continue;
 
                 if( HttpHeaders.Response.ContentType.Is(kv2.Key) )
                     continue;

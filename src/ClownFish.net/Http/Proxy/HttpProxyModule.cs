@@ -17,7 +17,7 @@ public abstract class HttpProxyModule : NHttpModule
     /// <summary>
     /// 不需要复制的响应头
     /// </summary>
-    public static readonly HashSet<string> IgnoreResponseHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {        
+    public static readonly HashSet<string> IgnoreResponseHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
         "Server", "X-Powered-By", "x-tracesteps",
 
         // 下面这个响应头只能通过“属性”的方式指定，所以在“复制”时必须排除

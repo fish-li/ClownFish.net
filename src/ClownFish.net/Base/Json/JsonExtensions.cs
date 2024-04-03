@@ -7,6 +7,15 @@ namespace ClownFish.Base;
 /// </summary>
 public static class JsonExtensions
 {
+    internal static class Options
+    {
+        internal static bool CreateDefault = LocalSettings.GetBool("ClownFish_JsonSerializer_CreateDefault");
+
+        internal static bool CamelCase = LocalSettings.GetBool("ClownFish_JsonSerializer_CamelCase");
+    }
+   
+
+
     internal static string Serialize0(object obj, JsonSerializerSettings settings)
     {
         if( obj == null )
@@ -15,9 +24,9 @@ public static class JsonExtensions
         // 这里不使用 CreateDefault 方法，因为实际项目中没法预料将 Newtonsoft.Json.JsonConvert.DefaultSettings 设置成什么样子，
         // 它可能会导致框架不能预期工作~~~
 
-        JsonSerializer jsonSerializer = ClownFishOptions.JsonSerializer_CreateDefault 
-                                               ? JsonSerializer.CreateDefault(settings) // 默认不启用
-                                               : JsonSerializer.Create(settings);
+        JsonSerializer jsonSerializer = Options.CreateDefault
+                                        ? JsonSerializer.CreateDefault(settings) // 默认不启用
+                                        : JsonSerializer.Create(settings);
 
         StringBuilder sb = StringBuilderPool.Get();
         try {
