@@ -33,10 +33,6 @@ public sealed class EsConnOption
     /// </summary>
     public int? TimeoutMs { get; set; }
 
-    /// <summary>
-    /// 索引名称后缀的时间格式，例如："-yyyyMMdd"
-    /// </summary>
-    public string IndexNameTimeFormat { get; set; } = "-yyyyMMdd";
 
     private string _url;
 
@@ -74,17 +70,6 @@ public sealed class EsConnOption
 
 
     /// <summary>
-    /// Set IndexNameTimeFormat
-    /// </summary>
-    /// <param name="indexNameTimeFormat"></param>
-    /// <returns></returns>
-    public EsConnOption SetIndexNameTimeFormat(string indexNameTimeFormat)
-    {
-        this.IndexNameTimeFormat = indexNameTimeFormat;
-        return this;
-    }
-
-    /// <summary>
     /// <inheritdoc/>
     /// </summary>
     /// <returns></returns>
@@ -114,11 +99,6 @@ public sealed class EsConnOption
         EsConnOption opt = Create1(DbConnManager.GetAppDbConfig(connName, false))
                             ?? Settings.GetSetting<EsConnOption>(connName, false);
         if( opt != null ) {
-
-            // 添加默认值
-            if( opt.IndexNameTimeFormat.IsNullOrEmpty() )
-                opt.IndexNameTimeFormat = "-yyyyMMdd";
-
             return opt;
         }
 
@@ -149,7 +129,6 @@ public sealed class EsConnOption
             Password = dbConfig.Password,
             Https = args.GetValue(nameof(Https)).TryToBool(),
             TimeoutMs = timeout > 0 ? timeout : null,
-            IndexNameTimeFormat = args.GetValue(nameof(IndexNameTimeFormat))
         };
     }
 }

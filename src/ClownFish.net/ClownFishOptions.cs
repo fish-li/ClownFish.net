@@ -1,33 +1,31 @@
-﻿using ClownFish.MQ;
-using ClownFish.Tasks;
+﻿using ClownFish.Log.Writers;
 
 namespace ClownFish;
 
-
 internal static class ClownFishOptions
 {
-    // 说明：这个类不直接定义 static readonly 的字段变量，
-    // 因为如果在程序初始化早期被访问，那么这些变量的值就【提前】固定了，导致“远程App.config”定义的参数不起作用
-
 #if NETCOREAPP
-    public static int MemoryStreamPool_BlockSize => MemoryStreamPool.BlockSize;
-    public static int MemoryStreamPool_LargeBufferMultiple => MemoryStreamPool.LargeBufferMultiple;
-    public static int MemoryStreamPool_MaximumBufferSize => MemoryStreamPool.MaximumBufferSize;
+    public static readonly int MemoryStreamPool_BlockSize = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultBlockSize", 32 * 1024);
+    public static readonly int MemoryStreamPool_LargeBufferMultiple = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultLargeBufferMultiple", 256 * 1024);
+    public static readonly int MemoryStreamPool_MaximumBufferSize = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultMaximumBufferSize", 2 * 1024 * 1024);
 
-    public static int StringBuilderPool_InitialCapacity => StringBuilderPool.Options.InitialCapacity;
-    public static int StringBuilderPool_MaximumRetainedCapacity => StringBuilderPool.Options.MaximumRetainedCapacity;
-    public static int StringBuilderPool_MaximumRetained => StringBuilderPool.Options.MaximumRetained;
+    public static readonly int StringBuilderPool_InitialCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_InitialCapacity", 32 * 1024);
+    public static readonly int StringBuilderPool_MaximumRetainedCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetainedCapacity", 1024 * 512);
+    public static readonly int StringBuilderPool_MaximumRetained = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetained", Environment.ProcessorCount * 6);
 
-    public static int AsyncBackgroundTask_WaitSeconds1 => AsyncBackgroundTask.WaitSecond60;
-    public static int AsyncBackgroundTask_WaitSeconds2 => AsyncBackgroundTask.WaitSecond66;
+    public static readonly int AsyncBackgroundTask_WaitSeconds1 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds1", 60);
+    public static readonly int AsyncBackgroundTask_WaitSeconds2 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds2", 66);
+
 #endif
 
-    public static bool ShowBadHttpRequestException => NHttpRequest.ShowBadHttpRequestException;
+    public static readonly bool ShowBadHttpRequestException = LocalSettings.GetBool("ClownFish_ShowBadHttpRequestException", 0);
 
-    public static int MinMessageLength => QueueUtils.MinMessageLength;
+    public static readonly int MinMessageLength = LocalSettings.GetUInt("ClownFish_MQ_MessageLength_Min", 5);
 
-    public static bool JsonSerializer_CreateDefault => JsonExtensions.Options.CreateDefault;
-    public static bool JsonSerializer_CamelCase => JsonExtensions.Options.CamelCase;
+    public static bool JsonSerializer_CreateDefault = LocalSettings.GetBool("ClownFish_JsonSerializer_CreateDefault");
+    public static bool JsonSerializer_CamelCase = LocalSettings.GetBool("ClownFish_JsonSerializer_CamelCase");
+
+    public static string IndexNameTimeFormat => ElasticsearchWriter.IndexNameTimeFormat;
 
 }
 

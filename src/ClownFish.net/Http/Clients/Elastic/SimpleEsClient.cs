@@ -17,21 +17,26 @@ public sealed class SimpleEsClient
 
     private readonly EsConnOption _option;
 
+    private readonly string _indexNameTimeFormat;
+
     /// <summary>
     /// 构造方法
     /// </summary>
-    /// <param name="option"></param>
-    public SimpleEsClient(EsConnOption option)
+    /// <param name="option">elasticsearch连接参数</param>
+    /// <param name="indexNameTimeFormat">调用WriteXXX方法写数据时，如果不指定indexName，那么将根据这个参数来生成indexName</param>
+    public SimpleEsClient(EsConnOption option, string indexNameTimeFormat = "-yyyyMMdd")
     {
         if( option == null )
             throw new ArgumentNullException(nameof(option));
 
         option.Validate();
         _option = option;
+        _indexNameTimeFormat = indexNameTimeFormat;
     }
 
     #region 基础方法
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private HttpOption SetAuth(HttpOption httpOption)
     {
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/http-clients.html
@@ -68,31 +73,18 @@ public sealed class SimpleEsClient
         return SetAuth(httpOption);
     }
 
-
     /// <summary>
     /// 获取索引名称，
-    /// 默认返回：name-yyyyMMdd
+    /// 默认返回：dataTypeName-yyyyMMdd
     /// </summary>
     /// <param name="dataType"></param>
     /// <returns></returns>
     private string GetIndexName(Type dataType)
     {
-        // IndexNameTimeFormat 这个参数应该跟随 dataType 才是最恰当的，但是这样不太好设计…………
-        // 如果采用最简单的做法 [Attribute]，就会让这个参数失去灵活性。
-        // 因为 IndexNameTimeFormat 是要和 ES 的 Index Lifecycle Policies 配合使用的，
-        // 例如 如果希望OprLog保留 6小时，那么 IndexNameTimeFormat 就应该设置为 "-yyyyMMdd-HH"
-        // 如果希望保留 30天，最好将 IndexNameTimeFormat 就应该设置为 "-yyyyMMdd"
-        // 反之，如果设置为保留 N小时，IndexNameTimeFormat 就【不能】设置为 "-yyyyMM"
-
-        // 现在这个做法就将 【灵活性】转移到类型之外了，由调用方来控制，
-        // 此外，当前设计并不完美，_option.IndexNameTimeFormat 将影响所有的 dataType 调用参数，
-        // 会导致不同的 日志数据类型 使用相同的 IndexNameTimeFormat ！
-        // 因此如果希望能独立控制 IndexNameTimeFormat，可以创建多个 SimpleEsClient 实例，传递不同的 _option 参数
-
-        if( _option.IndexNameTimeFormat.IsNullOrEmpty() )
+        if( _indexNameTimeFormat.IsNullOrEmpty() )
             return dataType.Name.NameToLower();   // 这种情况使用一个索引
         else
-            return dataType.Name.NameToLower() + DateTime.Now.ToString(_option.IndexNameTimeFormat);
+            return dataType.Name.NameToLower() + DateTime.Now.ToString(_indexNameTimeFormat);
     }
 
     /// <summary>
@@ -100,6 +92,7 @@ public sealed class SimpleEsClient
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetDocumentId(IMsgObject data)
     {
         return data.GetId();

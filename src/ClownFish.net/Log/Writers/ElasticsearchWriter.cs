@@ -7,7 +7,7 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class ElasticsearchWriter : ILogWriter
 {
-    private static readonly string s_indexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd");
+    internal static readonly string IndexNameTimeFormat = Settings.GetSetting("ClownFish_Log_ES_IndexNameFormat", "-yyyyMMdd");
 
     private SimpleEsClient _client;
 
@@ -25,10 +25,9 @@ internal sealed class ElasticsearchWriter : ILogWriter
             return false;
         }
 
-        opt.IndexNameTimeFormat = s_indexNameTimeFormat;
-        _client = new SimpleEsClient(opt);
+        _client = new SimpleEsClient(opt, IndexNameTimeFormat);
 
-        Console2.Info(this.GetType().FullName + " Init OK, IndexNameFormat: " + s_indexNameTimeFormat);
+        Console2.Info(this.GetType().FullName + " Init OK, IndexNameFormat: " + IndexNameTimeFormat);
         return true;
     }
 

@@ -29,7 +29,7 @@ public class ClownFishOptionsTest
         int j = ClownFishOptions.MinMessageLength;
         bool k = ClownFishOptions.JsonSerializer_CreateDefault;
         bool l = ClownFishOptions.JsonSerializer_CamelCase;
-
+        string m = ClownFishOptions.IndexNameTimeFormat;
     }
 }
 

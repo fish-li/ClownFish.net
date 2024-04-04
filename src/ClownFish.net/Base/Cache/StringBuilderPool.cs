@@ -11,23 +11,16 @@ public static class StringBuilderPool
 {
 #if NETCOREAPP
 
-    internal static class Options
-    {
-        public static readonly int InitialCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_InitialCapacity", 32 * 1024);
-        public static readonly int MaximumRetainedCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetainedCapacity", 1024 * 512);
-        public static readonly int MaximumRetained = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetained", Environment.ProcessorCount * 6);
-    }   
-
     private static readonly DefaultObjectPool<StringBuilder> s_pool = new DefaultObjectPool<StringBuilder>(
             new StringBuilderPooledObjectPolicy {
                 // StringBuilder 实例的初始容量
-                InitialCapacity = Options.InitialCapacity,
+                InitialCapacity = ClownFishOptions.StringBuilderPool_InitialCapacity,
 
                 // 归还时接受的 StringBuilder 实例最大容量，如果超过将不接受（放弃）
-                MaximumRetainedCapacity = Options.MaximumRetainedCapacity
+                MaximumRetainedCapacity = ClownFishOptions.StringBuilderPool_MaximumRetainedCapacity
             },
             // 缓存池中最多保留多少个 StringBuilder 实例
-            Options.MaximumRetained
+            ClownFishOptions.StringBuilderPool_MaximumRetained
         );
 
 

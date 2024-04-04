@@ -55,7 +55,7 @@ internal static class JsonSerializerSettingsUtils
         else if( style.HasFlag(JsonStyle.NameToLower) ) {
             settings.ContractResolver = new LowerCaseContractResolver();
         }
-        else if( JsonExtensions.Options.CamelCase ) {
+        else if( ClownFishOptions.JsonSerializer_CamelCase ) {
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
         //else {

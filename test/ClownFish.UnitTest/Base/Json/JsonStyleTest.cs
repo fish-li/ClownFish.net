@@ -32,8 +32,8 @@ public class JsonStyleTest
     [TestCleanup]
     public void TestCleanup()
     {
-        JsonExtensions.Options.CreateDefault = false;
-        JsonExtensions.Options.CamelCase = false;
+        ClownFishOptions.JsonSerializer_CreateDefault = false;
+        ClownFishOptions.JsonSerializer_CamelCase = false;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = null;
     }
@@ -52,7 +52,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_None_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -70,7 +70,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_None_2()
     {
-        JsonExtensions.Options.CamelCase = true;
+        ClownFishOptions.JsonSerializer_CamelCase = true;
 
         string json1 = OneLog.ToJson();
 
@@ -97,7 +97,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_KeepType_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -135,7 +135,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_Indented_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -163,7 +163,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_CamelCase_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -183,7 +183,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_CamelCase_2()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -216,7 +216,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_TimeFormat19_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {
@@ -315,7 +315,7 @@ public class JsonStyleTest
     [TestMethod]
     public void Test_UtcTime_1()
     {
-        JsonExtensions.Options.CreateDefault = true;
+        ClownFishOptions.JsonSerializer_CreateDefault = true;
 
         Newtonsoft.Json.JsonConvert.DefaultSettings = new Func<Newtonsoft.Json.JsonSerializerSettings>(() => {
             return new Newtonsoft.Json.JsonSerializerSettings() {

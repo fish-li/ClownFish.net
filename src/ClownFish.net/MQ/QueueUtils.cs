@@ -8,7 +8,7 @@ public static class QueueUtils
     /// <summary>
     /// 消息的最小长度，小于这个长度的消息会认为是无效的消息，它将被丢弃
     /// </summary>
-    public static readonly int MinMessageLength = LocalSettings.GetUInt("ClownFish_MQ_MessageLength_Min", 5);
+    public static int MinMessageLength => ClownFishOptions.MinMessageLength;
 
 
     /// <summary>

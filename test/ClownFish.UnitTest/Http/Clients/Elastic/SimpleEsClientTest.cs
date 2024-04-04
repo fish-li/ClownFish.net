@@ -35,8 +35,6 @@ public class SimpleEsClientTest
     private SimpleEsClient CreateClient()
     {
         EsConnOption opt = EsConnOption.Create("es_conn");
-        Assert.AreEqual("-yyyyMMdd", opt.IndexNameTimeFormat);
-
         return new SimpleEsClient(opt);
     }
 
@@ -101,7 +99,7 @@ public class SimpleEsClientTest
     [TestMethod]
     public void Test_GetIndexName_2()
     {
-        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn").SetIndexNameTimeFormat(null));
+        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn"), null);
 
         string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
         Assert.AreEqual("oprlog", s1);
@@ -110,7 +108,7 @@ public class SimpleEsClientTest
     [TestMethod]
     public void Test_GetIndexName_3()
     {
-        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn").SetIndexNameTimeFormat("-yyyy"));
+        SimpleEsClient client = new SimpleEsClient(EsConnOption.Create("es_conn"), "-yyyy");
 
         string postfix = DateTime.Today.Year.ToString();
         string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
