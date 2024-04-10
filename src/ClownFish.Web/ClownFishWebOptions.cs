@@ -12,10 +12,9 @@ internal static class ClownFishWebOptions
 
     public static readonly int MaxRequestBodySize = LocalSettings.GetUInt("AspNetCore_Kestrel_MaxRequestBodySize", 1080 * 1024);
 
-    public static bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
+    public static readonly bool AlwaysShowFullException = LocalSettings.GetBool("ExceptionModule_AlwaysShowFullException", 1);
 
-
-
+    public static readonly string LoginPageUrl = LocalSettings.GetSetting("ClownFish_Http403_LoginPageUrl", "");
 
 
 

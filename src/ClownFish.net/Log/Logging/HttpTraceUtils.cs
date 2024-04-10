@@ -72,7 +72,7 @@ public static class HttpTraceUtils
             // 说明，scope.OprLog.OprId == RequestId  == httpContext.PipelineContext.ProcessId
         }
     }
-#endif
+
 
 
     // ParentId 请求头的说明：
@@ -100,9 +100,9 @@ public static class HttpTraceUtils
             return (parentIdHeaderValue, string.Empty);
     }
 
-    
+
+#endif
 
 
-    
 
 }

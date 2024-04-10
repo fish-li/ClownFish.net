@@ -15,7 +15,7 @@ public class WebApplicationStartup
     public virtual bool AutoInitDAL => false;
 
     /// <summary>
-    /// 是否需要初始化 “数据访问层”
+    /// 是否需要初始化 “日志组件”
     /// </summary>
     public virtual bool AutoInitLog => false;
 
