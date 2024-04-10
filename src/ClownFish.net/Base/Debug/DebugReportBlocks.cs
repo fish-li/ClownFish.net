@@ -50,13 +50,16 @@ internal static class DebugReportBlocks
     {
         DebugReportBlock block = new DebugReportBlock { Category = "System Information", Order = 100 };
 
-        //block.AppendLine("Runtime Version: " + Environment.Version);                                // 6.0.5
-        block.AppendLine("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);   // .NET 6.0.5
+        //block.AppendLine("Runtime Version: " + Environment.Version);                                // 6.0.5        
         //block.AppendLine("CLR SystemVersion: " + RuntimeEnvironment.GetSystemVersion());      // v4.0.30319
 
         block.AppendLine("OS Name: " + OsUtils.GetOsName());                      // Ubuntu 22.04.3 LTS
-        block.AppendLine("OSDescription: " + RuntimeInformation.OSDescription);   // Linux 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018            
-
+#if NET48_OR_GREATER || NET6_0_OR_GREATER
+        block.AppendLine("OSDescription: " + RuntimeInformation.OSDescription);   // Linux 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018
+        block.AppendLine("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);   // .NET 6.0.5
+        block.AppendLine("OSArchitecture: " + RuntimeInformation.OSArchitecture);             // X64
+        block.AppendLine("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);   // X64
+#endif
         block.AppendLine("RuntimeDirectory: " + RuntimeEnvironment.GetRuntimeDirectory());     // /usr/share/dotnet/shared/Microsoft.NETCore.App/6.0.5/
         block.AppendLine("SystemTempPath: " + Path.GetTempPath());                    //  /tmp/
         block.AppendLine("SystemDirectory: " + Environment.SystemDirectory);          // 没有内容
@@ -67,9 +70,6 @@ internal static class DebugReportBlocks
 
         block.AppendLine("Is64BitOperatingSystem: " + Environment.Is64BitOperatingSystem);
         block.AppendLine("Is64BitProcess: " + Environment.Is64BitProcess);
-        block.AppendLine("OSArchitecture: " + RuntimeInformation.OSArchitecture);             // X64
-        block.AppendLine("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);   // X64
-
         block.AppendLine("MachineName: " + Environment.MachineName);
         block.AppendLine("ProcessorCount: " + Environment.ProcessorCount);
         block.AppendLine("UserDomainName: " + Environment.UserDomainName);

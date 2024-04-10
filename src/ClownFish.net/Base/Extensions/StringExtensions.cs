@@ -312,10 +312,19 @@ public static class StringExtensions
         if( separator.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(separator));
 
+#if NET48_OR_GREATER || NET6_0_OR_GREATER
         return (from s in str.Split(separator)
                 let u = s.Trim()
                 where u.Length > 0
                 select u).ToHashSet(StringComparer.OrdinalIgnoreCase);
+#else
+
+        var list = (from s in str.Split(separator)
+                    let u = s.Trim()
+                    where u.Length > 0
+                    select u).ToList();
+        return new HashSet<string>(list, StringComparer.OrdinalIgnoreCase);
+#endif
     }
 
     /// <summary>
@@ -497,10 +506,10 @@ public static class StringExtensions
         if( text.Length <= keepLength )
             return text;
 
-#if NETFRAMEWORK
-        return text.Substring(0, keepLength) + "..." + text.Length.ToString();
-#else
+#if NETCOREAPP3_1_OR_GREATER
         return string.Concat(text.AsSpan(0, keepLength), "...", text.Length.ToString());
+#else
+        return text.Substring(0, keepLength) + "..." + text.Length.ToString();
 #endif
     }
 

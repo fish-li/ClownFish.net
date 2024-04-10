@@ -8,12 +8,31 @@ namespace ClownFish.Base;
 public static class OsUtils
 {
     /// <summary>
+    /// 当前操作是否为 Windows
+    /// </summary>
+#if NETFRAMEWORK
+    public static readonly bool IsWindows = true;
+#else
+    public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+#endif
+
+    /// <summary>
+    /// 当前操作是否为 Linux
+    /// </summary>
+#if NETFRAMEWORK
+    public static readonly bool IsLinux = false;
+#else
+    public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+#endif
+
+
+    /// <summary>
     /// 获取当前操作系统名称
     /// </summary>
     /// <returns></returns>
     public static string GetOsName()
     {
-        if( RuntimeInformation.IsOSPlatform(OSPlatform.Linux) )
+        if( OsUtils.IsLinux )
             return GetLinuxName();
 
         return Environment.OSVersion.ToString();

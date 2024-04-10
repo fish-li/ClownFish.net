@@ -47,7 +47,7 @@ internal sealed class DefaultLocalSettingsImpl : ILocalSettings
         if( string.IsNullOrEmpty(value) == false )
             return value;
 
-#if NETFRAMEWORK || NET6_0_OR_GREATER
+#if NET48_OR_GREATER || NET6_0_OR_GREATER
 
         // 为了方便开发环境：不想把一些敏感参数
         // 1，写到 app.config (避免被提交到代码仓库)

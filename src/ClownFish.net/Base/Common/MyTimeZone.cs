@@ -14,8 +14,6 @@ public static class MyTimeZone
         public string Linux { get; set; }
     }
 
-    internal static readonly bool OsIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
     // https://dejanstojanovic.net/aspnet/2018/july/differences-in-time-zones-in-net-core-on-windows-and-linux-host-os/
 
     private static readonly Dictionary<string, string> s_win = new Dictionary<string, string>(256, StringComparer.OrdinalIgnoreCase);
@@ -40,7 +38,7 @@ public static class MyTimeZone
 #if NETFRAMEWORK
         CurrentTZ = s_win[TimeZoneInfo.Local.Id];
 #else
-        if( OsIsWindows )
+        if( OsUtils.IsWindows )
             CurrentTZ = s_win[TimeZoneInfo.Local.Id];
         else
             CurrentTZ = TimeZoneInfo.Local.Id;
@@ -59,7 +57,7 @@ public static class MyTimeZone
         if( tzId.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(tzId));
 
-        if( OsIsWindows ) {
+        if( OsUtils.IsWindows ) {
             return GetTzForWin(tzId);
         }
         else {
