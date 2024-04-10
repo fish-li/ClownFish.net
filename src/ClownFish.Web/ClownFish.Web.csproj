@@ -4,8 +4,8 @@
         <TargetFrameworks>net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.Web</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.410.1</Version>
-        <FileVersion>8.24.410.1</FileVersion>
+        <Version>8.24.410.2</Version>
+        <FileVersion>8.24.410.2</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -24,20 +24,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Mock\**" />
-      <EmbeddedResource Remove="Mock\**" />
-      <None Remove="Mock\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="ExecHttp.html" />
+      <None Remove="files\ExecHttp.html" />
       <None Remove="files\http403-not-login.html" />
       <None Remove="files\http404-url-error.html" />
       <None Remove="files\UserLogin.html" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="ExecHttp.html" />
+      <EmbeddedResource Include="files\ExecHttp.html" />
       <EmbeddedResource Include="files\http403-not-login.html" />
       <EmbeddedResource Include="files\http404-url-error.html" />
       <EmbeddedResource Include="files\UserLogin.html" />

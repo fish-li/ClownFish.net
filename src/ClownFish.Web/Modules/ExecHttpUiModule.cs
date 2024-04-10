@@ -6,7 +6,7 @@ internal class ExecHttpUiModule : NHttpModule
 {
     private static readonly string s_accessKey = Guid.NewGuid().ToString("N");
 
-    private static readonly string s_html = typeof(ExecHttpUiModule).Assembly.ReadResAsText("ClownFish.Web.ExecHttp.html");
+    private static readonly string s_html = typeof(ExecHttpUiModule).Assembly.ReadResAsText("ClownFish.Web.files.ExecHttp.html");
 
     public override void Init()
     {
