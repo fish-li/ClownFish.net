@@ -82,9 +82,7 @@ internal class MmqSubscriberSync<T>  where T : class
         };
 
         try {
-#if DEBUG
             TestHelper.TryThrowException();
-#endif
             _pipeline.PushMessage(request);
             return 1;
         }
