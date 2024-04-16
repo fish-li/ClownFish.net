@@ -81,8 +81,19 @@ public static class RetryFile
     public static string ReadAllText(string filePath, Encoding encoding = null)
     {
         return CreateRetry().Run(() => {
-            return File.ReadAllText(filePath, encoding.GetOrDefault());
+            // 下面这个方法在打开文件时，不允许其它进程以写入模式打开，所以不使用它！
+            // System.IO.IOException: The process cannot access the file 'xxxxx' because it is being used by another process.
+            //return File.ReadAllText(filePath, encoding.GetOrDefault());   
+
+            return FileReadAllText0(filePath, encoding.GetOrDefault());
         });
+    }
+
+    internal static string FileReadAllText0(string filePath, Encoding encoding)
+    {
+        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.SequentialScan);
+        using StreamReader sr = new StreamReader(file, encoding, true);
+        return sr.ReadToEnd();
     }
 
 
@@ -95,10 +106,26 @@ public static class RetryFile
     public static string[] ReadAllLines(string filePath, Encoding encoding = null)
     {
         return CreateRetry().Run(() => {
-            return File.ReadAllLines(filePath, encoding.GetOrDefault());
+            //return File.ReadAllLines(filePath, encoding.GetOrDefault());
+            return FileReadAllLines0(filePath, encoding.GetOrDefault());
         });
     }
 
+
+    internal static string[] FileReadAllLines0(string filePath, Encoding encoding)
+    {
+        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.SequentialScan);
+        using StreamReader sr = new StreamReader(file, encoding, true);
+
+        string line;
+        List<string> lines = new List<string>();
+
+        while( (line = sr.ReadLine()) != null ) {
+            lines.Add(line);
+        }
+
+        return lines.ToArray();
+    }
 
     /// <summary>
     /// 等同于：System.IO.File.ReadAllBytes()
@@ -274,7 +301,8 @@ public static class RetryFile
     public static FileStream OpenRead(string filePath)
     {
         return CreateRetry().Run(() => {
-            return File.OpenRead(filePath);
+            //return File.OpenRead(filePath);
+            return new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         });
     }
 
@@ -294,7 +322,8 @@ public static class RetryFile
                     SafeCreateDirectory(Path.GetDirectoryName(filePath));
             })
             .Run(() => {
-                return File.OpenWrite(filePath);
+                //return File.OpenWrite(filePath);
+                return new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
             });
     }
 

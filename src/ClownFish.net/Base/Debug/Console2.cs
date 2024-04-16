@@ -12,6 +12,8 @@ public static class Console2
 
     private static readonly object s_lock = new object();
 
+    private static IConsole s_console = new SysConsoleImpl();
+
     /// <summary>
     /// 分隔行
     /// </summary>
@@ -20,13 +22,35 @@ public static class Console2
     private static StringBuilder s_listenLines;
 
     /// <summary>
+    /// 将所有控制台输出写到指定的文件中
+    /// </summary>
+    /// <param name="outFilePath">一个文件路径，随后程序的所有控制台输出都将写入此文件。 如果指定的文件不存在，程序会自动创建，如果指定的文件存在，文件将清空。</param>
+    /// <param name="maxFileLength">文件的最大长度。超过最大长度后，文件内容会清空，然后继续写入。如果此参数小于等于零，则不检查文件长度，此时有可能会把磁盘写爆。</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static void SetOutToFile(string outFilePath, long maxFileLength)
+    {
+        if( outFilePath.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(outFilePath));
+
+        s_console.Dispose();
+
+        s_console = new FileConsoleImpl(outFilePath, maxFileLength);
+    }
+
+    internal static void ResetOut()  // for UnitTest
+    {
+        s_console.Dispose();
+        s_console = new SysConsoleImpl();
+    }
+
+    /// <summary>
     /// 输出一条消息到控制台
     /// </summary>
     /// <param name="message"></param>
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static void WriteLine(string message)
     {
-        Console.WriteLine(message);
+        s_console.WriteLine(message);
 
         if( s_listenLines != null )
             s_listenLines.AppendLine(message);
@@ -212,4 +236,72 @@ public static class Console2
         System.Threading.Thread.Sleep(500);
     }
 
+}
+
+
+internal interface IConsole : IDisposable
+{
+    void WriteLine(string line);
+}
+
+internal sealed class SysConsoleImpl : IConsole
+{
+    public void WriteLine(string line)
+    {
+        Console.WriteLine(line);
+    }
+    public void Dispose()
+    {
+    }
+}
+
+internal sealed class FileConsoleImpl : IConsole
+{
+    private static readonly object s_lock = new object();
+    private static readonly byte[] s_bytes = Environment.NewLine.GetBytes();
+    private static readonly ValueCounter s_counter = new ValueCounter();
+    internal static long CheckInterval = 1000;
+
+    private readonly string _filePath;
+    private readonly long _maxFileLength;
+    private FileStream _stream;
+
+
+    public FileConsoleImpl(string outFilePath, long maxFileLength)
+    {
+        _filePath = outFilePath;
+        _maxFileLength = maxFileLength;
+        OpenFile();
+    }
+
+    private void OpenFile()
+    {
+        _stream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan);
+    }
+
+    public void WriteLine(string line)
+    {
+        lock( s_lock ) {
+
+            if( _maxFileLength > 0 && s_counter.Increment() % CheckInterval == 0 ) {
+                if( _stream.Position > _maxFileLength ) {
+                    _stream.Close();
+                    Thread.Sleep(50);
+                    OpenFile();
+                }
+            }
+
+            byte[] data = line.GetBytes();
+            _stream.Write(data, 0, data.Length);
+            _stream.Write(s_bytes, 0, s_bytes.Length);
+            _stream.Flush();
+        }
+    }
+
+    public void Dispose()
+    {
+        if( _stream != null ) {
+            _stream.Dispose();
+        }
+    }
 }

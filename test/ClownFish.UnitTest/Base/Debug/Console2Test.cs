@@ -149,5 +149,45 @@ Server: Kestrel";
             long count2 = ClownFishCounters.Status.OomError;
             Assert.AreEqual(count1 + 1, count2);
         }
+
+        [TestMethod]
+        public void Test_FileConsoleImpl()
+        {
+            FileConsoleImpl.CheckInterval = 5;
+
+            MyAssert.IsError<ArgumentNullException>(() => {
+                Console2.SetOutToFile("", 1024);
+            });
+
+
+            string outFilePath = Path.Combine(Environment.CurrentDirectory, "Logs/Test_FileConsoleImpl.txt");
+            Console2.SetOutToFile(outFilePath, 1024);
+
+            string s1 = new string('a', 100);
+            string s2 = new string('b', 100);
+            Console2.WriteLine(s1);
+            Console2.WriteLine(s2);
+            string text = RetryFile.ReadAllText(outFilePath);
+
+
+            Console2.WriteLine(new string('x', 1000));
+            Console2.WriteLine("111");
+
+            // 下面这个操作会导致 日志文件 先被清空
+            Console2.WriteLine("948cdc4b88b14e5d8ece4f897257ba93");
+
+            string text2 = RetryFile.ReadAllText(outFilePath).Trim();
+
+
+            Assert.IsTrue(text.Contains(s1));
+            Assert.IsTrue(text.Contains(s2));
+            Assert.AreEqual("948cdc4b88b14e5d8ece4f897257ba93", text2);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Console2.ResetOut();
+        }
     }
 }
