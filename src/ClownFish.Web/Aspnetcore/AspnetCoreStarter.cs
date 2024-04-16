@@ -104,20 +104,22 @@ public static class AspnetCoreStarter
     internal static void ShowSysEnvInfo()
     {
         Console2.WriteSeparatedLine();
-        Console2.WriteLine("ApplicationName : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId    : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("EntryAssembly   : " + Assembly.GetEntryAssembly().Location);
-        Console2.WriteLine("EnvironmentName : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
-        Console2.WriteLine("ApplicationPath : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory: " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath        : " + EnvUtils.GetTempPath());
-        Console2.WriteLine("HostName        : " + EnvUtils.GetHostName());
-        Console2.WriteLine("TimeZone        : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture  : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("ClownFishWebVer : " + FileVersionInfo.GetVersionInfo(typeof(AspnetCoreStarter).Assembly.Location).FileVersion);
-        Console2.WriteLine("Framework  Info : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        Console2.WriteLine("OS Name         : " + OsUtils.GetOsName());
+        Console2.WriteLine("ApplicationName     : " + EnvUtils.GetAppName());
+        Console2.WriteLine("AppRuntimeId        : " + EnvUtils.AppRuntimeId);
+        Console2.WriteLine("AppStartTime        : " + EnvUtils.AppStartTime.ToTime23String());
+        Console2.WriteLine("IsInDocker          : " + EnvUtils.IsInDocker);
+        Console2.WriteLine("IsSingleFileDeploy  : " + AsmHelper.IsSingleFileDeploy);
+        Console2.WriteLine("EntryAssembly       : " + AsmHelper.GetExeFilePath());
+        Console2.WriteLine("EnvironmentName     : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
+        Console2.WriteLine("ApplicationPath     : " + AppContext.BaseDirectory);
+        Console2.WriteLine("CurrentDirectory    : " + Environment.CurrentDirectory);
+        Console2.WriteLine("TempPath            : " + EnvUtils.GetTempPath());
+        Console2.WriteLine("HostName            : " + EnvUtils.GetHostName());
+        Console2.WriteLine("TimeZone            : " + MyTimeZone.CurrentTZ);
+        Console2.WriteLine("CurrentCulture      : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
+        Console2.WriteLine("ClownFishWebVer     : " + AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty(ConstValues.CurrentVersion));
+        Console2.WriteLine("Framework  Info     : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+        Console2.WriteLine("OS Name             : " + OsUtils.GetOsName());
         Console2.WriteSeparatedLine();
     }
 
@@ -140,7 +142,7 @@ public static class AspnetCoreStarter
         
 
         Console2.WriteSeparatedLine();
-        Console2.WriteLine("Listening  Urls : " + EnvironmentVariables.Get("ASPNETCORE_URLS") ?? "");
+        Console2.WriteLine("Listening  Urls : " + GetListeningUrls());
         Console2.WriteLine("Application started. Press Ctrl+C to shut down.");
         Console2.WriteSeparatedLine();
 
@@ -152,6 +154,35 @@ public static class AspnetCoreStarter
         WebApplication.Run();
 
         // 注意：这后面的代码将不会立即执行！
+    }
+
+    internal static string GetListeningUrls()
+    {
+        // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/servers/kestrel/endpoints?view=aspnetcore-6.0
+        // 由于 .NET 并没有提供一种可以获取监听URL的方法，所以这里的实现也不保证适用于所有场景
+
+        // 4种指定监听地址的方法：
+        // 1，ASPNETCORE_URLS 环境变量。
+        // 2，--urls 命令行参数。
+        // 3，urls 主机配置键。
+        // 4，UseUrls 扩展方法。
+
+        string urls = EnvironmentVariables.Get("ASPNETCORE_URLS");
+        if( urls.HasValue() )
+            return urls;
+
+        string url1 = WebApplication.Configuration["Kestrel:Endpoints:Http:Url"];
+        string url2 = WebApplication.Configuration["Kestrel:Endpoints:Https:Url"];
+
+        if( url1.HasValue() && url2.HasValue() )
+            return url1 + ";" + url2;
+
+        if( url1.HasValue() )
+            return url1;
+        if( url2.HasValue() )
+            return url2;
+
+        return "";
     }
 
     internal static void InitNHttpApplication()

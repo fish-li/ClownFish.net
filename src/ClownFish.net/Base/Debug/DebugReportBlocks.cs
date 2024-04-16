@@ -64,7 +64,7 @@ internal static class DebugReportBlocks
         block.AppendLine("SystemTempPath: " + Path.GetTempPath());                    //  /tmp/
         block.AppendLine("SystemDirectory: " + Environment.SystemDirectory);          // 没有内容
         block.AppendLine("CommandLine: " + Environment.CommandLine);                  //  /app/Nebula.Moon.dll
-        block.AppendLine("EntryAssembly: " + AsmHelper.GetEntryAssembly().Location);  //  /app/Nebula.Moon.dll
+        block.AppendLine("EntryAssembly: " + AsmHelper.GetExeFilePath());             //  /app/Nebula.Moon.dll
         block.AppendLine("CurrentDirectory: " + Environment.CurrentDirectory);        // /app
         block.AppendLine("AppDomain.BaseDirectory: " + AppContext.BaseDirectory);     // /app
 
@@ -183,15 +183,17 @@ internal static class DebugReportBlocks
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Load Assembly List", Order = 1004 };
 
-        int i = 1;
-        (from asm in AsmHelper.GetLoadAssemblies()
-         let path = asm.Location
-         let asmVersion = AssemblyName.GetAssemblyName(path).Version
-         let fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion
-         let line = $"{path}; {asmVersion}; {fileVersion}"
-         orderby path
-         select line
-         ).ToList().ForEach(x => block.AppendLine($"{i++,4}: {x}"));
+        if( AsmHelper.IsSingleFileDeploy == false ) {
+            int i = 1;
+            (from asm in AsmHelper.GetLoadAssemblies()
+             let path = asm.Location
+             let asmVersion = AssemblyName.GetAssemblyName(path).Version
+             let fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion
+             let line = $"{path}; {asmVersion}; {fileVersion}"
+             orderby path
+             select line
+             ).ToList().ForEach(x => block.AppendLine($"{i++,4}: {x}"));
+        }
 
         return block;
     }

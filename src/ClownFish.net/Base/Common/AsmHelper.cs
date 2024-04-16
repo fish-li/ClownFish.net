@@ -9,6 +9,15 @@ public static class AsmHelper
     private static bool s_inited = false;
 
 
+    /// <summary>
+    /// 当前程序是否以“单文件部署”方式运行
+    /// </summary>
+    public static readonly bool IsSingleFileDeploy = typeof(EnvUtils).Assembly.Location.IsNullOrEmpty();
+
+    // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
+    // 由于.NET并没有提供一种专用的方法来判断【单文件部署】，所以这里使用 Assembly.Location 来判断。
+
+
     // 在单元测试环境下，Assembly.GetEntryAssembly() 的结果不是我们期望的，所以可以直接修改下面这个变量
     internal static Assembly EntryAssembly { get; private set; }
 
@@ -29,6 +38,43 @@ public static class AsmHelper
     public static Assembly GetEntryAssembly()
     {
         return EntryAssembly ?? Assembly.GetEntryAssembly();
+    }
+
+    /// <summary>
+    /// 获取当前进程的入口程序集路径
+    /// </summary>
+    /// <returns></returns>
+    public static string GetExeFilePath()
+    {
+        // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
+
+        if( AsmHelper.IsSingleFileDeploy ) {
+            return Environment.GetCommandLineArgs()[0];
+        }
+        else {
+            return GetEntryAssembly().Location;
+        }
+    }
+
+    /// <summary>
+    /// 获取某个类型所在程序集文件的文件版本号
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string GetFileVersion(Type type)
+    {
+        // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
+
+        if( AsmHelper.IsSingleFileDeploy ) {
+            return string.Empty;
+        }
+        else {
+            if( type == null )
+                throw new ArgumentNullException(nameof(type));
+
+            return FileVersionInfo.GetVersionInfo(type.Assembly.Location).FileVersion;
+        }
     }
 
 
@@ -82,7 +128,8 @@ public static class AsmHelper
             if( assembly.IsDynamic )    // 动态程序集基本上是不需要分析的
                 continue;
 
-            if( assembly.Location.IsNullOrEmpty() )
+            if( AsmHelper.IsSingleFileDeploy == false 
+                && assembly.Location.IsNullOrEmpty() )  // 程序运行过程中，通用CodeDom这类方法生成的程序集
                 continue;
 
             if( ignoreSystemAssembly ) {
@@ -119,7 +166,8 @@ public static class AsmHelper
     /// <param name="xmlFileAction"></param>
     public static void ForeachXmlFiles(Action<string> xmlFileAction)
     {
-        string binPath = Path.GetDirectoryName(AsmHelper.GetEntryAssembly().Location);
+        //string binPath = Path.GetDirectoryName(AsmHelper.GetEntryAssembly().Location);
+        string binPath = AppContext.BaseDirectory;
         string[] files = Directory.GetFiles(binPath, "*.xml", SearchOption.TopDirectoryOnly);
 
         foreach( var file in files ) {

@@ -138,11 +138,14 @@ public static class ClownFishInit
 
             ClownFish.Data.Initializer.Instance.LoadXmlCommandFromDirectory();
 
-            string exePath = AsmHelper.GetEntryAssembly().Location;
-            string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
-            string dllOutPath = Path.Combine(EnvUtils.GetTempPath(), newName);
+            // 【单文件部署】场景下，不允许在运行时生成代理程序集，因为Assembly相关的API有限制
+            if( AsmHelper.IsSingleFileDeploy == false ) {
+                string exePath = AsmHelper.GetExeFilePath();
+                string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
+                string dllOutPath = Path.Combine(EnvUtils.GetTempPath(), newName);
+                ClownFish.Data.Initializer.Instance.CompileAllEntityProxy(dllOutPath);
+            }
 
-            ClownFish.Data.Initializer.Instance.CompileAllEntityProxy(dllOutPath);
             s_dalInited = true;
         }
     }

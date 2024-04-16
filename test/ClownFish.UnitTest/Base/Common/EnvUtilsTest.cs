@@ -8,13 +8,14 @@ public class EnvUtilsTest
         Assert.AreEqual(EvnKind.Dev, EnvUtils.CurEvnKind);
         Assert.IsTrue(EnvUtils.IsDevEnv);
         Assert.IsFalse(EnvUtils.IsProdEnv);
-        Assert.IsFalse(EnvUtils.IsTestEnv);
+        Assert.IsFalse(EnvUtils.IsTestEnv);        
     }
 
     [TestMethod]
     public void Test_2()
     {
         Assert.IsTrue(EnvUtils.IsDevEnv);
+        Assert.IsFalse(AsmHelper.IsSingleFileDeploy);
 
         Assert.AreEqual("ClownFish.UnitTest", EnvUtils.GetAppName());
         Assert.AreEqual("FishDev", EnvUtils.EnvName);

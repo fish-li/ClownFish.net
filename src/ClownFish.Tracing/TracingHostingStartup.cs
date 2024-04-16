@@ -38,7 +38,7 @@ internal class TracingHostingStartup : IHostingStartup
         Console2.WriteLine("ApplicationName : " + EnvUtils.GetAppName());
         Console2.WriteLine("AppRuntimeId    : " + EnvUtils.AppRuntimeId);
         Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("EntryAssembly   : " + Assembly.GetEntryAssembly().Location);
+        Console2.WriteLine("EntryAssembly   : " + AsmHelper.GetExeFilePath());
         Console2.WriteLine("EnvironmentName : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
         Console2.WriteLine("ApplicationPath : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory: " + Environment.CurrentDirectory);
@@ -46,7 +46,7 @@ internal class TracingHostingStartup : IHostingStartup
         Console2.WriteLine("HostName        : " + EnvUtils.GetHostName());
         Console2.WriteLine("TimeZone        : " + MyTimeZone.CurrentTZ);
         Console2.WriteLine("CurrentCulture  : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("Version         : " + FileVersionInfo.GetVersionInfo(typeof(TracingHostingStartup).Assembly.Location).FileVersion);
+        Console2.WriteLine("Version         : " + AsmHelper.GetFileVersion(typeof(TracingHostingStartup)));
         Console2.WriteLine("Framework  Name : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
         Console2.WriteLine("==================================================================");
     }

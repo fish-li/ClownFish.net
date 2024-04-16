@@ -159,7 +159,7 @@ public static class EnvUtils
             // linux 内置的临时目录 /tmp, /var/tmp 有自动清理机制，所以不使用它们
             return "/temp";
         else
-            return Path.Combine(Path.GetTempPath(), "ClownFishApp", Path.GetFileNameWithoutExtension(AsmHelper.GetEntryAssembly().Location));
+            return Path.Combine(Path.GetTempPath(), "ClownFishApp", Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath()));
     }
 
     private static string GetMachineName()
@@ -175,7 +175,7 @@ public static class EnvUtils
 
     private static string GetApplicationName0()
     {
-        string appName = LocalSettings.GetSetting("Application_Name") ?? Path.GetFileNameWithoutExtension(AsmHelper.GetEntryAssembly().Location);
+        string appName = LocalSettings.GetSetting("Application_Name") ?? Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
 
         // 检查应用名称是否符合要求，如果不符合要求，则抛出异常
         // 虽然不建议在静态构造方法中抛出异常，但是现在确实想不到更好的方法~~~
