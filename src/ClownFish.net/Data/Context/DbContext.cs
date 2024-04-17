@@ -219,8 +219,6 @@ public sealed class DbContext : IDisposable
     {
         if( connection == null )
             throw new ArgumentNullException(nameof(connection));
-        if( providerName.IsNullOrEmpty())
-            throw new ArgumentNullException(nameof(providerName));
 
         // 这里就不校验 providerName 是否与 connection 匹配了，
         // 例如：如果 connection is MySqlConnection , providerName == "System.Data.SqlClient" 也不管 ！

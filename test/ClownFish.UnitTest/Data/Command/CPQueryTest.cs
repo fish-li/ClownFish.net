@@ -232,7 +232,7 @@ public class CPQueryTest : BaseTest
 
 
     [TestMethod]
-    public async Task Test_CPQuery_数据导出()
+    public async Task Test_CPQuery_不分页查询()
     {
         DataTable table1 = null;
         DataTable table2 = null;
@@ -289,6 +289,61 @@ public class CPQueryTest : BaseTest
                 MyAssert.AreEqual(list1, list2);
             }
         }
+    }
+
+
+    [TestMethod]
+    public async Task Test_CPQuery_ExportToNdJson()
+    {
+        string sql = GetSql("GetCustomerList");
+        var args = new { MaxCustomerID = 100 };
+
+        string outFilePath1 = "temp/Test_CPQuery_ExportToNdJson1.txt";
+        string outFilePath2 = "temp/Test_CPQuery_ExportToNdJson2.txt";
+
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+
+        int count1,count2,count3,count4;
+
+        using( DbContext db = DbContext.Create("mysql") ) {
+            count1 = db.CPQuery.Create(sql, args).ExportToNdJson(outFilePath1);
+            count2 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(outFilePath2);
+
+            count3 = db.CPQuery.Create(sql, args).ExportToNdJson(sb1);
+            count4 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(sb2);
+        }
+
+        Assert.IsTrue(count1 > 0);
+        Assert.AreEqual(count1, count2);
+        Assert.AreEqual(count3, count4);
+        Assert.AreEqual(count1, count3);
+
+        string text1 = RetryFile.ReadAllText(outFilePath1);
+        string text2 = RetryFile.ReadAllText(outFilePath2);
+        string text3 = sb1.ToString();
+        string text4 = sb2.ToString();
+
+        Assert.IsTrue(text1.HasValue());
+        Assert.AreEqual(text1, text2);
+        Assert.AreEqual(text3, text4);
+        Assert.AreEqual(text1, text3);
+
+        // 下面验证 “空查询” 场景
+        int count5 = -1, count6 = -1;
+        StringBuilder sb3 = new StringBuilder();
+        string outFilePath3 = "temp/Test_CPQuery_ExportToNdJson3.txt";
+
+        using( DbContext db = DbContext.Create("mysql") ) {
+            count5 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(sb1);
+            count6 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(outFilePath3);
+        }
+        Assert.IsTrue(count5 == 0);
+        Assert.IsTrue(count6 == 0);
+        Assert.IsTrue(sb3.Length == 0);
+
+        string text5 = RetryFile.ReadAllText(outFilePath3);
+        Assert.IsTrue(text5.Length == 0);
     }
 
     [TestMethod]
@@ -852,6 +907,27 @@ on a.object_id = b.object_id;
             
             Assert.IsNotNull(query.GetFieldValue("_sqlBuilder"));
             Assert.IsNull(query.GetFieldValue("_initSql"));
+        }
+    }
+
+
+    [TestMethod]
+    public async Task Test_finished_InvalidOperationException()
+    {
+        using( DbContext db = DbContext.Create("mysql") ) {
+
+            CPQuery query = db.CPQuery.Create("select now();");
+
+            _ = query.ExecuteScalar<string>();
+
+            MyAssert.IsError<InvalidOperationException>(() => {
+                _ = query.ExecuteScalar<string>();
+            });
+
+
+            await MyAssert.IsErrorAsync<InvalidOperationException>(async () => {
+                _ = await query.ExecuteScalarAsync<string>();
+            });
         }
     }
 

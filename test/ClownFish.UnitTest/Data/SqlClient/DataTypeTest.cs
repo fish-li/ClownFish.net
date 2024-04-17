@@ -147,6 +147,14 @@ public class DataTypeTest
             // 检查二种加载方式的结果是否一致
             Assert.AreEqual(json0, json1);
             Assert.AreEqual(json0, json2);
+
+
+            // 下面只是检验下在【可空字段】情况下ExportToNdJson能正常运行
+            StringBuilder sb1 = new StringBuilder();
+            dbContext.CPQuery.Create("select * from TestType").ExportToNdJson(sb1);
+            string text1 = sb1.ToString();
+            Console.WriteLine(text1);
+            Assert.IsTrue(text1.Length > 0);
         }
     }
 

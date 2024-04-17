@@ -99,15 +99,14 @@ public class DbContextTest
 
         MyAssert.IsError<ArgumentNullException>(() => { 
             _ = DbContext.Create((DbConnection)null, setting.ProviderName);
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = DbContext.Create(connection, "");
-        });
+        });        
 
         MyAssert.IsError<NotSupportedException>(() => {
             _ = DbContext.Create(connection, "xxxxxxxx");
         });
+
+        var db2 = DbContext.Create(connection, "");
+        Assert.AreEqual(DatabaseType.SQLSERVER, db2.DatabaseType);
     }
 
 

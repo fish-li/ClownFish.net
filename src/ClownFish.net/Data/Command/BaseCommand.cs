@@ -585,6 +585,125 @@ public abstract class BaseCommand
     }
 
 
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
+    /// </summary>
+    /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
+    /// <returns>查询的数据结果行数</returns>
+    public int ExportToNdJson(string outFilePath)
+    {
+        using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
+        using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
+
+        return Execute<int>(nameof(ToSingle),
+            cmd => {
+                return ExportToNdJson0(cmd, writer);
+            });
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
+    /// </summary>
+    /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
+    /// <returns>查询的数据结果行数</returns>
+    public async Task<int> ExportToNdJsonAsync(string outFilePath)
+    {
+        using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
+        using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
+
+        return await ExecuteAsync<int>(nameof(ToSingle),
+            async cmd => {
+                return await ExportToNdJson0Async(cmd, writer);
+            });
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
+    /// </summary>
+    /// <param name="sb"></param>
+    /// <returns>查询的数据结果行数</returns>
+    public int ExportToNdJson(StringBuilder sb)
+    {
+        using StringWriter writer = new StringWriter(sb);
+
+        return Execute<int>(nameof(ToSingle),
+            cmd => {
+                return ExportToNdJson0(cmd, writer);
+            });
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
+    /// </summary>
+    /// <param name="sb"></param>
+    /// <returns>查询的数据结果行数</returns>
+    public async Task<int> ExportToNdJsonAsync(StringBuilder sb)
+    {
+        using StringWriter writer = new StringWriter(sb);
+
+        return await ExecuteAsync<int>(nameof(ToSingle),
+            async cmd => {
+                return await ExportToNdJson0Async(cmd, writer);
+            });
+    }
+
+
+    private int ExportToNdJson0(DbCommand cmd, TextWriter writer)
+    {
+        int count = 0;
+        using( DbDataReader reader = cmd.ExecuteReader() ) {
+
+            int columnCount = reader.FieldCount;
+            Dictionary<string, object> row = new Dictionary<string, object>(300);
+
+            while( reader.Read() ) {
+                count++;
+                for( int i = 0; i < columnCount; i++ ) {
+                    string name = reader.GetName(i);
+                    object value = reader.GetValue(i);
+                    row[name] = value;
+                }
+
+                string json = row.ToJson();
+                writer.WriteLine(json);
+                row.Clear();
+            }
+            writer.Flush();
+        }
+
+        return count;
+    }
+
+
+    private async Task<int> ExportToNdJson0Async(DbCommand cmd, TextWriter writer)
+    {
+        int count = 0;
+        using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
+
+            int columnCount = reader.FieldCount;
+            Dictionary<string, object> row = new Dictionary<string, object>(300);
+
+            while( await reader.ReadAsync() ) {
+                count++;
+                for( int i = 0; i < columnCount; i++ ) {
+                    string name = reader.GetName(i);
+                    object value = reader.GetValue(i);
+                    row[name] = value;
+                }
+
+                string json = row.ToJson();
+                writer.WriteLine(json);
+                row.Clear();
+            }
+            writer.Flush();
+        }
+
+        return count;
+    }
+
 
     #endregion
 
