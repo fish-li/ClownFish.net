@@ -167,9 +167,16 @@ public static class AspnetCoreStarter
         // 3，urls 主机配置键。
         // 4，UseUrls 扩展方法。
 
+
         string urls = EnvironmentVariables.Get("ASPNETCORE_URLS");
         if( urls.HasValue() )
             return urls;
+
+
+        var addr = WebApplication.Urls;
+        if( addr != null && addr.Count > 0 )
+            return string.Join(",", addr);
+
 
         string url1 = WebApplication.Configuration["Kestrel:Endpoints:Http:Url"];
         string url2 = WebApplication.Configuration["Kestrel:Endpoints:Https:Url"];

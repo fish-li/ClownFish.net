@@ -4,6 +4,8 @@ namespace ClownFish.Log.Writers;
 
 internal sealed class OprlogEsWriter : ILogWriter
 {
+    private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_OprlogEsWriter_ShowError", 1);
+
     private SimpleEsClient _clientAll;
     private SimpleEsClient _clientSlow;
     private SimpleEsClient _clientError;
@@ -66,11 +68,15 @@ internal sealed class OprlogEsWriter : ILogWriter
             client.WriteList(list, indexName);
         }
         catch( EsHttpException ex1 ) {
-            Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex1.Response);
+            if( s_showError ) {
+                Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex1.Response);
+            }
         }
         catch( Exception ex ) {
-            // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
-            Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex.Message);
+            if( s_showError ) {
+                // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
+                Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex.Message);
+            }
         }
 
         ClownFishCounters.Logging.EsWriteCount.Add(list.Count);

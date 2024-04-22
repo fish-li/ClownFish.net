@@ -8,6 +8,8 @@ namespace ClownFish.Log.Writers;
 /// </summary>
 internal sealed class RabbitHttpWriter : ILogWriter
 {
+    private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_RabbitHttpWriter_ShowError", 1);
+
     private RabbitHttpClient _client;
 
     public void Init(LogConfiguration config, WriterConfig section)
@@ -110,8 +112,10 @@ internal sealed class RabbitHttpWriter : ILogWriter
             _client.SendMessage(data, exchange, routingKey);
         }
         catch( Exception ex ) {
-            // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
-            Console2.Warnning("RabbitHttpWriter.SendMessage0 ERROR: " + ex.Message);
+            if( s_showError ) {
+                // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
+                Console2.Warnning("RabbitHttpWriter.SendMessage0 ERROR: " + ex.Message);
+            }
         }
     }
 }

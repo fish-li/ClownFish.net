@@ -10,6 +10,7 @@ internal class HttpJsonWriter : ILogWriter
     private string _url;
 
     private static readonly int s_batchSize = Settings.GetUInt("ClownFish_Log_HttpJsonWriter_BatchSize", 5 * 1024 * 1024);
+    private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_HttpJsonWriter_ShowError", 1);
 
     private readonly StringBuilder _buffer = new StringBuilder(s_batchSize);
 
@@ -52,7 +53,9 @@ internal class HttpJsonWriter : ILogWriter
             ClownFishCounters.Logging.HttpJsonWriteCount.Add(list.Count);
         }
         catch( Exception ex ) {
-            Console2.Warnning("HttpJsonWriter.WriteList ERROR: " + ex.ToString());
+            if( s_showError ) {
+                Console2.Warnning("HttpJsonWriter.WriteList ERROR: " + ex.ToString());
+            }
         }
     }
 
@@ -86,8 +89,10 @@ internal class HttpJsonWriter : ILogWriter
             httpOption.Send(HttpRetry.Create(2, 500));
         }
         catch(Exception ex) {
-            // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
-            Console2.Warnning("HttpJsonWriter.SendRequest ERROR: " + ex.Message);
+            if( s_showError ) {
+                // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
+                Console2.Warnning("HttpJsonWriter.SendRequest ERROR: " + ex.Message);
+            }
         }
     }
 }
