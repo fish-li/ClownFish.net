@@ -588,16 +588,17 @@ public abstract class BaseCommand
     /// <summary>
     /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
     /// </summary>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
     /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
     /// <returns>查询的数据结果行数</returns>
-    public int ExportToNdJson(string outFilePath)
+    public int ExportToNdJson(int maxRows, string outFilePath)
     {
         using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
         using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
 
         return Execute<int>(nameof(ToSingle),
             cmd => {
-                return ExportToNdJson0(cmd, writer);
+                return ExportToNdJson0(cmd, maxRows, writer);
             });
     }
 
@@ -605,16 +606,17 @@ public abstract class BaseCommand
     /// <summary>
     /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
     /// </summary>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
     /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
     /// <returns>查询的数据结果行数</returns>
-    public async Task<int> ExportToNdJsonAsync(string outFilePath)
+    public async Task<int> ExportToNdJsonAsync(int maxRows, string outFilePath)
     {
         using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
         using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
 
         return await ExecuteAsync<int>(nameof(ToSingle),
             async cmd => {
-                return await ExportToNdJson0Async(cmd, writer);
+                return await ExportToNdJson0Async(cmd, maxRows, writer);
             });
     }
 
@@ -622,15 +624,16 @@ public abstract class BaseCommand
     /// <summary>
     /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
     /// </summary>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
     /// <param name="sb"></param>
     /// <returns>查询的数据结果行数</returns>
-    public int ExportToNdJson(StringBuilder sb)
+    public int ExportToNdJson(int maxRows, StringBuilder sb)
     {
         using StringWriter writer = new StringWriter(sb);
 
         return Execute<int>(nameof(ToSingle),
             cmd => {
-                return ExportToNdJson0(cmd, writer);
+                return ExportToNdJson0(cmd, maxRows, writer);
             });
     }
 
@@ -638,20 +641,21 @@ public abstract class BaseCommand
     /// <summary>
     /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
     /// </summary>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
     /// <param name="sb"></param>
     /// <returns>查询的数据结果行数</returns>
-    public async Task<int> ExportToNdJsonAsync(StringBuilder sb)
+    public async Task<int> ExportToNdJsonAsync(int maxRows, StringBuilder sb)
     {
         using StringWriter writer = new StringWriter(sb);
 
         return await ExecuteAsync<int>(nameof(ToSingle),
             async cmd => {
-                return await ExportToNdJson0Async(cmd, writer);
+                return await ExportToNdJson0Async(cmd, maxRows, writer);
             });
     }
 
 
-    private int ExportToNdJson0(DbCommand cmd, TextWriter writer)
+    private int ExportToNdJson0(DbCommand cmd, int maxRows, TextWriter writer)
     {
         int count = 0;
         using( DbDataReader reader = cmd.ExecuteReader() ) {
@@ -670,6 +674,9 @@ public abstract class BaseCommand
                 string json = row.ToJson();
                 writer.WriteLine(json);
                 row.Clear();
+
+                if( maxRows > 0 && count >= maxRows )
+                    break;
             }
             writer.Flush();
         }
@@ -678,7 +685,7 @@ public abstract class BaseCommand
     }
 
 
-    private async Task<int> ExportToNdJson0Async(DbCommand cmd, TextWriter writer)
+    private async Task<int> ExportToNdJson0Async(DbCommand cmd, int maxRows, TextWriter writer)
     {
         int count = 0;
         using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
@@ -697,6 +704,9 @@ public abstract class BaseCommand
                 string json = row.ToJson();
                 writer.WriteLine(json);
                 row.Clear();
+
+                if( maxRows > 0 && count >= maxRows )
+                    break;
             }
             writer.Flush();
         }

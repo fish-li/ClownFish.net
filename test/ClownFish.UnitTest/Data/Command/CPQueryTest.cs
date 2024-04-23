@@ -305,13 +305,14 @@ public class CPQueryTest : BaseTest
         StringBuilder sb2 = new StringBuilder();
 
         int count1,count2,count3,count4;
+        int maxRows = 100;
 
         using( DbContext db = DbContext.Create("mysql") ) {
-            count1 = db.CPQuery.Create(sql, args).ExportToNdJson(outFilePath1);
-            count2 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(outFilePath2);
+            count1 = db.CPQuery.Create(sql, args).ExportToNdJson(maxRows, outFilePath1);
+            count2 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(maxRows, outFilePath2);
 
-            count3 = db.CPQuery.Create(sql, args).ExportToNdJson(sb1);
-            count4 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(sb2);
+            count3 = db.CPQuery.Create(sql, args).ExportToNdJson(maxRows, sb1);
+            count4 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(maxRows, sb2);
         }
 
         Assert.IsTrue(count1 > 0);
@@ -335,8 +336,8 @@ public class CPQueryTest : BaseTest
         string outFilePath3 = "temp/Test_CPQuery_ExportToNdJson3.txt";
 
         using( DbContext db = DbContext.Create("mysql") ) {
-            count5 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(sb1);
-            count6 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(outFilePath3);
+            count5 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(maxRows, sb1);
+            count6 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(maxRows, outFilePath3);
         }
         Assert.IsTrue(count5 == 0);
         Assert.IsTrue(count6 == 0);
