@@ -191,4 +191,44 @@ public static class FileHelper
     }
 
 
+    /// <summary>
+    /// 读取文本文件的尾部
+    /// </summary>
+    /// <param name="filePath">文本文件的路径</param>
+    /// <param name="maxRows">需要读取的最大行数</param>
+    /// <param name="encoding">文本编码方式</param>
+    /// <returns></returns>
+    public static string ReadFileTails(string filePath, int maxRows, Encoding encoding = null)
+    {
+        encoding = encoding ?? Encoding.UTF8;
+
+        using( FileStream file = RetryFile.OpenRead(filePath) ) {
+
+            if( maxRows > 0 ) {
+                file.Seek(0, SeekOrigin.End);
+
+                while( file.Position > 0 && maxRows > 0 ) {
+
+                    file.Seek(-1, SeekOrigin.Current);
+
+                    // 读取一个字节，判断是不是“换行符”，注意：此时 file.Position 会 +1，所以要在读完后回退一位
+                    char c = (char)file.ReadByte();
+                    file.Seek(-1, SeekOrigin.Current);
+
+                    if( c == '\n' ) {
+                        maxRows--;
+
+                        if( maxRows == 0 ) {
+                            // 跳过当前 “换行符”
+                            file.Seek(1, SeekOrigin.Current);
+                        }
+                    }
+                }               
+            }
+
+            using( StreamReader reader = new StreamReader(file, encoding) ) {
+                return reader.ReadToEnd();
+            }
+        }
+    }
 }
