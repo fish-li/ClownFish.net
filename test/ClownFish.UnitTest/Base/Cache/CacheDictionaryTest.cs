@@ -40,22 +40,31 @@ public class CacheDictionaryTest
     [TestMethod]
     public void Test_CheckForExpiredItems()
     {
-        CacheDictionary<string> dict = new CacheDictionary<string>();
+        int deleteCount = 0;
+
+        Action<string> cleanCallback = name => { 
+            Console.WriteLine("CacheDictionary clean key: " + name);
+            deleteCount++;
+        };
+
+        CacheDictionary<string> dict = new CacheDictionary<string>(10, false, 1, cleanCallback);
+        Assert.IsTrue(dict.IsAutoExpiredClean);
 
         string key = "key1";
         string value = "aaa";
 
-        dict.Set(key, value, DateTime.Now.AddMilliseconds(10));
+        dict.Set(key, value, DateTime.Now.AddMilliseconds(100));
         Assert.AreEqual(value, dict.Get(key));
 
-        System.Threading.Thread.Sleep(30);
+        Thread.Sleep(1000 /* expirationScanFrequency */ + 100 /* item expiration */ + 50);
 
-        // 触发主动清理
-        dict.SetFieldValue("_lastScanTime", DateTime.MinValue.Ticks);
-        dict.CheckForExpiredItems();
-        System.Threading.Thread.Sleep(100);
+        dict.Set("key2", "bbb", DateTime.Now.AddMilliseconds(100));   // 触发 dict.CheckExpiredItems()
 
-        Assert.AreEqual(0, dict.GetCount());
+        // 等待过期清理的后台线程执行
+        System.Threading.Thread.Sleep(500);
+
+        Assert.AreEqual(1, dict.GetCount());
+        Assert.AreEqual(1, deleteCount);
     }
 
     [TestMethod]
@@ -105,19 +114,19 @@ public class CacheDictionaryTest
     public void Test_ctor()
     {
         CacheDictionary<string> cache1 = new CacheDictionary<string>();
-        Assert.IsTrue((bool)cache1.GetFieldValue("_autoExpiredClean"));
+        Assert.IsTrue(cache1.IsAutoExpiredClean);
 
         CacheDictionary<string> cache2 = new CacheDictionary<string>(true);
-        Assert.IsTrue((bool)cache2.GetFieldValue("_autoExpiredClean"));
+        Assert.IsTrue(cache2.IsAutoExpiredClean);
 
         CacheDictionary<string> cache3 = new CacheDictionary<string>(false);
-        Assert.IsFalse((bool)cache3.GetFieldValue("_autoExpiredClean"));
+        Assert.IsFalse(cache3.IsAutoExpiredClean);
 
         CacheDictionary<string> cache4 = new CacheDictionary<string>(100, false, true);
-        Assert.IsTrue((bool)cache4.GetFieldValue("_autoExpiredClean"));
+        Assert.IsTrue(cache4.IsAutoExpiredClean);
 
         CacheDictionary<string> cache5 = new CacheDictionary<string>(100, false, false);
-        Assert.IsFalse((bool)cache5.GetFieldValue("_autoExpiredClean"));
+        Assert.IsFalse(cache5.IsAutoExpiredClean);
     }
 
     [TestMethod]

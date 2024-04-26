@@ -10,8 +10,8 @@ internal static class CacheOption
 
     /// <summary>
     /// CacheDictionary&lt;T&gt;类型的主动过期清理周期，单位：秒
-    /// 默认值：1800 秒
+    /// 默认值：600 秒
     /// </summary>
-    public static readonly int ExpirationScanFrequency = LocalSettings.GetUInt("ClownFish_CacheDictionary_ExpirationScanFrequency", 1800).Min(20); // 默认半小时执行一次主动过期扫描
+    public static readonly int ExpirationScanFrequency = LocalSettings.GetUInt("ClownFish_CacheDictionary_ExpirationScanFrequency", 600).Min(20);
 
 }

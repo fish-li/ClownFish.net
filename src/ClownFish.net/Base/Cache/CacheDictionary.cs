@@ -14,16 +14,37 @@ public sealed class CacheDictionary<T> where T : class
 
     private readonly TSafeDictionary<string, CacheItem<T>> _cache;
     private readonly bool _useWeakReference;
-    private readonly bool _autoExpiredClean;
+    private readonly int _expirationScanFrequency;
+    private readonly Action<string> _cleanCallback;
+
+    internal bool IsAutoExpiredClean => _expirationScanFrequency > 0;
 
     /// <summary>
     /// 构造方法
     /// </summary>
     /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
-    public CacheDictionary(bool useWeakReference) : this(300, useWeakReference)
+    public CacheDictionary(bool useWeakReference = true)
+        : this(300, useWeakReference, GetExpirationScanFrequency(useWeakReference, null), null)
+    {
+    }
+    /// <summary>
+    /// 构造方法
+    /// </summary>
+    /// <param name="capacity">字典的初始容量</param>
+    public CacheDictionary(int capacity)
+        : this(capacity, true, GetExpirationScanFrequency(true, null), null)
     {
     }
 
+    /// <summary>
+    /// 构造方法
+    /// </summary>
+    /// <param name="capacity">字典的初始容量</param>
+    /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
+    public CacheDictionary(int capacity, bool useWeakReference)
+        : this(capacity, useWeakReference, GetExpirationScanFrequency(useWeakReference, null), null)
+    {
+    }
 
     /// <summary>
     /// 构造方法
@@ -31,18 +52,36 @@ public sealed class CacheDictionary<T> where T : class
     /// <param name="capacity">字典的初始容量</param>
     /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
     /// <param name="autoExpiredClean">是否启用过期自动清理</param>
-    public CacheDictionary(int capacity = 300, bool useWeakReference = true, bool? autoExpiredClean = null)
+    public CacheDictionary(int capacity, bool useWeakReference, bool autoExpiredClean)
+        : this(capacity, useWeakReference, GetExpirationScanFrequency(useWeakReference, autoExpiredClean), null)
     {
-        // 如果不显式指定【自动清理】，就参考 useWeakReference，
-        // 如果启用【弱引用】就意味需要着缓存大对象，那就同时启用【自动清理】，反之则不启用自动清理
-        _autoExpiredClean = autoExpiredClean.HasValue ? autoExpiredClean.Value : useWeakReference;
+    }
 
+    /// <summary>
+    /// 构造方法
+    /// </summary>
+    /// <param name="capacity">字典的初始容量</param>
+    /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
+    /// <param name="expirationScanFrequency">过期自动清理扫描的频率，单位：秒，大于零表示启用过期自动清理。</param>
+    /// <param name="cleanCallback">自动清理过期缓存条目时的回调味委托</param>
+    public CacheDictionary(int capacity, bool useWeakReference, int expirationScanFrequency, Action<string> cleanCallback)
+    {
         _useWeakReference = useWeakReference;
+        _expirationScanFrequency = expirationScanFrequency;
+        _cleanCallback = cleanCallback;
+        
         _cache = new TSafeDictionary<string, CacheItem<T>>(capacity, StringComparer.OrdinalIgnoreCase);
     }
 
 
+    private static int GetExpirationScanFrequency(bool useWeakReference, bool? autoExpiredClean)
+    {
+        // 如果不显式指定 autoExpiredClean，就参考 useWeakReference 参数，
+        // 因为如果启用【弱引用】就意味需要着缓存大对象，那么应该是需要时启用【自动清理】的，反之则不启用自动清理
 
+        bool flag = autoExpiredClean.HasValue ? autoExpiredClean.Value : useWeakReference;
+        return flag ? CacheOption.ExpirationScanFrequency : 0;
+    }
 
     /// <summary>
     /// 添加一个缓存项，如果存在就覆盖。
@@ -78,25 +117,25 @@ public sealed class CacheDictionary<T> where T : class
 
 
         // 如果不启用自动清理，或者缓存项是无限期的，就不启动自动清理
-        if( _autoExpiredClean == false || expiration == DateTime.MaxValue )
+        if( _expirationScanFrequency <= 0 || expiration == DateTime.MaxValue )
             return;
 
         // 说明：触发检查主动清理的时机在 Set 操作时，
         // Get 操作不触发，因为 Get 方法内部有 延迟清理 机制。
-        CheckForExpiredItems();
+        CheckExpiredItems();
     }
 
     /// <summary>
     /// 检查要不要做主动过期清理
     /// </summary>
-    internal void CheckForExpiredItems()
+    internal void CheckExpiredItems()
     {
         // 由于这个类型的实例通常被用于静态引用，所以这个方法一定要考虑线程安全
 
         long now = DateTime.Now.Ticks;
         long lastTime = Interlocked.Read(ref _lastScanTime);
 
-        if( (new DateTime(lastTime)).AddSeconds(CacheOption.ExpirationScanFrequency).Ticks <= now ) {
+        if( (new DateTime(lastTime)).AddSeconds(_expirationScanFrequency).Ticks <= now ) {
 
             lock( _lock ) {
 
@@ -118,8 +157,11 @@ public sealed class CacheDictionary<T> where T : class
     {
         foreach( var kv in _cache.Clone() ) {
 
-            if( kv.Value.IsExpired() )
-                Remove(kv.Key);
+            if( kv.Value.IsExpired() ) {
+
+                _cleanCallback?.Invoke(kv.Key);
+                Remove(kv.Key);                
+            }
         }
     }
 
@@ -132,7 +174,6 @@ public sealed class CacheDictionary<T> where T : class
     {
         if( string.IsNullOrEmpty(key) )
             throw new ArgumentNullException(nameof(key));
-
 
         return _cache.TryGetValue(key, out CacheItem<T> item) 
             ? item.Value
@@ -180,5 +221,15 @@ public sealed class CacheDictionary<T> where T : class
     {
         var dict = _cache.Clone();
         return dict.ToDictionary2(dict.Count, x => x.Key, x => x.Value.Get());
+    }
+
+
+    /// <summary>
+    /// 获取所有的缓存键
+    /// </summary>
+    /// <returns></returns>
+    public string[] GetKeys()
+    {
+        return _cache.GetKeys();
     }
 }
