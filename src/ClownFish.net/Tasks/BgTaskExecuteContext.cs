@@ -10,13 +10,6 @@ public sealed class BgTaskExecuteContext : BasePipelineContext, IDisposable
     /// </summary>
     public BaseTaskObject Executor { get; init; }
 
-
-    /// <summary>
-    /// OprLog
-    /// </summary>
-    public OprLog OprLog => this.OprLogScope.OprLog;
-
-
     /// <summary>
     /// 构造方法
     /// </summary>

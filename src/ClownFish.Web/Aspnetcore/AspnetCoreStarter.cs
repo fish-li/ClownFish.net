@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Web.Aspnetcore;
+﻿using System.Runtime;
+
+namespace ClownFish.Web.Aspnetcore;
 
 /// <summary>
 /// 启动asp.netcore的工具类
@@ -120,6 +122,7 @@ public static class AspnetCoreStarter
         Console2.WriteLine("ClownFishWebVer     : " + AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty(ConstValues.CurrentVersion));
         Console2.WriteLine("Framework  Info     : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
         Console2.WriteLine("OS Name             : " + OsUtils.GetOsName());
+        Console2.WriteLine("GC Mode             : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
         Console2.WriteSeparatedLine();
     }
 

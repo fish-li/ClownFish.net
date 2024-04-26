@@ -104,7 +104,7 @@ public partial class OprLog
             this.Action = a2?.Name ?? actionMethod.Name;
 
             if( this.OprName.IsNullOrEmpty() ) {
-                this.OprName = controllerType.Name + "/" + actionMethod.Name;
+                this.OprName = "HttRequest";
             }
         }
 

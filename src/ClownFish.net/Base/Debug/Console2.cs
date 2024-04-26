@@ -77,13 +77,16 @@ public static class Console2
         if( s_listenLines == null )
             return null;
 
-        string text = s_listenLines.ToString();
-        s_listenLines = null;
-
         if( filename == null )
             filename = "_ConsoleWrite.log";
 
         string filePath = Path.Combine(EnvUtils.GetTempPath(), filename);
+
+        WriteLine("All startup log write to file: " + filePath);
+
+        string text = s_listenLines.ToString();
+        s_listenLines = null;
+        
         RetryFile.WriteAllText(filePath, text);
         return filePath;
     }
@@ -269,6 +272,10 @@ internal sealed class FileConsoleImpl : IConsole
 
     public FileConsoleImpl(string outFilePath, long maxFileLength)
     {
+        // 确保文件所在的目录是存在的，否则在创建文件时会出现异常
+        string parentDirectory = Path.GetDirectoryName(outFilePath);
+        Directory.CreateDirectory(parentDirectory);
+
         _filePath = outFilePath;
         _maxFileLength = maxFileLength;
         OpenFile();

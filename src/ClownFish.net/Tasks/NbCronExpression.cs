@@ -1,14 +1,18 @@
-﻿#if NETCOREAPP
-
-using Cronos;
+﻿using Cronos;
 //using Quartz;
 namespace ClownFish.Tasks;
 
-
-internal sealed class NbCronExpression
+/// <summary>
+/// 
+/// </summary>
+public sealed class NbCronExpression
 {
     private readonly CronExpression _cronExpression;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="expression"></param>
     public NbCronExpression(string expression)
     {
         _cronExpression = Cronos.CronExpression.Parse(expression, Cronos.CronFormat.IncludeSeconds);
@@ -16,6 +20,11 @@ internal sealed class NbCronExpression
         //_cronExpression = new Quartz.CronExpression(expression);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dateTime"></param>
+    /// <returns></returns>
     public DateTime? GetNextUtcTime(DateTime dateTime)
     {
         return _cronExpression.GetNextOccurrence(dateTime.ToUniversalTime());   // Cronos
@@ -24,7 +33,11 @@ internal sealed class NbCronExpression
         //return next?.DateTime;
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dateTime"></param>
+    /// <returns></returns>
     public DateTime? GetNextLocalTime(DateTime dateTime)
     {
         DateTimeOffset? next = _cronExpression.GetNextOccurrence(new DateTimeOffset(dateTime), TimeZoneInfo.Local);   // Cronos
@@ -34,4 +47,3 @@ internal sealed class NbCronExpression
         //return next?.DateTime.ToLocalTime();
     }
 }
-#endif

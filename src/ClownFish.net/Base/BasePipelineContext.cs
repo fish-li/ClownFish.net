@@ -54,6 +54,11 @@ public abstract class BasePipelineContext
 
     // 说明：默认使用 NullObject 可以避免 NullReferenceException 的可能性，代码写起来也更容易。
 
+    /// <summary>
+    /// OprLog
+    /// </summary>
+    public OprLog OprLog => this.OprLogScope.OprLog;
+
 
     /// <summary>
     /// ctor
