@@ -13,12 +13,17 @@ public static class ConstValues
     /// <summary>
     /// 
     /// </summary>
-    public static readonly string HttpClientUserAgent;
+    public static string HttpClientUserAgent { get; internal set; }
 
     static ConstValues()
     {
-        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.411.17");
+        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.411.32");
 
-        HttpClientUserAgent = "ClownFish.HttpClient/" + CurrentVersion;
+        ReLoad();
+    }
+
+    internal static void ReLoad()
+    {
+        HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}/{EnvUtils.ApplicationName}/{EnvUtils.ClusterName}/{EnvUtils.EnvName}/{OsUtils.GetOsName()}/{EnvUtils.GetHostName()}";
     }
 }

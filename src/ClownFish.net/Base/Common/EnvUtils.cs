@@ -127,6 +127,8 @@ public static class EnvUtils
 
         ApplicationName = GetApplicationName0();
         ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "ClownFish.TEST";
+
+        ConstValues.ReLoad();
     }
 
     private static string GetEvnName()
