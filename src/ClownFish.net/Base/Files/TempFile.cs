@@ -16,13 +16,14 @@ public sealed class TempFile : IDisposable
     /// 创建临时文件
     /// </summary>
     /// <param name="body"></param>
+    /// <param name="extName">文件扩展名</param>
     /// <returns></returns>
-    public static TempFile CreateFile(byte[] body)
+    public static TempFile CreateFile(byte[] body, string extName = ".tmp")
     {
         if( body == null )
             throw new ArgumentNullException(nameof(body));
 
-        string filePath = GenTempFileFullName(".tmp");
+        string filePath = GenTempFileFullName(extName);
 
         File.WriteAllBytes(filePath, body);
 
@@ -53,8 +54,9 @@ public sealed class TempFile : IDisposable
     /// 创建临时文件
     /// </summary>
     /// <param name="stream"></param>
+    /// <param name="extName">文件扩展名</param>
     /// <returns></returns>
-    public static TempFile CreateFile(Stream stream)
+    public static TempFile CreateFile(Stream stream, string extName = ".tmp")
     {
         if( stream == null )
             throw new ArgumentNullException(nameof(stream));
@@ -62,7 +64,7 @@ public sealed class TempFile : IDisposable
         if( stream.CanSeek )
             stream.Position = 0;
 
-        string filePath = GenTempFileFullName(".tmp");
+        string filePath = GenTempFileFullName(extName);
 
         using( FileStream fileStream = File.Create(filePath) ) {
             stream.CopyTo(fileStream);
