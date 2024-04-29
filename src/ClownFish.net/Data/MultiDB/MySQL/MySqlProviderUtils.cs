@@ -10,9 +10,9 @@ public static class MySqlProviderUtils
     /// <summary>
     /// 注册 MySQL 客户端提供者
     /// </summary>
-    /// <param name="flag">MySql.Data = 1 / MySqlConnector = 2 / all = 3 / auto = 0</param>
+    /// <param name="flag">0 = auto / 1 = MySql.Data / 2 = MySqlConnector / 3 = both</param>
     /// <returns></returns>
-    public static void RegisterProvider(int flag)
+    public static void RegisterProvider(int flag = 0)
     {
         if( flag == 0 ) {
             
@@ -21,9 +21,11 @@ public static class MySqlProviderUtils
 
             // 如果没有配置，就根据项目引用的 DLL 来判断
             if( flag == 0 ) {
-                if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MySqlConnector.dll")) )
+                string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).ToArray();
+
+                if( asmList.Contains("MySqlConnector") )
                     flag = 2;
-                else if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MySql.Data.dll")) )
+                else if( asmList.Contains("MySql.Data") )
                     flag = 1;
                 else
                     throw new FileNotFoundException("没有找到MySQL客户端类库 MySqlConnector.dll or MySql.Data.dll ！");

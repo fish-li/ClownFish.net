@@ -84,6 +84,9 @@ public static class AsmHelper
     /// </summary>
     private static void LoadAllAssemblies()
     {
+        if( AsmHelper.IsSingleFileDeploy )
+            return;
+
         string[] files = RetryDirectory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly);
 
         foreach( string file in files ) {
@@ -97,7 +100,7 @@ public static class AsmHelper
     }
 
 
-    private static Assembly[] GetCurrentDomainAssemblies()
+    internal static Assembly[] GetCurrentDomainAssemblies()
     {
         if( s_inited == false ) {
             lock( s_lock ) {

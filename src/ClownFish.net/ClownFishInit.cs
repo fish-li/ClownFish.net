@@ -153,54 +153,27 @@ public static class ClownFishInit
 
     private static void AutoRegisterDbProviders()
     {
-        AutoRegisterSqlClient();
+        ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider();
 
-        AutoRegisterMySqlClient();
+        ClownFish.Data.Initializer.Instance.RegisterMySqlProvider();
 
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Npgsql.dll")) ) {
+        AutoRegisterOthersSqlClient();
+    }
+
+    private static void AutoRegisterOthersSqlClient()
+    {
+        string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).OrderBy(x => x).ToArray();
+
+        if( asmList.Contains("Npgsql") ) {
             ClownFish.Data.Initializer.Instance.RegisterPostgreSqlProvider();
         }
 
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DmProvider.dll")) ) {
+        if( asmList.Contains("DmProvider") ) {
             ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
         }
 
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "System.Data.SQLite.dll")) ) {
+        if( asmList.Contains("System.Data.SQLite") ) {
             ClownFish.Data.Initializer.Instance.RegisterSQLiteProvider();
-        }
-    }
-
-    private static void AutoRegisterSqlClient()
-    {
-#if NETFRAMEWORK
-        ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider(1);
-#endif
-#if NETCOREAPP
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Microsoft.Data.SqlClient.dll")) ) {
-            ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider(2);
-        }
-        if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "System.Data.SqlClient.dll")) ) {
-            ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider(1);
-        }
-#endif
-    }
-
-    private static void AutoRegisterMySqlClient()
-    {
-        int mysqlFlag = LocalSettings.GetInt("MySqlClientProviderSupport", 0);
-        if( mysqlFlag > 0 ) {
-            ClownFish.Data.Initializer.Instance.RegisterMySqlProvider(mysqlFlag);
-        }
-        else {
-            if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MySql.Data.dll")) ) {
-                ClownFish.Data.Initializer.Instance.RegisterMySqlProvider(1);
-            }
-
-            if( File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MySqlConnector.dll")) ) {
-                ClownFish.Data.Initializer.Instance.RegisterMySqlProvider(2);
-            }
-
-            // 如果没有找到 任何一个DLL，就忽略！
         }
     }
 

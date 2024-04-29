@@ -38,16 +38,27 @@ public sealed class Initializer
     /// <summary>
     /// 注册 SQLSERVER 客户端提供者
     /// </summary>
-    /// <param name="flag">System.Data.SqlClient = 1 / Microsoft.Data.SqlClient = 2</param>
+    /// <param name="flag">0 = auto / 1 = System.Data.SqlClient / 2 = Microsoft.Data.SqlClient </param>
     /// <returns></returns>
-    public Initializer RegisterSqlServerProvider(int flag = 1)
+    public Initializer RegisterSqlServerProvider(int flag = 0)
     {
-        if( flag == 1 ) {
-            // 在 .net framework 环境下，System.Data.SqlClient 会自动注册，所以不需要做什么
-
+        // 在 .net framework 环境下，System.Data.SqlClient 会自动注册，所以不需要做什么
 #if NETCOREAPP
+
+        if( flag == 0) {
+            string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).OrderBy(x => x).ToArray();
+
+            if( asmList.Contains("Microsoft.Data.SqlClient") ) {
+                DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
+            }
+
+            if( asmList.Contains("System.Data.SqlClient") ) {
+                DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
+            }
+        }
+
+        if( flag == 1 ) {
             DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
-#endif
         }
 
         if( flag == 2 ) {
@@ -57,6 +68,8 @@ public sealed class Initializer
             DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
         }
 
+
+#endif
         return this;
     }
 
@@ -64,7 +77,7 @@ public sealed class Initializer
     /// <summary>
     /// 注册 MySQL 客户端提供者
     /// </summary>
-    /// <param name="flag">MySql.Data = 1 / MySqlConnector = 2 / both = 3 / auto = 0</param>
+    /// <param name="flag">0 = auto / 1 = MySql.Data / 2 = MySqlConnector / 3 = both</param>
     /// <returns></returns>
     public Initializer RegisterMySqlProvider(int flag = 0)
     {

@@ -39,6 +39,8 @@ public static class DbClientFactory
         // 这里直接修改集合，允许多次调用
         s_dict[providerName] = provider;
 
+        Console2.Info($"Register SqlClient Provider: {providerName} => {provider.GetType().FullName}");
+
         if( providerName == DatabaseClients.SqlClient ) {
             s_mssqlClientProvider = provider;
         }
