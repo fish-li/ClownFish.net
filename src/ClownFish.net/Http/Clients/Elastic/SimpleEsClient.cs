@@ -187,6 +187,8 @@ public sealed class SimpleEsClient
 
     #region 写数据 List/Bulk
 
+    private readonly ValueCounter _counter = new ValueCounter();
+
     /// <summary>
     /// Write list
     /// </summary>
@@ -199,8 +201,17 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName);
-        string response = httpOption.GetResult();
-        CheckBulkResponse(response);
+
+        // 写ES出现错误的概率极低，除非是数据本身有问题，或者是ES服务端的资源出现问题，
+        // 所以为了最大限度的提升性能，这里采用抽样策略来检查ES的返回结果
+        long count = _counter.Increment();
+        if( count < 10 || count % 10 == 1 ) {
+            string response = httpOption.GetResult();
+            CheckBulkResponse(response);
+        }
+        else {
+            httpOption.Send();
+        }
 
         //HttpResult<string> result = httpOption.GetResult<HttpResult<string>>();
         //Console2.WriteLine("====================== Write Elasticsearch Request =====================================");
@@ -222,8 +233,15 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName);
-        string response = await httpOption.GetResultAsync();
-        CheckBulkResponse(response);
+
+        long count = _counter.Increment();
+        if( count < 10 || count % 10 == 1 ) {
+            string response = await httpOption.GetResultAsync();
+            CheckBulkResponse(response);
+        }
+        else {
+            await httpOption.SendAsync();
+        }
     }
 
     private HttpOption GetWriteListHttpOption<T>(List<T> list, string indexName) where T : class, IMsgObject
