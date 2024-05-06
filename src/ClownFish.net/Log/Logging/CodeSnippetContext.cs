@@ -6,6 +6,11 @@
 public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
 {
     /// <summary>
+    /// 是否在结束时写日志
+    /// </summary>
+    public bool EnableLog = true;
+
+    /// <summary>
     /// 构造方法
     /// </summary>
     public CodeSnippetContext(Type executorType, string operName, long performanceThresholdMs = 100)
@@ -40,8 +45,10 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
         this.End();
 
         if( this.OprLogScope.IsNull == false ) {
-            // 记录日志(OprLog + InvokeLog)
-            this.SaveLog();
+            if( EnableLog ) {
+                // 记录日志(OprLog + InvokeLog)
+                this.SaveLog();
+            }
             this.DisposeOprLogScope();
         }
     }

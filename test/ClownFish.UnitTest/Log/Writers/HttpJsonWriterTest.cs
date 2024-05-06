@@ -73,6 +73,7 @@ internal class HttpJsonWriter3 : HttpJsonWriter
     protected override void SendRequest(HttpOption httpOption)
     {
         httpOption.Url = "http://www.xxxxxxxxxxxxxx.com/show-request2.aspx";
+        httpOption.Timeout = 100;
         base.SendRequest(httpOption);
     }
 }
