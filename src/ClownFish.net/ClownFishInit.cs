@@ -70,7 +70,17 @@ public static class ClownFishInit
     private static void SetDefaultCulture0()
     {
         string lang = EnvironmentVariables.Get("LANG").IfEmpty("zh-CN");
-        CultureInfo defaultCulture = new CultureInfo(lang);
+        CultureInfo defaultCulture = null;
+
+        try {
+            defaultCulture = new CultureInfo(lang);
+        }
+        catch( CultureNotFoundException ex ) {
+            // 有些 linux 环境没有安装参数中指定的语言包，就会出现异常：
+            // Unhandled exception. System.Globalization.CultureNotFoundException: Culture is not supported. (Parameter 'name')
+            Console2.Error("Culture is not supported: " + lang, ex);
+            return;
+        }
 
         Thread.CurrentThread.CurrentCulture = defaultCulture;
         CultureInfo.CurrentCulture = defaultCulture;
