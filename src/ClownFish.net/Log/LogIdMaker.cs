@@ -1,6 +1,4 @@
-﻿using ClownFish.Jwt;
-
-namespace ClownFish.Log;
+﻿namespace ClownFish.Log;
 
 /// <summary>
 /// 日志ID生成器
@@ -21,11 +19,7 @@ public static class LogIdMaker
     /// <returns></returns>
     public static string GetNewId(DateTime time)
     {
-#if NETCOREAPP
-        return LogIdMakerV2.Instance.GetNewId2(time);
-#else
         return LogIdMakerV2.Instance.GetNewId(time);
-#endif
     }
 
     /// <summary>
@@ -72,29 +66,9 @@ internal class LogIdMakerV2 : ILogIdMaker
 
     private static readonly RandomNumberGenerator s_randomGenerator = RandomNumberGenerator.Create();
 
-    public string GetNewId(DateTime time)
-    {
-        // 这里参考了 GuidHelper 的实现方式
-
-        byte[] randomBytes = new byte[12];
-        s_randomGenerator.GetBytes(randomBytes);
-
-        long timestamp = time.Ticks / 10000L;
-        byte[] timestampBytes = BitConverter.GetBytes(timestamp);
-
-        if( BitConverter.IsLittleEndian ) {
-            Array.Reverse(timestampBytes);
-        }
-
-        byte[] resultBytes = new byte[18];  // 18位byte 可以确保生成的字符串结果长度是 固定长度 24
-        Buffer.BlockCopy(timestampBytes, 2, resultBytes, 0, 6); // 丢弃开头2位
-        Buffer.BlockCopy(randomBytes, 0, resultBytes, 6, 12);
-
-        return resultBytes.ToUrlBase64();
-    }
 
 #if NETCOREAPP
-    public string GetNewId2(DateTime time)
+    public string GetNewId(DateTime time)
     {
         long timestamp = time.Ticks / 10000L;
         byte[] timestampBytes = BitConverter.GetBytes(timestamp);
@@ -111,6 +85,25 @@ internal class LogIdMakerV2 : ILogIdMaker
         s_randomGenerator.GetBytes(resultBytes.Slice(6));
 
         return ((ReadOnlySpan<byte>)resultBytes).ToUrlBase64();
+    }
+#else
+    public string GetNewId(DateTime time)
+    {
+        long timestamp = time.Ticks / 10000L;
+        byte[] timestampBytes = BitConverter.GetBytes(timestamp);
+
+        if( BitConverter.IsLittleEndian ) {
+            Array.Reverse(timestampBytes);
+        }
+
+        byte[] randomBytes = new byte[12];
+        s_randomGenerator.GetBytes(randomBytes);
+
+        byte[] resultBytes = new byte[18];  // 18位byte 可以确保生成的字符串结果长度是 固定长度 24
+        Buffer.BlockCopy(timestampBytes, 2, resultBytes, 0, 6); // 丢弃开头2位
+        Buffer.BlockCopy(randomBytes, 0, resultBytes, 6, 12);
+
+        return resultBytes.ToUrlBase64();
     }
 #endif
 
