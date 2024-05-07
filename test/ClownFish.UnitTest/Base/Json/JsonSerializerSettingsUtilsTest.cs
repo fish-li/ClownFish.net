@@ -29,6 +29,10 @@ public class JsonSerializerSettingsUtilsTest
         JsonSerializerSettings s6 = JsonSerializerSettingsUtils.Get(JsonStyle.None);
         Assert.AreEqual(DateTimeZoneHandling.Local, s6.DateTimeZoneHandling);
         Assert.AreEqual(NullValueHandling.Ignore, s6.NullValueHandling);
+        Assert.AreEqual(DefaultValueHandling.Include, s6.DefaultValueHandling);
+
+        JsonSerializerSettings s7 = JsonSerializerSettingsUtils.Get(JsonStyle.IgnoreDefaultValue);
+        Assert.AreEqual(DefaultValueHandling.Ignore, s7.DefaultValueHandling);
     }
 
     [TestMethod]

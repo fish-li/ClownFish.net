@@ -21,6 +21,7 @@ internal sealed class JwtJsonSerializer
 
         // 忽略NULL值成员
         settings.NullValueHandling = NullValueHandling.Ignore;
+        settings.DefaultValueHandling = DefaultValueHandling.Ignore;
 
         settings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
 

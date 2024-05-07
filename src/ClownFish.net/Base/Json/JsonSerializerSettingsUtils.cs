@@ -41,6 +41,9 @@ internal static class JsonSerializerSettingsUtils
         else
             settings.NullValueHandling = NullValueHandling.Ignore;
 
+        if( style.HasFlag(JsonStyle.IgnoreDefaultValue ) )
+            settings.DefaultValueHandling = DefaultValueHandling.Ignore;
+
 
         if( style.HasFlag(JsonStyle.KeepType) )
             settings.TypeNameHandling = TypeNameHandling.Auto;

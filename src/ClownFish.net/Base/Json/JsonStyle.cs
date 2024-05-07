@@ -46,6 +46,11 @@ public enum JsonStyle
     /// </summary>
     UtcTime = 64,
 
+    /// <summary>
+    /// 是否忽略默认值
+    /// </summary>
+    IgnoreDefaultValue = 128,
+
 
 }
 
