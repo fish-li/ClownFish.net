@@ -6,47 +6,50 @@
 public enum SerializeFormat
 {
     /// <summary>
-    /// 默认值，没有指定。注意：有些场景下不指定将会出现异常。
+    /// 默认值，不指定 Content-Type
     /// </summary>
     None,
     /// <summary>
-    /// 直接调用 ToString() 方法
-    /// 匹配标头："text/plain"
+    /// 调用 ToString() 方法做数据的序列化。
+    /// 并设置请求头：Content-Type: text/plain
     /// </summary>
     Text,
     /// <summary>
-    /// 采用 JSON.NET 序列化为 JSON 字符串
-    /// 匹配标头："application/json"
+    /// 将提交数据采用 JSON.NET 序列化为 JSON 字符串
+    /// 并设置请求头：Content-Type: application/json
     /// </summary>
     Json,
     /// <summary>
-    /// 采用 JSON.NET 序列化为 JSON 字符串，并尽量输出类型信息，可用于服务端之间或者客户端是C#的反序列化。
-    /// 匹配标头："application/json"
+    /// 将提交数据采用 JSON.NET 序列化为 JSON 字符串，并尽量输出类型信息，可用于服务端之间或者客户端是C#的反序列化。
+    /// 并设置请求头：Content-Type: application/json
     /// </summary>
     Json2,
     /// <summary>
-    /// 序列化成 XML 字符串
-    /// 匹配标头："application/xml"
+    /// 将提交数据序列化成 XML 字符串
+    /// 并设置请求头：Content-Type: application/xml
     /// </summary>
     Xml,
     /// <summary>
-    /// 采用 "application/x-www-form-urlencoded" 方式序列化
+    /// 将提交数据采用“表单”方式序列化，
+    /// 并设置请求头：Content-Type: application/x-www-form-urlencoded
     /// </summary>
     Form,
     /// <summary>
-    /// 采用 "multipart/form-data" 方式序列化
+    /// 将提交数据采用“表单”方式序列化，可支持上传文件，
+    /// 并设置请求头：Content-Type: multipart/form-data
     /// </summary>
     Multipart,
     /// <summary>
-    /// 采用二进制数据传输
+    /// 指示提交数据是二进制数据或者是流对象，发起请求时不做序列化处理，
+    /// 并设置请求头：Content-Type: application/octet-stream
     /// </summary>
     Binary,
     /// <summary>
-    /// 用于服务端自动识别客户端的期望结果类型，由 Request.Headers["X-Result-Format"]来决定。
+    /// 些标志暂未实现。
     /// </summary>
     Auto,
     /// <summary>
-    /// 未知的请求头（不是标准的请求头）
+    /// 未知的数据格式，不指定 Content-Type
     /// </summary>
     Unknown
 }

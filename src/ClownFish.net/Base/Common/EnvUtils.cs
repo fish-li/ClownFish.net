@@ -133,7 +133,7 @@ public static class EnvUtils
 
     private static string GetEvnName()
     {
-        string env = EnvironmentVariables.Get("ASPNETCORE_ENVIRONMENT") ?? EnvironmentVariables.Get("RUNTIME_ENVIRONMENT");
+        string env = LocalSettings.GetSetting("ASPNETCORE_ENVIRONMENT") ?? LocalSettings.GetSetting("RUNTIME_ENVIRONMENT");
 
         // 如果不明确指定，就认为是【生产环境】
         if( env.IsNullOrEmpty() )

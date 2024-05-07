@@ -73,7 +73,9 @@
         dict["UrlReferrer"] = this.Request.UrlReferrer == null ? "NULL" : this.Request.UrlReferrer.OriginalString;
         dict["Content-Type"] = this.Request.ContentType;
         dict["Content-Length"] = this.Request.ContentLength.ToString();
-        dict["Content-Encoding"] = this.Request.ContentEncoding.ToString();
+        // Content-Encoding 用于描述body数据采用哪种【压缩】格式，并不是 字符串的编码方式，所以这里不取它
+        //dict["Content-Encoding"] = this.Request.ContentEncoding.ToString();
+        dict["Content-Encoding"] = this.Request.Headers["Content-Encoding"];
         dict["IsAuthenticated"] = this.Request.IsAuthenticated.ToString();
         return dict;
     }
@@ -87,12 +89,13 @@
         if( hasBody == false )
             return null;
 
+        string contentEncoding = this.Request.Headers["Content-Encoding"];
         bool bodyIsText = contentType.StartsWith("text/")
                         || contentType.StartsWith("application/json")
                         || contentType.StartsWith("application/xml")
                         || contentType.StartsWith("application/x-www-form-urlencoded");
 
-        if( bodyIsText ) {
+        if( bodyIsText && string.IsNullOrEmpty(contentEncoding) ) {
             this.Request.InputStream.Position = 0;
             using( var reader = new System.IO.StreamReader(this.Request.InputStream, Encoding.UTF8) ) {
                 return reader.ReadToEnd();
