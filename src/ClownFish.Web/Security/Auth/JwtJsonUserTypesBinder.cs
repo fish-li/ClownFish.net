@@ -10,6 +10,7 @@ internal sealed class JwtJsonUserTypesBinder : ISerializationBinder
     static JwtJsonUserTypesBinder()
     {
         s_userInfoTypes.Add(typeof(WebUserInfo));
+        s_userInfoTypes.Add(typeof(EndClientUserInfo));
     }
 
 

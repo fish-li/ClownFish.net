@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Web.Security.Auth;
+﻿using System.ComponentModel;
+
+namespace ClownFish.Web.Security.Auth;
 
 /// <summary>
 /// 【普通用户】的登录身份信息
@@ -51,8 +53,9 @@ public sealed class WebUserInfo : IUserInfo
     public string ExtData { get; set; }
 
     /// <summary>
-    /// 特殊标记
+    /// 特殊标记（可选）
     /// </summary>
+    [DefaultValue(0)]
     public int GrayFlag { get; set; }
 
     /// <summary>
