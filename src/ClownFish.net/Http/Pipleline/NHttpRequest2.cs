@@ -8,6 +8,11 @@ public partial class NHttpRequest : ILoggingObject
     private string _bodyText;
 
     /// <summary>
+    /// body 是否已读
+    /// </summary>
+    private bool _isRead = false;
+
+    /// <summary>
     /// 获取请求体字符串。
     /// 此方法会缓存结果，支持多次读取。
     /// </summary>
@@ -35,6 +40,16 @@ public partial class NHttpRequest : ILoggingObject
     }
 
 
+    /// <summary>
+    /// 请求体是否支持多次读取
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool BodySupportMultiRead()
+    {
+        return this.InputStream.CanSeek;
+    }
+
+
     // 说明：下面几个 ReadBodyAsXxxx 方法都把异常吃掉了，因为：
     // 这里出现异常意味着请求流不能读，很不正常的事情，只能吃掉
     // 典型异常：
@@ -45,14 +60,26 @@ public partial class NHttpRequest : ILoggingObject
     //       warn: Microsoft.AspNetCore.Server.Kestrel[22]
     //             As of "07/27/2023 03:47:51 +00:00", the heartbeat has been running for "00:00:01.0234029" which is longer than "00:00:01". This could be caused by thread pool starvation.
     // 2, Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException: Request body too large. The max request body size is xxxxxxxxxx bytes.
-    // 3, System.InvalidOperationException: Reading is already in progress.
-    // 4, Microsoft.AspNetCore.Connections.ConnectionResetException: Connection reset by peer
+    // 3, Microsoft.AspNetCore.Connections.ConnectionResetException: Connection reset by peer
+    // 4, System.InvalidOperationException: Reading is already in progress.
 
-    private void ShowReadBodyException(string method, Exception ex)
+    private void ShowReadBodyException(string method, Exception ex, string contentEncoding)
     {
         if( ClownFishOptions.ShowBadHttpRequestException ) {
-            //这种异常没法解决，显示堆栈也任何作用，反而把 Console 搞得很乱
-            Console2.Warnning(method + " ERROR: " + ex.Message);
+            string message = null;
+            StringBuilder sb = StringBuilderPool.Get();
+            try {
+                sb.Append(method).Append(" ERROR, RequestBody type: ").AppendLineRN(this.InputStream.GetType().FullName);
+                sb.Append(this.HttpMethod).Append(' ').Append(this.FullUrl).AppendLineRN(" HTTP/1.1");
+                AccessHeaders((k, v) => sb.Append(k).Append(": ").Append(v).AppendLineRN());
+                sb.AppendLineRN("------------------------------------------");
+                sb.AppendLineRN(ex.ToString()).AppendLineRN();
+                message = sb.ToString();
+            }
+            finally {
+                StringBuilderPool.Return(sb);
+            }
+            Console2.Warnning(message);
         }
         else {
             // 不显示当前异常
@@ -69,18 +96,25 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns>输入的流</returns>
     public virtual string ReadBodyAsText()
     {
-        if( this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+            return string.Empty;
+
+        // 如果请求体不是文本格式，就直接不读取
+        if( HttpUtils.RequestBodyIsText(this.ContentType) == false )
             return string.Empty;
 
         Encoding encoding = this.GetEncoding();
         string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
+
+        if( this.BodySupportMultiRead() == false )
+            _isRead = true;  // 避免出现：System.InvalidOperationException: Reading is already in progress.
 
         try {
             HttpStreamReader reader = new HttpStreamReader(this.InputStream, contentEncoding);
             return reader.ReadAllText(encoding);
         }
         catch( Exception ex ) {
-            ShowReadBodyException(nameof(ReadBodyAsText), ex);
+            ShowReadBodyException(nameof(ReadBodyAsText), ex, contentEncoding);
             return string.Empty;
         }
     }
@@ -96,18 +130,25 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns>输入的流</returns>
     public virtual async Task<string> ReadBodyAsTextAsync()
     {
-        if( this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+            return string.Empty;
+
+        // 如果请求体不是文本格式，就直接不读取
+        if( HttpUtils.RequestBodyIsText(this.ContentType) == false )
             return string.Empty;
 
         Encoding encoding = this.GetEncoding();
         string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
+
+        if( this.BodySupportMultiRead() == false )
+            _isRead = true;
 
         try {
             HttpStreamReader reader = new HttpStreamReader(this.InputStream, contentEncoding);
             return await reader.ReadAllTextAsync(encoding);
         }
         catch( Exception ex ) {
-            ShowReadBodyException(nameof(ReadBodyAsTextAsync), ex);
+            ShowReadBodyException(nameof(ReadBodyAsTextAsync), ex, contentEncoding);
             return string.Empty;
         }
     }
@@ -120,14 +161,17 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns></returns>
     public virtual byte[] ReadBodyAsBytes()
     {
-        if( this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
             return Empty.Array<byte>();
+
+        if( this.BodySupportMultiRead() == false )
+            _isRead = true;
 
         try {
             return this.InputStream.ToArray();
         }
         catch( Exception ex ) {
-            ShowReadBodyException(nameof(ReadBodyAsBytes), ex);
+            ShowReadBodyException(nameof(ReadBodyAsBytes), ex, null);
             return Empty.Array<byte>();
         }
     }
@@ -140,14 +184,17 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns></returns>
     public virtual async Task<byte[]> ReadBodyAsBytesAsync()
     {
-        if( this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
             return Empty.Array<byte>();
+
+        if( this.BodySupportMultiRead() == false )
+            _isRead = true;
 
         try {
             return await this.InputStream.ToArrayAsync();
         }
         catch( Exception ex ) {
-            ShowReadBodyException(nameof(ReadBodyAsBytesAsync), ex);
+            ShowReadBodyException(nameof(ReadBodyAsBytesAsync), ex, null);
             return Empty.Array<byte>();
         }
     }

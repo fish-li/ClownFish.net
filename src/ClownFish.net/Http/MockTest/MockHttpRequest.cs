@@ -161,4 +161,13 @@ public class MockHttpRequest : NHttpRequest
     /// <inheritdoc/>
     /// </summary>
     public override string QueryString(string name) => _queryString.Get(name);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    protected override bool BodySupportMultiRead()
+    {
+        return true;
+    }
 }

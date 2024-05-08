@@ -20,11 +20,14 @@ public static class RequestBufferingUtils
         if( httpContextNetCore.Request.HasBody == false )
             return -1;
 
+        // 如果请求体的长度未知，就不做缓冲
         long bodySize = httpContextNetCore.Request.ContentLength;
         if( bodySize <= 0 )
             return -2;
 
         HttpContext httpContext = httpContextNetCore.OriginalHttpContext as HttpContext;
+
+        // 默认的请求流是不能 CanSeek 的，能做 CanSeek 就章味着其它地方可能先调用了 EnableBuffering()
         if( httpContext.Request.Body.CanSeek )
             return -3;
 
@@ -48,6 +51,10 @@ public static class RequestBufferingUtils
         ms.Position = 0;
         httpContext.Request.Body = ms;
         httpContextNetCore.RegisterForDispose(ms);
+
+        if( ms.Length != bodySize ) {
+            Console2.Warnning($"SetRequestBuffering 在读取Request.Body时出现错误，期望数据长度：{bodySize}，实际读取长度：{ms.Length}");
+        }
 
         return LoggingOptions.RequestBodyBufferSize;  // 返回缓冲区长度，表示设置成功
     }

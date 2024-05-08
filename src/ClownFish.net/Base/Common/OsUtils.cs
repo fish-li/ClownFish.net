@@ -32,16 +32,22 @@ public static class OsUtils
     /// <returns></returns>
     public static string GetOsName()
     {
-        if( OsUtils.IsLinux )
-            return GetLinuxName();
+        if( OsUtils.IsLinux ) {
+            if( s_linuxOsName == null )
+                s_linuxOsName = GetLinuxName();
+            return s_linuxOsName;
+        }
 
         return Environment.OSVersion.ToString();
     }
 
+    private static string s_linuxOsName = null;
 
     private static string GetLinuxName()
     {
         // 参考：https://zhuanlan.zhihu.com/p/36253769  查看Linux发行版名称和版本号的8种方法
+
+
 
         /* 2个文件的内容不一样：
         [root@ElasticHost ~]# cat /etc/system-release

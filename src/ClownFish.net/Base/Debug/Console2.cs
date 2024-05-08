@@ -107,7 +107,7 @@ public static class Console2
 
         // 确保 “二行” 文本 **紧挨** 在一起
         lock( s_lock ) {
-            Console2.WriteLine($"[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+            Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
 
             if( ex != null )
                 Console2.WriteLine(ex.ToString());
@@ -129,7 +129,7 @@ public static class Console2
             ClownFishCounters.Status.OomError.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
+        Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
     }
 
     /// <summary>
@@ -158,7 +158,7 @@ public static class Console2
         ClownFishCounters.Console2.Warnning.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        Console2.WriteLine($"\n[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
     }
 
 
