@@ -14,7 +14,7 @@ internal class HttpJsonWriter : ILogWriter
 
     private readonly StringBuilder _buffer = new StringBuilder(s_batchSize);
 
-    public void Init(LogConfiguration config, WriterConfig section)
+    void ILogWriter.Init(LogConfiguration config, WriterConfig section)
     {
         string url = Settings.GetSetting("HttpJsonWriter_Target_Url");
 

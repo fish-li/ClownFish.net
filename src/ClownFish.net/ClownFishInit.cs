@@ -44,6 +44,11 @@ public static class ClownFishInit
             AppConfig.Init();
             SetThreadPool();
             ConfigMisc();
+
+#if NETCOREAPP
+            // support Encoding.GetEncoding("GB2312")
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
             s_baseInited = true;
         }
     }

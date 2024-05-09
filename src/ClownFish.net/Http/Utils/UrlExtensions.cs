@@ -71,10 +71,7 @@ public static class UrlExtensions
     /// <returns>返回一个完整的URL，例如：http://www.abc.com/aa/bb/cc.aspx?name=%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97%e6%97%a0%e9%9c%80%e8%a6%81%e7%bc%96%e7%a0%81</returns>
     public static string AddUrlQueryArgs(this string url, string name, string value)
     {
-        if( url.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(url));
-
-        if( name.IsNullOrEmpty() )
+        if( url.IsNullOrEmpty() || name.IsNullOrEmpty()  )
             return url;
 
         string args = name + "=" + (value ?? string.Empty).UrlEncode();
@@ -94,7 +91,7 @@ public static class UrlExtensions
     /// <returns></returns>
     public static string AddUrlQueryArgs(this string url, IEnumerable<NameValue> list)
     {
-        if( list == null )
+        if( url.IsNullOrEmpty() || list == null )
             return url;
 
         StringBuilder sb = StringBuilderPool.Get();

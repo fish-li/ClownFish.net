@@ -67,10 +67,8 @@ public class UrlExtensionsTest
         string root = "http://abc.com/xx.aspx";
         Assert.AreEqual(root, root.AddUrlQueryArgs(null, "2"));
 
-        MyAssert.IsError<ArgumentNullException>(() => {
-            string url = null;
-            Assert.IsNull(url.AddUrlQueryArgs("x2", "2"));
-        });
+        string url = null;
+        Assert.IsNull(url.AddUrlQueryArgs("x2", "2"));
     }
 
 

@@ -50,9 +50,7 @@ public class UrlsTest
         Assert.AreEqual(expected, UrlExtensions.AddUrlQueryArgs("http://www.abc.com/aa/bb/cc.aspx", "xx", "2").AddUrlQueryArgs("yy", "abc"));
         Assert.AreEqual(expected, UrlExtensions.AddUrlQueryArgs("http://www.abc.com/aa/bb/cc.aspx?xx=2", "yy", "abc"));
 
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = UrlExtensions.AddUrlQueryArgs(null, "yy", "abc");
-        });
+        Assert.IsNull(UrlExtensions.AddUrlQueryArgs(null, "yy", "abc"));
         Assert.AreEqual("aa", UrlExtensions.AddUrlQueryArgs("aa", null, "xx"));
     }
 
