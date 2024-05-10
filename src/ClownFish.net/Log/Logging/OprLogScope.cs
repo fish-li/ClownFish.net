@@ -280,13 +280,26 @@ public sealed class OprLogScope : IDisposable
         return 1;
     }
 
+    /// <summary>
+    /// 停止对OprLog的修改，并返回OprLog对象
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public OprLog EndSet(BasePipelineContext context)
+    {
+        this.EndSet0(context);
+        return this.OprLog;
+    }
 
     /// <summary>
     /// 结束监控，填充一些数据成员
     /// </summary>
-    internal void EndSet0(BasePipelineContext context)
+    private void EndSet0(BasePipelineContext context)
     {
-        this.Release();
+        if( _isEnd )
+            return;
+
+        this.Release();       
 
         this.OprLog.IsLongTask = context.IsLongTask ? 1 : 0;
         this.OprLog.CalcTime(context.PerformanceThresholdMs, context.EndTime);

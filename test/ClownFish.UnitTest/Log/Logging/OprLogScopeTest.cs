@@ -150,7 +150,7 @@ public class OprLogScopeTest
         Thread.Sleep(1);
         mock.PipelineContext.PerformanceThresholdMs = 1;
         mock.PipelineContext.End();
-        scope.EndSet0(mock.PipelineContext);
+        scope.EndSet(mock.PipelineContext);
 
         int ret = scope.SaveOprLog(mock.PipelineContext);
         Assert.AreEqual(0, ret);
@@ -180,7 +180,7 @@ public class OprLogScopeTest
         }
 
         mock.PipelineContext.End();
-        scope.EndSet0(mock.PipelineContext);
+        scope.EndSet(mock.PipelineContext);
 
         Assert.AreEqual(0, scope.OprLog.HasError);
         Assert.AreEqual(200, scope.OprLog.Status);
@@ -215,7 +215,7 @@ public class OprLogScopeTest
         Thread.Sleep(1);
         mock.PipelineContext.PerformanceThresholdMs = 1;
         mock.PipelineContext.End();
-        scope.EndSet0(mock.PipelineContext);
+        scope.EndSet(mock.PipelineContext);
 
         int ret = scope.SaveOprLog(mock.PipelineContext);
         Assert.AreEqual(0, ret);
