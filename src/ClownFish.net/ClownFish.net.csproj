@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net48;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net462;net48;net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.510.1</Version>
-        <FileVersion>8.24.510.1</FileVersion>
+        <Version>8.24.511.1</Version>
+        <FileVersion>8.24.511.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -33,7 +33,7 @@
     </ItemGroup>
 
    
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Cronos" Version="0.7.1" />
         <PackageReference Include="System.CodeDom" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
