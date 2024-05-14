@@ -50,15 +50,11 @@ namespace ClownFish.UnitTest.Base.Files
         [TestMethod]
         public void Test_Notfound()
         {
-            TempFilesUtils utils = new TempFilesUtils();
-            utils.DeleteFiles(Guid.NewGuid().ToString(), TimeSpan.FromDays(3), true);
-            Assert.AreEqual(0, utils.Count);
-            Assert.AreEqual(0, utils.Exceptions.Count);
+            var list1 = TempFilesUtils.DeleteOldFiles(Guid.NewGuid().ToString(), TimeSpan.FromDays(3), true);
+            Assert.AreEqual(0, list1.Count);
 
-
-            utils.DeleteDirectories(Guid.NewGuid().ToString(), TimeSpan.FromDays(3));
-            Assert.AreEqual(0, utils.Count);
-            Assert.AreEqual(0, utils.Exceptions.Count);
+            var list2 = TempFilesUtils.DeleteEmptyDirectories(Guid.NewGuid().ToString(), TimeSpan.FromDays(3));
+            Assert.AreEqual(0, list2.Count);
         }
 
 
@@ -68,33 +64,32 @@ namespace ClownFish.UnitTest.Base.Files
             string tempPath = Path.Combine(RetryFileTest.TempRoot, Guid.NewGuid().ToString("N"));
             InitDirAndFiles(tempPath);
 
+            var list1 = TempFilesUtils.DeleteOldFiles(tempPath, TimeSpan.FromDays(3), true);
+            Assert.AreEqual(2, list1.Count);
 
-            TempFilesUtils utils = new TempFilesUtils();
-            utils.DeleteFiles(tempPath, TimeSpan.FromDays(3), true);
-            Assert.AreEqual(2, utils.Count);
-
-            utils.DeleteFiles(tempPath, TimeSpan.FromDays(3), false);
-            Assert.AreEqual(4, utils.Count);
+            var list2 = TempFilesUtils.DeleteOldFiles(tempPath, TimeSpan.FromDays(3), false);
+            Assert.AreEqual(4, list2.Count);
 
 
-            utils.DeleteFiles(tempPath, TimeSpan.FromDays(1), true);
-            Assert.AreEqual(1, utils.Count);
+            var list3 = TempFilesUtils.DeleteOldFiles(tempPath, TimeSpan.FromDays(1), true);
+            Assert.AreEqual(1, list3.Count);
 
-            utils.DeleteFiles(tempPath, TimeSpan.FromDays(1), false);
-            Assert.AreEqual(2, utils.Count);
+            var list4 = TempFilesUtils.DeleteOldFiles(tempPath, TimeSpan.FromDays(1), false);
+            Assert.AreEqual(2, list4.Count);
 
             TempFilesUtils.DeleteOldFiles(tempPath, TimeSpan.Zero, false);
-            
 
 
 
-
-            utils.DeleteDirectories(tempPath, TimeSpan.Zero);
-            Assert.AreEqual(2, utils.Count);
+            var list5 = TempFilesUtils.DeleteEmptyDirectories(tempPath, TimeSpan.Zero);
+            Assert.AreEqual(2, list5.Count);
 
             TempFilesUtils.DeleteEmptyDirectories(tempPath, TimeSpan.Zero);
 
             RetryDirectory.Delete(tempPath);
+
+
         }
+
     }
 }

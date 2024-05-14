@@ -97,4 +97,29 @@ public static class IntExtensions
     {
         return (number >= min && number <= max);
     }
+
+    /// <summary>
+    /// 将一个数字转成 KB, MB 这样的显示文本
+    /// </summary>
+    /// <param name="size"></param>
+    /// <returns></returns>
+    public static string MemSizeToGMK(this long size)
+    {
+        if( size <= 0 )
+            return size.ToString();
+
+        if( size < 1024 )
+            return size.ToString() + "B";
+
+        if( size < 1024 * 1024 )
+            return ((1d * size) / 1024).ToString("N2") + "K";
+
+        if( size < 1024L * 1024 * 1024 )
+            return ((1d * size) / 1024 / 1024).ToString("N2") + "M";
+
+        if( size < 1024L * 1024 * 1024 * 1024 )
+            return ((1d * size) / 1024 / 1024 / 1024).ToString("N2") + "G";
+
+        return ((1d * size) / 1024 / 1024 / 1024 / 1024).ToString("N2") + "T";
+    }
 }

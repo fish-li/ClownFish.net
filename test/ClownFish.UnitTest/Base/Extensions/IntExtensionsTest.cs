@@ -121,5 +121,33 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.IsFalse(5L.IsBetween(8, 5));
         }
 
+        [TestMethod]
+        public void Test_MemSizeToGMK()
+        {
+            Assert.AreEqual("-23", (-23L).MemSizeToGMK());
+            Assert.AreEqual("0", 0L.MemSizeToGMK());
+            Assert.AreEqual("23B", 23L.MemSizeToGMK());
+
+            Assert.AreEqual("999B", 999L.MemSizeToGMK());
+            Assert.AreEqual("1000B", 1000L.MemSizeToGMK());
+            Assert.AreEqual("1023B", 1023L.MemSizeToGMK());
+
+            Assert.AreEqual("1.00K", 1024L.MemSizeToGMK());
+            Assert.AreEqual("1.12K", 1146L.MemSizeToGMK());
+            Assert.AreEqual("9.99K", 10229L.MemSizeToGMK());
+
+            Assert.AreEqual("1.00M", 1048576L.MemSizeToGMK());
+            Assert.AreEqual("1.22M", 1279262L.MemSizeToGMK());
+            Assert.AreEqual("9.99M", 10475274L.MemSizeToGMK());
+
+            Assert.AreEqual("1.00G", 1073741824L.MemSizeToGMK());
+            Assert.AreEqual("1.22G", 1309965025L.MemSizeToGMK());
+            Assert.AreEqual("9.99G", 10726680821L.MemSizeToGMK());
+
+            Assert.AreEqual("1.00T", 1099511627776L.MemSizeToGMK());
+            Assert.AreEqual("1.22T", 1341404185886L.MemSizeToGMK());
+            Assert.AreEqual("9.99T", 10984121161482L.MemSizeToGMK());
+        }
+
     }
 }
