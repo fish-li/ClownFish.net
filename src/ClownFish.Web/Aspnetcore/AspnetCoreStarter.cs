@@ -161,38 +161,48 @@ public static class AspnetCoreStarter
 
     internal static string GetListeningUrls()
     {
-        // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/servers/kestrel/endpoints?view=aspnetcore-6.0
+        // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/servers/kestrel/endpoints
         // 由于 .NET 并没有提供一种可以获取监听URL的方法，所以这里的实现也不保证适用于所有场景
 
-        // 4种指定监听地址的方法：
-        // 1，ASPNETCORE_URLS 环境变量。
-        // 2，--urls 命令行参数。
-        // 3，urls 主机配置键。
-        // 4，UseUrls 扩展方法。
+        // https://andrewlock.net/8-ways-to-set-the-urls-for-an-aspnetcore-app/
+        // 目前总共有 8 种方式可以指定监听地址，非常乱…………
 
-
-        string urls = EnvironmentVariables.Get("ASPNETCORE_URLS");
-        if( urls.HasValue() )
-            return urls;
-
-
-        var addr = WebApplication.Urls;
-        if( addr != null && addr.Count > 0 )
-            return string.Join(",", addr);
-
-
-        string url1 = WebApplication.Configuration["Kestrel:Endpoints:Http:Url"];
-        string url2 = WebApplication.Configuration["Kestrel:Endpoints:Https:Url"];
-
-        if( url1.HasValue() && url2.HasValue() )
-            return url1 + ";" + url2;
-
+        string url1 = GetKestrelUrl();
         if( url1.HasValue() )
             return url1;
+
+
+        var url4 = WebApplication.Urls;
+        if( url4 != null && url4.Count > 0 )
+            return string.Join(",", url4);
+
+
+        string url3 = WebApplication.Configuration["urls"];
+        if( url3.HasValue() )
+            return url3;
+
+
+        string url2 = EnvironmentVariables.Get("ASPNETCORE_URLS");
         if( url2.HasValue() )
             return url2;
 
         return "";
+
+        string GetKestrelUrl()
+        {
+            string url1 = WebApplication.Configuration["Kestrel:Endpoints:Http:Url"];
+            string url2 = WebApplication.Configuration["Kestrel:Endpoints:Https:Url"];
+
+            if( url1.HasValue() && url2.HasValue() )
+                return url1 + ";" + url2;
+
+            if( url1.HasValue() )
+                return url1;
+            if( url2.HasValue() )
+                return url2;
+
+            return null;
+        }
     }
 
     internal static void InitNHttpApplication()
