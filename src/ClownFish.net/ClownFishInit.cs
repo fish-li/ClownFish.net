@@ -44,6 +44,7 @@ public static class ClownFishInit
             AppConfig.Init();
             SetThreadPool();
             ConfigMisc();
+            StartGcCollect();
 
 #if NETCOREAPP
             // support Encoding.GetEncoding("GB2312")
@@ -140,6 +141,27 @@ public static class ClownFishInit
     private static void HttpClientEventOnBeforeSendRequest(object sender, BeforeSendEventArgs e)
     {
         Console2.Info($"HttpClient send: {e.HttpOption.Method} {e.HttpOption.Url}");
+    }
+
+    private static void StartGcCollect()
+    {
+        // 多数情况下，机器资源都是有限的，尽量减少内存占用对于公司的成本支出来说是有利的，
+        // 然而 GC 的回收时机难以控制，所以为了更好的降低进程的内存占用，周期性的触发GC回收就有意义了
+
+        if( LocalSettings.GetBool("ClownFish_Periodic_GCCollect", 1) ) {
+            ThreadUtils.RunAsync(nameof(StartGcCollect), StartGcCollectTask);
+        }
+    }
+    private static async Task StartGcCollectTask()
+    {
+        while( true ) {
+            await Task.Delay(60_000, AppExitToken);
+
+            if( AppExitToken.IsCancellationRequested )
+                return;
+
+            GC.Collect();
+        }
     }
 
 

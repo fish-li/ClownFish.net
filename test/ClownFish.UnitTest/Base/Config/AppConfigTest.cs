@@ -155,6 +155,22 @@ public class AppConfigTest
         });
     }
 
+    [TestMethod]
+    public void Test_GetKeys()
+    {
+        string[] settingsNames = AppConfig.GetKeys(1);
+        string[] connNames = AppConfig.GetKeys(2);
+        string[] dbNames = AppConfig.GetKeys(3);
+
+        Assert.IsTrue(settingsNames.Contains("ConfigServiceUrl"));
+        Assert.IsTrue(settingsNames.Contains("key_test_setting"));
+
+        Assert.IsTrue(connNames.Contains("mysql2"));
+        Assert.IsTrue(connNames.Contains("sqlserver2"));
+
+        Assert.IsTrue(dbNames.Contains("pg1"));
+        Assert.IsTrue(dbNames.Contains("dm1"));
+    }
 
     [TestMethod]
     public void Test_init()

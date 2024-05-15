@@ -16,6 +16,8 @@ public static class AppConfig
 
     internal static AppConfigObject GetConfigObject() => s_configuration;
 
+    internal static AppConfiguration GetAppConfiguration() => s_configuration.GetConfiguration();
+
 
     internal static void Init()
     {
@@ -104,4 +106,28 @@ public static class AppConfig
         return s_configuration.GetDbConfig(name);
     }
 
+    // 说明：提供 GetKeys 方法，而不是直接返回 AppConfiguration 对象是不希望在运行时配置参数被修改
+
+    /// <summary>
+    /// 获取所有的配置参数名称
+    /// </summary>
+    /// <param name="kind"></param>
+    /// <returns></returns>
+    public static string[] GetKeys(int kind)
+    {
+        AppConfiguration configuration = GetAppConfiguration();
+
+        if( kind == 1 ) {
+            return configuration.AppSettings?.Select(x => x.Key)?.ToArray() ?? Empty.Array<string>();
+        }
+        else if( kind == 2 ) {
+            return configuration.ConnectionStrings?.Select(x => x.Name)?.ToArray() ?? Empty.Array<string>();
+        }
+        else if( kind == 3 ) {
+            return configuration.DbConfigs?.Select(x => x.Name)?.ToArray() ?? Empty.Array<string>();
+        }
+        else {
+            return Empty.Array<string>();
+        }
+    }
 }
