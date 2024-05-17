@@ -1,5 +1,6 @@
 ﻿using ClownFish.UnitTest.Data.Models;
 using ClownFish.UnitTest.Data.MultiDB;
+using MySqlX.XDevAPI.Relational;
 
 namespace ClownFish.UnitTest.Data.Command;
 
@@ -276,7 +277,25 @@ public class CPQueryTest : BaseTest
                 Assert.IsNotNull(table2);
                 Assert.AreEqual(-1, pagingInfo.TotalRows);
 
+                string xmlFilePath = "temp/Test_CPQuery_不分页查询.xml";
 
+                table2.TableName = "table2";
+
+                table2.WriteXml(xmlFilePath, XmlWriteMode.WriteSchema);
+                DataTable table3 = ClownFish.Base.DataTableExtensions.LoadFormXmlFile(xmlFilePath);
+
+                Assert.AreEqual("table2", table3.TableName);
+                Assert.AreEqual(table2.Columns.Count, table3.Columns.Count);
+                Assert.AreEqual(table2.Rows.Count, table3.Rows.Count);
+
+                for( int i = 0; i < table3.Columns.Count; i++ ) {
+                    Assert.AreEqual(table2.Columns[i].ColumnName, table3.Columns[i].ColumnName);
+                    Assert.AreEqual(table2.Columns[i].DataType.FullName, table3.Columns[i].DataType.FullName);
+                }
+
+                string xml2 = table2.TableToXml();
+                string xml3 = table3.TableToXml();
+                Assert.AreEqual(xml2, xml3);
 
                 pagingInfo.TotalRows = -1;
                 list2 = await db.CPQuery.Create(sql, args).ToPageListAsync<Customer>(pagingInfo);

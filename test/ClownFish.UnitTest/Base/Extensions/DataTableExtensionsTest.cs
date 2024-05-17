@@ -57,5 +57,17 @@ namespace ClownFish.UnitTest.Base.Extensions
             string xml = table.TableToXml();
             Console.WriteLine(xml);
         }
+
+        [TestMethod]
+        public void Test3()
+        {
+            MyAssert.IsError<ArgumentNullException>(() => {
+                _ = ClownFish.Base.DataTableExtensions.LoadFormXmlFile(null);
+            });
+
+            MyAssert.IsError<FileNotFoundException>(() => {
+                _ = ClownFish.Base.DataTableExtensions.LoadFormXmlFile("xxxxxxxxxxxx");
+            });
+        }
     }
 }

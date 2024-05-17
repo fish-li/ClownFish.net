@@ -62,4 +62,29 @@ public static class DataTableExtensions
 
         return ds.Tables.Count > 0 ? ds.Tables[0] : null;
     }
+
+
+    /// <summary>
+    /// 从XML文件中还原 DataTable
+    /// </summary>
+    /// <param name="xmlFilePath"></param>
+    /// <returns></returns>
+    public static DataTable LoadFormXmlFile(string xmlFilePath)
+    {
+        if( xmlFilePath.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(xmlFilePath));
+
+        if( File.Exists(xmlFilePath) == false )
+            throw new FileNotFoundException($"file [{xmlFilePath}] not found!");
+
+        DataSet ds = new DataSet();
+
+        using(FileStream file = RetryFile.OpenRead(xmlFilePath)) {
+            using( XmlTextReader reader2 = new XmlTextReader(file) ) {
+                ds.ReadXml(reader2, XmlReadMode.ReadSchema);
+            }
+        }
+
+        return ds.Tables.Count > 0 ? ds.Tables[0] : null;
+    }
 }
