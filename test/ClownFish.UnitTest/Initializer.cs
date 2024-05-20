@@ -1,9 +1,8 @@
 ﻿global using System.Data.SqlClient;
-global using ClownFish.UnitTest._Common;
 global using ClownFish.Http.MockTest;
+global using ClownFish.UnitTest._Common;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Globalization;
-using ClownFish.UnitTest.Base;
+using ClownFish.Hosting;
 using ClownFish.UnitTest.Data.Events;
 using ClownFish.UnitTest.Data.Models;
 using ClownFish.UnitTest.Data.MultiDB;
@@ -25,7 +24,32 @@ public class Initializer
         EnvironmentVariables.Set("DebugReport_HideEnvNames", "api-key;xx-SecretKey");
 
 
-        ClownFishInit.InitBase();
+        ConsoleAppStarter.Run(new UnitTestAppStartup());
+    }
+
+    
+
+    [AssemblyCleanup()]
+    public static void AssemblyCleanup()
+    {
+        ClownFishInit.ApplicationEnd();
+
+        // 等待 HttpWriter的操作
+        System.Threading.Thread.Sleep(2000);
+    }
+
+
+}
+
+
+public class UnitTestAppStartup : ConsoleAppStartup
+{
+    internal override bool WaitToEnd => false;
+
+    public override void BeforeFrameworkInit()
+    {
+        base.BeforeFrameworkInit();
+
         ThreadPool.SetMinThreads(100, 1000);
 
         // 设置重试次数
@@ -37,21 +61,20 @@ public class Initializer
         ClownFish.Log.LogHelper.RegisterFilter(LogHelperTest.Filter);
         ClownFishInit.InitLog("ClownFish.Log.config");
 
-        DbContextEventTest.Init(context);
+        DbContextEventTest.Init();
         ClownFish.Log.Logging.DbLogger.Init();
         ClownFish.Log.Logging.HttpClientLogger.Init();
 
-//#if NETCOREAPP
-//        // support Encoding.GetEncoding("GB2312")
-//        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-//#endif
+        //#if NETCOREAPP
+        //        // support Encoding.GetEncoding("GB2312")
+        //        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        //#endif
     }
 
     private static void InitClownFishData()
     {
         LoadDatabaseClientDlls();
 
-        
 
         //string dllName = "ClownFish.UnitTest.EntityProxy.dll";
         //string dllOutPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp", dllName);
@@ -68,7 +91,7 @@ public class Initializer
                         .AddDataFieldTypeHandler(typeof(EncSaveString), new EncSaveStringDataFieldTypeHandler())
                         //.LoadXmlCommandFromDirectory()
                         .LoadXmlCommandFromText(string.Empty);
-        //.CompileAllEntityProxy(dllOutPath);
+                        //.CompileAllEntityProxy(dllOutPath);
 
         ClownFishInit.InitDAL();
 
@@ -91,16 +114,4 @@ public class Initializer
 
         return factory1 != null && factory2 != null && factory3 != null && factory4 != null;
     }
-
-
-    [AssemblyCleanup()]
-    public static void AssemblyCleanup()
-    {
-        ClownFishInit.ApplicationEnd();
-
-        // 等待 HttpWriter的操作
-        System.Threading.Thread.Sleep(2000);
-    }
-
-
 }

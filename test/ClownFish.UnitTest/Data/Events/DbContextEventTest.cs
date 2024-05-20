@@ -3,8 +3,7 @@
 //[TestClass]
 public class DbContextEventTest
 {
-    //[ClassInitialize]
-    public static void Init(TestContext context)
+    public static void Init()
     {
 #if NETCOREAPP
         DbContextEventSubscriber.Start();

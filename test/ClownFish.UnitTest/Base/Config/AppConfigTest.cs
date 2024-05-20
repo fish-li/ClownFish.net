@@ -161,7 +161,9 @@ public class AppConfigTest
         string[] settingsNames = AppConfig.GetKeys(1);
         string[] connNames = AppConfig.GetKeys(2);
         string[] dbNames = AppConfig.GetKeys(3);
+        string[] names = AppConfig.GetKeys(4);
 
+        Assert.AreEqual(0, names.Length);
         Assert.IsTrue(settingsNames.Contains("ConfigServiceUrl"));
         Assert.IsTrue(settingsNames.Contains("key_test_setting"));
 

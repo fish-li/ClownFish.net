@@ -52,9 +52,12 @@ public static class AspnetCoreStarter
         startup.AppInit();
 
         WriteDebugReport();
+
+        startup.BeforeRun();
         RunAspnetcore();
 
         ClownFishInit.ApplicationEnd();
+        startup.AppEnd();
     }
 
     private static void ConfigClownFish()

@@ -107,6 +107,23 @@ public class WebApplicationStartup
         x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.StatusCodeFilter), order++);
     }
 
+    /// <summary>
+    /// 在启动HOST之前的最后动作。
+    /// 注意：启动HOST时主线程将被阻塞直到程序退出。
+    /// 默认行为：什么也不做。
+    /// </summary>
+    public virtual void BeforeRun()
+    {
+        // 什么也不做。
+    }
 
-    
+
+    /// <summary>
+    /// 程序退出时的最后动作。默认行为：什么也不做。
+    /// </summary>
+    public virtual void AppEnd()
+    {
+        // 什么也不做。
+    }
+
 }

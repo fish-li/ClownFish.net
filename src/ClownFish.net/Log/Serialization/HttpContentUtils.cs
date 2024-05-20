@@ -25,8 +25,8 @@ internal static class HttpContentUtils
             if( content is ByteArrayContent content3 )
                 return TryReadBodyFromByteArrayContent(content3);
         }
-        catch( Exception ex ) {
-            return ex.ToString();
+        catch {
+            // 忽略异常
         }
 
         return null;

@@ -113,6 +113,25 @@ public class CronExpressionTest
         return sb.ToString();
     }
 
+    private string Test_NbCron_Utc(string cronValue, DateTime start, int count)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine(start.ToUniversalTime().ToTimeString() + "---utc-now");
+
+        NbCronExpression cron = new NbCronExpression(cronValue);
+
+        DateTime current = start;
+
+        for( int i = 0; i < count; i++ ) {
+            DateTime? next = cron.GetNextUtcTime(current);   // 使用UTC时间
+            sb.AppendLine(next.Value.ToTimeString());
+
+            current = next.Value;
+        }
+
+        return sb.ToString();
+    }
+
 
     [TestMethod]
     public void Test_2()
@@ -137,6 +156,13 @@ public class CronExpressionTest
             Console.WriteLine(next.Value.ToTimeString());
             current = next.Value;
         }
+    }
+
+
+    [TestMethod]
+    public void Test_3()
+    {
+        Console.WriteLine(Test_NbCron_Utc("0/5 * * * * ?", DateTime.Now, 20));
     }
 
 }

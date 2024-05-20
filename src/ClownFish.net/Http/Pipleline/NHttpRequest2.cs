@@ -63,7 +63,7 @@ public partial class NHttpRequest : ILoggingObject
     // 3, Microsoft.AspNetCore.Connections.ConnectionResetException: Connection reset by peer
     // 4, System.InvalidOperationException: Reading is already in progress.
 
-    private void ShowReadBodyException(string method, Exception ex, string contentEncoding)
+    internal void ShowReadBodyException(string method, Exception ex, string contentEncoding)
     {
         if( ClownFishOptions.ShowBadHttpRequestException ) {
             string message = null;

@@ -70,6 +70,22 @@ public class NHttpRequest2Test
 #endif
 
 
+    [TestMethod]
+    public void Test_ShowReadBodyException()
+    {
+        using ConsoleOutScope consoleOutScope = new ConsoleOutScope();
+
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+
+        Exception ex = ExceptionHelper.CreateException();
+        httpContext.Request.ShowReadBodyException("MethodXXX", ex, null);
+
+        string text = consoleOutScope.GetText();
+        Console.WriteLine(text);
+
+        Assert.IsTrue(text.Contains("MethodXXX ERROR, RequestBody type:"));
+    }
 
 
 }
