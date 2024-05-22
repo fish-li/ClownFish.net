@@ -83,8 +83,8 @@ public static class ClownFishInit
         }
         catch( CultureNotFoundException ex ) {
             // 有些 linux 环境没有安装参数中指定的语言包，就会出现异常：
-            // Unhandled exception. System.Globalization.CultureNotFoundException: Culture is not supported. (Parameter 'name')
-            Console2.Error("Culture is not supported: " + lang, ex);
+            // System.Globalization.CultureNotFoundException: Culture is not supported. (Parameter 'name')
+            Console2.Warnning($"{ex.GetType().FullName}: Culture {lang} is not supported.");
             return;
         }
 
