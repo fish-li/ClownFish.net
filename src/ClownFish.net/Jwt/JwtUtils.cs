@@ -126,7 +126,7 @@ public static class JwtUtils
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public static string Base64UrlDecode(string input)
+    public static string Base64UrlDecode(this string input)
     {
         if( input.IsNullOrEmpty() )
             return input;

@@ -12,7 +12,7 @@ public sealed class JwtProvider
 
     public JwtProvider(JwtOptions options)
     {
-        if( options == null) 
+        if( options == null )
             throw new ArgumentNullException(nameof(options));
 
         options.Validate();
@@ -78,8 +78,10 @@ public sealed class JwtProvider
                         ? DecodePayload2(token, _options.X509Cert)
                         : DecodePayload(token, _options.HashKeyBytes);
 
-        if( json == null )
-            AuthenticationManager.ExecuteEventOnAuthFailed(token, "DecodePayload-error");
+        if( json == null ) {
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodeToken()--json=null");
+        }
 
         return DecodeJson(token, json, true);
     }
@@ -115,7 +117,10 @@ public sealed class JwtProvider
         try {
             return JwtUtils.Decode2(token, x509, _options.AlgorithmName);
         }
-        catch( Exception ) { /* 忽略所有的错误场景 */ }
+        catch( Exception ex ) {
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodePayload2()--catch-Exception: " + ex.ToString());
+        }
 
         return null;
     }
@@ -128,7 +133,10 @@ public sealed class JwtProvider
         try {
             return JwtUtils.Decode(token, secretKey, _options.AlgorithmName);
         }
-        catch( Exception ) { /* 忽略所有的错误场景 */ }
+        catch( Exception ex ) {
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodePayload()--catch-Exception: " + ex.ToString());
+        }
 
         return null;
     }
@@ -143,50 +151,61 @@ public sealed class JwtProvider
         LoginTicket ticket = null;
 
         try {
-            ticket = DecodeJson1(json) ?? DecodeJson2(json);
+            ticket = DecodeJson1(token, json) ?? DecodeJson2(token, json);
         }
-        catch( Exception ) {
+        catch( Exception ex ) {
             // 忽略所有错误，防止攻击
-            AuthenticationManager.ExecuteEventOnAuthFailed(token, "DecodeJson-error");
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthenticationManager.OnAuthFailed(token, "DecodeJson()--catch-Exception: " + ex.ToString());
+            }
             return null;
         }
 
         if( ticket != null && verifyExpiration && _options.VerifyTokenExpiration ) {
             // 检查过期时间
             if( ticket.VerifyExpiration() == false ) {
-                AuthenticationManager.ExecuteEventOnAuthFailed(token, "VerifyExpiration-error");
+                if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                    AuthenticationManager.OnAuthFailed(token, "DecodeJson()--VerifyExpiration=false");
+                }
                 return null;
             }
         }
 
+        if( ticket == null ) {
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodeJson()--ticket=null");
+        }
         return ticket;
     }
 
 
-    private LoginTicket DecodeJson1(string json)
+    private LoginTicket DecodeJson1(string token, string json)
     {
         try {
             // 先按【正常】方式做反序列化
             return _serializer.Deserialize<LoginTicket>(json);
         }
-        catch( JsonSerializationException ) {
-            // 有可能是类型找不到，所以忽略这个异常，下面按无类型方式处理
+        catch( JsonSerializationException ex ) {
+            // 有可能是 IUserInfo 的实现类型找不到，所以忽略这个异常，下面按无类型方式处理
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodeJson1()--catch-Exception: " + ex.ToString());
         }
         return null;
     }
 
-    private LoginTicket DecodeJson2(string json)
+    private LoginTicket DecodeJson2(string token, string json)
     {
         if( _options.LoadUnknownUser == false )
             return null;
 
         LoginTicketUnknown t2 = null;
         try {
-            // 再按【未知】方式做反序列化
+            // 再按【弱类型】方式做反序列化
             t2 = json.FromJson<LoginTicketUnknown>();
         }
-        catch( JsonSerializationException ) {
-            // JSON格式无法识别
+        catch( JsonSerializationException ex ) {  // JSON格式无法识别
+            if( ClownFishWebOptions.ShowAuthFailedMsg )
+                AuthenticationManager.OnAuthFailed(token, "DecodeJson2()--catch-Exception: " + ex.ToString());
         }
 
         if( t2 == null )

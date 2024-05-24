@@ -76,7 +76,6 @@ internal static class TokenHelper
             }
         }
 
-        AuthenticationManager.ExecuteEventOnAuthFailed(null, "not-found-Token");
     }
 
 

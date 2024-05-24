@@ -34,6 +34,15 @@ internal abstract class JwtBase
             // JWT-TOKEN在验证时，算法应该使用 header 中指定的算法，但是对于一个应用程序来说，它【不可能】同时使用多种签名算法
             // 反而从 header 中读取算法名称这种做法会引入安全漏洞，所以这里的设计是按Encode的方式来重新计算签名
 
+            // 说明：正式环境中，JWT校验失败的可能性太低，所以取消下面的代码，节省不必要的性能损耗
+
+            //JwtHeader header = jwt.Header.Base64UrlDecode().FromJson<JwtHeader>();
+            //if( header == null || header.Algorithm.IsNullOrEmpty() )
+            //    throw new InvalidTokenPartsException("token格式不正确3");
+
+            //if( header.Algorithm != this.Name)
+            //    throw new SignatureVerificationException($"Jwt Token signature algorithmName mismatch: {header.Algorithm} != {this.Name}");
+
             byte[] bytesToSign = (jwt.Header + "." + jwt.Payload).ToUtf8Bytes();
             ValidSignature(secret, bytesToSign, jwt.Signature);
         }

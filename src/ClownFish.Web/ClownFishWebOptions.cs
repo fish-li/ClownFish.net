@@ -16,7 +16,7 @@ internal static class ClownFishWebOptions
 
     public static readonly string LoginPageUrl = LocalSettings.GetSetting("ClownFish_Http403_LoginPageUrl", "");
 
-
+    public static readonly bool ShowAuthFailedMsg = LocalSettings.GetBool("ClownFish_ShowAuthFailedMsg");
 
 
 }

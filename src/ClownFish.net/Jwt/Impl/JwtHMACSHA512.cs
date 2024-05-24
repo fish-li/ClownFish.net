@@ -24,6 +24,6 @@ internal sealed class JwtHMACSHA512 : JwtBase
     {
         string value = GetSignature(secret, bytesToSign);
         if( value != signature )
-            throw new SignatureVerificationException("Jwt Token Invalid signature");
+            throw new SignatureVerificationException("Jwt Token signature verify failed");
     }
 }

@@ -23,10 +23,10 @@ internal static class RsaUtils
         try {
             byte[] signBytes = NbJwtBase64UrlEncoder.Decode(signature);
             if( publicKey.VerifyData(bytesToSign, signBytes, hashName, RSASignaturePadding.Pkcs1) == false )
-                throw new SignatureVerificationException("Jwt Token Invalid signature");
+                throw new SignatureVerificationException("Jwt Token signature verify failed");
         }
         catch( CryptographicException ) {
-            throw new SignatureVerificationException("Jwt Token Invalid signature,2");
+            throw new SignatureVerificationException("Jwt Token signature verify exception");
         }
     }
 
@@ -55,10 +55,10 @@ internal static class EcdUtils
         try {
             byte[] signBytes = NbJwtBase64UrlEncoder.Decode(signature);
             if( publicKey.VerifyData(bytesToSign, signBytes, hashName) == false )
-                throw new SignatureVerificationException("Jwt Token Invalid signature");
+                throw new SignatureVerificationException("Jwt Token signature verify failed");
         }
         catch( CryptographicException ) {
-            throw new SignatureVerificationException("Jwt Token Invalid signature,2");
+            throw new SignatureVerificationException("Jwt Token signature verify exception");
         }
     }
 }
