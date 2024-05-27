@@ -594,6 +594,12 @@ on a.object_id = b.object_id;
             DataTable table1 = db.CPQuery.Create(sql).ToDataTable();
             // 上面的调用如果不出现异常，基本就算是成功了，所以这里就只是检验下列有没有出现。
             Assert.IsTrue(table1.Rows.Count > 0);
+            string names1 = string.Join(";", table1.Columns.Cast<DataColumn>().Select(x => x.ColumnName).OrderBy(x=>x).ToArray());
+            Console.WriteLine(names1);
+            Assert.IsTrue(table1.Columns.Contains("name"));
+            Assert.IsTrue(table1.Columns.Contains("name1"));
+            Assert.IsTrue(table1.Columns.Contains("object_id"));
+            Assert.IsTrue(table1.Columns.Contains("object_id1"));
 
             DataSet ds1 = db.CPQuery.Create(sql2).ToDataSet();
             Assert.AreEqual(3, ds1.Tables.Count);
@@ -602,6 +608,9 @@ on a.object_id = b.object_id;
 
             DataTable table2 = await db.CPQuery.Create(sql).ToDataTableAsync();
             Assert.IsTrue(table2.Rows.Count > 0);
+            string names2 = string.Join(";", table2.Columns.Cast<DataColumn>().Select(x => x.ColumnName).OrderBy(x => x).ToArray());
+            Assert.AreEqual(names1, names2);
+
 
             // 确认同步和异步方式得到的DataTable的 行和列的数量一致
             // 因为二者不是一样的获取方式：同步采用 DbDataAdapter，异步采用 DbDataReader
@@ -951,5 +960,27 @@ on a.object_id = b.object_id;
         }
     }
 
+    [TestMethod]
+    public async Task Test_ToDataTableAsync()
+    {
+        foreach( var conn in BaseTest.ConnNames ) {
+            using( DbContext db = DbContext.Create(conn) ) {
+
+                string sql = "SELECT * from products WHERE Quantity > @Quantity ORDER BY ProductID";
+                var args = new { Quantity = 1 };
+
+                DataTable table1 = db.CPQuery.Create(sql, args).ToDataTable("table1", 10);
+                DataTable table2 = await db.CPQuery.Create( sql, args ).ToDataTableAsync("table1", 10);
+
+                Assert.AreEqual(10, table1.Rows.Count);
+                Assert.AreEqual(10, table2.Rows.Count);
+
+                string text1 = table1.ToXml();
+                string text2 = table2.ToXml();
+
+                Assert.AreEqual(text1, text2);
+            }
+        }
+    }
 
 }

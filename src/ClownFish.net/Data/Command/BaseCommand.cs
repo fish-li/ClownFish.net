@@ -209,20 +209,21 @@ public abstract class BaseCommand
     /// 执行查询，以DataTable形式返回结果
     /// </summary>
     /// <param name="tableName">DataTable的表名</param>
+    /// <param name="maxRows">最多获取多少行记录</param>
     /// <returns>查询结构的数据集</returns>
-    public DataTable ToDataTable(string tableName = null)
+    public DataTable ToDataTable(string tableName = null, int maxRows = 0)
     {
         if( string.IsNullOrEmpty(tableName) )
             tableName = "_tb";
 
         return Execute<DataTable>(nameof(ToDataTable),
                 cmd => {
-                    DataTable table = new DataTable(tableName);
-                    DbDataAdapter da = _context.Factory.CreateDataAdapter();
-                    da.SelectCommand = cmd;
-                    da.Fill(table);
+                    using( DbDataReader reader = cmd.ExecuteReader() ) {
 
-                    return table;
+                        DataTable table = new DataTable(tableName);
+                        DataReaderLoadAdapter.FillTable(table, reader, maxRows);
+                        return table;
+                    }
                 });
     }
 
@@ -231,25 +232,21 @@ public abstract class BaseCommand
     /// 执行查询，以DataTable形式返回结果
     /// </summary>
     /// <param name="tableName">DataTable的表名</param>
+    /// <param name="maxRows">最多获取多少行记录</param>
     /// <returns>查询结构的数据集</returns>
-    public async Task<DataTable> ToDataTableAsync(string tableName = null)
+    public async Task<DataTable> ToDataTableAsync(string tableName = null, int maxRows = 0)
     {
         if( string.IsNullOrEmpty(tableName) )
             tableName = "_tb";
 
         return await ExecuteAsync<DataTable>(nameof(ToDataTableAsync),
                 async cmd => {
-                    DataSet ds = new DataSet();
-                    ds.EnforceConstraints = false;  // 禁用约束检查
-
-                    DataTable table = new DataTable(tableName);
-                    ds.Tables.Add(table);
-
                     using( DbDataReader reader = await cmd.ExecuteReaderAsync() ) {
-                        table.Load(reader);
-                    }
 
-                    return table;
+                        DataTable table = new DataTable(tableName);
+                        DataReaderLoadAdapter.FillTable(table, reader, maxRows);
+                        return table;
+                    }
                 });
     }
 
