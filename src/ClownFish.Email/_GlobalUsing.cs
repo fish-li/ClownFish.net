@@ -38,7 +38,5 @@ global using ClownFish.Log.Configuration;
 global using ClownFish.Log.Logging;
 global using ClownFish.Log.Models;
 global using ClownFish.MQ;
-global using ClownFish.MQ.Messages;
-global using ClownFish.MQ.Pipeline;
 global using ClownFish.WebClient;
 

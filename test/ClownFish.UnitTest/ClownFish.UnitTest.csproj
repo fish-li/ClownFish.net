@@ -50,6 +50,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\ClownFish.net\ClownFish.net.csproj" />
+        <ProjectReference Include="..\..\src\ClownFish.Email\ClownFish.Email.csproj" />
     </ItemGroup>
 
     <ItemGroup>

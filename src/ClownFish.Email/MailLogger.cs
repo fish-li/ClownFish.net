@@ -25,7 +25,11 @@ public static class MailLogger
         step.SetException(e.Exception);
 
         MailClient client = (MailClient)sender;
+#if NETCOREAPP
         step.Detail = $"subject: {client.EmailData.Subject}\nto: {string.Join(';', client.EmailData.Receivers)}\nsize: {client.EmailData.GetSize()}";
+#else
+        step.Detail = $"subject: {client.EmailData.Subject}\nto: {string.Join(";", client.EmailData.Receivers)}\nsize: {client.EmailData.GetSize()}";
+#endif
 
         step.End(e.EndTime);
 

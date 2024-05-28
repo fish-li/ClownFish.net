@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClownFish.Log.Writers;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace ClownFish.UnitTest.Log.Writers;
 [TestClass]

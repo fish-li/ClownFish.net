@@ -240,11 +240,11 @@ public sealed class MailClient
     private SmtpClient CreateClient()
     {
         if( string.IsNullOrEmpty(this.LogFilePath) ) {
-            return new SmtpClient();
+            return new MySmtpClient();
         }
         else {
             ProtocolLogger logger = new ProtocolLogger(this.LogFilePath);
-            return new SmtpClient(logger);
+            return new MySmtpClient(logger);
         }
     }
 
