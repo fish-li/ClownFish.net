@@ -12,5 +12,10 @@ public sealed class AuthenticateModule : NHttpModule
         AuthenticationManager.AuthenticationUser(httpContext);
     }
 
-
+    public override void EndRequest(NHttpContext httpContext)
+    {
+        // 在Oprlog中记录当前用户信息
+        IUserInfo user = httpContext.GetUserInfo();
+        httpContext.SetUserInfoToOprLog(user);
+    }
 }

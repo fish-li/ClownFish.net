@@ -21,10 +21,6 @@ public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
         bool isLogin = LoginActionAttribute.CurrentIsLogin(action);
         pipelineContext.SetAction(action, isLogin);
 
-        // 在Oprlog中记录当前用户信息
-        IUserInfo user = httpContext.GetUserInfo();
-        httpContext.SetUserInfoToOprLog(user);
-
 
         bool allowed = OnlyTestEnvAttribute.CurrentIsAllow(action);
         if( allowed == false ) {

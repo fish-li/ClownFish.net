@@ -75,7 +75,8 @@ public class EndClientUserInfo : IUserInfo
     public string Culture { get; set; }
 
     /// <summary>
-    /// 部署方式，例如 1: docker, 2: SingleFile
+    /// 部署方式，此字段支持按位操作，类似于 Enum-Flags。
+    /// 取值 1: docker, 2: SingleFile, 3: docker+SingleFile
     /// </summary>
     [DefaultValue(0)]
     public int DeployMode { get; set; }
@@ -127,7 +128,7 @@ public class EndClientUserInfo : IUserInfo
             OsKind = OsUtils.IsWindows ? 1 : (OsUtils.IsLinux ? 2 : 3),
             OsName = OsUtils.GetOsName(),
             CpuKind = RuntimeInformation.ProcessArchitecture.ToString(),
-            DeployMode = EnvUtils.IsInDocker ? 1 : (AsmHelper.IsSingleFileDeploy ? 2 : 0),
+            DeployMode = ((EnvUtils.IsInDocker ? 1 : 0) | (AsmHelper.IsSingleFileDeploy ? 2 : 0)),
             TimeZone = MyTimeZone.CurrentTZ,
             Culture = System.Globalization.CultureInfo.CurrentCulture?.Name
         };
