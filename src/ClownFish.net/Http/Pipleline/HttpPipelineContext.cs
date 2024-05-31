@@ -26,17 +26,12 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
         s_local.Value = context;
 
         // 开启日志监控
-        context.CreateOprLogScope();
+        if( httpContext.EnableLog ) {
+            OprLogScope scope = OprLogScope.Start(context);
+            context.SetOprLogScope(scope);
+        }
 
         return context;
-    }
-
-    private void CreateOprLogScope()
-    {
-        if( LoggingOptions.HttpActionEnableLog ) {
-            OprLogScope scope = OprLogScope.Start(this);
-            this.SetOprLogScope(scope);
-        }
     }
 
     /// <summary>

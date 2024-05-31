@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System.Runtime;
 
 namespace ClownFish.Base;
 
@@ -40,7 +40,7 @@ public static class ClownFishInit
         if( s_baseInited == false ) {
             EnvironmentVariables.Init();
             EnvUtils.Init();
-            SetDefaultCulture();
+            //SetDefaultCulture();
             AppConfig.Init();
             SetThreadPool();
             ConfigMisc();
@@ -54,45 +54,45 @@ public static class ClownFishInit
         }
     }
 
-    private static void SetDefaultCulture()
-    {
-        // donet 的基础镜像中并没有指定 区域语言 这个设置，例如： LANG=zh_CN.UTF-8 
-        // 而是将线程的默认区域语言设置为：CultureInfo.InvariantCulture
+    //private static void SetDefaultCulture()
+    //{
+    //    // donet 的基础镜像中并没有指定 区域语言 这个设置，例如： LANG=zh_CN.UTF-8 
+    //    // 而是将线程的默认区域语言设置为：CultureInfo.InvariantCulture
 
-        // 这样会给我们带来一些困扰：
-        // 比如我们开发时，Windows环境中运行，默认就是 zh-CN
-        // 但是在 linux-docker 中：CultureInfo.CurrentCulture is CultureInfo.InvariantCulture
-        // 结果，汉字不是按拼音在排序~~~
+    //    // 这样会给我们带来一些困扰：
+    //    // 比如我们开发时，Windows环境中运行，默认就是 zh-CN
+    //    // 但是在 linux-docker 中：CultureInfo.CurrentCulture is CultureInfo.InvariantCulture
+    //    // 结果，汉字不是按拼音在排序~~~
 
-        // 为了避免可能会产生的困扰，这里检查：如果没有设置区域语言时，强制修改为 zh-CN
-        // 也就是说，不使用 “CultureInfo.InvariantCulture”，做到 生产环境 和 开发环境 使用相同的设置！
+    //    // 为了避免可能会产生的困扰，这里检查：如果没有设置区域语言时，强制修改为 zh-CN
+    //    // 也就是说，不使用 “CultureInfo.InvariantCulture”，做到 生产环境 和 开发环境 使用相同的设置！
 
 
-        if( CultureInfo.CurrentCulture == null || CultureInfo.CurrentCulture.Name.IsNullOrEmpty() ) {
-            SetDefaultCulture0();
-        }
-    }
+    //    if( CultureInfo.CurrentCulture == null || CultureInfo.CurrentCulture.Name.IsNullOrEmpty() ) {
+    //        SetDefaultCulture0();
+    //    }
+    //}
 
-    private static void SetDefaultCulture0()
-    {
-        string lang = EnvironmentVariables.Get("LANG").IfEmpty("zh-CN");
-        CultureInfo defaultCulture = null;
+    //private static void SetDefaultCulture0()
+    //{
+    //    string lang = EnvironmentVariables.Get("LANG").IfEmpty("zh-CN");
+    //    CultureInfo defaultCulture = null;
 
-        try {
-            defaultCulture = new CultureInfo(lang);
-        }
-        catch( CultureNotFoundException ex ) {
-            // 有些 linux 环境没有安装参数中指定的语言包，就会出现异常：
-            // System.Globalization.CultureNotFoundException: Culture is not supported. (Parameter 'name')
-            Console2.Warnning($"{ex.GetType().FullName}: Culture {lang} is not supported.");
-            return;
-        }
+    //    try {
+    //        defaultCulture = new CultureInfo(lang);
+    //    }
+    //    catch( CultureNotFoundException ex ) {
+    //        // 有些 linux 环境没有安装参数中指定的语言包，就会出现异常：
+    //        // System.Globalization.CultureNotFoundException: Culture is not supported. (Parameter 'name')
+    //        Console2.Warnning($"{ex.GetType().FullName}: Culture {lang} is not supported.");
+    //        return;
+    //    }
 
-        Thread.CurrentThread.CurrentCulture = defaultCulture;
-        CultureInfo.CurrentCulture = defaultCulture;
-        CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
-        Console2.Info("force set CurrentCulture => " + lang);
-    }
+    //    Thread.CurrentThread.CurrentCulture = defaultCulture;
+    //    CultureInfo.CurrentCulture = defaultCulture;
+    //    CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+    //    Console2.Info("force set CurrentCulture => " + lang);
+    //}
 
 
     private static void SetThreadPool()
@@ -148,18 +148,21 @@ public static class ClownFishInit
         // 多数情况下，机器资源都是有限的，尽量减少内存占用对于公司的成本支出来说是有利的，
         // 然而 GC 的回收时机难以控制，所以为了更好的降低进程的内存占用，周期性的触发GC回收就有意义了
 
-        if( LocalSettings.GetBool("ClownFish_Periodic_GCCollect", 1) ) {
+        if( ClownFishOptions.GCCollectPeriodSec > 1 ) {
             ThreadUtils.RunAsync(nameof(StartGcCollect), StartGcCollectTask);
         }
     }
     private static async Task StartGcCollectTask()
     {
+        int waitMs = ClownFishOptions.GCCollectPeriodSec * 1000;
+
         while( true ) {
-            await Task.Delay(60_000, AppExitToken);
+            await Task.Delay(waitMs, AppExitToken);
 
             if( AppExitToken.IsCancellationRequested )
                 return;
 
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect();
         }
     }

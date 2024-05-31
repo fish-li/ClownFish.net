@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace ClownFish.UnitTest.Base;
 [TestClass]public class ClownFishInitTest
 {
-    [TestMethod]
-    public void Test_SetDefaultCulture()
-    {
-        typeof(ClownFishInit).InvokeMethod("SetDefaultCulture0", null);
-    }
+    //[TestMethod]
+    //public void Test_SetDefaultCulture()
+    //{
+    //    typeof(ClownFishInit).InvokeMethod("SetDefaultCulture0", null);
+    //}
 
 
     [TestMethod]
