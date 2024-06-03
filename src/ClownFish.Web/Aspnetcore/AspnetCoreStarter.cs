@@ -109,23 +109,26 @@ public static class AspnetCoreStarter
     internal static void ShowSysEnvInfo()
     {
         Console2.WriteSeparatedLine();
-        Console2.WriteLine("ApplicationName     : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId        : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("AppStartTime        : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("IsInDocker          : " + EnvUtils.IsInDocker);
-        Console2.WriteLine("IsSingleFileDeploy  : " + AsmHelper.IsSingleFileDeploy);
-        Console2.WriteLine("EntryAssembly       : " + AsmHelper.GetExeFilePath());
-        Console2.WriteLine("EnvironmentName     : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
-        Console2.WriteLine("ApplicationPath     : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory    : " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath            : " + EnvUtils.GetTempPath());
-        Console2.WriteLine("HostName            : " + EnvUtils.GetHostName());
-        Console2.WriteLine("TimeZone            : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture      : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("ClownFishWebVer     : " + AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty(ConstValues.CurrentVersion));
-        Console2.WriteLine("Framework  Info     : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        Console2.WriteLine("OS Name             : " + OsUtils.GetOsName());
-        Console2.WriteLine("GC Mode             : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        Console2.WriteLine("ApplicationName          : " + EnvUtils.GetAppName());
+        Console2.WriteLine("AppRuntimeId             : " + EnvUtils.AppRuntimeId);
+        Console2.WriteLine("ProcessId                : " + Environment.ProcessId.ToString());
+        Console2.WriteLine("EntryAssembly            : " + AsmHelper.GetExeFilePath());
+        Console2.WriteLine("AppStartTime             : " + EnvUtils.AppStartTime.ToTime23String());
+        Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
+        Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
+        Console2.WriteLine("ClusterName              : " + EnvUtils.GetClusterName());
+        Console2.WriteLine("EnvironmentName          : " + EnvUtils.GetRuntimeEnvName());
+        Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
+        Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
+        Console2.WriteLine("ProcessorCount           : " + Environment.ProcessorCount.ToString());
+        Console2.WriteLine("TimeZone                 : " + MyTimeZone.CurrentTZ);
+        Console2.WriteLine("CurrentCulture           : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
+        Console2.WriteLine("GC Mode                  : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        Console2.WriteLine("Framework Info           : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+        Console2.WriteLine("ClownFishWebVer          : " + AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty(ConstValues.CurrentVersion));
+        Console2.WriteLine("ApplicationPath          : " + AppContext.BaseDirectory);
+        Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
+        Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
         Console2.WriteSeparatedLine();
     }
 
