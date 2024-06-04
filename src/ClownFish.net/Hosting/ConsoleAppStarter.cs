@@ -99,30 +99,57 @@ public static class ConsoleAppStarter
     internal static void ShowSysEnvInfo()
     {
         Console2.WriteSeparatedLine();
-        Console2.WriteLine("ApplicationName     : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId        : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("AppStartTime        : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("IsInDocker          : " + EnvUtils.IsInDocker);
-        Console2.WriteLine("IsSingleFileDeploy  : " + AsmHelper.IsSingleFileDeploy);
-        Console2.WriteLine("EntryAssembly       : " + AsmHelper.GetExeFilePath());
-        Console2.WriteLine("EnvironmentName     : " + EnvUtils.GetRuntimeEnvName() + "/" + EnvUtils.GetClusterName());
-        Console2.WriteLine("ApplicationPath     : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory    : " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath            : " + EnvUtils.GetTempPath());
-        Console2.WriteLine("HostName            : " + EnvUtils.GetHostName());
-        Console2.WriteLine("TimeZone            : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture      : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("ClownFishVer        : " + AsmHelper.GetFileVersion(typeof(ClownFishInit)).IfEmpty(ConstValues.CurrentVersion));
-#if NETCOREAPP
-        Console2.WriteLine("Framework  Info     : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-#else
-        Console2.WriteLine("Framework  Info     : " + System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion());
-#endif
-        Console2.WriteLine("OS Name             : " + OsUtils.GetOsName());
-        Console2.WriteLine("GC Mode             : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        Console2.WriteLine("ApplicationName          : " + EnvUtils.GetAppName());
+        Console2.WriteLine("AppRuntimeId             : " + EnvUtils.AppRuntimeId);
+        Console2.WriteLine("ProcessId                : " + GetProcessId().ToString());
+        Console2.WriteLine("EntryAssembly            : " + AsmHelper.GetExeFilePath());
+        Console2.WriteLine("AppStartTime             : " + EnvUtils.AppStartTime.ToTime23String());
+        Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
+        Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
+        Console2.WriteLine("ClusterName              : " + EnvUtils.GetClusterName());
+        Console2.WriteLine("EnvironmentName          : " + EnvUtils.GetRuntimeEnvName());
+        Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
+        Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
+        Console2.WriteLine("OSArchitecture           : " + GetOSArchitecture());
+        Console2.WriteLine("ProcessorCount           : " + Environment.ProcessorCount.ToString());
+        Console2.WriteLine("TimeZone                 : " + MyTimeZone.CurrentTZ);
+        Console2.WriteLine("CurrentCulture           : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
+        Console2.WriteLine("GC Mode                  : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        Console2.WriteLine("Framework  Info          : " + GetFrameworkInfo());
+        Console2.WriteLine("ClownFishVer             : " + AsmHelper.GetFileVersion(typeof(ClownFishInit)).IfEmpty(ConstValues.CurrentVersion));
+        Console2.WriteLine("ApplicationPath          : " + AppContext.BaseDirectory);
+        Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
+        Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
         Console2.WriteSeparatedLine();
     }
 
+
+    private static string GetFrameworkInfo()
+    {
+#if NETCOREAPP
+        return System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+#else
+        return System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
+#endif
+    }
+
+    private static string GetOSArchitecture()
+    {
+#if NETCOREAPP
+        return System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
+#else
+        return Environment.Is64BitOperatingSystem ? "X64" : "X86";
+#endif
+    }
+
+    private static int GetProcessId()
+    {
+#if NETCOREAPP
+        return Environment.ProcessId;
+#else
+        return Process.GetCurrentProcess().Id;
+#endif
+    }
 
     ///// <summary>
     ///// 创建WebApplication实例

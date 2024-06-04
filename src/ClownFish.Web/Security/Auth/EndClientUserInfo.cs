@@ -127,7 +127,7 @@ public class EndClientUserInfo : IUserInfo
             HostName = EnvUtils.GetHostName(),
             OsKind = OsUtils.IsWindows ? 1 : (OsUtils.IsLinux ? 2 : 3),
             OsName = OsUtils.GetOsName(),
-            CpuKind = RuntimeInformation.ProcessArchitecture.ToString(),
+            CpuKind = RuntimeInformation.OSArchitecture.ToString(),  // 指令架构有3个级别的：CPU/OS/Process，这里取OS级别
             DeployMode = ((EnvUtils.IsInDocker ? 1 : 0) | (AsmHelper.IsSingleFileDeploy ? 2 : 0)),
             TimeZone = MyTimeZone.CurrentTZ,
             Culture = System.Globalization.CultureInfo.CurrentCulture?.Name

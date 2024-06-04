@@ -120,6 +120,7 @@ public static class AspnetCoreStarter
         Console2.WriteLine("EnvironmentName          : " + EnvUtils.GetRuntimeEnvName());
         Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
         Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
+        Console2.WriteLine("OSArchitecture           : " + System.Runtime.InteropServices.RuntimeInformation.OSArchitecture);
         Console2.WriteLine("ProcessorCount           : " + Environment.ProcessorCount.ToString());
         Console2.WriteLine("TimeZone                 : " + MyTimeZone.CurrentTZ);
         Console2.WriteLine("CurrentCulture           : " + System.Globalization.CultureInfo.CurrentCulture?.Name);

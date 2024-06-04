@@ -17,7 +17,7 @@ public static class ConstValues
 
     static ConstValues()
     {
-        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.603.1");
+        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.604.1");
 
         ReLoad();
     }
