@@ -27,6 +27,7 @@ global using System.Xml.Serialization;
 global using ClownFish.Base;
 global using ClownFish.Base.Exceptions;
 global using ClownFish.Base.Reflection;
+global using ClownFish.DTO;
 global using ClownFish.Data;
 global using ClownFish.Http.Pipleline;
 global using ClownFish.Http.Proxy;

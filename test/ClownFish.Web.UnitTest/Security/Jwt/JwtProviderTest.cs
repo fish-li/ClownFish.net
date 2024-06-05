@@ -48,7 +48,7 @@ public class JwtProviderTest
         Console.WriteLine(json2);
 
         Assert.IsTrue(json1.Contains("\"$type\":\"WebUserInfo\""));
-        Assert.IsTrue(json2.Contains("\"$type\":\"ClownFish.Web.Security.Auth.WebUserInfo, ClownFish.Web\""));            
+        Assert.IsTrue(json2.Contains("\"$type\":\"ClownFish.DTO.WebUserInfo, ClownFish.net\""));            
     }
 
 
@@ -63,7 +63,7 @@ public class JwtProviderTest
 
         string json = s_jwtV3.DecodePayload(token1);
         Console.WriteLine(json);
-        Assert.IsTrue(json.Contains("\"User\":{\"$type\":\"ClownFish.Web.Security.Auth.WebUserInfo, ClownFish.Web\""));
+        Assert.IsTrue(json.Contains("\"User\":{\"$type\":\"ClownFish.DTO.WebUserInfo, ClownFish.net\""));
 
         LoginTicket ticket = s_jwtV3.DecodeToken(token1);
         Assert.IsNotNull(ticket);

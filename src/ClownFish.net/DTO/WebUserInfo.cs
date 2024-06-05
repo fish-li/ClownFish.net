@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace ClownFish.Web.Security.Auth;
+namespace ClownFish.DTO;
 
 /// <summary>
 /// 【普通用户】的登录身份信息

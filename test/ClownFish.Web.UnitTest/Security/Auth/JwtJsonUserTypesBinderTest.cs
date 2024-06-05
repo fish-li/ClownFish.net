@@ -116,7 +116,7 @@ public class JwtJsonUserTypesBinderTest
 
         //Console.WriteLine(json2);
         // {"User":{"$type":"ClownFish.Web.Security.Auth.WebUserInfo, ClownFish.Web","TenantId":"tid_2222","TenantCode":"tcode_333","UserId":"id_111","UserCode":"code111","UserName":"name123","UserRole":"admin","UserType":"type111","GrayFlag":0},"Issuer":"Issuer_xxxxxxxxxx","IssueTime":638387700812199866,"Expiration":638413620812199964}
-        Assert.IsTrue(json2.Contains("\"$type\":\"ClownFish.Web.Security.Auth.WebUserInfo, ClownFish.Web\""));
+        Assert.IsTrue(json2.Contains("\"$type\":\"ClownFish.DTO.WebUserInfo, ClownFish.net\""));
 
     }
 }

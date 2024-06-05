@@ -1,4 +1,4 @@
-﻿namespace ClownFish.Web.Security.Auth;
+﻿namespace ClownFish.DTO;
 
 /// <summary>
 /// 定义基本的登录身份信息的数据接口
@@ -25,12 +25,15 @@ public interface IUserInfo
     /// </summary>
     string UserRole { get; }
 
-    /// <summary>
-    /// 特殊标记。0:正常用户(非灰度) 1：灰度用户
-    /// </summary>
-    int GrayFlag => 0;
-    // 如果以后要支持多级灰度，可以指定 GrayFlag=2 or GrayFlag=3，对应的 NodeGrayRule.xml 格式要增加分级
 
+    /// <summary>
+    /// 特殊标记。0:正常用户(非灰度) 1：外部灰度用户, 2: 内部灰度用户
+    /// </summary>
+#if NET6_0_OR_GREATER
+    int GrayFlag => 0;
+#else
+    int GrayFlag { get; }
+#endif
 
     /// <summary>
     /// 检查当前类型中的数据成员是否有效

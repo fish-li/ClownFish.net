@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace ClownFish.Web.Security.Auth;
+namespace ClownFish.DTO;
 
 /// <summary>
 /// 终端客户端的登录身份
@@ -60,9 +60,9 @@ public class EndClientUserInfo : IUserInfo
     public string OsName { get; set; }
 
     /// <summary>
-    /// CPU指令类别
+    /// CPU指令架构
     /// </summary>
-    public string CpuKind { get; set; }
+    public string CpuKind { get; set; }    
 
     /// <summary>
     /// 当前时区
@@ -70,7 +70,7 @@ public class EndClientUserInfo : IUserInfo
     public string TimeZone { get; set; }
 
     /// <summary>
-    /// 当前时区
+    /// 当前文化
     /// </summary>
     public string Culture { get; set; }
 
@@ -80,6 +80,14 @@ public class EndClientUserInfo : IUserInfo
     /// </summary>
     [DefaultValue(0)]
     public int DeployMode { get; set; }
+
+    /// <summary>
+    /// 程序的运行方式。
+    /// 0: not set, 
+    /// 100: Windows Service, 101: Windows UI Application, 102: Windows Console Application
+    /// 200: Linux Normal application, 201: Linux Systemd Service, 202: Linux SysV-Init Service, 203: Linux init.d service
+    /// </summary>
+    public int RunMode { get; set; }
 
     /// <summary>
     /// 扩展用户信息（可选）
@@ -97,7 +105,19 @@ public class EndClientUserInfo : IUserInfo
     [DefaultValue(0)]
     public int GrayFlag { get; set; }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return $"TenantId={TenantId};ClientId={ClientId};HostName={HostName};OsKind={OsKind};DeployMode={DeployMode}";
+    }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <exception cref="ArgumentNullException"></exception>
     public void Validate()
     {
         if( this.TenantId.IsNullOrEmpty() )
@@ -107,10 +127,21 @@ public class EndClientUserInfo : IUserInfo
             throw new ArgumentNullException(nameof(ClientId));
     }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     [JsonIgnore]
     public string UserId => this.ClientId;
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     [JsonIgnore]
     public string UserName => this.AppName ?? "UnknownClient";
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     [JsonIgnore]
     public string UserRole => this.ClientRole ?? "Client";
 
@@ -127,7 +158,11 @@ public class EndClientUserInfo : IUserInfo
             HostName = EnvUtils.GetHostName(),
             OsKind = OsUtils.IsWindows ? 1 : (OsUtils.IsLinux ? 2 : 3),
             OsName = OsUtils.GetOsName(),
+#if NETFRAMEWORK
+            CpuKind = Environment.Is64BitOperatingSystem ? "X64" : "X86",
+#else
             CpuKind = RuntimeInformation.OSArchitecture.ToString(),  // 指令架构有3个级别的：CPU/OS/Process，这里取OS级别
+#endif
             DeployMode = ((EnvUtils.IsInDocker ? 1 : 0) | (AsmHelper.IsSingleFileDeploy ? 2 : 0)),
             TimeZone = MyTimeZone.CurrentTZ,
             Culture = System.Globalization.CultureInfo.CurrentCulture?.Name

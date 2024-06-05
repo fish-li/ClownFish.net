@@ -30,6 +30,7 @@ global using ClownFish.Base.Reflection;
 global using ClownFish.Http.Utils;
 global using ClownFish.WebClient;
 global using ClownFish.Base.Xml;
+global using ClownFish.DTO;
 global using ClownFish.Data;
 global using ClownFish.Data.Internals;
 global using ClownFish.Http.Pipleline;
