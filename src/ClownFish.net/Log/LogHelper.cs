@@ -73,6 +73,9 @@ public static class LogHelper
         if( msg == null )
             return;
 
+        if( ClownFishInit.AppExitToken.IsCancellationRequested )
+            return;
+
         if( InitCheck(msg) == false )
             return;
 
@@ -97,6 +100,9 @@ public static class LogHelper
     public static void Write(Exception ex, string addition = null)
     {
         if( ex == null )
+            return;
+
+        if( ClownFishInit.AppExitToken.IsCancellationRequested )
             return;
 
         OprLog log = OprLog.CreateErrLog(ex);

@@ -170,6 +170,9 @@ public static class ThreadUtils
 
     internal static void LogError(string operatorName, Exception ex)
     {
+        if( ClownFishInit.AppExitToken.IsCancellationRequested )
+            return;
+
         try {
             OprLog log = OprLog.CreateErrLog(ex);
             log.OprName = operatorName;
@@ -184,6 +187,8 @@ public static class ThreadUtils
         }
         catch(Exception ex2 ) {
             Console2.Error(ex2);
+            Console2.WriteLine("--------------- original exception: --------------");
+            Console2.Error(ex);
         }
     }
 
