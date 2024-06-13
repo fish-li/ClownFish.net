@@ -5,7 +5,7 @@ public class UnixHelperTest
     [TestMethod]
     public void Test_TrimTerminalCtrolChar1()
     {
-        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "files/log-base64-soh.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "files/log-base64-soh.txt");
         string base64 = File.ReadAllText(filePath);
         byte[] buffer = Convert.FromBase64String(base64);
 
@@ -20,7 +20,7 @@ public class UnixHelperTest
     [TestMethod]
     public void Test_TrimTerminalCtrolChar2()
     {
-        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "files/log-base64-stx.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "files/log-base64-stx.txt");
         string base64 = File.ReadAllText(filePath);
         byte[] buffer = Convert.FromBase64String(base64);
 

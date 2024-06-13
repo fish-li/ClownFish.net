@@ -55,6 +55,7 @@ internal static class DebugReportBlocks
 
         block.AppendLine("OS Name: " + OsUtils.GetOsName());                      // Ubuntu 22.04.3 LTS
 #if NET48_OR_GREATER || NET6_0_OR_GREATER
+        // 说明，从 .net8 开始 RuntimeInformation.OSDescription 的取值在 Linux 实现中发生了改变，最后的结果和 OsUtils.GetOsName() 差不多
         block.AppendLine("OSDescription: " + RuntimeInformation.OSDescription);   // Linux 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018
         block.AppendLine("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);   // .NET 6.0.5
         block.AppendLine("OSArchitecture: " + RuntimeInformation.OSArchitecture);             // X64
@@ -66,7 +67,7 @@ internal static class DebugReportBlocks
         block.AppendLine("CommandLine: " + Environment.CommandLine);                  //  /app/Nebula.Moon.dll
         block.AppendLine("EntryAssembly: " + AsmHelper.GetExeFilePath());             //  /app/Nebula.Moon.dll
         block.AppendLine("CurrentDirectory: " + Environment.CurrentDirectory);        // /app
-        block.AppendLine("AppDomain.BaseDirectory: " + AppContext.BaseDirectory);     // /app
+        block.AppendLine("BaseDirectory: " + AppContext.BaseDirectory);     // /app
 
         block.AppendLine("Is64BitOperatingSystem: " + Environment.Is64BitOperatingSystem);
         block.AppendLine("Is64BitProcess: " + Environment.Is64BitProcess);

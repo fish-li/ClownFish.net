@@ -34,7 +34,7 @@ internal static class FileUtils
         FileUtils.MaxCount = config.File.MaxCount;
 
         // 支持绝对路径，和相对路径
-        string rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, config.File.RootPath);
+        string rootPath = Path.Combine(AppContext.BaseDirectory, config.File.RootPath);
 
 
         // 检查日志根目录是否存在

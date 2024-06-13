@@ -14,7 +14,7 @@ public class EntityGeneratorTest
 
         code = EntityGenerator.UsingCodeBlock + code;
 
-        string tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        string tempPath = Path.Combine(AppContext.BaseDirectory, "temp");
         string outFile = Path.Combine(tempPath, "EntityGeneratorTest_code.cs");
 
         RetryFile.WriteAllText(outFile, code, Encoding.UTF8);
@@ -26,7 +26,7 @@ public class EntityGeneratorTest
     {
         Type[] entityTypes = new Type[] { typeof(Product), typeof(Customer) };
 
-        string tempPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp");
+        string tempPath = Path.Combine(AppContext.BaseDirectory, "temp");
         string dllFilePath = Path.Combine(tempPath, "Test.EntityProxy.dll");
 
         RetryFile.Delete(dllFilePath);

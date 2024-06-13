@@ -87,7 +87,7 @@ public static class AsmHelper
         if( AsmHelper.IsSingleFileDeploy )
             return;
 
-        string[] files = RetryDirectory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly);
+        string[] files = RetryDirectory.GetFiles(AppContext.BaseDirectory, "*.dll", System.IO.SearchOption.TopDirectoryOnly);
 
         foreach( string file in files ) {
             try {
