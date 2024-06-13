@@ -49,20 +49,20 @@ BUG_REPORT_URL=""https://bugs.debian.org/""
     [TestMethod]
     public void Test_GetLinuxName()
     {
-        string name = (string)typeof(OsUtils).InvokeMethod("GetLinuxName");
+        string name = OsUtils.GetLinuxName();
 
         if( RuntimeInformation.IsOSPlatform(OSPlatform.Linux) == false ) {
-            Assert.AreEqual("NULL", name);
+            Assert.AreEqual("UNKNOWN", name);
         }
     }
 
     [TestMethod]
     public void Test_GetLinuxName0()
     {
-        string name1 = (string)typeof(OsUtils).InvokeMethod("GetLinuxName0", s_text1);
+        string name1 = OsUtils.GetLinuxName0(s_text1.ToLines());
         Assert.AreEqual("Ubuntu 22.04.3 LTS", name1);
 
-        string name2 = (string)typeof(OsUtils).InvokeMethod("GetLinuxName0", s_text2);
+        string name2 = OsUtils.GetLinuxName0(s_text2.ToLines());
         Assert.AreEqual("Debian GNU/Linux 12 (bookworm)", name2);
     }
 }

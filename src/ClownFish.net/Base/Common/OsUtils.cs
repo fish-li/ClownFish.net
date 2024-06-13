@@ -43,7 +43,7 @@ public static class OsUtils
 
     private static string s_linuxOsName = null;
 
-    private static string GetLinuxName()
+    internal static string GetLinuxName()
     {
         // 参考：https://zhuanlan.zhihu.com/p/36253769  查看Linux发行版名称和版本号的8种方法
 
@@ -73,26 +73,25 @@ public static class OsUtils
 
         string file1 = "/etc/system-release";  // 优先选择这个文件，因为它的版本信息更全
         if( File.Exists(file1) ) {
-            return File.ReadAllText(file1).Trim();
+            return File.ReadAllText(file1).TrimEnd();  // CentOS 7/8 的这个文件末尾有个空行，所以必需调用TrimEnd()
         }
 
         string file2 = "/etc/os-release";
-        string text = File.Exists(file2) ? File.ReadAllText(file2) : null;
-        return GetLinuxName0(text);
+        IEnumerable<string> lines = File.Exists(file2) ? File.ReadLines(file2) : null;
+        return GetLinuxName0(lines);
     }
 
 
-    private static string GetLinuxName0(string text)
+    internal static string GetLinuxName0(IEnumerable<string> lines)
     {
-        if( text.IsNullOrEmpty() )
-            return "NULL";
+        if( lines == null )
+            return "UNKNOWN";
 
-        List<NameValue> list = (from line in text.ToLines()
-                                let a = NameValue.Parse(line, '=')
-                                where a != null
-                                select new NameValue(a.Name, a.Value.Trim('"'))
-                                ).ToList();
+        var list = from line in lines
+                   let a = NameValue.Parse(line, '=')
+                   where a != null
+                   select new NameValue(a.Name, a.Value.Trim('"'));
 
-        return list.FirstOrDefault(x => x.Name == "PRETTY_NAME")?.Value ?? "UNKNOW-OS";
+        return list.FirstOrDefault(x => x.Name == "PRETTY_NAME")?.Value ?? "UNKNOWN";
     }
 }
