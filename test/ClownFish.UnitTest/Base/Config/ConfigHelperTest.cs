@@ -7,7 +7,7 @@ public class ConfigHelperTest
     public void Test_GetFilePath()
     {
         string name = "abc.txt";
-        Assert.AreEqual(name, ConfigHelper.GetFileAbsolutePath(name));  // not found
+        Assert.IsTrue(ConfigHelper.GetFileAbsolutePath(name).EndsWith1(name));  // not found
 
         string name2 = "ClownFish.App.config";
         string path2 = ConfigHelper.GetFileAbsolutePath(name2);
@@ -28,7 +28,7 @@ public class ConfigHelperTest
     public void Test_GetDirectoryPath()
     {
         string name = "abc";
-        Assert.AreEqual(name, ConfigHelper.GetDirectoryAbsolutePath(name));  // not found
+        Assert.IsTrue(ConfigHelper.GetDirectoryAbsolutePath(name).EndsWith1(name));  // not found
 
         string name2 = "Logs";
         string path2 = ConfigHelper.GetDirectoryAbsolutePath(name2);

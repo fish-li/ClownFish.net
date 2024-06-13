@@ -201,4 +201,29 @@ public class AppConfigTest
         Assert.IsTrue(value2);
     }
 
+    [TestMethod]
+    public void Test_SetAppConfigFileName()
+    {
+        string path1 = AppConfig.GetAppConfigFilePath();
+        Console.WriteLine(path1);
+        Assert.IsTrue(path1.EndsWith1(AppConfig.ClownFishAppconfig));
+
+        AppConfig.SetAppConfigFileName("111.conf");
+        string path2 = AppConfig.GetAppConfigFilePath();
+        Console.WriteLine(path2);
+        Assert.IsTrue(path2.EndsWith1("111.conf"));
+
+        AppConfig.SetAppConfigFileName(null);
+        string path3 = AppConfig.GetAppConfigFilePath();
+        Assert.AreEqual(path1, path3);
+    }
+
+    [TestMethod]
+    public void Test_GetDefaultAppconfigFilePath()
+    {
+        string path1 = AppConfig.GetDefaultAppconfigFilePath();
+        Console.WriteLine(path1);
+        Assert.IsTrue(path1.EndsWith1("ClownFish.UnitTest.appconfig"));
+    }
+
 }

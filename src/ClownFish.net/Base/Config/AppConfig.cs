@@ -8,6 +8,7 @@ namespace ClownFish.Base;
 public static class AppConfig
 {
     internal static readonly string ClownFishAppconfig = "ClownFish.App.config";
+    private static string s_filename = null;
 
     private static bool s_inited = false;
     private static readonly object s_lock = new object();
@@ -24,13 +25,52 @@ public static class AppConfig
         if( s_inited == false ) {
             lock( s_lock ) {
                 if( s_inited == false ) {
-                    string filePath = ConfigHelper.GetFileAbsolutePath(ClownFishAppconfig);
+
+                    string filePath = GetAppConfigFilePath();
                     InitConfig(filePath);
                 }
             }
         }
     }
 
+    /// <summary>
+    /// 设置 App.config 的名称。 
+    /// App.config 的查找过程：
+    /// 1，优先查找当前方法指定的名称，
+    /// 2，根据 程序入口程序集去查找，
+    /// 3，使用【统一名称】的配置文件名称：ClownFish.App.config
+    /// </summary>
+    /// <param name="filenName"></param>
+    public static void SetAppConfigFileName(string filenName)
+    {
+        s_filename = filenName;
+    }
+
+
+    internal static string GetAppConfigFilePath()
+    {
+        // 1, 优先使用 明确指定 的文件名
+        if( s_filename.HasValue() ) {
+            return ConfigHelper.GetFileAbsolutePath(s_filename);
+        }
+
+        // 2, 根据程序入口程序集来确定 配置文件的名称
+        // 假如当前程序是 abc.exe or abc.dll
+        // 那么默认的配置文件名称为：abc.appconfig
+        string filePath2 = GetDefaultAppconfigFilePath();
+        if( File.Exists(filePath2) )
+            return filePath2;
+
+        // 3, 使用 【统一名称】的配置文件
+        return ConfigHelper.GetFileAbsolutePath(ClownFishAppconfig);
+    }
+
+    internal static string GetDefaultAppconfigFilePath()
+    {
+        string asmName = Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
+        string confName = asmName + ".appconfig";
+        return ConfigHelper.GetFileAbsolutePath(confName);
+    }
 
     internal static void InitConfig(string filePath)
     {
