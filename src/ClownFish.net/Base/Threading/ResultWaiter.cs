@@ -9,30 +9,57 @@ public sealed class ResultWaiter : IDisposable
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationTokenRegistration _tokenRegistration;
 
+    private readonly string _resultId;
+
     private volatile object _result;
 
     /// <summary>
     /// ResultId
     /// </summary>
-    public readonly string ResultId = Guid.NewGuid().ToString("N");
+    public string ResultId => _resultId;
+
+    /// <summary>
+    /// ctor
+    /// </summary>
+    public ResultWaiter() : this(Guid.NewGuid().ToString("N")) { }
+
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="resultId">用于从字典表中查找当前对象的ID，注意：此参数一定要唯一，建议使用GUID字符串</param>
+    public ResultWaiter(string resultId)
+    {
+        if( resultId.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(resultId));
+
+        _resultId = resultId;
+
+        // https://www.coder.work/article/246268
+        _taskCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        ResultWaiterManager.Add(this);
+    }
 
     /// <summary>
     /// 结束等待，设置完成结果
     /// </summary>
     /// <param name="result"></param>
-    public void SetResult(object result)
+    public bool SetResult(object result)
     {
+        if( _result != null )
+            return false;
+
         _result = result;
-        _taskCompletionSource?.TrySetResult(result);
+        return _taskCompletionSource.TrySetResult(result);
     }
 
     /// <summary>
     /// 结束等待，设置执行为异常
     /// </summary>
     /// <param name="ex"></param>
-    public void SetException(Exception ex)
+    public bool SetException(Exception ex)
     {
-        _taskCompletionSource?.TrySetException(ex);
+        return _taskCompletionSource.TrySetException(ex);
     }
 
 
@@ -43,13 +70,14 @@ public sealed class ResultWaiter : IDisposable
     /// <returns></returns>
     public async Task<object> WaitAsync(TimeSpan timeout)
     {
-        // https://www.coder.work/article/246268
-        _taskCompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+        if( _result != null )
+            return _result;
 
         _cancellationTokenSource = new CancellationTokenSource(timeout);
         _tokenRegistration = _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
 
-        ResultWaiterManager.Add(this, timeout);
+        if( _result != null )
+            return _result;
 
         try {
             return await _taskCompletionSource.Task;
@@ -82,6 +110,11 @@ public sealed class ResultWaiter : IDisposable
             _cancellationTokenSource = null;
 
             _tokenRegistration.Dispose();
+        }
+
+        if( _taskCompletionSource != null ) {
+            _taskCompletionSource = null;
+            ResultWaiterManager.Remove(this.ResultId);
         }
     }
 }

@@ -24,7 +24,7 @@ public sealed class CacheDictionary<T> where T : class
     /// </summary>
     /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
     public CacheDictionary(bool useWeakReference = true)
-        : this(300, useWeakReference, GetExpirationScanFrequency(useWeakReference, null), null)
+        : this(300, useWeakReference, GetExpirationScanFrequency(useWeakReference), null)
     {
     }
     /// <summary>
@@ -32,7 +32,7 @@ public sealed class CacheDictionary<T> where T : class
     /// </summary>
     /// <param name="capacity">字典的初始容量</param>
     public CacheDictionary(int capacity)
-        : this(capacity, true, GetExpirationScanFrequency(true, null), null)
+        : this(capacity, true, GetExpirationScanFrequency(true), null)
     {
     }
 
@@ -42,7 +42,7 @@ public sealed class CacheDictionary<T> where T : class
     /// <param name="capacity">字典的初始容量</param>
     /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
     public CacheDictionary(int capacity, bool useWeakReference)
-        : this(capacity, useWeakReference, GetExpirationScanFrequency(useWeakReference, null), null)
+        : this(capacity, useWeakReference, GetExpirationScanFrequency(useWeakReference), null)
     {
     }
 
@@ -53,7 +53,7 @@ public sealed class CacheDictionary<T> where T : class
     /// <param name="useWeakReference">是否允许使用弱引用来缓存对象</param>
     /// <param name="autoExpiredClean">是否启用过期自动清理</param>
     public CacheDictionary(int capacity, bool useWeakReference, bool autoExpiredClean)
-        : this(capacity, useWeakReference, GetExpirationScanFrequency(useWeakReference, autoExpiredClean), null)
+        : this(capacity, useWeakReference, GetExpirationScanFrequency(autoExpiredClean), null)
     {
     }
 
@@ -74,13 +74,11 @@ public sealed class CacheDictionary<T> where T : class
     }
 
 
-    private static int GetExpirationScanFrequency(bool useWeakReference, bool? autoExpiredClean)
+    private static int GetExpirationScanFrequency(bool autoExpiredClean)
     {
-        // 如果不显式指定 autoExpiredClean，就参考 useWeakReference 参数，
-        // 因为如果启用【弱引用】就意味需要着缓存大对象，那么应该是需要时启用【自动清理】的，反之则不启用自动清理
+        // 如果启用【弱引用】就意味需要着缓存大对象，那么应该是需要时启用【自动清理】的，反之则不启用自动清理
 
-        bool flag = autoExpiredClean.HasValue ? autoExpiredClean.Value : useWeakReference;
-        return flag ? CacheOption.ExpirationScanFrequency : 0;
+        return autoExpiredClean ? CacheOption.ExpirationScanFrequency : 0;
     }
 
     /// <summary>

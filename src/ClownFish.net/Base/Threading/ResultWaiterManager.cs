@@ -2,21 +2,26 @@
 
 internal static class ResultWaiterManager
 {
-    private static readonly CacheDictionary<ResultWaiter> s_dict = new CacheDictionary<ResultWaiter>();
+    private static readonly TSafeDictionary<string, ResultWaiter> s_dict = new TSafeDictionary<string, ResultWaiter>(1024);
 
-    public static void Add(ResultWaiter waiter, TimeSpan timeout)
+    public static void Add(ResultWaiter waiter)
     {
-        s_dict.Set(waiter.ResultId, waiter, DateTime.Now.Add(timeout).AddMinutes(5));
+        s_dict.Set(waiter.ResultId, waiter);
     }
 
     public static ResultWaiter Get(string resultId)
     {
-        ResultWaiter waiter = s_dict.Get(resultId);
+        ResultWaiter waiter = s_dict.TryGet(resultId);
 
         if( waiter != null )
-            s_dict.Remove(resultId);
+            s_dict.TryRemove(resultId, out _);
 
         return waiter;
+    }
+
+    public static void Remove(string resultId)
+    {
+        s_dict.TryRemove(resultId, out _);
     }
 }
 
