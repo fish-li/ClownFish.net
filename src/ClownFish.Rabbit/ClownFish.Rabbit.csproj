@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.Rabbit</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.619.1</Version>
-        <FileVersion>8.24.619.1</FileVersion>
+        <Version>8.24.620.1</Version>
+        <FileVersion>8.24.620.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -22,7 +22,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
+        <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     </ItemGroup>
 
     <ItemGroup>

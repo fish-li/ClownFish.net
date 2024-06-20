@@ -12,10 +12,11 @@ public static class MemoryStreamPool
 #if NETCOREAPP
 
     private static readonly RecyclableMemoryStreamManager s_msPool = new RecyclableMemoryStreamManager(
-                    ClownFishOptions.MemoryStreamPool_BlockSize,
-                    ClownFishOptions.MemoryStreamPool_LargeBufferMultiple,
-                    ClownFishOptions.MemoryStreamPool_MaximumBufferSize
-    );
+                               new RecyclableMemoryStreamManager.Options {
+                                   BlockSize = ClownFishOptions.MemoryStreamPool_BlockSize,
+                                   LargeBufferMultiple = ClownFishOptions.MemoryStreamPool_LargeBufferMultiple,
+                                   MaximumBufferSize = ClownFishOptions.MemoryStreamPool_MaximumBufferSize
+                               });
 
 
     /// <summary>
