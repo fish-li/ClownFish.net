@@ -12,6 +12,7 @@ public sealed class ResultWaiter : IDisposable
     private readonly string _resultId;
 
     private volatile object _result;
+    private volatile bool _isEnd = false;
 
     /// <summary>
     /// ResultId
@@ -46,6 +47,9 @@ public sealed class ResultWaiter : IDisposable
     /// <param name="result"></param>
     public bool SetResult(object result)
     {
+        if( _isEnd )
+            return false;
+
         if( _result != null )
             return false;
 
@@ -59,6 +63,9 @@ public sealed class ResultWaiter : IDisposable
     /// <param name="ex"></param>
     public bool SetException(Exception ex)
     {
+        if( _isEnd )
+            return false;
+
         return _taskCompletionSource.TrySetException(ex);
     }
 
@@ -86,6 +93,9 @@ public sealed class ResultWaiter : IDisposable
             //Console2.Info($"ResultWaiter.WaitAsync.OperationCanceledException, result is null: {_result == null}, hasCallback: {_hasCallback}");
         }
 
+        // 在多线程并发时，即使另外一个线程拿到当前对象，当前对象也是一个无效状态，即调用 SetXXX 方法不起作用
+        _isEnd = true;
+
         // 通常来说，应该在OperationCanceledException时直接返回 null，
         // 但是可能会有2种极限场景：1，在执行TrySetResult的过程中占用了少量时间最终导致了超时，2，有可能TrySetResult时刚好到达超时时间，
         // 所以，这里以变量为准做为返回结果
@@ -105,6 +115,8 @@ public sealed class ResultWaiter : IDisposable
 
     void IDisposable.Dispose()
     {
+        _isEnd = true;
+
         if( _cancellationTokenSource != null ) {
             _cancellationTokenSource.Dispose();
             _cancellationTokenSource = null;
