@@ -34,7 +34,7 @@ public class OprLogScopeTest
             Assert.AreEqual(1, log.IsSlow);
             Assert.AreEqual("ClownFish.Data.DbExceuteException", log.ExType);
             Assert.AreEqual("ClownFish.UnitTest", log.AppName);
-            Assert.AreEqual("ClownFish.TEST", log.EnvName);
+            Assert.AreEqual("ClownFish_TEST", log.EnvName);
 
             Assert.AreEqual("x_TenantId", log.TenantId);
             Assert.AreEqual("x_UserId", log.UserId);

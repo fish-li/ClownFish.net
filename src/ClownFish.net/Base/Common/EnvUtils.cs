@@ -126,7 +126,7 @@ public static class EnvUtils
         // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
 
         ApplicationName = GetApplicationName0();
-        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "ClownFish.TEST";
+        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";
 
         ConstValues.ReLoad();
     }
