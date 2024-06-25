@@ -12,7 +12,7 @@ public sealed class ResultWaiter : IDisposable
     private readonly string _resultId;
 
     private volatile object _result;
-    private volatile bool _isEnd = false;
+    private int _isEnd = 0;
 
     /// <summary>
     /// ResultId
@@ -47,10 +47,7 @@ public sealed class ResultWaiter : IDisposable
     /// <param name="result"></param>
     public bool SetResult(object result)
     {
-        if( _isEnd )
-            return false;
-
-        if( _result != null )
+        if( Interlocked.CompareExchange(ref _isEnd, 1, 0) == 1)
             return false;
 
         _result = result;
@@ -63,7 +60,7 @@ public sealed class ResultWaiter : IDisposable
     /// <param name="ex"></param>
     public bool SetException(Exception ex)
     {
-        if( _isEnd )
+        if( Interlocked.CompareExchange(ref _isEnd, 1, 0) == 1 )
             return false;
 
         return _taskCompletionSource.TrySetException(ex);
@@ -79,12 +76,14 @@ public sealed class ResultWaiter : IDisposable
     {
         if( _result != null )
             return _result;
+        
 
         _cancellationTokenSource = new CancellationTokenSource(timeout);
         _tokenRegistration = _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
 
-        if( _result != null )
+        if( _result != null ) 
             return _result;
+        
 
         try {
             return await _taskCompletionSource.Task;
@@ -94,7 +93,7 @@ public sealed class ResultWaiter : IDisposable
         }
 
         // 在多线程并发时，即使另外一个线程拿到当前对象，当前对象也是一个无效状态，即调用 SetXXX 方法不起作用
-        _isEnd = true;
+        _isEnd = 1;
 
         // 通常来说，应该在OperationCanceledException时直接返回 null，
         // 但是可能会有2种极限场景：1，在执行TrySetResult的过程中占用了少量时间最终导致了超时，2，有可能TrySetResult时刚好到达超时时间，
@@ -115,7 +114,7 @@ public sealed class ResultWaiter : IDisposable
 
     void IDisposable.Dispose()
     {
-        _isEnd = true;
+        _isEnd = 1;
 
         if( _cancellationTokenSource != null ) {
             _cancellationTokenSource.Dispose();
