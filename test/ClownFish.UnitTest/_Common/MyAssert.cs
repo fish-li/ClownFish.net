@@ -50,7 +50,7 @@ public static class MyAssert
     }
 
 
-    public static Exception IsError<T>(Action action) where T : Exception
+    public static T IsError<T>(Action action) where T : Exception
     {
         Exception exception = null;
         try {
@@ -63,7 +63,7 @@ public static class MyAssert
         Assert.IsNotNull(exception);
         Assert.IsInstanceOfType(exception, typeof(T));
 
-        return exception;
+        return (T)exception;
     }
 
 

@@ -49,6 +49,16 @@ public class EndClientUserInfo : IUserInfo
     public string HostName { get; set; }
 
     /// <summary>
+    /// 当前机器的 ip
+    /// </summary>
+    public string Ip { get; set; }
+
+    /// <summary>
+    /// 当前机器所在的集群标识
+    /// </summary>
+    public string Cluster { get; set; }
+
+    /// <summary>
     /// 操作系统类别，例如 1: windows, 2: linux, 3: others
     /// </summary>
     [DefaultValue(0)]

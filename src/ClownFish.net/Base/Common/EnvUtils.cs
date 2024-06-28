@@ -166,6 +166,11 @@ public static class EnvUtils
 
     private static string GetMachineName()
     {
+        // 有些机器名命名混乱，可以指定 HOST_NAME 配置参数 来代替
+        string value = LocalSettings.GetSetting("HOST_NAME");
+        if( value.HasValue() )
+            return value;
+
         try {
             return Environment.MachineName;
         }

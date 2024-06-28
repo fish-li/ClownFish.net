@@ -127,6 +127,29 @@ public class HttpOptionTest
 
     }
 
+
+    [TestMethod]
+    public void Test_GetReuestUri()
+    {
+        HttpOption httpOption = new HttpOption {
+            Url = "abc.com/aa/bb"
+        };
+
+        UriFormatException ex = MyAssert.IsError<UriFormatException>(() => {
+            Uri uri = httpOption.GetReuestUri();
+        });
+
+        Assert.IsTrue(ex.Message == "Invalid URL: abc.com/aa/bb");
+
+        // 下面是 .NET 抛出的异常，根本不知道出错时的URL
+
+        UriFormatException ex2 = MyAssert.IsError<UriFormatException>(() => {
+            Uri uri = new Uri("abc.com/aa/bb");
+        });
+        Console.WriteLine(ex2.Message);
+        //Assert.IsTrue(ex2.Message == "Invalid URI: The format of the URI could not be determined.");
+    }
+
     private static readonly string s_requestRaw = @"
 POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
 Host: www.fish-test.com

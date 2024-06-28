@@ -267,7 +267,13 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     {
         if( _requestUri == null ) {
             string url = this.GetRequestUrl();
-            _requestUri = new Uri(url);
+
+            try {
+                _requestUri = new Uri(url);
+            }
+            catch( UriFormatException ex ) {
+                throw new UriFormatException("Invalid URL: " + url, ex);
+            }
         }
         return _requestUri;
     }

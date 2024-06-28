@@ -23,6 +23,8 @@ public class EndClientUserInfoTest
         client.GrayFlag = 2;
         client.ClientData = "22222222222222222222222";
         client.ExtData = "3333333333333333333333333";
+        client.Ip = "126.0.0.1";
+        client.Cluster = "Cluster123";
 
         Assert.IsNotNull(client.TenantId);
         Assert.IsNotNull(client.TenantCode);
@@ -42,6 +44,8 @@ public class EndClientUserInfoTest
         Assert.AreEqual(2, client.GrayFlag);
         Assert.IsNotNull(client.ClientData);
         Assert.IsNotNull(client.ExtData);
+        Assert.IsNotNull(client.Ip);
+        Assert.IsNotNull(client.Cluster);
 
         Assert.IsNotNull(client.ToString());
 
