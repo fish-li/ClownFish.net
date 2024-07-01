@@ -161,7 +161,7 @@ Server: Kestrel";
 
 
             string outFilePath = Path.Combine(Environment.CurrentDirectory, "Logs/Test_FileConsoleImpl.txt");
-            Console2.SetOutToFile(outFilePath, 1024);
+            Console2.SetOutToFile(outFilePath, 1024, true);
 
             string s1 = new string('a', 100);
             string s2 = new string('b', 100);

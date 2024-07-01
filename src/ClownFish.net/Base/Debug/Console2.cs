@@ -26,15 +26,16 @@ public static class Console2
     /// </summary>
     /// <param name="outFilePath">一个文件路径，随后程序的所有控制台输出都将写入此文件。 如果指定的文件不存在，程序会自动创建，如果指定的文件存在，文件将清空。</param>
     /// <param name="maxFileLength">文件的最大长度。超过最大长度后，文件内容会清空，然后继续写入。如果此参数小于等于零，则不检查文件长度，此时有可能会把磁盘写爆。</param>
+    /// <param name="useSysConsole">是否同时将输出消息写入 System.Console</param>
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public static void SetOutToFile(string outFilePath, long maxFileLength)
+    public static void SetOutToFile(string outFilePath, long maxFileLength, bool useSysConsole = false)
     {
         if( outFilePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(outFilePath));
 
         s_console.Dispose();
 
-        s_console = new FileConsoleImpl(outFilePath, maxFileLength);
+        s_console = new FileConsoleImpl(outFilePath, maxFileLength, useSysConsole);
     }
 
     internal static void ResetOut()  // for UnitTest
@@ -268,17 +269,19 @@ internal sealed class FileConsoleImpl : IConsole
     private readonly string _filePath;
     private readonly long _maxFileLength;
     private FileStream _stream;
+    private readonly bool _useSysConsole;
 
 
-    public FileConsoleImpl(string outFilePath, long maxFileLength)
+    public FileConsoleImpl(string outFilePath, long maxFileLength, bool useSysConsole)
     {
         // 确保文件所在的目录是存在的，否则在创建文件时会出现异常
         string parentDirectory = Path.GetDirectoryName(outFilePath);
         Directory.CreateDirectory(parentDirectory);
 
+        _useSysConsole = useSysConsole;
         _filePath = outFilePath;
         _maxFileLength = maxFileLength;
-        OpenFile();
+        OpenFile();        
     }
 
     private void OpenFile()
@@ -302,6 +305,10 @@ internal sealed class FileConsoleImpl : IConsole
             _stream.Write(data, 0, data.Length);
             _stream.Write(s_bytes, 0, s_bytes.Length);
             _stream.Flush();
+
+            if( _useSysConsole ) {
+                Console.WriteLine(line);
+            }
         }
     }
 
