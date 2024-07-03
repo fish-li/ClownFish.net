@@ -107,7 +107,7 @@ public static class ConsoleAppStarter
         Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
         Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
         Console2.WriteLine("ClusterName              : " + EnvUtils.GetClusterName());
-        Console2.WriteLine("EnvironmentName          : " + EnvUtils.GetRuntimeEnvName());
+        Console2.WriteLine("RunMode                  : " + EnvUtils.GetRunMode());
         Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
         Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
         Console2.WriteLine("OSArchitecture           : " + GetOSArchitecture());

@@ -5,20 +5,19 @@ public class EnvUtilsTest
     [TestMethod]
     public void Test_1()
     {
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.CurEvnKind);
-        Assert.IsTrue(EnvUtils.IsDevEnv);
-        Assert.IsFalse(EnvUtils.IsProdEnv);
-        Assert.IsFalse(EnvUtils.IsTestEnv);        
+        Assert.IsTrue(EnvUtils.IsDevMode);
+        Assert.IsFalse(EnvUtils.IsProdMode);
+        Assert.IsFalse(EnvUtils.IsTestMode);        
     }
 
     [TestMethod]
     public void Test_2()
     {
-        Assert.IsTrue(EnvUtils.IsDevEnv);
+        Assert.IsTrue(EnvUtils.IsDevMode);
         Assert.IsFalse(AsmHelper.IsSingleFileDeploy);
 
         Assert.AreEqual("ClownFish.UnitTest", EnvUtils.GetAppName());
-        Assert.AreEqual("FishDev", EnvUtils.EnvName);
+        Assert.AreEqual("FishDev", EnvUtils.RunMode);
         Assert.AreEqual("ClownFish_TEST", EnvUtils.ClusterName);
         Assert.AreEqual("ClownFish_TEST", EnvUtils.GetClusterName());
 
@@ -30,21 +29,21 @@ public class EnvUtilsTest
     [TestMethod]
     public void Test_EvnKind()
     {
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind(""));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Prod"));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Product"));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("production"));
-        Assert.AreEqual(EvnKind.Prod, EnvUtils.GetEvnKind("Product_2"));
+        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode(""));
+        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Prod"));
+        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Product"));
+        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("production"));
+        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Product_2"));
 
-        Assert.AreEqual(EvnKind.Test, EnvUtils.GetEvnKind("Test"));
-        Assert.AreEqual(EvnKind.Test, EnvUtils.GetEvnKind("Test2"));
+        Assert.AreEqual(RunModeEnum.Test, EnvUtils.GetRunMode("Test"));
+        Assert.AreEqual(RunModeEnum.Test, EnvUtils.GetRunMode("Test2"));
 
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("dev"));
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("xxx"));
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("DEV"));
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("Development"));
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("FishDev"));
-        Assert.AreEqual(EvnKind.Dev, EnvUtils.GetEvnKind("xxxxxxxx"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("dev"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("xxx"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("DEV"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("Development"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("FishDev"));
+        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("xxxxxxxx"));
     }
 
 

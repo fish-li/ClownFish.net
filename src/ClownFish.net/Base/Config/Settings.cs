@@ -60,7 +60,7 @@ internal sealed class DefaultSettingsImpl : ISettings
         // 2，或者放在 “本机的环境变量”   (Windows的环境变量配置是全局的，各个程序的参数放在一起太乱了)
         //  所以就把这些参数放在注册表中，并使用各自的 “AppName” 分开存储
 
-        if( EnvUtils.IsDevEnv && RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) {
+        if( EnvUtils.IsDevMode && RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) {
             value = Microsoft.Win32.Registry.GetValue(DefaultLocalSettingsImpl.RegPath, name, null)?.ToString();
 
             if( string.IsNullOrEmpty(value) == false )

@@ -197,7 +197,7 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
             // 到达等待超时时间，或者被 StopWait() 触发
         }
         catch( Exception ex ) {
-            if( EnvUtils.IsDevEnv )
+            if( EnvUtils.IsDevMode )
                 Console2.Error(ex);
         }
     }
@@ -212,7 +212,7 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
             _tokenSource.Cancel();
         }
         catch( Exception ex ) {
-            if( EnvUtils.IsDevEnv )
+            if( EnvUtils.IsDevMode )
                 Console2.Error(ex);
 
             // 有可能在调用当前方法时，另外一个线程正在执行 _tokenSource.Dispose();
