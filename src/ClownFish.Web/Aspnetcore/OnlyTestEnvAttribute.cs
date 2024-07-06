@@ -8,7 +8,7 @@ public sealed class OnlyTestEnvAttribute : Attribute
 {
     internal static bool CurrentIsAllow(ActionDescription action)
     {
-        if( EnvUtils.IsProdMode && action.ControllerType.GetMyAttribute<OnlyTestEnvAttribute>() != null )
+        if( EnvUtils.IsProdEnv && action.ControllerType.GetMyAttribute<OnlyTestEnvAttribute>() != null )
             return false;
 
         return true;

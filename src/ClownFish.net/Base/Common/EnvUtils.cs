@@ -25,22 +25,22 @@ public static class EnvUtils
     internal static readonly string HostName;
     internal static readonly string TempPath;
 
-    internal static readonly string RunMode;
+    internal static readonly string RunEnv;
 
     /// <summary>
     /// 当前进程是否以 DEV 方式运行
     /// </summary>
-    public static readonly bool IsDevMode;
+    public static readonly bool IsDevEnv;
 
     /// <summary>
     /// 当前进程是否以 TEST 方式运行
     /// </summary>
-    public static readonly bool IsTestMode;
+    public static readonly bool IsTestEnv;
 
     /// <summary>
     /// 当前进程是否以 PROD 方式运行
     /// </summary>
-    public static readonly bool IsProdMode;
+    public static readonly bool IsProdEnv;
 
 
 
@@ -52,8 +52,8 @@ public static class EnvUtils
     internal static string ClusterName { get; private set; }
 
 
-    // RunMode, ClusterName 的说明
-    // RunMode 等同于/取值于  微软定义的 RUNTIME_ENVIRONMENT, ASPNETCORE_ENVIRONMENT
+    // RunEnv, ClusterName 的说明
+    // RunEnv 取值于  微软定义的 RUNTIME_ENVIRONMENT, ASPNETCORE_ENVIRONMENT
     // 用于控制进程的运行时行为，例如：if( app.Environment.IsDevelopment() ) xxxxxxxxxxx;
 
     // 而 ClusterName 是指 集群名称，它由多个进程构成的部署环境，它不用来控制程序的行为，仅仅只是一个名称。
@@ -69,12 +69,12 @@ public static class EnvUtils
 
     static EnvUtils()
     {
-        RunMode = GetRunModeName();
+        RunEnv = GetRunEnvName();
 
-        RunModeEnum mode = GetRunMode(RunMode);
-        IsDevMode = mode == RunModeEnum.Dev;
-        IsTestMode = mode == RunModeEnum.Test;
-        IsProdMode = mode == RunModeEnum.Prod;
+        RunEnvEnum flag = GetRunEnvEnum(RunEnv);
+        IsDevEnv = flag == RunEnvEnum.Dev;
+        IsTestEnv = flag == RunEnvEnum.Test;
+        IsProdEnv = flag == RunEnvEnum.Prod;
 
         HostName = GetMachineName();
         TempPath = LocalSettings.GetSetting("APP_TEMPATH") ?? EvalAppTempPath();
@@ -110,7 +110,7 @@ public static class EnvUtils
         ConstValues.ReLoad();
     }
 
-    private static string GetRunModeName()
+    private static string GetRunEnvName()
     {
         string env = LocalSettings.GetSetting("ASPNETCORE_ENVIRONMENT") ?? LocalSettings.GetSetting("RUNTIME_ENVIRONMENT");
 
@@ -121,16 +121,16 @@ public static class EnvUtils
         return env;
     }
 
-    internal static RunModeEnum GetRunMode(string mode)
+    internal static RunEnvEnum GetRunEnvEnum(string env)
     {
-        if( mode.IsNullOrEmpty() || mode.Is("PROD") || mode.StartsWithIgnoreCase("Product") )
-            return RunModeEnum.Prod;
+        if( env.IsNullOrEmpty() || env.Is("PROD") || env.StartsWithIgnoreCase("Product") )
+            return RunEnvEnum.Prod;
 
-        if( mode.Is("TEST") || mode.StartsWithIgnoreCase("Test") )
-            return RunModeEnum.Test;
+        if( env.Is("TEST") || env.StartsWithIgnoreCase("Test") )
+            return RunEnvEnum.Test;
 
         // 【生产】和【测试】之外的所有环境都认为是【开发】环境
-        return RunModeEnum.Dev;
+        return RunEnvEnum.Dev;
     }
 
 
@@ -226,7 +226,7 @@ public static class EnvUtils
     /// </summary>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetRunMode() => EnvUtils.RunMode;
+    public static string GetRunEnv() => EnvUtils.RunEnv;
 
     /// <summary>
     /// 获取当前进程所在的机器名称
@@ -240,9 +240,9 @@ public static class EnvUtils
 
 
 /// <summary>
-/// 进程的运行模式类别
+/// 进程的运行环境类别
 /// </summary>
-internal enum RunModeEnum
+internal enum RunEnvEnum
 {
     /// <summary>
     /// 开发环境

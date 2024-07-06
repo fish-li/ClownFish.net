@@ -195,7 +195,7 @@ public static class Console2
     /// <param name="message"></param>
     public static void Debug(string message)
     {
-        if( EnvUtils.IsDevMode == false )
+        if( EnvUtils.IsDevEnv == false )
             return;
 
         if( message.IsNullOrEmpty() )

@@ -400,7 +400,7 @@ public partial class OprLog
         log.Status = this.Status;
         log.ActionType = GetActionType(this.OprKind);
 
-        if( EnvUtils.IsDevMode )
+        if( EnvUtils.IsDevEnv )
             log.Title = this.OprName;
 
         return log;

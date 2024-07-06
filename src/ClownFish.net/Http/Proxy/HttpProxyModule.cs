@@ -65,7 +65,7 @@ public abstract class HttpProxyModule : NHttpModule
                 // 转发的请求都不监控执行耗时时间
                 //httpContext.PipelineContext.SetAsLongTask();
 
-                if( EnvUtils.IsProdMode == false ) {
+                if( EnvUtils.IsProdEnv == false ) {
                     httpContext.Response.SetHeader("X-Proxy-DestUrl", destUrl); // 用于调试诊断
                 }
 

@@ -5,19 +5,19 @@ public class EnvUtilsTest
     [TestMethod]
     public void Test_1()
     {
-        Assert.IsTrue(EnvUtils.IsDevMode);
-        Assert.IsFalse(EnvUtils.IsProdMode);
-        Assert.IsFalse(EnvUtils.IsTestMode);        
+        Assert.IsTrue(EnvUtils.IsDevEnv);
+        Assert.IsFalse(EnvUtils.IsProdEnv);
+        Assert.IsFalse(EnvUtils.IsTestEnv);        
     }
 
     [TestMethod]
     public void Test_2()
     {
-        Assert.IsTrue(EnvUtils.IsDevMode);
+        Assert.IsTrue(EnvUtils.IsDevEnv);
         Assert.IsFalse(AsmHelper.IsSingleFileDeploy);
 
         Assert.AreEqual("ClownFish.UnitTest", EnvUtils.GetAppName());
-        Assert.AreEqual("FishDev", EnvUtils.RunMode);
+        Assert.AreEqual("FishDev", EnvUtils.RunEnv);
         Assert.AreEqual("ClownFish_TEST", EnvUtils.ClusterName);
         Assert.AreEqual("ClownFish_TEST", EnvUtils.GetClusterName());
 
@@ -29,21 +29,21 @@ public class EnvUtilsTest
     [TestMethod]
     public void Test_EvnKind()
     {
-        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode(""));
-        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Prod"));
-        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Product"));
-        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("production"));
-        Assert.AreEqual(RunModeEnum.Prod, EnvUtils.GetRunMode("Product_2"));
+        Assert.AreEqual(RunEnvEnum.Prod, EnvUtils.GetRunEnvEnum(""));
+        Assert.AreEqual(RunEnvEnum.Prod, EnvUtils.GetRunEnvEnum("Prod"));
+        Assert.AreEqual(RunEnvEnum.Prod, EnvUtils.GetRunEnvEnum("Product"));
+        Assert.AreEqual(RunEnvEnum.Prod, EnvUtils.GetRunEnvEnum("production"));
+        Assert.AreEqual(RunEnvEnum.Prod, EnvUtils.GetRunEnvEnum("Product_2"));
 
-        Assert.AreEqual(RunModeEnum.Test, EnvUtils.GetRunMode("Test"));
-        Assert.AreEqual(RunModeEnum.Test, EnvUtils.GetRunMode("Test2"));
+        Assert.AreEqual(RunEnvEnum.Test, EnvUtils.GetRunEnvEnum("Test"));
+        Assert.AreEqual(RunEnvEnum.Test, EnvUtils.GetRunEnvEnum("Test2"));
 
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("dev"));
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("xxx"));
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("DEV"));
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("Development"));
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("FishDev"));
-        Assert.AreEqual(RunModeEnum.Dev, EnvUtils.GetRunMode("xxxxxxxx"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("dev"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("xxx"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("DEV"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("Development"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("FishDev"));
+        Assert.AreEqual(RunEnvEnum.Dev, EnvUtils.GetRunEnvEnum("xxxxxxxx"));
     }
 
 

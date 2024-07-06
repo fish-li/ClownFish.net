@@ -42,7 +42,7 @@ public static class HttpClientMockResults
 
     internal static object GetMockResult(string httpOptionId)
     {
-        if( EnvUtils.IsProdMode || httpOptionId.IsNullOrEmpty() )
+        if( EnvUtils.IsProdEnv || httpOptionId.IsNullOrEmpty() )
             return null;
 
         ResultObject resultObject = s_dict.TryGet(httpOptionId);

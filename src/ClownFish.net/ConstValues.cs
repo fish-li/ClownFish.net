@@ -17,14 +17,14 @@ public static class ConstValues
 
     static ConstValues()
     {
-        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.703.1");
+        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.706.1");
 
         ReLoad();
     }
 
     internal static void ReLoad()
     {
-        // 示例：ClownFish.HttpClient/8.24.703.1/TxClientX/cluster1/dev/fish-debian12/Debian GNU-Linux 12 (bookworm)
-        HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}/{EnvUtils.ApplicationName}/{EnvUtils.ClusterName}/{EnvUtils.RunMode}/{EnvUtils.GetHostName()}/{OsUtils.GetOsName().Replace('/', '-')}";
+        // 示例：ClownFish.HttpClient/8.24.706.1/TxClientX/cluster1/dev/fish-debian12/Debian GNU-Linux 12 (bookworm)
+        HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}/{EnvUtils.ApplicationName}/{EnvUtils.ClusterName}/{EnvUtils.RunEnv}/{EnvUtils.GetHostName()}/{OsUtils.GetOsName().Replace('/', '-')}";
     }
 }

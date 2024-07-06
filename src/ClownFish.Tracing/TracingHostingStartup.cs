@@ -35,20 +35,20 @@ internal class TracingHostingStartup : IHostingStartup
     private static void ShowStartInfo()
     {
         Console2.WriteLine("==================================================================");
-        Console2.WriteLine("ApplicationName : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId    : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("AppStartTime    : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("EntryAssembly   : " + AsmHelper.GetExeFilePath());
-        Console2.WriteLine("ClusterName     : " + EnvUtils.GetClusterName());
-        Console2.WriteLine("RunMode         : " + EnvUtils.GetRunMode());
-        Console2.WriteLine("ApplicationPath : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory: " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath        : " + EnvUtils.GetTempPath());
-        Console2.WriteLine("HostName        : " + EnvUtils.GetHostName());
-        Console2.WriteLine("TimeZone        : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture  : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("Version         : " + AsmHelper.GetFileVersion(typeof(TracingHostingStartup)));
-        Console2.WriteLine("Framework  Name : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+        Console2.WriteLine("ApplicationName        : " + EnvUtils.GetAppName());
+        Console2.WriteLine("AppRuntimeId           : " + EnvUtils.AppRuntimeId);
+        Console2.WriteLine("AppStartTime           : " + EnvUtils.AppStartTime.ToTime23String());
+        Console2.WriteLine("EntryAssembly          : " + AsmHelper.GetExeFilePath());
+        Console2.WriteLine("CLUSTER_ENVIRONMENT    : " + EnvUtils.GetClusterName());
+        Console2.WriteLine("RUNTIME_ENVIRONMENT    : " + EnvUtils.GetRunEnv());
+        Console2.WriteLine("ApplicationPath        : " + AppContext.BaseDirectory);
+        Console2.WriteLine("CurrentDirectory       : " + Environment.CurrentDirectory);
+        Console2.WriteLine("TempPath               : " + EnvUtils.GetTempPath());
+        Console2.WriteLine("HostName               : " + EnvUtils.GetHostName());
+        Console2.WriteLine("TimeZone               : " + MyTimeZone.CurrentTZ);
+        Console2.WriteLine("CurrentCulture         : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
+        Console2.WriteLine("Version                : " + AsmHelper.GetFileVersion(typeof(TracingHostingStartup)));
+        Console2.WriteLine("Framework  Name        : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
         Console2.WriteLine("==================================================================");
     }
 }
