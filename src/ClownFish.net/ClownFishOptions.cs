@@ -31,3 +31,14 @@ internal static class ClownFishOptions
 
 }
 
+
+/// <summary>
+/// 一些控制参数
+/// </summary>
+public static class ClownFishPubOptions
+{
+    /// <summary>
+    /// RabbitMQ 的默认队列类型，默认值："classic"  ，如果希望使用 quorum queue，可设置为 "quorum"
+    /// </summary>
+    public static readonly string RabbitmqDefaultQueueType = Settings.GetSetting("ClownFish_RabbitMQ_DefaultQueueType", "classic");
+}

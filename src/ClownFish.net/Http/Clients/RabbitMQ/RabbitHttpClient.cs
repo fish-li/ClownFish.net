@@ -61,6 +61,8 @@ public sealed class RabbitHttpClient : IDisposable
     {
         string vhost = _option.VHost.UrlEncode();
 
+        arguments = RabbitmqUtils.SetQueueType(arguments, ClownFishPubOptions.RabbitmqDefaultQueueType);
+
         //  {"auto_delete":false,"durable":true,"arguments":{},"node":"rabbit@smacmullen"}
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
         httpOption.Id = "ClownFish_RabbitHttpClient_QueueDeclare";

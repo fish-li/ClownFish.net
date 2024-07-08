@@ -33,7 +33,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
     {
         //连接到RabbitMQ服务器
         _connection = new RabbitConnection(_args.SettingName, "Subscriber-" + _args.QueueName);
-        
+
         // 支持异步消费
         _connection.DispatchConsumersAsync = true;
 
@@ -45,7 +45,9 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
         //设置消息的订阅者。 消息采用回调方式处理
         bool autoAck = false;
         IDictionary<string, object> arguments = new Dictionary<string, object>();
-        arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
+
+        if( _args.QueueType == "classic" )
+            arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
 
         _connection.GetChannel().BasicConsume(_args.QueueName, autoAck, consumerTag, arguments, this);
 
@@ -80,7 +82,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
 
         SendAck(message.DeliveryTag);
     }
-    
+
 
     private void SendAck(ulong deliveryTag)
     {
@@ -188,7 +190,7 @@ internal sealed class RabbitSubscriberAsync<T> : IBasicConsumer, IAsyncBasicCons
         throw new NotImplementedException();
     }
 
-    void IBasicConsumer.HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, 
+    void IBasicConsumer.HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered,
         string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
     {
         throw new NotImplementedException();

@@ -13,6 +13,11 @@ public sealed class RabbitSubscriberArgs
     /// 队列的名称
     /// </summary>
     public string QueueName { get; set; }
+
+    /// <summary>
+    /// 队列类型，例如：classic/quorum
+    /// </summary>
+    public string QueueType { get; set; } = ClownFishPubOptions.RabbitmqDefaultQueueType;
     /// <summary>
     /// 订阅者数量
     /// </summary>

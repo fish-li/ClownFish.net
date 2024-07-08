@@ -104,11 +104,11 @@ public sealed class RabbitClient : IDisposable
     /// <param name="queue">队列名称</param>
     /// <param name="exchange">交换机名称，默认值： "amq.direct"</param>
     /// <param name="bindingKey">从交换机到队列的映射标记</param>
-    /// <param name="argument">调用QueueDeclare时传递的argument参数</param>
+    /// <param name="arguments">创建队列时的控制参数</param>
     /// <param name="durable">Should this queue will survive a broker restart?</param>
     /// <param name="exclusive">Should this queue use be limited to its declaring connection?  Such a queue will be deleted when its declaring connection closes.</param>
     /// <param name="autoDelete">Should this queue be auto-deleted when its last consumer (if any) unsubscribes?</param>
-    public void CreateQueueBind(string queue, string exchange = null, string bindingKey = null, IDictionary<string, object> argument = null,
+    public void CreateQueueBind(string queue, string exchange = null, string bindingKey = null, IDictionary<string, object> arguments = null,
                                 bool durable = true, bool exclusive = false, bool autoDelete = false)
     {
         if( queue.IsNullOrEmpty() )
@@ -120,13 +120,14 @@ public sealed class RabbitClient : IDisposable
         if( bindingKey.IsNullOrEmpty() )
             bindingKey = queue;
 
+        arguments = RabbitmqUtils.SetQueueType(arguments, ClownFishPubOptions.RabbitmqDefaultQueueType);
 
         RabbitConnection conn = this.GetConnection();  // 获取一个连接包装对象，有可能是共享的，所以在使用时要加锁
         lock( conn.SyncLock ) {
             IModel channel = conn.GetChannel();  // 获取连接通道（内部会打开连接）
 
             // 申明队列，将队列绑定到交换机
-            channel.QueueDeclare(queue, durable, exclusive, autoDelete, argument);
+            channel.QueueDeclare(queue, durable, exclusive, autoDelete, arguments);
             channel.QueueBind(queue, exchange, bindingKey);
         }
     }
@@ -136,8 +137,8 @@ public sealed class RabbitClient : IDisposable
     /// </summary>
     /// <param name="dataType">消息的数据类型，最终创建的队列名称就是消息数据类型的全名，bindingKey与队列同名</param>
     /// <param name="exchange">交换机名称，默认值： "amq.direct"</param>
-    /// <param name="argument">调用QueueDeclare时传递的argument参数</param>
-    public void CreateQueueBind(Type dataType, string exchange = null, IDictionary<string, object> argument = null)
+    /// <param name="arguments">创建队列时的控制参数</param>
+    public void CreateQueueBind(Type dataType, string exchange = null, IDictionary<string, object> arguments = null)
     {
         if( dataType == null )
             throw new ArgumentNullException(nameof(dataType));
@@ -145,7 +146,7 @@ public sealed class RabbitClient : IDisposable
         string queue = dataType.GetQueueName();
         string bindingKey = queue;
 
-        CreateQueueBind(queue, exchange, bindingKey, argument);
+        CreateQueueBind(queue, exchange, bindingKey, arguments);
     }
 
     /// <summary>

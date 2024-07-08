@@ -6,7 +6,7 @@ namespace ClownFish.Rabbit;
 /// RabbitMQ消息订阅管道
 /// </summary>
 /// <typeparam name="T"></typeparam>
-internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
+internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T : class
 {
     private readonly RabbitSubscriberArgs _args;
     private readonly MessagePipeline<T> _pipeline;
@@ -41,7 +41,9 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
         //设置消息的订阅者。 消息采用回调方式处理
         bool autoAck = false;
         IDictionary<string, object> arguments = new Dictionary<string, object>();
-        arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
+
+        if( _args.QueueType == "classic" )
+            arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
 
         _connection.GetChannel().BasicConsume(_args.QueueName, autoAck, consumerTag, arguments, this);
 
@@ -108,7 +110,7 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
         RabbitMessage message = new RabbitMessage(consumerTag, deliveryTag, redelivered, exchange, routingKey, properties, body);
         HandleMessage(message);
     }
-    
+
 
     IModel IBasicConsumer.Model => _connection.GetChannel();
 
@@ -147,7 +149,7 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T: class
     #endregion
 
 
-    
+
 
 
 }
