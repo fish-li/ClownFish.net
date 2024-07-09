@@ -44,7 +44,7 @@ internal static class HttpContentUtils
 
     private static string TryReadBodyFromByteArrayContent(ByteArrayContent content)
     {
-        // TODO: 注意，这里使用了一个内部方法，以后升级.NET时可能无法运行~~
+        // TODO: 注意，这里使用了一个内部方法，以后升级.NET后可能无法运行~~
         MethodInfo method = typeof(ByteArrayContent).GetMethod("CreateMemoryStreamForByteArray", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
         using MemoryStream ms = (MemoryStream)method.Invoke(content, null);

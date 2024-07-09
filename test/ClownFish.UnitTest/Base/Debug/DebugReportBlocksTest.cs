@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace ClownFish.UnitTest.Base.Debug;
 
-// TODO: 下面这些代码只要启用，“分析代码覆盖率” 执行过程就会崩溃，造成无法查看整体覆盖率
-
 
 [TestClass]
 public class DebugReportBlocksTest

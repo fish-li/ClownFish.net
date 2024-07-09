@@ -10,10 +10,6 @@ public static class TextUtils
     /// </summary>
     public static readonly string StepSeparatedLine = "---de34e591f12843febb84a8274498bc00-";
 
-    /// <summary>
-    /// 一个step步骤 内 的片段分隔行符（老版本不建议使用，TODO：以后删除）
-    /// </summary>
-    public static readonly string StepDetailSeparatedLine1 = "------------------------------------";
 
     /// <summary>
     /// 一个step步骤 内 的片段分隔行符
