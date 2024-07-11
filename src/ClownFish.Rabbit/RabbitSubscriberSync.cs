@@ -36,16 +36,10 @@ internal sealed class RabbitSubscriberSync<T> : IBasicConsumer where T : class
         // 告诉Rabbit服务，订阅客户端一次只能处理一条消息
         _connection.GetChannel().BasicQos(_args.PrefetchSize, _args.PrefetchCount, false);
 
-        string consumerTag = $"{EnvUtils.GetAppName()}({EnvUtils.GetHostName()})"; // 显示在 Queues/Consumers 表格中
-
         //设置消息的订阅者。 消息采用回调方式处理
-        bool autoAck = false;
-        IDictionary<string, object> arguments = new Dictionary<string, object>();
+        bool autoAck = false;        
 
-        if( _args.QueueType == "classic" )
-            arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
-
-        _connection.GetChannel().BasicConsume(_args.QueueName, autoAck, consumerTag, arguments, this);
+        _connection.GetChannel().BasicConsume(_args.QueueName, autoAck, _args.ConsumerTag, _args.Arguments, this);
 
         ClownFishInit.AppExitToken.Register(OnAppEnd);
     }

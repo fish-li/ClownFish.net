@@ -26,6 +26,15 @@ public static class RabbitSubscriber
 
         if( args.RetryWaitMilliseconds < 0 )
             args.RetryWaitMilliseconds = 0;
+
+        if( args.ConsumerTag.IsNullOrEmpty() )
+            args.ConsumerTag = $"{EnvUtils.GetAppName()}({EnvUtils.GetHostName()})"; // 显示在 Queues/Consumers 表格中
+
+        if( args.Arguments == null )
+            args.Arguments = new Dictionary<string, object>();
+
+        if( args.QueueType == "classic" )
+            args.Arguments["x-cancel-on-ha-failover"] = true;  // https://www.rabbitmq.com/ha.html#cancellation
     }
 
     /// <summary>

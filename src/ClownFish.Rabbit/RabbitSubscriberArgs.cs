@@ -18,14 +18,27 @@ public sealed class RabbitSubscriberArgs
     /// 队列类型，例如：classic/quorum
     /// </summary>
     public string QueueType { get; set; } = ClownFishPubOptions.RabbitmqDefaultQueueType;
+
+    /// <summary>
+    /// consumerTag
+    /// </summary>
+    public string ConsumerTag { get; set; }
+
+    /// <summary>
+    /// arguments
+    /// </summary>
+    public IDictionary<string, object> Arguments { get; set; }
+
     /// <summary>
     /// 订阅者数量
     /// </summary>
     public int SubscriberCount { get; set; } = 1;
+
     /// <summary>
     /// 消息处理失败后的重试次数
     /// </summary>
     public int RetryCount { get; set; }
+
     /// <summary>
     /// 消息处理失败后与下次重试之间的时间间隔，单位毫秒
     /// </summary>
