@@ -2,7 +2,7 @@
 
 namespace ClownFish.Web.Aspnetcore.Filters;
 
-public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
+public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -54,11 +54,29 @@ public sealed class MvcLogFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 
         httpContext.BeginExecuteTime = DateTime.Now;
         httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
+
+        ValidateArgs(context);
         await next();
+
         httpContext.EndExecuteTime = DateTime.Now;
         httpContext.LogFxEvent(new NameTime("UserCode end", httpContext.EndExecuteTime));
 
         app.PostRequestExecute(httpContext);
+    }
+
+    /// <summary>
+    /// 检查 Action 参数是否实现了 IValidate 接口，如果是，则按接口调用
+    /// </summary>
+    /// <param name="context"></param>
+    private void ValidateArgs(ActionExecutingContext context)
+    {
+        if( context.ActionArguments != null && context.ActionArguments.Count > 0 ) {
+            foreach( var item in context.ActionArguments ) {
+                if( item.Value is IValidate obj ) {
+                    obj.Validate();
+                }
+            }
+        }
     }
 
     private void ControllerInit(NHttpContext httpContext)

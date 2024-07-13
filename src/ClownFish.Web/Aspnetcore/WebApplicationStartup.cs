@@ -102,7 +102,7 @@ public class WebApplicationStartup
     public void RegisterInnerMvcFilters(MvcOptions x)
     {
         int order = int.MinValue;
-        x.Filters.Add(typeof(ClownFish.Web.Aspnetcore.Filters.MvcLogFilter), order++);
+        x.Filters.Add(typeof(ClownFish.Web.Aspnetcore.Filters.FirstFilter), order++);
         x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.SimpleResultFilter), order++);
         x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.StatusCodeFilter), order++);
     }
