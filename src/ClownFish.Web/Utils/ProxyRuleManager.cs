@@ -42,6 +42,7 @@ public sealed class ProxyRuleManager
         if( filename.HasValue() ) {
             string xmlText = ConfigFile.GetFile(filename);
             if( xmlText.HasValue() ) {
+                Console2.Info("ProxyRuleManager load ProxyMapRule from: " + filename);
                 return LoadRuleXml(xmlText);
             }
         }

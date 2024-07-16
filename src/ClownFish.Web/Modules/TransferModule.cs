@@ -23,8 +23,12 @@ public sealed class TransferModule : HttpProxyModule
 
     protected override IAsyncNHttpHandler CreateProxyHandler(NHttpContext httpContext, string destUrl)
     {
-        if( httpContext.PipelineContext.OprLogScope.IsNull == false ) {
-            httpContext.PipelineContext.OprLogScope.OprLog.Addition = "destUrl: " + destUrl;
+        OprLogScope scope = httpContext.PipelineContext.OprLogScope;
+        if( scope.IsNull == false ) {
+            scope.OprLog.Addition = "destUrl: " + destUrl;
+            scope.OprLog.Controller = nameof(TransferModule);
+            scope.OprLog.Module = typeof(TransferModule).Namespace;
+            scope.OprLog.Action = "Transfer";
         }
 
         return new HttpProxyHandler2(destUrl);

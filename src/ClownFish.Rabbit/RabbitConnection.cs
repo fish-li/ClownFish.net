@@ -106,7 +106,7 @@ internal sealed class RabbitConnection : IDisposable
             return factory.CreateConnection(clientProvidedName);
         }
         catch {
-            Console2.Error($"连接RabbitMQ失败，Server={factory.HostName};Username={factory.UserName};VHost={factory.VirtualHost};Port={factory.Port};");
+            Console2.Error($"连接RabbitMQ失败，"+ option.ToString());
             throw;
         }
     }

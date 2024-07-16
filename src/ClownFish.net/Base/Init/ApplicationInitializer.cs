@@ -31,12 +31,7 @@ public static class ApplicationInitializer
 
             if( method != null ) {
                 Console2.Info($"Execute {type.FullName}.Init()");
-                try {
-                    method.InvokeAndLog(null, null);
-                }
-                catch( TargetInvocationException ex ) {
-                    throw ex.InnerException;   // 将原始异常抛出来
-                }
+                method.InvokeAndLog(null, null);
             }
         }
     }

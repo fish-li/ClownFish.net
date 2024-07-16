@@ -62,7 +62,11 @@ public static class MethodInfoExtensions
         }
         catch( TargetInvocationException ex ) {
             lastError = ex.InnerException;
-            throw ex.InnerException;
+            throw;
+        }
+        catch(Exception ex2 ) {
+            lastError = ex2;
+            throw;
         }
         finally {
             scope.AddStep(start, stepName, "", DateTime.Now, lastError);
