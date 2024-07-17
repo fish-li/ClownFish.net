@@ -25,13 +25,13 @@ public class RabbitOptionTest
         RabbitOption opt = new RabbitOption();
         opt.VHost = "";
 
-        MyAssert.IsError<ConfigurationErrorsException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             opt.Validate();
         });
                
 
         opt.Server = "s1";
-        MyAssert.IsError<ConfigurationErrorsException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             opt.Validate();
         });
 

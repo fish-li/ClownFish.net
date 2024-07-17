@@ -3,7 +3,7 @@
 /// <summary>
 /// 企业微信/钉钉/飞书 应用 登录参数
 /// </summary>
-public sealed class ImAppAuthConfig
+public sealed class ImAppAuthConfig : IValidate
 {
     /// <summary>
     /// IM类别

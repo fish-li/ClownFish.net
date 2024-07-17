@@ -63,13 +63,13 @@ public class EndClientUserInfoTest
     {
         EndClientUserInfo client = new EndClientUserInfo();
 
-        MyAssert.IsError<ArgumentNullException>(()=> {
+        MyAssert.IsError<ValidationException2>(()=> {
             client.Validate();
         });
 
         client.TenantId = "1111111111111111";
 
-        MyAssert.IsError<ArgumentNullException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             client.Validate();
         });
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// elasticsearch连接参数
 /// </summary>
-public sealed class EsConnOption
+public sealed class EsConnOption : IValidate
 {
     /// <summary>
     /// 是否采用HTTPS协议访问
@@ -81,11 +81,10 @@ public sealed class EsConnOption
     /// <summary>
     /// 验证数据成员
     /// </summary>
-    /// <exception cref="ConfigurationErrorsException"></exception>
     public void Validate()
     {
         if( this.Server.IsNullOrEmpty() )
-            throw new ConfigurationErrorsException("Elasticsearch连接配置中没有指定 Server 参数。");
+            throw new ValidationException2("Elasticsearch连接配置中没有指定 Server 参数。");
     }
 
     /// <summary>

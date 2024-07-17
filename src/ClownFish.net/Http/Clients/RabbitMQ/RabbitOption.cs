@@ -3,7 +3,7 @@
 /// <summary>
 /// RabbitMQ的连接信息
 /// </summary>
-public sealed class RabbitOption
+public sealed class RabbitOption : IValidate
 {
     /// <summary>
     /// VHost，默认值："/"
@@ -77,10 +77,10 @@ public sealed class RabbitOption
     public void Validate()
     {
         if( this.Server.IsNullOrEmpty() )
-            throw new ConfigurationErrorsException("RabbitMQ连接配置中没有指定 Server 参数。");
+            throw new ValidationException2("RabbitMQ连接配置中没有指定 Server 参数。");
 
         if( this.Username.IsNullOrEmpty() )
-            throw new ConfigurationErrorsException("RabbitMQ连接配置中没有指定 Username 参数。");
+            throw new ValidationException2("RabbitMQ连接配置中没有指定 Username 参数。");
 
         if( this.VHost.IsNullOrEmpty() )
             this.VHost = "/";

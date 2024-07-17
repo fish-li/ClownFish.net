@@ -5,7 +5,7 @@ namespace ClownFish.DTO;
 /// <summary>
 /// 【普通用户】的登录身份信息
 /// </summary>
-public sealed class WebUserInfo : IUserInfo
+public sealed class WebUserInfo : IUserInfo, IValidate
 {
     /// <summary>
     /// 租户ID
@@ -64,13 +64,13 @@ public sealed class WebUserInfo : IUserInfo
     public void Validate()
     {
         if( this.TenantId.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(TenantId));
+            throw new ValidationException2("TenantId is empty.");
 
         if( this.UserId.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(UserId));
+            throw new ValidationException2("UserId is empty.");
 
         if( this.UserRole.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(UserRole));
+            throw new ValidationException2("UserRole is empty.");
 
         if( this.UserName.IsNullOrEmpty() )
             this.UserName = this.UserId;

@@ -43,19 +43,19 @@ public class WebUserInfoTest
     {
         WebUserInfo user1 = new WebUserInfo();
 
-        MyAssert.IsError<ArgumentNullException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             user1.Validate();
         });
 
         user1.TenantId = "1111111111111111";
 
-        MyAssert.IsError<ArgumentNullException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             user1.Validate();
         });
 
         user1.UserId = "222222222222222222";
 
-        MyAssert.IsError<ArgumentNullException>(() => {
+        MyAssert.IsError<ValidationException2>(() => {
             user1.Validate();
         });
 

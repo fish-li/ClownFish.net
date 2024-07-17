@@ -72,7 +72,7 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
     {
         if( context.ActionArguments != null && context.ActionArguments.Count > 0 ) {
             foreach( var item in context.ActionArguments ) {
-                if( item.Value is IValidate obj ) {
+                if( item.Value != null && item.Value is IValidate obj ) {
                     obj.Validate();
                 }
             }

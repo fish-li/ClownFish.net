@@ -6,7 +6,7 @@ namespace ClownFish.DTO;
 /// <summary>
 /// 终端客户端的登录身份
 /// </summary>
-public class EndClientUserInfo : IUserInfo
+public class EndClientUserInfo : IUserInfo, IValidate
 {
     /// <summary>
     /// 租户ID
@@ -127,14 +127,13 @@ public class EndClientUserInfo : IUserInfo
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    /// <exception cref="ArgumentNullException"></exception>
     public void Validate()
     {
         if( this.TenantId.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(TenantId));
+            throw new ValidationException2("TenantId is empty.");
 
         if( this.ClientId.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(ClientId));
+            throw new ValidationException2("ClientId is empty.");
     }
 
     /// <summary>
