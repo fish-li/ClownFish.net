@@ -3,11 +3,13 @@
 // 使用方法：
 // log.config:  <Writer Name="http" Type="ClownFish.Log.Writers.HttpJsonWriter, ClownFish.net" />
 // app.config:  ClownFish_Log_WritersMap = InvokeLog=null;OprLog=http;*=null
-// app.config:  HttpJsonWriter_Target_Url = http://xxxx.com/v20/api/log/save/{datatype}
+// app.config:  HttpJsonWriter_Target_Url = http://xxxx.com/api/log/save/{datatype}   // 这里需要有个服务端来接收日志数据
 
 internal class HttpJsonWriter : ILogWriter
 {
     private string _url;
+    private string _urlOprlog;
+    private string _urlNebulaLog;
 
     private static readonly int s_batchSize = Settings.GetUInt("ClownFish_Log_HttpJsonWriter_BatchSize", 3 * 1024 * 1024);
     private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_HttpJsonWriter_ShowError", 1);
@@ -16,25 +18,55 @@ internal class HttpJsonWriter : ILogWriter
 
     void ILogWriter.Init(LogConfiguration config, WriterConfig section)
     {
-        string url = Settings.GetSetting("HttpJsonWriter_Target_Url");
+        string configValue = Settings.GetSetting("Nebula_LogGate_Url")   // 优先采用 Nebula.LogGate 做为服务端接收日志数据
+                             ?? Settings.GetSetting("HttpJsonWriter_Target_Url");
 
-        if( url.IsNullOrEmpty() ) {
-            Console2.Info("##### 由于没有配置 HttpJsonWriter_Target_Url 参数，HttpJsonWriter 将忽略所有调用！#####");
+        if( InitUrl(configValue) == 0 ) {
+            Console2.Info("##### 由于没有配置 Nebula_LogGate_Url or HttpJsonWriter_Target_Url 参数，HttpJsonWriter 将忽略所有调用！#####");
             return;
         }
 
+        Console2.Info(this.GetType().FullName + " Init OK, upload url: " + _url);
+    }
+
+    internal int InitUrl(string configValue)
+    {
+        string url = (configValue ?? "").TrimEnd('/');
+
+        if( url.IsNullOrEmpty() ) {
+            return 0;
+        }
+
+        // 允许只配置一个站点根网址，这里就补全完整的调用地址
+        if( url.EndsWith1("/{datatype}") == false )
+            url = url + "/v20/api/loggate/save/{datatype}";
+
         _url = url.AddUrlQueryArgs("app", EnvUtils.GetAppName());
-        Console2.Info(this.GetType().FullName + " Init OK, upload url: " + url);
+
+        // 下面2个地址使用的机率非常大，所以用2个变量来缓存结果，避免反复调用 string.Replace
+        _urlOprlog = _url.Replace("{datatype}", "OprLog");
+        _urlNebulaLog = _url.Replace("{datatype}", "NebulaLog");
+        return 1;
     }
 
     internal void SetUrl(string url) => _url = url;
+
+
+    private string GetInvokeUrl(string dataType)
+    {
+        return dataType switch {
+            "OprLog" => _urlOprlog,
+            "NebulaLog" => _urlNebulaLog,
+            _ => _url.Replace("{datatype}", dataType)  // TODO: 以后可以优化下，减少不必要的字符串替换
+        };
+    }
 
     void ILogWriter.WriteList<T>(List<T> list)
     {
         if( _url.IsNullOrEmpty() || list.IsNullOrEmpty() )
             return;
 
-        string url = _url.Replace("{datatype}", typeof(T).Name);
+        string url = GetInvokeUrl(typeof(T).Name);        
 
         // 如果网络中断，或者服务端挂了，整个数据包就一起丢弃，避免无用的重试。
         try {
@@ -91,7 +123,7 @@ internal class HttpJsonWriter : ILogWriter
         try {
             httpOption.Send(HttpRetry.Create(2, 500));
         }
-        catch(Exception ex) {
+        catch( Exception ex ) {
             if( s_showError ) {
                 // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
                 Console2.Warnning("HttpJsonWriter.SendRequest ERROR: " + ex.Message);

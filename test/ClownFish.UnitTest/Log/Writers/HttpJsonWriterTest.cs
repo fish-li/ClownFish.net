@@ -21,6 +21,30 @@ public class HttpJsonWriterTest
     }
 
     [TestMethod]
+    public void Test_InitUrl()
+    {
+        HttpJsonWriter writer = new HttpJsonWriter();
+
+        int result1 = writer.InitUrl(null);
+        Assert.AreEqual(0, result1 );
+
+        int result2 = writer.InitUrl("");
+        Assert.AreEqual(0, result2);
+
+        int result3 = writer.InitUrl("http://abc.com/");
+        Assert.AreEqual(1, result3);
+        Assert.AreEqual("http://abc.com/v20/api/loggate/save/{datatype}?app=ClownFish.UnitTest", (string)writer.GetFieldValue("_url"));
+        Assert.AreEqual("http://abc.com/v20/api/loggate/save/OprLog?app=ClownFish.UnitTest", (string)writer.GetFieldValue("_urlOprlog"));
+
+        HttpJsonWriter writer2 = new HttpJsonWriter();
+        int result4 = writer2.InitUrl("http://abc.com/v20/api/loggate/save/{datatype}");
+        Assert.AreEqual(1, result4);
+        Assert.AreEqual("http://abc.com/v20/api/loggate/save/{datatype}?app=ClownFish.UnitTest", (string)writer2.GetFieldValue("_url"));
+        Assert.AreEqual("http://abc.com/v20/api/loggate/save/OprLog?app=ClownFish.UnitTest", (string)writer2.GetFieldValue("_urlOprlog"));
+    }
+
+
+    [TestMethod]
     public void Test1()
     {
         List<OprLog> logs = CreateTestData();
