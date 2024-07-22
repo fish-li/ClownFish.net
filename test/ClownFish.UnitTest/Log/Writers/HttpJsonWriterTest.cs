@@ -57,7 +57,7 @@ public class HttpJsonWriterTest
         Console.WriteLine(response);
 
         Assert.IsTrue(response.Contains("Content-Length ="));
-        Assert.IsTrue(response.Contains("Content-Type = application/json-seq"));
+        Assert.IsTrue(response.Contains("Content-Type = application/x-ndjson"));
         Assert.IsTrue(response.Contains("Content-Encoding = gzip"));
         Assert.IsTrue(response.Contains("x-datatype = ClownFish.Log.Logging.OprLog"));
     }

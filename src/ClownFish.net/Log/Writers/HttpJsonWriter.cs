@@ -111,7 +111,12 @@ internal class HttpJsonWriter : ILogWriter
         // 有些人建议使用 application/json-seq 例如：https://www.atatus.com/glossary/jsonl/
         // 有些人建议使用 application/x-ndjson 例如：http://ndjson.org/，  https://github.com/jshttp/mime-db/issues/224
 
-        httpOption.Headers.Add("Content-Type", "application/json-seq");
+        // 2024-07-22 补充：按 ChatGPT 说法：
+        // application/json-seq:  是一个较为宽泛的媒体类型，可能在实际使用中有不同的实现方式。
+        // application/x-ndjson:  是一种更为具体和标准化的格式，要求每个 JSON 对象用换行符分隔，适合于流式处理。
+        // 因此后者的定义更明确，这里就采用后者
+
+        httpOption.Headers.Add("Content-Type", RequestContentType.JsonLines);
         httpOption.Headers.Add("Content-Encoding", "gzip");
         httpOption.Headers.Add("x-datatype", typeof(T).FullName);
 

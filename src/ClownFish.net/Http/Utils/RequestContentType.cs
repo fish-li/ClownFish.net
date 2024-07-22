@@ -26,6 +26,11 @@ public static class RequestContentType
     public static readonly string Json = "application/json";
 
     /// <summary>
+    /// 指示请求体是一个 ndjson
+    /// </summary>
+    public static readonly string JsonLines = "application/x-ndjson";
+
+    /// <summary>
     /// 指示请求体是一个XML
     /// </summary>
     public static readonly string Xml = "application/xml";

@@ -27,6 +27,11 @@ public static class ResponseContentType
     public static readonly string JsonUtf8 = "application/json; charset=utf-8";
 
     /// <summary>
+    /// 表示以 ndjson 形式响应
+    /// </summary>
+    public static readonly string JsonLines = "application/x-ndjson";
+
+    /// <summary>
     /// 表示以XML形式响应
     /// </summary>
     public static readonly string Xml = "application/xml";
