@@ -535,6 +535,12 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             Assert.AreEqual("true", true.ToString2());
             Assert.AreEqual("false", false.ToString2());
+
+            Assert.AreEqual("11;22;33", (new int[] { 11, 22, 33 }).ToString2());
+            Assert.AreEqual("aa;bb;cc", (new string[] { "aa", "bb", "cc" }).ToString2());
+
+            Assert.AreEqual("11;22;33", (new int[] { 11, 22, 33 }).ToList().ToString2());
+            Assert.AreEqual("aa;bb;cc", (new string[] { "aa", "bb", "cc" }).ToList().ToString2());
         }
 
 

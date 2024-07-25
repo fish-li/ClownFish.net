@@ -673,6 +673,12 @@ public static class StringExtensions
         if( value is long x4 )
             return x4.ToWString();
 
+        if( value is IEnumerable<string> x5 )
+            return string.Join(";", x5);
+
+        if( value is IEnumerable<int> x6 )
+            return string.Join(";", x6);
+
         if( value is byte[] bb )
             return "byte[], len=" + bb.Length;
 
