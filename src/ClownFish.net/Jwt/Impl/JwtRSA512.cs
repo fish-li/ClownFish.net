@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Jwt.Impl;
 
+#if NET46_OR_GREATER|| NETCOREAPP
+
 internal class JwtRSA512 : JwtBase
 {
     public const string AlgorithmName = "RS512";
@@ -27,3 +29,5 @@ internal class JwtRSA512 : JwtBase
     }
 
 }
+
+#endif

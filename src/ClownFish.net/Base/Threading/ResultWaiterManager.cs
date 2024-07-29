@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Base.Threading;
 
+#if NET46_OR_GREATER || NETCOREAPP
+
 internal static class ResultWaiterManager
 {
     private static readonly TSafeDictionary<string, ResultWaiter> s_dict = new TSafeDictionary<string, ResultWaiter>(1024);
@@ -26,3 +28,4 @@ internal static class ResultWaiterManager
 }
 
 
+#endif

@@ -162,7 +162,9 @@ public static class ClownFishInit
             if( AppExitToken.IsCancellationRequested )
                 return;
 
+#if NET46_OR_GREATER || NETCOREAPP
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+#endif
             GC.Collect();
         }
     }

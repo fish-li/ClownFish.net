@@ -20,7 +20,7 @@ public interface ILocalSettings
 
 internal sealed class DefaultLocalSettingsImpl : ILocalSettings
 {
-#if NETFRAMEWORK || NET6_0_OR_GREATER
+#if NET48_OR_GREATER || NET6_0_OR_GREATER
     internal static readonly string RegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
 #endif
 

@@ -19,7 +19,13 @@ public static class RsaHelper
         if( certSubject.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(certSubject));
 
+        // IDisposable was added to X509Certificate for .NET Framework 4.6.
+
+#if NET46_OR_GREATER || NETCOREAPP
         using X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#else
+        X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#endif
         return x509.Sign(data);
     }
 
@@ -60,7 +66,11 @@ public static class RsaHelper
         // 这里参数是 publicKey，而不是 certname 主要是为了方便，
         // publicKey 可以写死在代码中
 
+#if NET46_OR_GREATER || NETCOREAPP
         using X509Certificate2 x509 = X509Finder.LoadFromPublicKey(publicKey);
+#else
+        X509Certificate2 x509 = X509Finder.LoadFromPublicKey(publicKey);
+#endif
         return x509.Verify(data, signature);
     }
 
@@ -76,7 +86,11 @@ public static class RsaHelper
         // 这里参数是 publicKey，而不是 certname 主要是为了方便，
         // publicKey 可以写死在代码中
 
+#if NET46_OR_GREATER || NETCOREAPP
         using X509Certificate2 x509 = X509Finder.LoadFromPublicKey(publicKeyText);
+#else
+        X509Certificate2 x509 = X509Finder.LoadFromPublicKey(publicKeyText);
+#endif
         return x509.Verify(data, signature);
     }
 
@@ -122,7 +136,11 @@ public static class RsaHelper
         if( certSubject.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(certSubject));
 
+#if NET46_OR_GREATER || NETCOREAPP
         using X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#else
+        X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#endif
         return x509.Encrypt(data);
     }
 
@@ -141,7 +159,11 @@ public static class RsaHelper
         if( certSubject.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(certSubject));
 
+#if NET46_OR_GREATER || NETCOREAPP
         using X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#else
+        X509Certificate2 x509 = X509Finder.FindBySubject(certSubject, true);
+#endif
         return x509.Decrypt(data);
     }
 

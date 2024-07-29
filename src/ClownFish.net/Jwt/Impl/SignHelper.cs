@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Jwt.Impl;
 
+#if NET46_OR_GREATER|| NETCOREAPP
+
 internal static class RsaUtils
 {
     internal static string GetSignature(HashAlgorithmName hashName, X509Certificate2 x509, byte[] bytesToSign)
@@ -29,8 +31,12 @@ internal static class RsaUtils
             throw new SignatureVerificationException("Jwt Token signature verify exception");
         }
     }
-
 }
+
+#endif
+
+
+#if NET461_OR_GREATER|| NETCOREAPP
 
 internal static class EcdUtils
 {
@@ -63,3 +69,4 @@ internal static class EcdUtils
     }
 }
 
+#endif

@@ -1,0 +1,27 @@
+﻿
+Windows/IIS 对照表
+===============================================================
+
+IIS 10.0   =>   Windows Server 2022
+                Windows Server 2019
+                Windows Server 2019
+                Windows Server 2016
+                Windows 11
+                Windows 10
+
+IIS 8.5    =>   Windows Server 2012 R2
+                Windows 8.1
+
+IIS 8.0    =>   Windows Server 2012
+                Windows 8
+
+IIS 7.5    =>   Windows Server 2008 R2
+                Windows 7
+
+IIS 7      =>   Windows Server 2008
+                Windows Vista
+
+IIS 6      =>   Windows Server 2003
+                Windows XP
+
+

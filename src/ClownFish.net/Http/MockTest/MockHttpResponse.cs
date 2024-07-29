@@ -199,7 +199,11 @@ public class MockHttpResponse : NHttpResponse
     {
         this.Write(text);
 
+#if NET46_OR_GREATER || NETCOREAPP
         return Task.CompletedTask;
+#else
+        return Task.FromResult(0);
+#endif
     }
 
 
@@ -210,7 +214,11 @@ public class MockHttpResponse : NHttpResponse
     {
         this.Write(buffer);
 
+#if NET46_OR_GREATER || NETCOREAPP
         return Task.CompletedTask;
+#else
+        return Task.FromResult(0);
+#endif
     }
 
     /// <summary>

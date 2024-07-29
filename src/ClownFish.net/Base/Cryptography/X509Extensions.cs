@@ -18,7 +18,7 @@ public static class X509Extensions
         if( data == null )
             throw new ArgumentNullException(nameof(data));
 
-
+#if NET46_OR_GREATER || NETCOREAPP
         using RSA rsa = (RSA)cert.GetRSAPrivateKey();
 
         if( rsa == null )
@@ -32,6 +32,20 @@ public static class X509Extensions
         byte[] bb = rsa.SignHash(hash, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
 
         return Convert.ToBase64String(bb);
+#else
+        if( cert.HasPrivateKey == false )
+            throw new ArgumentException("指定的证书没有包含私钥：" + cert.Subject);
+
+        using RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert.PrivateKey;
+
+        //计算数据哈希值
+        using SHA1 sha1 = SHA1.Create();
+        byte[] hash = sha1.ComputeHash(data);
+
+        // 签名数据
+        byte[] bb = rsa.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
+        return Convert.ToBase64String(bb);
+#endif
     }
 
 
@@ -51,7 +65,7 @@ public static class X509Extensions
         if( string.IsNullOrEmpty(signature) )
             throw new ArgumentNullException(nameof(signature));
 
-
+#if NET46_OR_GREATER || NETCOREAPP
         // 获得证书公钥
         using RSA rsa = (RSA)cert.GetRSAPublicKey();
 
@@ -63,6 +77,19 @@ public static class X509Extensions
         byte[] bb = Convert.FromBase64String(signature);
 
         return rsa.VerifyHash(hash, bb, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+#else
+        // 获得证书公钥
+        using RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert.PublicKey.Key;
+
+        // 哈希数据
+        using SHA1 sha1 = SHA1.Create();
+        byte[] hash = sha1.ComputeHash(data);
+
+
+        // 验证哈希签名
+        byte[] bb = Convert.FromBase64String(signature);
+        return rsa.VerifyHash(hash, CryptoConfig.MapNameToOID("SHA1"), bb);
+#endif
     }
 
 
@@ -80,10 +107,18 @@ public static class X509Extensions
         if( data == null )
             throw new ArgumentNullException(nameof(data));
 
+#if NET46_OR_GREATER || NETCOREAPP
         // 获得证书公钥
         using RSA rsa = (RSA)cert.GetRSAPublicKey();
 
         return rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+#else
+        // 获得证书公钥
+        using RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert.PublicKey.Key;
+
+        // 注意：这个方法只能加密比较短的内容（一般是密钥）
+        return rsa.Encrypt(data, true);
+#endif
     }
 
 
@@ -100,7 +135,7 @@ public static class X509Extensions
         if( data == null )
             throw new ArgumentNullException(nameof(data));
 
-
+#if NET46_OR_GREATER || NETCOREAPP
         // 读取证书私钥
         using RSA rsa = (RSA)cert.GetRSAPrivateKey();
 
@@ -108,6 +143,13 @@ public static class X509Extensions
             throw new ArgumentException("证书没有包含私钥!");
 
         return rsa.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+#else
+        using RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)cert.PrivateKey;
+        if( rsa == null )
+            throw new ArgumentException("证书没有私钥。");
+
+        return rsa.Decrypt(data, true);
+#endif
     }
 
 

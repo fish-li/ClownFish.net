@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Jwt.Impl;
 
+#if NET46_OR_GREATER|| NETCOREAPP
+
 internal class JwtRSA256 : JwtBase
 {
     public const string AlgorithmName = "RS256";
@@ -26,3 +28,5 @@ internal class JwtRSA256 : JwtBase
         RsaUtils.ValidSignature(HashAlgorithmName.SHA256, x509, bytesToSign, signature);
     }
 }
+
+#endif

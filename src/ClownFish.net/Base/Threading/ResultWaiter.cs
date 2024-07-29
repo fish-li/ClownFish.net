@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Base.Threading;
 
+#if NET46_OR_GREATER || NETCOREAPP
+
 /// <summary>
 /// 异步的结果等待器
 /// </summary>
@@ -131,4 +133,4 @@ public sealed class ResultWaiter : IDisposable
 }
 
 
-
+#endif

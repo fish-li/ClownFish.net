@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net48;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.724.1</Version>
-        <FileVersion>8.24.724.1</FileVersion>
+        <Version>8.24.729.1</Version>
+        <FileVersion>8.24.729.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -23,7 +23,7 @@
         <Description>一个“小而美”的.NET工具类库</Description>
     </PropertyGroup>
     
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48'">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48' ">
         <Reference Include="System.Web" />
         <Reference Include="System.Configuration" />
         <Reference Include="System.IO.Compression" />
@@ -33,7 +33,7 @@
     </ItemGroup>
 
    
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' ">
         <PackageReference Include="Cronos" Version="0.8.4" />
         <PackageReference Include="System.CodeDom" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -53,11 +53,6 @@
     <ItemGroup>
       <EmbeddedResource Include="ClownFish.Log.config" />
       <EmbeddedResource Include="WindowsLinuxTimeZone.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Base\Compression\" />
-      <Folder Include="DTO\" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net48;net8.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
         <Version>8.22.805.100</Version>
@@ -29,7 +29,7 @@
         <EmbeddedResource Include="WebApi\Controllers\FileListTemplate.html" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48'">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48' ">
         <Reference Include="System.IO.Compression" />
         <Reference Include="System.Web" />
         <Reference Include="System.Configuration" />

@@ -1,0 +1,55 @@
+﻿
+
+Windows 自带 .net framework版本  对照表
+================================================================
+
+.NET Framework 4.8    =>   Windows Server 2022
+                           2019 年 5 月更新 及 以后版本
+
+.NET Framework 4.7.1  =>   Windows 10（版本 1809）
+                           Windows 10（版本 1803）
+                           Windows Server 2019
+
+.NET Framework 4.7.1  =>   Windows 10（版本 1709）
+
+.NET Framework 4.7    =>   Windows 10（版本 1703）
+
+.NET Framework 4.6.2  =>   Windows Server 2016
+                           Windows 10（版本 1607）
+
+.NET Framework 4.6.1  =>   ----------
+
+.NET Framework 4.6    =>   Windows 10
+
+.NET Framework 4.5.2  =>   ----------
+
+.NET Framework 4.5.1  =>   Windows Server 2012 R2
+                           Windows 8.1
+
+.NET Framework 4.5    =>   Windows Server 2012
+                           Windows 8
+
+.NET Framework 4.0    =>   ----------
+
+.NET Framework 3.5    =>   Windows Server 2008 R2 SP1
+                           Windows 7
+                           Windows 8
+                           Windows 8.1
+                           Windows 10
+
+.NET Framework 3.0    =>   Windows Server 2008 SP2
+                           Windows Server 2008 R2 SP1
+
+.NET Framework 2.0    =>   Windows Server 2003
+                           Windows Server 2008 SP2
+                           Windows Server 2008 R2 SP1
+
+.NET Framework 1.1    =>   Windows Server 2003
+
+
+
+
+
+
+
+参考：https://learn.microsoft.com/zh-cn/dotnet/framework/migration-guide/versions-and-dependencies

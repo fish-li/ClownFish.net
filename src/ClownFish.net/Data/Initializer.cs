@@ -93,11 +93,12 @@ public sealed class Initializer
     /// <returns></returns>
     public Initializer RegisterPostgreSqlProvider()
     {
+#if NET46_OR_GREATER || NETCOREAPP
         // Npgsql 6.0 对时间戳的映射方式进行了一些重要更改
         // https://www.npgsql.org/doc/types/datetime.html#timestamps-and-timezones
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
-
+#endif
         DbClientFactory.RegisterProvider(DatabaseClients.PostgreSQL, PostgreSqlClientProvider.Instance);
 
         return this;

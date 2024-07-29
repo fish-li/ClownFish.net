@@ -21,10 +21,14 @@ public static class JwtUtils
         return algorithmName switch {
             JwtHMACSHA256.AlgorithmName => JwtHMACSHA256.Instance,
             JwtHMACSHA512.AlgorithmName => JwtHMACSHA512.Instance,
+#if NET46_OR_GREATER|| NETCOREAPP
             JwtRSA256.AlgorithmName => JwtRSA256.Instance,
             JwtRSA512.AlgorithmName => JwtRSA512.Instance,
+#endif
+#if NET461_OR_GREATER|| NETCOREAPP
             JwtECD256.AlgorithmName => JwtECD256.Instance,
             JwtECD512.AlgorithmName => JwtECD512.Instance,
+#endif
             _ => throw new NotSupportedException("不支持的JWT签名算法：" + algorithmName)
         };
     }

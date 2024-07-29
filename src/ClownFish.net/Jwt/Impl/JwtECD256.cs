@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Jwt.Impl;
 
+#if NET461_OR_GREATER || NETCOREAPP
+
 internal class JwtECD256 : JwtBase
 {
     public const string AlgorithmName = "ES256";
@@ -26,3 +28,5 @@ internal class JwtECD256 : JwtBase
         EcdUtils.ValidSignature(HashAlgorithmName.SHA256, x509, bytesToSign, signature);
     }
 }
+
+#endif
