@@ -39,9 +39,9 @@ public static class ClownFishInit
     {
         if( s_baseInited == false ) {
             EnvironmentVariables.Init();
+            AppConfig.Init();
             EnvUtils.Init();
             //SetDefaultCulture();
-            AppConfig.Init();
             SetThreadPool();
             ConfigMisc();
             StartGcCollect();

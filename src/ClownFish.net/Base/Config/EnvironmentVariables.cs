@@ -55,7 +55,7 @@ public static class EnvironmentVariables
 
     internal static void Init()
     {
-        // 不需要任何实现
+        // 调用这个方法是为了触发 cctor
     }
 
     private static void Fill(EnvironmentVariableTarget target, Dictionary<string, string> dict)
