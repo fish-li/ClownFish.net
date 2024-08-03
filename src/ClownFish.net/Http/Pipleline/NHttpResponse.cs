@@ -40,11 +40,6 @@ public abstract class NHttpResponse
     public abstract string ContentType { get; set; }
 
     /// <summary>
-    /// ContentEncoding
-    /// </summary>
-    public abstract Encoding ContentEncoding { get; set; }
-
-    /// <summary>
     /// 获取将响应写入其中的 System.IO.Stream 对象。
     /// </summary>
     public abstract Stream OutputStream { get; }
@@ -104,6 +99,13 @@ public abstract class NHttpResponse
     public abstract bool SetHeaders(string name, string[] values, bool ifExistThenIgnore = false);
 
     /// <summary>
+    /// 获取指定的响应头内容
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public abstract string GetHeader(string name);
+
+    /// <summary>
     /// 获取所有响应头
     /// </summary>
     /// <returns></returns>
@@ -124,13 +126,6 @@ public abstract class NHttpResponse
             }
         }
     }
-
-
-    /// <summary>
-    /// 删除一个响应头
-    /// </summary>
-    /// <param name="name"></param>
-    public abstract bool RemoveHeader(string name);
 
 
     /// <summary>
@@ -156,7 +151,11 @@ public abstract class NHttpResponse
         this.SetHeader("Cache-Control", "public, max-age=" + time.TotalSeconds.ToString());
     }
 
-    
+    /// <summary>
+    /// 删除一个响应头
+    /// </summary>
+    /// <param name="name"></param>
+    public abstract bool RemoveHeader(string name);
 
 
     /// <summary>

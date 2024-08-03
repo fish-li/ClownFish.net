@@ -204,6 +204,8 @@ public class AppConfigTest
     [TestMethod]
     public void Test_SetAppConfigFileName()
     {
+        typeof(AppConfig).SetFieldValue("s_inited", false);
+
         string path1 = AppConfig.GetAppConfigFilePath();
         Console.WriteLine(path1);
         Assert.IsTrue(path1.EndsWith1(AppConfig.ClownFishAppconfig));

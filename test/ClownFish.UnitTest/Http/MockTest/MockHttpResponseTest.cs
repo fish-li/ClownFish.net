@@ -22,7 +22,6 @@ public class MockHttpResponseTest
             MockHttpResponse response = (MockHttpResponse)mock.HttpContext.Response;
             Assert.IsNotNull(response.OutCookies);
             Assert.IsNotNull(response.OutHeaders);
-            Assert.IsNull(response.ContentEncoding);
             Assert.IsNull(response.OriginalHttpResponse);
 
             Assert.IsFalse(response.HasStarted);

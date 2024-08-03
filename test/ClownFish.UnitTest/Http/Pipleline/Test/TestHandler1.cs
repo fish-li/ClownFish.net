@@ -95,7 +95,6 @@ public class TestHandler1 : IAsyncNHttpHandler
     {
         response.StatusCode = 503;
         response.ContentType = "text1";
-        response.ContentEncoding = Encoding.Unicode;
 
         response.SetHeader("x-name1", "xxxxxxx");
         response.SetCookie2("c1", "x1");

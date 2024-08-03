@@ -126,6 +126,8 @@ internal class HttpJsonWriter : ILogWriter
     protected virtual void SendRequest(HttpOption httpOption)
     {
         try {
+            HttpJsonWriterExt.OnSendRequest?.Invoke(httpOption);
+
             httpOption.Send(HttpRetry.Create(2, 500));
         }
         catch( Exception ex ) {
@@ -135,4 +137,18 @@ internal class HttpJsonWriter : ILogWriter
             }
         }
     }
+}
+
+
+
+/// <summary>
+/// HttpJsonWriter的扩展支持类
+/// </summary>
+public static class HttpJsonWriterExt
+{
+    /// <summary>
+    /// 发送HTTP请求的事件委托。
+    /// 典型使用场景：添加“身份凭证”
+    /// </summary>
+    public static Action<HttpOption> OnSendRequest;
 }

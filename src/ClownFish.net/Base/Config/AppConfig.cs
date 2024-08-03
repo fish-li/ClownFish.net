@@ -27,6 +27,8 @@ public static class AppConfig
                 if( s_inited == false ) {
 
                     string filePath = GetAppConfigFilePath();
+                    Console2.Info("AppConfig filePath: " + filePath);
+
                     InitConfig(filePath);
                 }
             }
@@ -43,6 +45,9 @@ public static class AppConfig
     /// <param name="filenName"></param>
     public static void SetAppConfigFileName(string filenName)
     {
+        if( s_inited )
+            throw new InvalidOperationException("此时调用此方法无效（时机过晚），因为 AppConfig 已初始化完成！");
+
         s_filename = filenName;
     }
 
@@ -68,7 +73,7 @@ public static class AppConfig
     internal static string GetDefaultAppconfigFilePath()
     {
         string asmName = Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
-        string confName = asmName + ".appconfig";
+        string confName = asmName + ".Appconfig";
         return ConfigHelper.GetFileAbsolutePath(confName);
     }
 
@@ -90,6 +95,8 @@ public static class AppConfig
     /// <param name="xml"></param>
     public static void ReLoadFromXml(string xml)
     {
+        Console2.Info("###### AppConfig 配置内容正在从XML文本中加载");
+
         AppConfiguration config = AppConfiguration.LoadFromXml(xml);
         s_configuration = new AppConfigObject(config);
         s_inited = true;

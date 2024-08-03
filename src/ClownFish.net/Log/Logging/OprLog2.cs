@@ -178,6 +178,9 @@ public partial class OprLog
         if( httpContext.PipelineContext.RespResult == null )
             return;
 
+        //if( httpContext.Response.GetHeader("Content-Encoding").HasValue() )
+        //    return;   // 响应体是压缩格式
+
         string contentType = httpContext.Response.ContentType;
         bool bodyIsText = HttpUtils.ResponseBodyIsText(contentType);
         if( bodyIsText == false )

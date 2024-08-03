@@ -49,10 +49,6 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// </summary>
     public override Stream OutputStream => _response.Body;
 
-    /// <summary>
-    /// 这个属性对于ASP.NET CORE 来说不起作用
-    /// </summary>
-    public override Encoding ContentEncoding { get; set; }
 
     /// <summary>
     /// <inheritdoc/>
@@ -148,15 +144,6 @@ public sealed class HttpResponseNetCore : NHttpResponse
         }
     }
 
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public override bool RemoveHeader(string name)
-    {
-        return _response.Headers.Remove(name);
-    }
 
     /// <summary>
     /// <inheritdoc/>
@@ -182,6 +169,19 @@ public sealed class HttpResponseNetCore : NHttpResponse
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public override string GetHeader(string name)
+    {
+        if( _response.Headers.TryGetValue(name, out var values) == false )
+            return null;
+
+        return values.ToString();
+    }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     /// <returns></returns>
     public override IEnumerable<KeyValuePair<string, IEnumerable<string>>> GetAllHeaders()
     {
@@ -189,6 +189,16 @@ public sealed class HttpResponseNetCore : NHttpResponse
             IEnumerable<string> values = x.Value;
             yield return new KeyValuePair<string, IEnumerable<string>>(x.Key, values);
         }
+    }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public override bool RemoveHeader(string name)
+    {
+        return _response.Headers.Remove(name);
     }
 
     /// <summary>

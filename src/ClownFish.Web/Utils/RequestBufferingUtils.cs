@@ -69,6 +69,9 @@ public static class RequestBufferingUtils
     public static bool BodyIsSmallText(NHttpContext httpContextNetCore, int bufferSize)
     {
         long len = httpContextNetCore.Request.GetBodyTextLength();
+
+        // TODO: 这里其实还有一种特殊场景：请求体内容做过gzip压缩 Content-Encoding: gzip ，那么这里读到的长度就不对了
+
         return len > 0 && len < bufferSize;
     }
 }

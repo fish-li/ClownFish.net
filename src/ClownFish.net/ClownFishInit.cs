@@ -51,6 +51,19 @@ public static class ClownFishInit
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
             s_baseInited = true;
+
+            // 注意：下面这段代码【不要】移动到 AppConfig.Init() ，那样会造成死循环
+            if( LocalSettings.GetBool("Show_ClownFish_App_Config") ) {
+                string filePath = AppConfig.GetAppConfigFilePath();
+                if( File.Exists(filePath) ) {
+                    Console2.WriteLine($"----------------------- {Path.GetFileName(filePath)} ----------------------------");
+                    Console2.WriteLine(File.ReadAllText(filePath, Encoding.UTF8));
+                    Console2.WriteLine("-------------------------------------------------------------------------");
+                }
+                else {
+                    Console2.Info($"[{filePath}] not found!");
+                }
+            }
         }
     }
 
@@ -260,6 +273,7 @@ public static class ClownFishInit
         config.TryUpdateFromLocalSetting();
 
         if( LocalSettings.GetBool("Show_ClownFish_Log_Config") ) {
+            // 由于 Log_Config 的内容会做【合并】，所以这里显示【最终生效】的配置对象
             string configXml = XmlHelper.XmlSerialize(config, Encoding.UTF8);
             Console2.WriteLine("----------------------- ClownFish.Log.config ----------------------------");
             Console2.WriteLine(configXml);

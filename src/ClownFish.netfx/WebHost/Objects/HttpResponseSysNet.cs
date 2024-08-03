@@ -11,6 +11,7 @@ internal class HttpResponseSysNet : NHttpResponse
         : base(httpContext)
     {
         _response = response;
+        _response.ContentEncoding = System.Text.Encoding.UTF8;
     }
 
     public override int StatusCode {
@@ -32,10 +33,10 @@ internal class HttpResponseSysNet : NHttpResponse
         set => _response.ContentLength64 = value;
     }
 
-    public override Encoding ContentEncoding {
-        get => _response.ContentEncoding;
-        set => _response.ContentEncoding = value;
-    }
+    //public override Encoding ContentEncoding {
+    //    get => _response.ContentEncoding;
+    //    set => _response.ContentEncoding = value;
+    //}
 
     public override void SetCookie2(string name, string value, DateTime? expires = null)
     {
@@ -84,6 +85,17 @@ internal class HttpResponseSysNet : NHttpResponse
         else {
             return false;
         }
+    }
+
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public override string GetHeader(string name)
+    {
+        return _response.Headers.Get(name);
     }
 
     public override void ClearHeaders()

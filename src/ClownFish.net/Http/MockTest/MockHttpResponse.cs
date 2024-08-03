@@ -24,7 +24,7 @@ public class MockHttpResponse : NHttpResponse
     /// </summary>
     public override Stream OutputStream => _stream;
 
-    internal MockHttpResponse(MockHttpContext context) :base(context)
+    internal MockHttpResponse(MockHttpContext context) : base(context)
     {
 
     }
@@ -51,10 +51,6 @@ public class MockHttpResponse : NHttpResponse
         }
     }
 
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    public override Encoding ContentEncoding { get; set; }
 
     /// <summary>
     /// <inheritdoc/>
@@ -114,11 +110,11 @@ public class MockHttpResponse : NHttpResponse
     }
 
     /// <summary>
-    /// 
+    /// <inheritdoc/>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public string GetHeader(string name)
+    public override string GetHeader(string name)
     {
         string[] values = this.OutHeaders.GetValues(name);
         if( values == null )

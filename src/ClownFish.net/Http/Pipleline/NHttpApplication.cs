@@ -103,10 +103,6 @@ public sealed class NHttpApplication
     /// <param name="httpContext"></param>
     public void InitResponse(NHttpContext httpContext)
     {
-        NHttpResponse response = httpContext.Response;
-
-        //response.SetHeader(HttpHeaders.XResponse.ClownFishVersion, ConstValues.CurrentVersion);
-        response.ContentEncoding = Encoding.UTF8;
     }
 
     /// <summary>
