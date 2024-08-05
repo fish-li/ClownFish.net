@@ -5,11 +5,11 @@
 /// </summary>
 public static class MemoryConfig
 {
-    private static readonly TSafeDictionary<string, string> s_settings = new(256);
+    private static readonly TSafeDictionary<string, string> s_settings = new(256, StringComparer.OrdinalIgnoreCase);
 
-    private static readonly TSafeDictionary<string, DbConfig> s_db = new(128);
+    private static readonly TSafeDictionary<string, DbConfig> s_db = new(128, StringComparer.OrdinalIgnoreCase);
 
-    private static readonly TSafeDictionary<string, string> s_files = new(32);
+    private static readonly TSafeDictionary<string, string> s_files = new(32, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// 添加一个 key=value 的配置参数，如果指定的name存在则覆盖。

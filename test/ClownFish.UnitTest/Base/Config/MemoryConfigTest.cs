@@ -20,6 +20,7 @@ public class MemoryConfigTest
         MemoryConfig.AddSetting("key1", "3fde7d2b9d31429cbaa5e08a90e67fca");
 
         Assert.AreEqual("3fde7d2b9d31429cbaa5e08a90e67fca", MemoryConfig.GetSetting("key1"));
+        Assert.AreEqual("3fde7d2b9d31429cbaa5e08a90e67fca", MemoryConfig.GetSetting("KeY1"));
     }
 
     [TestMethod]
