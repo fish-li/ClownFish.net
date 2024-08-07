@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.Tracing</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.805.1</Version>
-        <FileVersion>8.24.805.1</FileVersion>
+        <Version>8.24.807.2</Version>
+        <FileVersion>8.24.807.2</FileVersion>
         <OutputType>Library</OutputType>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
@@ -26,11 +26,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpContextNetCore.cs" Link="link_files\HttpContextNetCore.cs" />
-      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpRequestNetCore.cs" Link="link_files\HttpRequestNetCore.cs" />
-      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpResponseNetCore.cs" Link="link_files\HttpResponseNetCore.cs" />
-      <Compile Include="..\ClownFish.Web\Utils\RequestBufferingUtils.cs" Link="link_files\RequestBufferingUtils.cs" />
-      <Compile Include="..\ClownFish.Web\Utils\TracingUtils.cs" Link="link_files\TracingUtils.cs" />
+      <None Remove="ClownFish.Log.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpContextNetCore.cs" Link="ClownFishWeb\HttpContextNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpRequestNetCore.cs" Link="ClownFishWeb\HttpRequestNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Aspnetcore\Objects\HttpResponseNetCore.cs" Link="ClownFishWeb\HttpResponseNetCore.cs" />
+      <Compile Include="..\ClownFish.Web\Utils\RequestBufferingUtils.cs" Link="ClownFishWeb\RequestBufferingUtils.cs" />
+      <Compile Include="..\ClownFish.Web\Utils\TracingUtils.cs" Link="ClownFishWeb\TracingUtils.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="ClownFish.Log.config" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,7 +50,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="link_files\" />
+      <Folder Include="ClownFishWeb\" />
     </ItemGroup>
 
 </Project>

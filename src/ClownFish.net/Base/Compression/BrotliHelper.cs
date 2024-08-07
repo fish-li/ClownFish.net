@@ -75,8 +75,14 @@ public static class BrotliHelper
         if( input.Length == 0 )
             return Empty.Array<byte>();
 
+#if NET6_0_OR_GREATER
+        CompressionLevel level = CompressionLevel.SmallestSize;
+#else
+        CompressionLevel level = CompressionLevel.Optimal;
+#endif
+
         using( MemoryStream resultStream = MemoryStreamPool.GetStream() ) {
-            using( BrotliStream zipStream = new BrotliStream(resultStream, CompressionLevel.SmallestSize, true) ) {
+            using( BrotliStream zipStream = new BrotliStream(resultStream, level, true) ) {
 
                 zipStream.Write(input, 0, input.Length);
                 zipStream.Close();

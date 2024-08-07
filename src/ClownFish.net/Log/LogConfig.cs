@@ -21,8 +21,10 @@ public static class LogConfig
     private static bool s_inited = false;
     private static readonly object s_lock = new object();
 
-
-    internal static bool IsInited => s_inited;
+    /// <summary>
+    /// 指示日志组件是否已初始化结束
+    /// </summary>
+    public static bool IsInited => s_inited;
 
 
 

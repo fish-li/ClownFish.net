@@ -258,7 +258,12 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
     internal static HttpContent CloneBody(HttpContent content)
     {
         MemoryStream ms = new MemoryStream();
+
+#if NET6_0_OR_GREATER
         content.CopyTo(ms, null, CancellationToken.None);
+#else
+        content.CopyToAsync(ms).GetAwaiter().GetResult();
+#endif
 
         ms.Position = 0;
         StreamContent content2 = new StreamContent(ms);

@@ -144,7 +144,7 @@ public static class ConsoleAppStarter
 
     private static int GetProcessId()
     {
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
         return Environment.ProcessId;
 #else
         return Process.GetCurrentProcess().Id;

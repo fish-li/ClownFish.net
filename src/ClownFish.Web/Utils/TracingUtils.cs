@@ -4,17 +4,27 @@ internal static class TracingUtils
 {
     public static void Init()
     {
-        if( LoggingOptions.TracingEnabled == false )
+        if( LoggingOptions.TracingEnabled == false ) {
+            Console2.Info("########### 由于 LoggingOptions.TracingEnabled == false ，ClownFish.Tracing 性能监控将不会启用！");
             return;
-
+        }
 
         DbLogger.Init();
         EFLogger.Init();
         HttpClientLogger2.Init();
 
-        ReflectionUtils.CallStaticMethod("ClownFish.Email.MailLogger, ClownFish.Email", "Init");
-        ReflectionUtils.CallStaticMethod("ClownFish.NRedis.RedisLogger, ClownFish.Redis", "Init");
-        ReflectionUtils.CallStaticMethod("ClownFish.Rabbit.RabbitLogger, ClownFish.Rabbit", "Init");
+        List<string> flags = new List<string>() { "DbLogger", "EFLogger", "HttpClientLogger2" };
+
+        if( ReflectionUtils.CallStaticMethod("ClownFish.Email.MailLogger, ClownFish.Email", "Init") == 1 )
+            flags.Add("MailLogger");
+
+        if( ReflectionUtils.CallStaticMethod("ClownFish.NRedis.RedisLogger, ClownFish.Redis", "Init") != 1 )
+            flags.Add("MailLogger");
+
+        if( ReflectionUtils.CallStaticMethod("ClownFish.Rabbit.RabbitLogger, ClownFish.Rabbit", "Init") == 1 )
+            flags.Add("RabbitLogger");
+
+        Console2.Info($"ClownFish.Tracing 性能监控模块 {string.Join('/', flags.ToArray())} 已启用。");
     }
 
 

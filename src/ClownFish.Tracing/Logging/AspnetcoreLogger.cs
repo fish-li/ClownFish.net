@@ -6,6 +6,7 @@ internal static class AspnetcoreLogger
     {
         if( NHttpApplication.Instance == null ) {
             DiagnosticListener.AllListeners.Subscribe(new AspnetEventSubscriber());
+            Console2.Info($"ClownFish.Tracing 性能监控模块 AspnetcoreLogger 已启用。");
         }
     }
 }
