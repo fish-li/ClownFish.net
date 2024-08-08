@@ -125,10 +125,19 @@ internal class HttpJsonWriter : ILogWriter
 
     protected virtual void SendRequest(HttpOption httpOption)
     {
+        string returnId = Guid.NewGuid().ToString("N");
+        httpOption.Headers.Add("x-returnid", returnId);
+
         try {
             HttpJsonWriterExt.OnSendRequest?.Invoke(httpOption);
 
-            httpOption.Send(HttpRetry.Create(2, 500));
+            //httpOption.Send(HttpRetry.Create(2, 500));
+
+            HttpResult<string> result = httpOption.GetResult<HttpResult<string>>(HttpRetry.Create(2, 500));
+
+            string[] values = result.Headers.GetValues("x-returnid");
+            if( values.IsNullOrEmpty() || values.FirstOrDefault() != returnId )
+                throw new InvalidOperationException("日志服务端没有按照约定的方式返回，或者请求没有到达日志服务端(被防火墙拦截)！");
         }
         catch( Exception ex ) {
             if( s_showError ) {

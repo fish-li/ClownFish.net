@@ -64,12 +64,16 @@ public static class HttpUtils
         // 虽然 MIME 类型是不区分大小写的，但是传统都习惯使用小写，因此下面的判断就直接使用小写
         // 例如：https://www.iana.org/assignments/media-types/media-types.xhtml
 
-        if( contentType.StartsWith0("text/")
-            || contentType.StartsWith0(RequestContentType.Json)
-            || contentType.StartsWith0(RequestContentType.Xml)
-            || contentType.StartsWith0(RequestContentType.Form)
-            )
-            return true;
+        if( contentType[0] == 't' ) {
+            return contentType.StartsWith0("text/");
+        }
+
+        if( contentType[0] == 'a' ) {
+            return contentType.StartsWith0(RequestContentType.Json)  // 可包含：application/json-seq
+                || contentType.StartsWith0(RequestContentType.Xml)
+                || contentType.StartsWith0(RequestContentType.Form)
+                || contentType.StartsWith0(RequestContentType.JsonLines);
+        }
 
         return false;
     }
@@ -84,19 +88,20 @@ public static class HttpUtils
         if( contentType.IsNullOrEmpty() )
             return false;
 
-        if( contentType.StartsWith0("text/")
-            || contentType.StartsWith0(RequestContentType.Json)
-            || contentType.StartsWith0(RequestContentType.Xml)
+        if( contentType[0] == 't' ) {
+            return contentType.StartsWith0("text/");
+        }
 
-            // 下面是response才会用到的，并且可能会遇到的，            
-            || contentType.StartsWith0("application/problem+json")
-            //|| contentType.StartsWith0("application/api-problem+json")
+        if( contentType[0] == 'a' ) {
+            return contentType.StartsWith0(RequestContentType.Json)  // 可包含：application/json-seq
+                || contentType.StartsWith0(RequestContentType.Xml)
+                //|| contentType.StartsWith0(RequestContentType.Form)  // Response根本不使用这个类型
+                || contentType.StartsWith0(RequestContentType.JsonLines)
+                || contentType.StartsWith0("application/problem+json");
+
             //|| contentType.StartsWith0("application/problem+xml")
-            //|| contentType.StartsWith0("application/json-seq")
-            || contentType.StartsWith0("application/x-ndjson")
             // 其实还有更多，这里就不再一一列出 ~~~~
-            )
-            return true;
+        }
 
         return false;
     }
