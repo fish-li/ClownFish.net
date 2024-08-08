@@ -117,19 +117,21 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
 
     private void BeginRequest(object eventData)
     {
-        HttpContext httpContext = eventData.Get<HttpContext>("httpContext");
-
-        NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
-        HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore);
-
-        httpContextNetCore.SetRequestBuffering();
-
         OprLogScope scope = OprLogScope.Get();
         if( scope.IsNull == false ) {
             // 运行到这里表示程序代码有代码，导致OprLogScope泄露，
             // 但是有一点可以肯定：当前线程捕获的OprLogScope对象是无效的，所以这里强制清除它
             ((IDisposable)scope).Dispose();
         }
+
+
+        HttpContext httpContext = eventData.Get<HttpContext>("httpContext");
+
+        NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
+        HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore);
+
+        httpContextNetCore.SetRequestBuffering();
+                
 
         s_oprLogModule.BeginRequest(httpContextNetCore);
     }
