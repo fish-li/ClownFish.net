@@ -18,7 +18,7 @@ public static class ClownFishWebInit
     {
         JwtOptions jwtOptions = new JwtOptions {
             AlgorithmName = LocalSettings.GetSetting("ClownFish_JwtToken_AlgorithmName").IfEmpty(JwtUtils.DefaultAlgorithm),
-            IssuerName = EnvUtils.GetAppName(),
+            IssuerName = LocalSettings.GetSetting("ClownFish_JwtToken_IssuerName").IfEmpty(EnvUtils.GetAppName()),
             ShortTime = LocalSettings.GetBool("ClownFish_JwtToken_ShortTimeFormat", 1),
             ShortTypeName = LocalSettings.GetBool("ClownFish_JwtToken_ShortTypeName", 1),
             LoadUnknownUser = LocalSettings.GetBool("ClownFish_Authentication_LoadUnknownUserType", 0),
