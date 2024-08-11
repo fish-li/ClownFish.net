@@ -36,7 +36,7 @@ public static class AppConfig
     }
 
     /// <summary>
-    /// 设置 App.config 的名称。 
+    /// 设置 App.config 的名称。 【强烈建议】：这个方法的调用做为程序运行的 【第一行】代码。
     /// App.config 的查找过程：
     /// 1，优先查找当前方法指定的名称，
     /// 2，根据 程序入口程序集去查找，

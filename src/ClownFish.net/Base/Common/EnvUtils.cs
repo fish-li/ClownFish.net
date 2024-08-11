@@ -21,6 +21,27 @@ public static class EnvUtils
     /// </summary>
     public static readonly bool IsInDocker = EnvironmentVariables.Get("DOTNET_RUNNING_IN_CONTAINER").TryToBool();
 
+    /// <summary>
+    /// 判断当前进程是不是部署在 Kubernetes 集群中
+    /// </summary>
+    public static readonly bool IsInK8s = Directory.Exists("/var/run/secrets/kubernetes.io/serviceaccount/");
+
+    /// <summary>
+    /// 获取当前POD所在的 K8S 命名空间。如果当前进程没有部署在K8S集群中，则返回 null
+    /// </summary>
+    public static readonly string K8sNamespace = GetCurrentK8sNamespace();
+
+    private static string GetCurrentK8sNamespace()
+    {
+        string filePath = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
+        if( File.Exists(filePath) ) {
+            return File.ReadAllText(filePath);
+        }
+        else {
+            return null;
+        }
+    }
+
 
     internal static readonly string HostName;
     internal static readonly string TempPath;

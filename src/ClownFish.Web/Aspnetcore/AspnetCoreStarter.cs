@@ -130,6 +130,10 @@ public static class AspnetCoreStarter
         Console2.WriteLine("ApplicationPath          : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
         Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
+
+        if( EnvUtils.IsInK8s && EnvUtils.K8sNamespace.HasValue() ) {
+            Console2.WriteLine("K8sNamespace             : " + EnvUtils.K8sNamespace);
+        }
         Console2.WriteSeparatedLine();
     }
 

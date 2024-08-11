@@ -78,4 +78,13 @@ public class EnvUtilsTest
             EnvUtils.CheckApplicationName("中文汉字");
         });
     }
+
+    [TestMethod]
+    public void Test_IsInK8s()
+    {
+        // 肯定不可能在 K8S 环境中跑单元测试
+        // 如果不调用这些方法，代码覆盖率就是 0，所以没办法~~~
+        Assert.IsFalse(EnvUtils.IsInK8s);
+        Assert.IsNull(EnvUtils.K8sNamespace);
+    }
 }

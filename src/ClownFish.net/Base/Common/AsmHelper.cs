@@ -12,7 +12,7 @@ public static class AsmHelper
     /// <summary>
     /// 当前程序是否以“单文件部署”方式运行
     /// </summary>
-    public static readonly bool IsSingleFileDeploy = typeof(EnvUtils).Assembly.Location.IsNullOrEmpty();
+    public static readonly bool IsSingleFileDeploy = typeof(AsmHelper).Assembly.Location.IsNullOrEmpty();
 
     // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
     // 由于.NET并没有提供一种专用的方法来判断【单文件部署】，所以这里使用 Assembly.Location 来判断。
