@@ -41,6 +41,7 @@ internal static class MsHttpClientCache2
         clientHandler.AutomaticDecompression = DecompressionMethods.None;
         clientHandler.UseCookies = false;
         clientHandler.AllowAutoRedirect = false;
+        clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
         HttpClient client = new HttpClient(clientHandler);
         client.Timeout = TimeSpan.FromMilliseconds(HttpClientDefaults.HttpProxyTimeout);

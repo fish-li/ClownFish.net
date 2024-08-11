@@ -183,9 +183,7 @@ internal static class HttpObjectUtils
         if( httpOption.AllowAutoRedirect.HasValue )
             clientHandler.AllowAutoRedirect = httpOption.AllowAutoRedirect.Value;
 
-        clientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, error) => {
-            return true;
-        };
+        clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
         //clientHandler.MaxAutomaticRedirections = 50;
         //clientHandler.MaxResponseHeadersLength = 128;

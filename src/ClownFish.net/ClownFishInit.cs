@@ -41,6 +41,7 @@ public static class ClownFishInit
             EnvironmentVariables.Init();
             AppConfig.Init();
             EnvUtils.Init();
+            SysNetInitializer.Init();
             //SetDefaultCulture();
             SetThreadPool();
             ConfigMisc();
