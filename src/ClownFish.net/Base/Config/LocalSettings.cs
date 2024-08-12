@@ -34,8 +34,18 @@ internal sealed class DefaultLocalSettingsImpl : ILocalSettings
 
         // 1，从环境变量中读取
         string value = EnvironmentVariables.Get(name);
-        if( string.IsNullOrEmpty(value) == false )
-            return value;
+        if( value != null ) {
+            if( value.Length > 0 ) {
+                return value;
+            }
+            else {
+                // 允许将环境变量的值设置为 "" 空字符串，这样可以覆盖（屏蔽）低级别的配置项，
+                // 例如：app.config 中设置了 key1=abc
+                //       实际运行时，不希望 key1 起作用，希望将它的值设置为 null
+                //       那么可以在部署时，添加环境变量 'key1='   来实现
+                return null;
+            }
+        }
 
         // 2，从内存中读取
         value = MemoryConfig.GetSetting(name);

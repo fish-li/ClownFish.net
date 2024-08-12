@@ -16,6 +16,8 @@ public class LocalSettingsTest
         Assert.AreEqual("admin", nv.Value);
 
         Assert.AreEqual("FishDev", LocalSettings.GetSetting("RUNTIME_ENVIRONMENT", true));
+
+        Assert.IsNull(LocalSettings.GetSetting("xxx_url"));
     }
 
 

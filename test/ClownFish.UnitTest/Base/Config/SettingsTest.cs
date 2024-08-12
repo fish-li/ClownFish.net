@@ -12,6 +12,7 @@ public class SettingsTest
         Assert.IsNull(Settings.GetSetting("xxxxxxxxxxxxxxx", false));
         Assert.IsNotNull(Settings.GetSetting("xxxxxxxxxxxxxxx", "abc"));
         Assert.IsNotNull(Settings.GetSetting("ConfigServiceUrl", true));
+        Assert.IsNull(LocalSettings.GetSetting("xxx_url"));
     }
 
 
