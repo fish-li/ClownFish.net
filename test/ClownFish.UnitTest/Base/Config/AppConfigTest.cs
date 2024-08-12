@@ -22,6 +22,9 @@ public class AppConfigTest
 
         int value222 = LocalSettings.GetUInt("key222222222", 222222222);
         Assert.AreEqual(222222222, value222);
+
+        Assert.IsNull(LocalSettings.GetSetting("xxx_url"));
+        Assert.AreEqual("http://www.abc.com", AppConfig.GetSetting("xxx_url"));
     }
 
 
