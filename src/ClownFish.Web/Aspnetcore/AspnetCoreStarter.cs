@@ -115,6 +115,9 @@ public static class AspnetCoreStarter
         Console2.WriteLine("EntryAssembly            : " + AsmHelper.GetExeFilePath());
         Console2.WriteLine("AppStartTime             : " + EnvUtils.AppStartTime.ToTime23String());
         Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
+        if( EnvUtils.IsInK8s ) {
+            Console2.WriteLine("K8S Namespace            : " + EnvUtils.K8sNamespace);
+        }
         Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
         Console2.WriteLine("CLUSTER_ENVIRONMENT      : " + EnvUtils.GetClusterName());
         Console2.WriteLine("RUNTIME_ENVIRONMENT      : " + EnvUtils.GetRunEnv());
@@ -130,10 +133,7 @@ public static class AspnetCoreStarter
         Console2.WriteLine("ApplicationPath          : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
         Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
-
-        if( EnvUtils.IsInK8s && EnvUtils.K8sNamespace.HasValue() ) {
-            Console2.WriteLine("K8sNamespace             : " + EnvUtils.K8sNamespace);
-        }
+        
         Console2.WriteSeparatedLine();
     }
 
