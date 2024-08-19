@@ -86,7 +86,8 @@ public class EndClientUserInfo : IUserInfo, IValidate
 
     /// <summary>
     /// 部署方式，此字段支持按位操作，类似于 Enum-Flags。
-    /// 取值 1: docker, 2: SingleFile, 3: docker+SingleFile
+    /// 从低到高位：b-1: 是否 docker, b-2: 是否 singlefile, b-3: 是否 k8s
+    /// 典型取值 001: docker-run, 010: SingleFile, 011: docker+SingleFile, 111: k8s+docker+SingleFile
     /// </summary>
     [DefaultValue(0)]
     public int DeployMode { get; set; }
