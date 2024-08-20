@@ -4,8 +4,8 @@
         <TargetFrameworks>net45;net462;net48;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.813.1</Version>
-        <FileVersion>8.24.813.1</FileVersion>
+        <Version>8.24.820.1</Version>
+        <FileVersion>8.24.820.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -45,7 +45,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <!--下面些包永不升级！！！-->
+        <!--下面这些包永不升级！！！-->
         <PackageReference Include="Cronos" Version="0.8.4" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.CodeDom" Version="6.0.0" />

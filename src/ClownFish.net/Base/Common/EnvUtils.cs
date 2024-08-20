@@ -128,7 +128,12 @@ public static class EnvUtils
         ApplicationName = GetApplicationName0();
         ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";
 
-        ConstValues.ReLoad();
+        // 复杂部署场景
+        if( EnvUtils.IsInDocker ) {
+            // 示例：ClownFish.HttpClient/8.24.820.9/TxClientX/fish-debian12/Debian GNU-Linux 12 (bookworm)
+            string userAgent = $"ClownFish.HttpClient/{ConstValues.CurrentVersion}/{ApplicationName}/{HostName}/{OsUtils.GetOsName().Replace('/', '-')}";
+            ConstValues.SetHttpClientUserAgent(userAgent);
+        }
     }
 
     private static string GetRunEnvName()
