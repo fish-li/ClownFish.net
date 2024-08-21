@@ -88,7 +88,7 @@ public class TestHandler1 : IAsyncNHttpHandler
             this.Cookies.Add(new NameValue(name, value));
         }
         
-        this.LoggingText = request.ToLoggingText();
+        this.LoggingText = ((ILoggingObject)request).ToLoggingText();
     }
 
     private async Task SetResponse(NHttpResponse response)

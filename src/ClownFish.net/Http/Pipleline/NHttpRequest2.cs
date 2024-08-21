@@ -273,7 +273,7 @@ public partial class NHttpRequest : ILoggingObject
     /// 获取请求对应的日志文本
     /// </summary>
     /// <returns></returns>
-    public string ToLoggingText()
+    string ILoggingObject.ToLoggingText()
     {
         return this.ToRawText(this.LogRequestBody);
     }
