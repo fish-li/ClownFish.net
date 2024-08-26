@@ -64,19 +64,7 @@ public partial class OprLog : IMsgObject, IMsgBeforeWrite
     /// 指示当前操作是否超出性能阀值。
     /// </summary>
     public int IsSlow { get; set; }
-
-
-    /// <summary>
-    /// 对于HTTP请求来说，就是 Request.ContentLength
-    /// 对于消息处理来说，就是消息byte[]长度
-    /// </summary>
-    public long InSize { get; set; }
-
-    /// <summary>
-    /// 对于HTTP请求来说，就是 Response.ContentLength
-    /// 其它场景不赋值。
-    /// </summary>
-    public long OutSize { get; set; }
+   
 
     /// <summary>
     /// 已重试次数
@@ -91,7 +79,7 @@ public partial class OprLog : IMsgObject, IMsgBeforeWrite
 
     #endregion
 
-    #region 业务相关数据
+    #region HTTP相关数据
 
     /// <summary>
     /// 
@@ -110,6 +98,32 @@ public partial class OprLog : IMsgObject, IMsgBeforeWrite
     /// </summary>
     public string HttpRef { get; set; }
 
+    /// <summary>
+    /// Content-Encoding
+    /// </summary>
+    public string CtEncoding { get; set; }   // 用于 观察/过滤 是否启用 gzip 压缩
+
+    ///// <summary>
+    ///// Content-Type
+    ///// </summary>
+    //public string CtType { get; set; }
+
+    /// <summary>
+    /// 对于HTTP请求来说，就是 Request.ContentLength
+    /// 对于消息处理来说，就是消息byte[]长度
+    /// </summary>
+    public long InSize { get; set; }
+
+    /// <summary>
+    /// 对于HTTP请求来说，就是 Response.ContentLength
+    /// 其它场景不赋值。
+    /// </summary>
+    public long OutSize { get; set; }
+
+    #endregion
+
+
+    #region 业务相关数据
 
     /// <summary>
     /// 

@@ -64,6 +64,10 @@ public class OprLogTest
 
         log.CalcTime(0, DateTime.Now);
         Assert.AreEqual(0, log.IsSlow);
+
+        Assert.IsNull(log.CtEncoding);
+        log.CtEncoding = "gzip";
+        Assert.AreEqual("gzip", log.CtEncoding);
     }
 
 
@@ -186,6 +190,39 @@ public class OprLogTest
 
         Assert.AreEqual("http://www.abc.com/aa/bb.aspx", log.Url);
     }
+
+
+    [TestMethod]
+    public void Test_SetHttpFields()
+    {
+        MockRequestData requestData = new MockRequestData {
+            HttpMethod = "POST",
+            Url = new Uri($"http://www.abc.com:14752/aa/bb/cc.aspx?id=3"),
+            Body = Guid.NewGuid().ToByteArray(),
+            Headers = new NameValueCollection()
+        };
+
+        requestData.Headers.Add("Content-Length", "3");
+        requestData.Headers.Add("Content-Type", "text/aaa");
+        requestData.Headers.Add("User-Agent", "test123");
+        requestData.Headers.Add("Content-Encoding", "xzip");
+        requestData.Headers.Add("Referer", "https://www.abc.com/web20/cluster/desktop");
+
+        using MockHttpPipeline mock = new MockHttpPipeline(requestData);
+
+        OprLog log = new OprLog();
+        log.SetHttpFields(mock.HttpContext);
+
+        Assert.AreEqual("POST", log.HttpMethod);
+        Assert.AreEqual("http://www.abc.com:14752/aa/bb/cc.aspx?id=3", log.Url);
+        Assert.AreEqual("https://www.abc.com/web20/cluster/desktop", log.HttpRef);
+        Assert.AreEqual(3, log.InSize);
+        Assert.AreEqual("xzip", log.CtEncoding);
+        Assert.AreEqual("test123", log.UserAgent);
+
+    }
+
+
 
 
     [TestMethod]
