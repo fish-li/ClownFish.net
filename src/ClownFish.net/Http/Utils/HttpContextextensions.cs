@@ -16,21 +16,7 @@ public static partial class HttpContextExtensions
     /// <returns></returns>
     public static void HttpReply(this NHttpContext httpContext, string body, string contentType = null)
     {
-        if( httpContext == null )
-            throw new ArgumentNullException(nameof(httpContext));
-
-        NHttpResponse response = httpContext.Response;
-
-        if( string.IsNullOrEmpty(body) ) {
-            response.StatusCode = 204;
-        }
-        else {
-            response.StatusCode = 200;
-            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
-
-            response.WriteAll(body.GetBytes());
-            httpContext.PipelineContext.RespResult = body;
-        }
+        HttpReply(httpContext, 200, body, contentType);
     }
 
 
@@ -41,25 +27,10 @@ public static partial class HttpContextExtensions
     /// <param name="body"></param>
     /// <param name="contentType"></param>
     /// <returns></returns>
-    public static async Task HttpReplyAsync(this NHttpContext httpContext, string body, string contentType = null)
+    public static Task HttpReplyAsync(this NHttpContext httpContext, string body, string contentType = null)
     {
-        if( httpContext == null )
-            throw new ArgumentNullException(nameof(httpContext));
-
-        NHttpResponse response = httpContext.Response;
-
-        if( string.IsNullOrEmpty(body) ) {
-            response.StatusCode = 204;
-        }
-        else {
-            response.StatusCode = 200;
-            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
-
-            await response.WriteAllAsync(body.GetBytes());
-            httpContext.PipelineContext.RespResult = body;
-        }
+        return HttpReplyAsync(httpContext, 200, body, contentType);
     }
-
 
 
     /// <summary>
@@ -115,6 +86,70 @@ public static partial class HttpContextExtensions
         }
     }
 
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="statusCode"></param>
+    /// <param name="stream"></param>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public static async Task HttpReplyAsync(this NHttpContext httpContext, int statusCode, Stream stream, string contentType = null)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( stream == null )
+            throw new ArgumentNullException(nameof(stream));
+
+        if( stream.CanRead == false )
+            throw new InvalidOperationException("流不可读！");
+
+        if( stream.CanSeek && stream.Length == 0 ) {
+            httpContext.Response.StatusCode = 204;
+        }
+        else {
+            NHttpResponse response = httpContext.Response;
+            response.StatusCode = statusCode;
+            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
+            await stream.CopyToAsync(response.OutputStream);
+        }
+    }
+
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="statusCode"></param>
+    /// <param name="body"></param>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public static async Task HttpGzipReplyAsync(this NHttpContext httpContext, int statusCode, string body, string contentType = null)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( string.IsNullOrEmpty(body) ) {
+            httpContext.Response.StatusCode = 204;
+        }
+        else {
+            NHttpResponse response = httpContext.Response;
+            response.StatusCode = statusCode;
+            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+
+            response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
+
+            byte[] data = Encoding.UTF8.GetBytes(body);
+
+            using( GZipStream gZipStream = new GZipStream(response.OutputStream, CompressionMode.Compress, true) ) {
+                await gZipStream.WriteAsync(data, 0, data.Length);
+                gZipStream.Close();
+            }
+        }
+    }
 
     /// <summary>
     /// 响应HTTP请求

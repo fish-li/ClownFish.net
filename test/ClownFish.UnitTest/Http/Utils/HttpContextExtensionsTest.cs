@@ -95,6 +95,139 @@ public class HttpContextExtensionsTest
         });
     }
 
+
+    [TestMethod]
+    public async Task Test_HttpReplyAsync_stream()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        byte[] bb = "中华文明_abc".GetBytes();
+        using MemoryStream stream = new MemoryStream(bb);
+        await httpContext.HttpReplyAsync(221, stream, "text/abc");
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(221, response.StatusCode);
+        Assert.AreEqual("中华文明_abc", response.GetResponseAsText());
+        Assert.AreEqual("text/abc", response.ContentType);
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync((NHttpContext)null, 200, stream);
+        });
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync(httpContext, 200, (Stream)null);
+        });
+    }
+
+    [TestMethod]
+    public async Task Test_HttpReplyAsync_stream204()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        using MemoryStream stream = new MemoryStream();
+        await httpContext.HttpReplyAsync(221, stream, "text/abc");
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(204, response.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task Test_HttpReplyAsync_stream_xx()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        Stream stream = new CanntReadStream();
+ 
+        await MyAssert.IsErrorAsync<InvalidOperationException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync(httpContext, 200, stream);
+        });
+    }
+
+
+    public sealed class CanntReadStream : Stream
+    {
+        public override void Flush()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanRead => false;
+
+        public override bool CanSeek => throw new NotImplementedException();
+
+        public override bool CanWrite => throw new NotImplementedException();
+
+        public override long Length => throw new NotImplementedException();
+
+        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    }
+
+
+    [TestMethod]
+    public async Task Test_HttpGzipReplyAsync()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        await httpContext.HttpGzipReplyAsync(221, "中华文明_abc", "text/abc");
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(221, response.StatusCode);
+        Assert.AreEqual("text/abc", response.ContentType);
+
+        string contentEncoding = response.GetHeader("Content-Encoding");
+        Assert.AreEqual("gzip", contentEncoding);
+
+        "中华文明_abc".GetBytes().ToGzip().IsEqual(response.OutputStream.ToArray());
+        string bodyText = (new HttpStreamReader(response.OutputStream, contentEncoding)).ReadAllText();
+        Assert.AreEqual("中华文明_abc", bodyText);        
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpGzipReplyAsync((NHttpContext)null, 200, "abc");
+        });
+    }
+
+    [TestMethod]
+    public async Task Test_HttpGzipReplyAsync_204()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        await httpContext.HttpGzipReplyAsync(221, "", "text/abc");
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(204, response.StatusCode);
+    }
+
+
     [TestMethod]
     public async Task Test_HttpReplyAsync_204()
     {
