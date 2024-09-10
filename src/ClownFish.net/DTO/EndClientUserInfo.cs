@@ -173,7 +173,7 @@ public class EndClientUserInfo : IUserInfo, IValidate
 #else
             CpuKind = RuntimeInformation.OSArchitecture.ToString(),  // 指令架构有3个级别的：CPU/OS/Process，这里取OS级别
 #endif
-            DeployMode = ((EnvUtils.IsInDocker ? 1 : 0) | (AsmHelper.IsSingleFileDeploy ? 2 : 0)),
+            DeployMode = ((EnvUtils.IsInDocker ? 1 : 0) | (AsmHelper.IsSingleFileDeploy ? 2 : 0) | (EnvUtils.IsInK8s ? 4 : 0)),
             TimeZone = MyTimeZone.CurrentTZ,
             Culture = System.Globalization.CultureInfo.CurrentCulture?.Name
         };

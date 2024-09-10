@@ -24,12 +24,12 @@ public static class EnvUtils
     /// <summary>
     /// 判断当前进程是不是部署在 Kubernetes 集群中
     /// </summary>
-    public static readonly bool IsInK8s = Directory.Exists("/var/run/secrets/kubernetes.io/serviceaccount/");
+    public static readonly bool IsInK8s;
 
     /// <summary>
     /// 获取当前POD所在的 K8S 命名空间。如果当前进程没有部署在K8S集群中，则返回 null
     /// </summary>
-    public static readonly string K8sNamespace = GetCurrentK8sNamespace();
+    public static readonly string K8sNamespace;
 
     private static string GetCurrentK8sNamespace()
     {
@@ -90,6 +90,10 @@ public static class EnvUtils
 
     static EnvUtils()
     {
+        string k8sNamespace = GetCurrentK8sNamespace();
+        IsInK8s = IsInDocker && k8sNamespace.HasValue();
+        K8sNamespace = IsInK8s ? k8sNamespace : null;
+
         RunEnv = GetRunEnvName();
 
         RunEnvEnum flag = GetRunEnvEnum(RunEnv);
