@@ -1,6 +1,7 @@
 ﻿#if NETCOREAPP
 using System.Net.Http;
 using ClownFish.Log;
+using ClownFish.WebClient.V2;
 
 namespace ClownFish.Log.Logging;
 
@@ -16,11 +17,13 @@ public static class HttpClientLogger2
     /// </summary>
     public static void Init()
     {
-        int mode = LocalSettings.GetInt("ClownFish_HttpClient_MonitoringMode", 1);
-        if( mode == 1 )
+        int mode = LocalSettings.GetInt("ClownFish_HttpClient_TraceMode", 2);
+        if( mode == 2 ) {
             DiagnosticListener.AllListeners.Subscribe(new HttpClientEventSubscriber());
-        else
+        }
+        if( mode == 1 ) {
             HttpClientLogger.Init();
+        }
     }
 }
 
@@ -189,6 +192,19 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         }
 
         data.Response = eventData.Get<HttpResponseMessage>("Response");
+
+        // 注意：有些请求即使是以 HTTP 500 来响应的，
+        // 但是对于 .net bcl DiagnosticsHandler.SendAsyncCore() 方法来说，它并没有出现异常，
+        // 所以没有引发"System.Net.Http.Exception"事件
+        // 在后面处理响应时，ClownFish.WebClient.V2.HttpClient2 会主动检测并抛出异常，所以这里要做一个相同的判断
+        if( step.Status == 200 && data.Response.StatusCode != HttpStatusCode.OK ) {
+            step.Status = (int)data.Response.StatusCode;
+            step.HasError = data.Response.IsSuccessStatusCode ? 0 : 1;
+            if( step.HasError == 1 ) {
+                step.ExType = typeof(WebException).FullName;
+                step.ExMessage = HttpClient2.CreateExceptionMessage(data.Response);
+            }
+        }
 
         //TODO: 为了能让HttpResponseSerializer永远可读取ResponseBody，需要修改 HttpResponseMessage.Content
         TryReplaceContent(data.Response);

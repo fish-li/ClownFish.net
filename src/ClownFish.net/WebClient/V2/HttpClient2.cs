@@ -301,13 +301,18 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
         if( checkStatus && responseMessage.IsSuccessStatusCode == false ) {
 
             //string message = string.Format("The remote server returned an error: ({0}) {1}.", (int)responseMessage.StatusCode, responseMessage.ReasonPhrase);
-            string message = string.Format("远程服务端返回一个错误: ({0}) {1}.", (int)responseMessage.StatusCode, responseMessage.ReasonPhrase);
+            string message = CreateExceptionMessage(responseMessage);
             throw new WebException(message, null, WebExceptionStatus.ProtocolError, response);
         }
 
         return response;
     }
 
+
+    internal static string CreateExceptionMessage(HttpResponseMessage responseMessage)
+    {
+        return $"服务端返回了表示错误的响应: ({(int)responseMessage.StatusCode}) {responseMessage.ReasonPhrase}.";
+    }
 
 }
 #endif
