@@ -17,9 +17,9 @@ public static class ConstValues
 
     static ConstValues()
     {
-        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.911.3");
+        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("8.24.915.1");
 
-        // 示例：ClownFish.HttpClient/8.24.911.3
+        // 示例：ClownFish.HttpClient/8.24.915.1
         HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}";
     }
 

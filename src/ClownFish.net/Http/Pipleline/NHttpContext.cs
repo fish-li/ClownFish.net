@@ -47,7 +47,12 @@ public abstract class NHttpContext
     /// 默认值：true
     /// </summary>
     public bool EnableLog { get; set; } = ClownFish.Log.LoggingOptions.HttpActionEnableLog;
-    
+
+
+    /// <summary>
+    /// OprLog
+    /// </summary>
+    public OprLog OprLog => this.PipelineContext.OprLogScope.OprLog;
 
     /// <summary>
     /// 当前是否为转发请求
