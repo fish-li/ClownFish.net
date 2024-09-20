@@ -31,12 +31,12 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 
         // 登录请求一定不允许记录请求体，不管有没有 [LogRequestBody] 标记！
         if( isLogin ) {
-            httpContext.Request.LogRequestBody = false;
+            httpContext.LogRequestBody = false;
         }
         else {
             // 非登录请求，并且【明确】要求记录请体
             if( action.GetActionAttribute<LogRequestBodyAttribute>() != null ) {
-                httpContext.Request.LogRequestBody = true;
+                httpContext.LogRequestBody = true;
             }
         }
 

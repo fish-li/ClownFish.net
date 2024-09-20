@@ -262,12 +262,6 @@ public partial class NHttpRequest : ILoggingObject
 #endif
 
 
-    /// <summary>
-    /// 在记录请求日志时，是否记录请求体内容。
-    /// 说明：在ASP.NETCORE中，记录请体还需要将开启请求缓冲。
-    /// </summary>
-    public bool LogRequestBody { get; set; } = LoggingOptions.Http.LogRequestBody;
-
 
     /// <summary>
     /// 获取请求对应的日志文本
@@ -275,7 +269,7 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns></returns>
     string ILoggingObject.ToLoggingText()
     {
-        return this.ToRawText(this.LogRequestBody);
+        return this.ToRawText(this.HttpContext.LogRequestBody);
     }
 
 

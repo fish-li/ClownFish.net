@@ -48,6 +48,13 @@ public abstract class NHttpContext
     /// </summary>
     public bool EnableLog { get; set; } = ClownFish.Log.LoggingOptions.HttpActionEnableLog;
 
+    // ### 说明：public bool MustLogRequest 定义在 OprLogScope 类型中，因为 HttpAction/MessageHander 这2个场景都需要
+
+    /// <summary>
+    /// 在记录请求日志时，是否记录请求体内容。
+    /// 说明：在ASP.NETCORE中，记录请体还需要将开启请求缓冲。
+    /// </summary>
+    public bool LogRequestBody { get; set; } = LoggingOptions.Http.LogRequestBody;
 
     /// <summary>
     /// OprLog

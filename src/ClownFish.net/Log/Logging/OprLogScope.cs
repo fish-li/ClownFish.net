@@ -22,6 +22,11 @@ public sealed class OprLogScope : IDisposable
     internal List<NameTime> GetLogs() => _logs;
 
     /// <summary>
+    /// 是否必须记录 HttpRequest/MessageObject 对象到日志中。 默认值：LoggingOptions.Http.MustLogRequest
+    /// </summary>
+    public bool MustLogRequest { get; set; } = LoggingOptions.Http.MustLogRequest;
+
+    /// <summary>
     /// 日志对象引用
     /// </summary>
     public OprLog OprLog { get; private set; }
@@ -261,9 +266,6 @@ public sealed class OprLogScope : IDisposable
     /// <param name="context"></param>
     internal int SaveOprLog(BasePipelineContext context)
     {
-        if( context == null )
-            throw new ArgumentNullException(nameof(context));
-
         if( _isEnd )
             return 0;
 
@@ -296,6 +298,9 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     private void EndSet0(BasePipelineContext context)
     {
+        if( context == null )
+            throw new ArgumentNullException(nameof(context));
+
         if( _isEnd )
             return;
 
@@ -315,7 +320,7 @@ public sealed class OprLogScope : IDisposable
 
         // 如果过程中出现异常，或者执行时间超过性能阀值
         // 填充当前操作的详细描述，例如：httpRequest
-        if( _exObject != null || this.OprLog.IsSlow == 1 || LoggingOptions.Http.MustLogRequest ) {
+        if( _exObject != null || this.OprLog.IsSlow == 1 || this.MustLogRequest ) {
             if( this.OprLog.Request.IsNullOrEmpty() ) {
                 try {
                     this.OprLog.Request = context.GetRequest()?.GetLogText();

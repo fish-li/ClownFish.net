@@ -32,7 +32,7 @@ public class MockHttpRequestTest
             Assert.AreEqual(false, request.IsHttps);
             Assert.AreEqual(false, request.HttpContext.IsAuthenticated);
             Assert.AreEqual(true, request.HasBody);
-            Assert.AreEqual(true, request.LogRequestBody);
+            Assert.AreEqual(true, request.HttpContext.LogRequestBody);
 
             Assert.AreEqual(3, request.HeaderKeys.Length);
             Assert.IsNotNull(request.Header("Content-Type"));

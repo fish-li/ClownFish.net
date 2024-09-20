@@ -33,7 +33,7 @@ public class TestHandler1 : IAsyncNHttpHandler
 
     private void ReadRequest(NHttpRequest request)
     {
-        request.LogRequestBody = true;
+        request.HttpContext.LogRequestBody = true;
 
         this.RequestBodyText = request.ReadBodyAsText();
         this.RequestBodyBytes = request.ReadBodyAsBytes();
@@ -53,7 +53,7 @@ public class TestHandler1 : IAsyncNHttpHandler
             { "IsAuthenticated", request.HttpContext.IsAuthenticated.ToString()},
             { "ContentLength", request.ContentLength.ToString()},
             { "HasBody", request.HasBody.ToString()},
-            { "LogRequestBody", request.LogRequestBody.ToString()},
+            { "LogRequestBody", request.HttpContext.LogRequestBody.ToString()},
 
             { "GetBodyTextLength", request.GetBodyTextLength().ToString()},
             { "GetEncoding", request.GetEncoding().ToString()},
