@@ -84,4 +84,16 @@ public static class LoggingLimit
         /// </summary>
         public static int ParamValueMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_SQL_ParamValueMaxLen", 128);
     }
+
+
+    /// <summary>
+    /// HttpClient相关的限制值
+    /// </summary>
+    public static class HttpClient
+    {
+        /// <summary>
+        /// 设置 HttpRequestMessage/HttpResponseMessage 的最大允许长度，如果超时这个限定值则不会记录到日志，默认值：2048
+        /// </summary>
+        public static readonly int MaxBodySize = LocalSettings.GetInt("ClownFish_LogLimit_HttpClient_MaxBodySize", 2048);
+    }
 }

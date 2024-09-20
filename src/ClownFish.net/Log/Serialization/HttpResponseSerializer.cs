@@ -80,7 +80,7 @@ internal static class HttpResponseSerializer
         if( LoggingOptions.HttpClient.LogResponseBody == false )
             return false;
 
-        if( LoggingOptions.RequestBodyBufferSize <= 0 )
+        if( LoggingLimit.HttpClient.MaxBodySize <= 0 )
             return false;
 
         if( response.Content == null )
@@ -99,7 +99,7 @@ internal static class HttpResponseSerializer
             return false;
 
         long size = response.Content.GetBodySize();
-        if( size.IsBetween(1, LoggingOptions.RequestBodyBufferSize) == false )
+        if( size.IsBetween(1, LoggingLimit.HttpClient.MaxBodySize) == false )
             return false;
 
         return true;
