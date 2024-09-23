@@ -11,7 +11,7 @@ internal static class HttpResponseSerializer
 
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            ToLoggingText(response, sb);
+            ToLoggingText(response, response.Content, true, sb);
             return sb.ToString();
         }
         finally {
@@ -21,7 +21,7 @@ internal static class HttpResponseSerializer
 
     private static readonly Type s_type = typeof(HttpContent).Assembly.GetType("System.Net.Http.DecompressionHandler+DecompressedContent", true, false);
 
-    public static void ToLoggingText(this HttpResponseMessage response, StringBuilder sb)
+    public static void ToLoggingText(this HttpResponseMessage response, HttpContent content, bool checkBody, StringBuilder sb)
     {
         // HttpResponseMessage 写到日志有3个范围：
         // 1，记录 “响应行”， “响应头”，“响应体”    MustLogResponse == true && LogResponseBody == true
@@ -41,41 +41,52 @@ internal static class HttpResponseSerializer
             }
         }
 
-        if( response.Content == null )
-            return;
+        // 1，content = null，表示 response-body 不支持日志，但是 header 是要记录到日志的（此时有下面3种可能）
+        // 2，content != null，表示 response-body 支持日志
+
+        // response.Content 有几种可能：
+        // 1, System.Net.Http.EmptyContent
+        // 2, System.Net.Http.DecompressionHandler+DecompressedContent
+        // 3, [normal-internal-type]               
 
         // 当服务端返回 压缩数据 时，System.Net.Http.DecompressionHandler 会修改 response.Content
         // 并且比较坑的是 DecompressedContent 的派生类会删除2个头：Content-Length,Content-Encoding
         // 考虑到这里 response._disposed = true，所以就把原始的 response.Content 找出来（只读取响应头）
 
-        HttpContent content2 = response.Content;
-
-        if( response.Content.GetType().IsSubclassOf(s_type) ) {
-            FieldInfo field = s_type.GetField("_originalContent", BindingFlags.Instance | BindingFlags.NonPublic);
-            content2 = (HttpContent)field.GetValue(response.Content);
+        if( content == null ) {
+            TryGetRealContent(response.Content).LogContentHeaders(sb);
+            return;
         }
 
-        foreach( var x in content2.Headers ) {
-            foreach( var v in x.Value ) {
-                sb.AppendLineRN($"{x.Key}: {v}");
-            }
-        }
+        TryGetRealContent(content).LogContentHeaders(sb);
 
         //sb.Append("## response.Content: ").AppendLineRN(response.Content.GetType().FullName);
 
-        if( response.CanLogBody() ) {
+        if( checkBody && response.CanLogBody(content) == false )
+            return;
 
-            // 有些情况下可能读不到数据~~~~~~~~~~            
-            string body = response.Content.ReadBodyAsText();
-
-            if( body != null ) {
-                sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
-            }
+        // 有些情况下可能读不到数据~~~~~~~~~~
+        string body = content.ReadBodyAsText();
+        if( body != null ) {
+            sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
         }
     }
 
 
-    internal static bool CanLogBody(this HttpResponseMessage response)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static HttpContent TryGetRealContent(HttpContent content)
+    {
+        if( content != null && content.GetType().IsSubclassOf(s_type) ) {
+            FieldInfo field = s_type.GetField("_originalContent", BindingFlags.Instance | BindingFlags.NonPublic);
+            if( field != null ) {
+                return (HttpContent)field.GetValue(content);
+            }
+        }
+        return content;
+    }
+
+
+    internal static bool CanLogBody(this HttpResponseMessage response, HttpContent content)
     {
         if( LoggingOptions.HttpClient.LogResponseBody == false )
             return false;
@@ -83,22 +94,22 @@ internal static class HttpResponseSerializer
         if( LoggingLimit.HttpClient.MaxBodySize <= 0 )
             return false;
 
-        if( response.Content == null )
+        if( content == null )
             return false;
 
-        if( response.Content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
+        if( content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
             return false;
 
         if( response.Headers.TransferEncoding.Count > 0 )          // Transfer-Encoding: chunked
             return false;
 
-        if( response.Content.BodyIsText() == false )
+        if( content.BodyIsText() == false )
             return false;
 
         if( response.IsIgnoreBody() )
             return false;
 
-        long size = response.Content.GetBodySize();
+        long size = content.GetBodySize();
         if( size.IsBetween(1, LoggingLimit.HttpClient.MaxBodySize) == false )
             return false;
 

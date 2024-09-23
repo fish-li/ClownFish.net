@@ -57,15 +57,18 @@ internal class HttpClientEventData : ILoggingObject
     public HttpRequestMessage Request { get; set; }
     public HttpResponseMessage Response { get; set; }
 
+    public StreamContent RequestContent { get; set; }
+    public StreamContent ResponseContent { get; set; }
+
     public string ToLoggingText()
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            this.Request.ToLoggingText(sb);
+            this.Request.ToLoggingText(this.RequestContent, false, sb);
 
-            if( this.Response != null) {
+            if( this.Response != null ) {
                 sb.AppendLineRN(TextUtils.StepDetailSeparatedLine3);
-                this.Response.ToLoggingText(sb);
+                this.Response.ToLoggingText(this.ResponseContent, false, sb);
             }
             return sb.ToString();
         }
@@ -120,14 +123,19 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         if( httpPipeline != null && httpPipeline.HttpContext.IsTransfer )
             return;
 
-        // 为了方便记录完整日志，确保 Reqest.Body 可多次读取
-        TryReplaceContent(request);
-
         HttpClientEventData data = new HttpClientEventData {
             StartThreadId = Thread.CurrentThread.ManagedThreadId,
             StartTime = DateTime.Now,
             Request = request
         };
+
+        // 为了记录完整日志，确保 Reqest.Body 可多次读取，需要修改 HttpRequestMessage.Content
+        if( TryReplaceContent(request) is 1 or 3 ) {
+            // 记录日志时， HttpRequestMessage 可能被 dispose
+            // 所以这里增加一个引用，供写日志时访问
+            data.RequestContent = (StreamContent)request.Content;
+        }
+
         s_local.Value = data;
     }
 
@@ -206,8 +214,12 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
             }
         }
 
-        //TODO: 为了能让HttpResponseSerializer永远可读取ResponseBody，需要修改 HttpResponseMessage.Content
-        TryReplaceContent(data.Response);
+        // 为了能让HttpResponseSerializer永远可读取ResponseBody，需要修改 HttpResponseMessage.Content
+        if( TryReplaceContent(data.Response) == 1 ) {
+            // 注意：在写日志时 HttpClientEventData.ToLoggingText()，response.Content 已变成 System.Net.Http.EmptyContent
+            // 所以这里增加一个引用，供写日志时访问
+            data.ResponseContent = (StreamContent)data.Response.Content;
+        }
 
         step.Cmdx = data;
 
@@ -228,26 +240,26 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
 
         // 如果 body 本身就是 MemoryStream，那就不需要替换了
         if( request.Content.BodyIsMemoryStream() ) {
-            return 3;
+            return request.CanLogBody(request.Content) ? 3 : 4;
         }
 
-        // 如果参数不允许记录，或者根本没有 body，就忽略
-        if( request.CanLogBody() ) {
+        // 如果body满足日志记录条件，就创建一个副本并替换 body
+        if( request.CanLogBody(request.Content) ) {
 
-            // 替换 body
-            HttpContent content2 = CloneBody(request.Content);
+            StreamContent content2 = CloneBody(request.Content);
             request.Content.Dispose();
             request.Content = content2;
             return 1;
         }
         else {
+            // 如果参数不允许记录，或者根本没有 body，就忽略
             return 2;
         }
     }
 
-   
 
-    internal static void TryReplaceContent(HttpResponseMessage response)
+
+    internal static int TryReplaceContent(HttpResponseMessage response)
     {
         // 不能使用这段代码，因为有时候会出现异常：TODO: 以后再解决！
         // System.InvalidOperationException: The response is not fully buffered.
@@ -255,23 +267,27 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         //    at Azure.AI.OpenAI.Embeddings.FromResponse(Response response)
 
         if( response == null )
-            return;
+            return 0;
 
         if( LoggingOptions.HttpClient.MustLogResponse == false )
-            return;
-               
+            return -1;
 
-        // 如果参数不允许记录，或者根本没有 body，就忽略
-        if( response.CanLogBody() ) {
 
-            // 替换 body
-            HttpContent content2 = CloneBody(response.Content);
+        // 如果body满足日志记录条件，就创建一个副本并替换 body
+        if( response.CanLogBody(response.Content) ) {
+
+            StreamContent content2 = CloneBody(response.Content);
             response.Content.Dispose();
             response.Content = content2;
+            return 1;
+        }
+        else {
+            // 如果参数不允许记录，或者根本没有 body，就忽略
+            return 2;
         }
     }
 
-    internal static HttpContent CloneBody(HttpContent content)
+    internal static StreamContent CloneBody(HttpContent content)
     {
         MemoryStream ms = new MemoryStream();
 

@@ -12,7 +12,7 @@ internal static class HttpRequestSerializer
 
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            ToLoggingText(request, sb );
+            ToLoggingText(request, request.Content, true, sb);
             return sb.ToString();
         }
         finally {
@@ -20,7 +20,7 @@ internal static class HttpRequestSerializer
         }
     }
 
-    public static void ToLoggingText(this HttpRequestMessage request, StringBuilder sb)
+    public static void ToLoggingText(this HttpRequestMessage request, HttpContent content, bool checkBody, StringBuilder sb)
     {
         // HttpRequestMessage 写到日志有3个范围：
         // 1，记录 “请求行”， “请求头”，“请求体”    MustLogRequest == true && LogRequestBody == true
@@ -42,63 +42,68 @@ internal static class HttpRequestSerializer
             }
         }
 
-        if( request.Content == null )
+        if( content == null ) {
+            request.Content.LogContentHeaders(sb);
             return;
-
-        foreach( var x in request.Content.Headers ) {
-            foreach( var v in x.Value ) {
-                sb.AppendLineRN($"{x.Key}: {v}");
-            }
         }
+
+        content.LogContentHeaders(sb);
 
         //sb.Append("## request.Content: ").AppendLineRN(request.Content.GetType().FullName);
 
-        if( request.CanLogBody() ) {
+        if( checkBody && request.CanLogBody(content) == false )
+            return;
 
-            string body = request.Content.ReadBodyAsText();
-            if( body != null ) {
-                sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
+        string body = content.ReadBodyAsText();
+        if( body != null ) {
+            sb.AppendLineRN().AppendLineRN(body).AppendLineRN();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void LogContentHeaders(this HttpContent content, StringBuilder sb)
+    {
+        if( content != null ) {
+            foreach( var x in content.Headers ) {
+                foreach( var v in x.Value ) {
+                    sb.AppendLineRN($"{x.Key}: {v}");
+                }
             }
         }
     }
 
 
-    /// <summary>
-    /// 判断一个请求，它的body是否符合 “日志记录”  的要求： 1，有 body，2，body是文本格式，3，body大小在限定范围内
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    internal static bool CanLogBody(this HttpRequestMessage request)
+    internal static bool CanLogBody(this HttpRequestMessage request, HttpContent content)
     {
         if( LoggingOptions.HttpClient.LogRequestBody == false )
             return false;
 
-        if( LoggingLimit.HttpClient.MaxBodySize <= 0)
+        if( LoggingLimit.HttpClient.MaxBodySize <= 0 )
             return false;
 
-        if( request.Content == null )
+        if( content == null )
             return false;
 
         if( request.HasBody() == false )
             return false;
 
-        if( request.Content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
+        if( content.Headers.ContentEncoding.Count > 0 )   // Content-Encoding: gzip
             return false;
 
-        if( request.Content.BodyIsText() == false )
+        if( content.BodyIsText() == false )
             return false;
 
         if( request.IsIgnoreBody() )
             return false;
 
-        long size = request.Content.GetBodySize();
+        long size = content.GetBodySize();
         if( size.IsBetween(1, LoggingLimit.HttpClient.MaxBodySize) == false )
             return false;
 
         return true;
     }
 
-    
+
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
