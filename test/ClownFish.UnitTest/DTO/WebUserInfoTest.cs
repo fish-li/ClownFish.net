@@ -34,7 +34,7 @@ public class WebUserInfoTest
         Assert.IsNotNull(user1.UserData);
         Assert.IsNotNull(user1.ExtData);
         Assert.AreEqual(3, user1.GrayFlag);
-
+        Assert.AreEqual("TenantId=1111111111111111;UserId=333333333;UserName=55555555;UserRole=admin", user1.ToString());
         user1.Validate();
     }
 

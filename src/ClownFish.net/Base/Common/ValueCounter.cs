@@ -6,7 +6,7 @@
 public class ValueCounter
 {
     /// <summary>
-    /// 标签名称
+    /// 计数器名称
     /// </summary>
     public string Label { get; private set; }
 
@@ -18,10 +18,12 @@ public class ValueCounter
     /// <summary>
     /// 构造方法
     /// </summary>
-    /// <param name="label"></param>
-    public ValueCounter(string label = "xx")
+    /// <param name="label">计数器名称</param>
+    /// <param name="value">初始值</param>
+    public ValueCounter(string label = "xx", long value = 0)
     {
         this.Label = label;
+        this._count = value;
     }
 
 

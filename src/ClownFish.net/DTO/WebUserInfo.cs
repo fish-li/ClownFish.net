@@ -59,6 +59,16 @@ public sealed class WebUserInfo : IUserInfo, IValidate
     public int GrayFlag { get; set; }
 
     /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return $"TenantId={TenantId};UserId={UserId};UserName={UserName};UserRole={UserRole}";
+    }
+
+
+    /// <summary>
     /// 检查当前类型中的数据成员是否有效
     /// </summary>
     public void Validate()
