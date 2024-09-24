@@ -140,19 +140,22 @@ public class EndClientUserInfo : IUserInfo, IValidate
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Xml.Serialization.XmlIgnore]
     public string UserId => this.ClientId;
 
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Xml.Serialization.XmlIgnore]
     public string UserName => this.AppName ?? "UnknownClient";
 
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Xml.Serialization.XmlIgnore]
     public string UserRole => this.ClientRole ?? "Client";
 
 
