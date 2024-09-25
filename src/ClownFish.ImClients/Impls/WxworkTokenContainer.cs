@@ -16,6 +16,7 @@ internal class WxworkTokenContainer
 
         // https://developer.work.weixin.qq.com/document/path/91039
         HttpOption httpOption = new HttpOption {
+            Id = "Wxwork_GetAccessToken",
             Method = "GET",
             Url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken",
             Data = new {

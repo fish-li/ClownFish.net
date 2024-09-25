@@ -25,7 +25,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     }
 
     /// <summary>
-    /// 一个字符串，用于标识当前客户端请求。配合MockResult一起使用可用于测试时模拟返回结果。
+    /// 一个字符串，用于标识当前客户端请求，会记录到Oprlog日志中。配合MockResult一起使用可用于测试时模拟返回结果。
     /// </summary>
     public string Id { get; set; }
 
@@ -260,7 +260,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
 
     private Uri _requestUri;
     /// <summary>
-    /// 
+    /// GetReuestUri
     /// </summary>
     /// <returns></returns>
     public Uri GetReuestUri()
@@ -315,9 +315,21 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// </summary>
     /// <param name="username"></param>
     /// <param name="password"></param>
-    public void SetBasicAuthorization(string username, string password)
+    public HttpOption SetBasicAuthorization(string username, string password)
     {
         this.Headers.Add("Authorization", "Basic " + (username + ":" + password).ToBase64());
+        return this;
+    }
+
+    /// <summary>
+    /// SetId
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public HttpOption SetId(string id)
+    {
+        this.Id = id;
+        return this;
     }
 
 

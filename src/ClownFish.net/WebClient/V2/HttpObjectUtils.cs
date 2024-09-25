@@ -2,6 +2,7 @@
 
 using System.Net.Http;
 using System.Net.Sockets;
+using ClownFish.Http.Utils;
 using MyHttpOption = ClownFish.WebClient.HttpOption;
 
 
@@ -48,6 +49,9 @@ internal static class HttpObjectUtils
         // 构造请求体内容
         requestMessage.Content = CreateRequestMessageBody(httpOption);
 
+        if( httpOption.Id.HasValue() ) {
+            requestMessage.SetOptionValue(LoggingKeys.HttpOptionId, httpOption.Id);
+        }
 
         // 设置请求头
         foreach( var item in httpOption.Headers ) {
@@ -58,7 +62,6 @@ internal static class HttpObjectUtils
                 requestMessage.Headers.TryAddWithoutValidation(item.Name, item.Value);
             }
         }
-
 
         if( requestMessage.Headers.Contains(HttpHeaders.Request.UserAgent) == false ) {
             if( string.IsNullOrEmpty(httpOption.UserAgent) == false )

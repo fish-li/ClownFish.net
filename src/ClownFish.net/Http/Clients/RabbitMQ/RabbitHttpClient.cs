@@ -65,7 +65,7 @@ public sealed class RabbitHttpClient : IDisposable
 
         //  {"auto_delete":false,"durable":true,"arguments":{},"node":"rabbit@smacmullen"}
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
-        httpOption.Id = "ClownFish_RabbitHttpClient_QueueDeclare";
+        httpOption.Id = "Rabbit_QueueDeclare";
         httpOption.Method = "PUT";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -83,7 +83,7 @@ public sealed class RabbitHttpClient : IDisposable
 
         // { "routing_key":"my_routing_key","arguments":{ } }
         HttpOption httpOption = _option.GetHttpOption($"/api/bindings/{vhost}/e/{exchange}/q/{queue}");
-        httpOption.Id = "ClownFish_RabbitHttpClient_QueueBind";
+        httpOption.Id = "Rabbit_QueueBind";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -126,7 +126,7 @@ public sealed class RabbitHttpClient : IDisposable
             throw new ArgumentNullException(nameof(data));
 
         HttpOption httpOption = _option.GetHttpOption($"/api/exchanges/{vhost}/{exchange}/publish");
-        httpOption.Id = "ClownFish_RabbitHttpClient_SendMessage";
+        httpOption.Id = "Rabbit_SendMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -193,7 +193,7 @@ public sealed class RabbitHttpClient : IDisposable
     {
         string vhost = _option.VHost.UrlEncode();
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
-        httpOption.Id = "ClownFish_RabbitHttpClient_MessageCount";
+        httpOption.Id = "Rabbit_MessageCount";
 
         // RabbitMQ 这个接口的返回结构很不固定，很有可能会导致取不到结果，
         // 所以暂时也没有很好的办法对付这个老六
@@ -241,7 +241,7 @@ public sealed class RabbitHttpClient : IDisposable
         string vhost = _option.VHost.UrlEncode();
 
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}/get");
-        httpOption.Id = "ClownFish_RabbitHttpClient_GetMessage";
+        httpOption.Id = "Rabbit_GetMessage";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -269,7 +269,7 @@ public sealed class RabbitHttpClient : IDisposable
         string vhost = _option.VHost.UrlEncode();
 
         HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}/get");
-        httpOption.Id = "ClownFish_RabbitHttpClient_AckLast";
+        httpOption.Id = "Rabbit_AckLast";
         httpOption.Method = "POST";
         httpOption.Format = SerializeFormat.Json;
         httpOption.Data = new {
@@ -293,7 +293,7 @@ public sealed class RabbitHttpClient : IDisposable
     public void TestConnection()
     {
         HttpOption httpOption = _option.GetHttpOption("/api/overview");
-        httpOption.Id = "ClownFish_RabbitHttpClient_TestConnection";
+        httpOption.Id = "Rabbit_TestConnection";
 
         try {
             httpOption.Send();
@@ -309,7 +309,7 @@ public sealed class RabbitHttpClient : IDisposable
     //    string vhost = _option.VHost.UrlEncode();
 
     //    HttpOption httpOption = _option.GetHttpOption($"/api/queues/{vhost}/{queue}");
-    //    httpOption.Id = "ClownFish_RabbitHttpClient_DeleteQueue";
+    //    httpOption.Id = "Rabbit_DeleteQueue";
     //    httpOption.Method = "DELETE";
 
     //    httpOption.Send();

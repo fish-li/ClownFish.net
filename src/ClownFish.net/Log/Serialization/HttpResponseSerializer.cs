@@ -120,7 +120,7 @@ internal static class HttpResponseSerializer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool IsIgnoreBody(this HttpResponseMessage response)
     {
-        return response.RequestMessage?.GetRequestOption<string>(LoggingIgnoreNames.IgnoreResponseBody) == "1";
+        return response.RequestMessage?.GetOptionValue<string>(LoggingKeys.IgnoreResponseBody) == "1";
     }
 
 }

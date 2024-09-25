@@ -72,6 +72,7 @@ public sealed class WxWorkWebhookClient : IWebhookClient
     private HttpOption SendText0(string text)
     {
         return new HttpOption {
+            Id = "WxWorkWebhook_SendText",
             Method = "POST",
             Url = _webhookUrl,
             Format = SerializeFormat.Json,
@@ -114,6 +115,7 @@ public sealed class WxWorkWebhookClient : IWebhookClient
     private HttpOption SendMarkdown0(string text)
     {
         return new HttpOption {
+            Id = "WxWorkWebhook_SendMarkdown",
             Method = "POST",
             Url = _webhookUrl,
             Format = SerializeFormat.Json,

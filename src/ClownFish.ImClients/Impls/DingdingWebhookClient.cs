@@ -80,6 +80,7 @@ public sealed class DingdingWebhookClient : IWebhookClient
     private HttpOption SendText0(string text)
     {
         return new HttpOption {
+            Id = "DingdingWebhook_SendText",
             Method = "POST",
             Url = GetUrl(),
             Format = SerializeFormat.Json,
@@ -124,6 +125,7 @@ public sealed class DingdingWebhookClient : IWebhookClient
     private HttpOption SendMarkdown0(string text)
     {
         return new HttpOption {
+            Id = "DingdingWebhook_SendMarkdown",
             Method = "POST",
             Url = GetUrl(),
             Format = SerializeFormat.Json,

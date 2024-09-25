@@ -75,6 +75,7 @@ public sealed class FeishuWebhookClient : IWebhookClient
         string sign = GenSign(timestamp);
 
         return new HttpOption {
+            Id = "FeishuWebhook_SendText",
             Method = "POST",
             Url = _webhookUrl,
             Format = SerializeFormat.Json,
@@ -123,6 +124,7 @@ public sealed class FeishuWebhookClient : IWebhookClient
         string sign = GenSign(timestamp);
 
         return new HttpOption {
+            Id = "FeishuWebhook_SendMarkdown",
             Method = "POST",
             Url = _webhookUrl,
             Format = SerializeFormat.Json,

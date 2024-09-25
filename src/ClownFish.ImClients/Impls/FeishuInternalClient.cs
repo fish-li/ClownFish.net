@@ -68,6 +68,7 @@ internal class FeishuInternalClient
     private HttpOption SendText0(int receiveType, string receiveId, string text)
     {
         return new HttpOption {
+            Id = "Feishu_SendText",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -115,6 +116,7 @@ internal class FeishuInternalClient
                         }.ToJson();
 
         return new HttpOption {
+            Id = "Feishu_SendMarkdown",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -177,6 +179,7 @@ internal class FeishuInternalClient
     private HttpOption SendFile0(int receiveType, string receiveId, string fileId)
     {
         return new HttpOption {
+            Id = "Feishu_SendFile",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -232,6 +235,7 @@ internal class FeishuInternalClient
     {
         // https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/file/create
         return new HttpOption {
+            Id = "Feishu_UploadFile",
             Method = "POST",
             Url = "https://open.feishu.cn/open-apis/im/v1/files",
             Format = SerializeFormat.Multipart,
@@ -287,6 +291,7 @@ internal class FeishuInternalClient
     private HttpOption SendImage0(int receiveType, string receiveId, string imageId)
     {
         return new HttpOption {
+            Id = "Feishu_SendImage",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -328,6 +333,7 @@ internal class FeishuInternalClient
     {
         // https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/image/create
         return new HttpOption {
+            Id = "Feishu_UploadImage",
             Method = "POST",
             Url = "https://open.feishu.cn/open-apis/im/v1/images",
             Format = SerializeFormat.Multipart,
@@ -390,6 +396,7 @@ internal class FeishuInternalClient
         }.ToJson();
 
         return new HttpOption {
+            Id = "Feishu_SendCard",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,

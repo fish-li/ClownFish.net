@@ -67,6 +67,7 @@ public class FeishuGroupChatClient : IGroupChatClient
     {
         // https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/chat/create
         return new HttpOption {
+            Id = "Feishu_CreateChatGroup",
             Method = "POST",
             Url = "https://open.feishu.cn/open-apis/im/v1/chats?user_id_type=user_id",
             Format = SerializeFormat.Json,

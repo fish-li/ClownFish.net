@@ -14,6 +14,7 @@ internal class DingdingTokenContainer
 
         // https://open.dingtalk.com/document/orgapp-server/obtain-orgapp-token
         HttpOption httpOption = new HttpOption {
+            Id = "Dingding_GetAccessToken",
             Method = "GET",
             Url = "https://oapi.dingtalk.com/gettoken",
             Data = new {
@@ -21,7 +22,7 @@ internal class DingdingTokenContainer
                 appsecret = appSecret
             }
         };
-         
+
         XResult result = httpOption.ExecRPC<XResult>();
 
         token = result.Token;

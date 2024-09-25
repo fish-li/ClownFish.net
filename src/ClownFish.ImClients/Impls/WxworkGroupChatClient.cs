@@ -67,6 +67,7 @@ public class WxworkGroupChatClient : IGroupChatClient
     {
         // https://developer.work.weixin.qq.com/document/path/90245
         return new HttpOption {
+            Id = "Wxwork_CreateChatGroup",
             Method = "POST",
             Url = "https://qyapi.weixin.qq.com/cgi-bin/appchat/create",
             Format = SerializeFormat.Json,

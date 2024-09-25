@@ -31,10 +31,10 @@ public class RabbitHttpWriterTest
 
 
         LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_TestConnection", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Rabbit_SendMessage", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
@@ -55,9 +55,9 @@ public class RabbitHttpWriterTest
             t.Writers += ",RabbitHttp";
         }
 
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_QueueDeclare", ClownFish.Base.Void.Value, false);
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_QueueBind", ClownFish.Base.Void.Value, false);
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_TestConnection", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("Rabbit_QueueDeclare", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("Rabbit_QueueBind", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value, false);
         Assert.AreEqual(1, writer.InternalInit(config, "rabbit_config"));
     }
 
@@ -67,13 +67,13 @@ public class RabbitHttpWriterTest
         RabbitHttpWriter writer = new RabbitHttpWriter();
 
         LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_TestConnection", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 
         List<OprLog> list = new List<OprLog>();
         list.Add(new OprLog());
 
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Rabbit_SendMessage", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
@@ -87,7 +87,7 @@ public class RabbitHttpWriterTest
         RabbitHttpWriter writer = new RabbitHttpWriter();
 
         LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_TestConnection", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 
         List<InvokeLog> list = new List<InvokeLog>();
@@ -95,7 +95,7 @@ public class RabbitHttpWriterTest
             list.Add(new InvokeLog());
         }
 
-        HttpClientMockResults.SetMockResult("ClownFish_RabbitHttpClient_SendMessage", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("Rabbit_SendMessage", ClownFish.Base.Void.Value, false);
         long count3 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.Rabbit2WriteCount.Get();

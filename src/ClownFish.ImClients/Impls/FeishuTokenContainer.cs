@@ -14,6 +14,7 @@ internal sealed class FeishuTokenContainer
 
         // https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/g
         HttpOption httpOption = new HttpOption {
+            Id = "Feishu_GetAccessToken",
             Method = "POST",
             Url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
             Format = SerializeFormat.Json,

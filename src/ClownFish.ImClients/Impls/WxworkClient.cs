@@ -125,6 +125,7 @@ public class WxworkClient
         PushMsgType receiveType = prop?.GetValue(null) != null ? PushMsgType.GroupMsg : PushMsgType.UserMsg;
 
         HttpOption httpOption = new HttpOption {
+            Id = "Wxwork_SendData",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -148,6 +149,7 @@ public class WxworkClient
         PushMsgType receiveType = prop?.GetValue(null) != null ? PushMsgType.GroupMsg : PushMsgType.UserMsg;
 
         HttpOption httpOption = new HttpOption {
+            Id = "Wxwork_SendData",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -210,6 +212,7 @@ public class WxworkClient
     {
         // https://developer.work.weixin.qq.com/document/path/90253
         return new HttpOption {
+            Id = "Wxwork_UploadMedia",
             Method = "POST",
             Url = "https://qyapi.weixin.qq.com/cgi-bin/media/upload?type=" + mediaType,
             Format = SerializeFormat.Multipart,
@@ -237,6 +240,7 @@ public class WxworkClient
             throw new ArgumentNullException(nameof(userId));
 
         HttpOption request = new HttpOption {
+            Id = "Wxwork_GetUserInfo",
             Url = "https://qyapi.weixin.qq.com/cgi-bin/user/get",
             Data = new {
                 userid = userId
@@ -259,6 +263,7 @@ public class WxworkClient
             throw new ArgumentNullException(nameof(userId));
 
         HttpOption request = new HttpOption {
+            Id = "Wxwork_GetUserInfo",
             Url = "https://qyapi.weixin.qq.com/cgi-bin/user/get",
             Data = new {
                 userid = userId

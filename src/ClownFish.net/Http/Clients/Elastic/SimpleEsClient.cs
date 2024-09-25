@@ -65,6 +65,7 @@ public sealed class SimpleEsClient
     public HttpOption CreateHttpOption(string method, string url)
     {
         HttpOption httpOption = new HttpOption {
+            Id = nameof(SimpleEsClient),
             Method = method,
             Url = _option.Url + url,
             Timeout = GetTimeout()
@@ -149,7 +150,7 @@ public sealed class SimpleEsClient
         // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-index_.html
 
         HttpOption httpOption = new HttpOption {
-            Id = "ClownFish_SimpleEsClient_WriteOne",
+            Id = "Elasticsearch_WriteOne",
             Method = "POST",
             Url = _option.Url + $"/{index}/_create/{id}",
             Data = info.ToJson(EsJsonStyle),
@@ -258,7 +259,7 @@ public sealed class SimpleEsClient
         // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-bulk.html
 
         HttpOption httpOption = new HttpOption {
-            Id = "ClownFish_SimpleEsClient_WriteList",
+            Id = "Elasticsearch_WriteList",
             Method = "POST",
             Url = _option.Url + $"/{index}/_bulk",
             Data = dataList.ToMultiLineJson(EsJsonStyle),
@@ -350,7 +351,7 @@ public sealed class SimpleEsClient
     private HttpOption GetSearchHttpOption(string index, object body)
     {
         HttpOption httpOption = new HttpOption {
-            Id = "ClownFish_SimpleEsClient_Search",
+            Id = "Elasticsearch_Search",
             Method = "POST",
             Url = _option.Url + $"/{index.UrlEncode()}/_search?typed_keys=true",
             Format = SerializeFormat.Json,

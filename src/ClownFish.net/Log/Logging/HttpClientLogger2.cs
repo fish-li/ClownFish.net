@@ -179,7 +179,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
         // MS并没有将同步还是异步这个信息放在事件参数中，所以只能通过“是否切换线程”来判断是不是异步
         bool isAsync = Thread.CurrentThread.ManagedThreadId == data.StartThreadId;
         step.IsAsync = isAsync ? 0 : 1;
-        step.StepName = isAsync ? "SendHttpAsync" : "SendHttp";
+        step.StepName = data.Request.GetOptionValue<string>(LoggingKeys.HttpOptionId) ?? (isAsync ? "SendHttpAsync" : "SendHttp");
 
         if( data.Exception != null ) {
             step.SetException(data.Exception);

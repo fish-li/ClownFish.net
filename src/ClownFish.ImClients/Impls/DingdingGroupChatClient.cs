@@ -70,6 +70,7 @@ public class DingdingGroupChatClient : IGroupChatClient
     {
         // https://open.dingtalk.com/document/orgapp-server/create-group-session
         return new HttpOption {
+            Id = "Dingding_CreateChatGroup",
             Method = "POST",
             Url = "https://oapi.dingtalk.com/chat/create",
             Format = SerializeFormat.Json,

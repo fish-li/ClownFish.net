@@ -61,6 +61,7 @@ public sealed class RabbitOption : IValidate
                         ? this.HttpTimeoutMs.Value : HttpClientDefaults.RabbitHttpClientTimeout;
 
         HttpOption httpOption = new HttpOption {
+            Id = nameof(RabbitHttpClient),
             Url = $"http://{this.Server}:{port}{urlPath}",
             Timeout = timeout,
         };

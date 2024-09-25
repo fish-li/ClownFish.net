@@ -140,27 +140,8 @@ internal static class HttpRequestSerializer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool IsIgnoreBody(this HttpRequestMessage request)
     {
-        return request.GetRequestOption<string>(LoggingIgnoreNames.IgnoreRequestBody) == "1";
-    }
-
-
-    internal static T GetRequestOption<T>(this HttpRequestMessage request, string name)
-    {
-        if( request == null )
-            return default(T);
-
-        // 下面这个 Options 属性访问会导致创建一个 HttpRequestOptions 对象，其实是个很SB的设计，
-        // MS应该提供一个 TryGet 之类的设计的，免得在读取时白白创建一个对象。
-#if NET6_0_OR_GREATER
-        IDictionary<string, object> dict = request.Options;
-#else
-        IDictionary<string, object> dict = request.Properties;
-#endif
-        if( dict.TryGetValue(name, out object value) && value is T val )
-            return val;
-        else
-            return default(T);
-    }
+        return request.GetOptionValue<string>(LoggingKeys.IgnoreRequestBody) == "1";
+    }        
 }
 
 #endif

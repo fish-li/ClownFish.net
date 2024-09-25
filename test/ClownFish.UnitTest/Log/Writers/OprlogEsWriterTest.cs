@@ -31,7 +31,7 @@ public class OprlogEsWriterTest
 
         writer.InternalInit("es_conn");
 
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Elasticsearch_WriteList", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.EsWriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.EsWriteCount.Get();
@@ -56,7 +56,7 @@ public class OprlogEsWriterTest
         List<OprLog> list = new List<OprLog>();
         list.Add(new OprLog());
 
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", ClownFish.Base.Void.Value);
+        HttpClientMockResults.SetMockResult("Elasticsearch_WriteList", ClownFish.Base.Void.Value);
         long count3 = ClownFishCounters.Logging.EsWriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.EsWriteCount.Get();
@@ -92,7 +92,7 @@ public class OprlogEsWriterTest
             list.Add(new OprLog());
         }
 
-        HttpClientMockResults.SetMockResult("ClownFish_SimpleEsClient_WriteList", ClownFish.Base.Void.Value, false);
+        HttpClientMockResults.SetMockResult("Elasticsearch_WriteList", ClownFish.Base.Void.Value, false);
         long count3 = ClownFishCounters.Logging.EsWriteCount.Get();
         writer.WriteList(list);
         long count4 = ClownFishCounters.Logging.EsWriteCount.Get();

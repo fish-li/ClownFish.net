@@ -30,6 +30,7 @@ internal class WxworkInternalClient : WxworkClient
     private HttpOption SendText0(PushMsgType receiveType, string receiveId, string text)
     {
         return new HttpOption {
+            Id = "Wxwork_SendText",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -68,6 +69,7 @@ internal class WxworkInternalClient : WxworkClient
     private HttpOption SendMarkdown0(PushMsgType receiveType, string receiveId, string text)
     {
         return new HttpOption {
+            Id = "Wxwork_SendMarkdown",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -131,6 +133,7 @@ internal class WxworkInternalClient : WxworkClient
     private HttpOption SendImage0(PushMsgType receiveType, string receiveId, string mediaId)
     {
         return new HttpOption {
+            Id = "Wxwork_SendImage",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -173,6 +176,7 @@ internal class WxworkInternalClient : WxworkClient
     private HttpOption SendFile0(PushMsgType receiveType, string receiveId, string mediaId)
     {
         return new HttpOption {
+            Id = "Wxwork_SendFile",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -235,6 +239,7 @@ internal class WxworkInternalClient : WxworkClient
     private HttpOption SendCard0(PushMsgType receiveType, string receiveId, string title, string text, string href)
     {
         return new HttpOption {
+            Id = "Wxwork_SendCard",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,

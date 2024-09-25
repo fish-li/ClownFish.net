@@ -70,6 +70,7 @@ internal class DingdingInternalClient
     private HttpOption SendText0(int receiveType, string receiveId, string text)
     {
         return new HttpOption {
+            Id = "Dingding_SendText",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -109,6 +110,7 @@ internal class DingdingInternalClient
     private HttpOption SendMarkdown0(int receiveType, string receiveId, string text)
     {
         return new HttpOption {
+            Id = "Dingding_SendMarkdown",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -173,6 +175,7 @@ internal class DingdingInternalClient
     private HttpOption SendImage0(int receiveType, string receiveId, string mediaId)
     {
         return new HttpOption {
+            Id = "Dingding_SendImage",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -240,6 +243,7 @@ internal class DingdingInternalClient
     private HttpOption SendFile0(int receiveType, string receiveId, string mediaId)
     {
         return new HttpOption {
+            Id = "Dingding_SendFile",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
@@ -257,7 +261,7 @@ internal class DingdingInternalClient
         };
     }
 
-    
+
 
 
     /// <summary>
@@ -308,6 +312,7 @@ internal class DingdingInternalClient
 
         // https://open.dingtalk.com/document/orgapp-server/upload-media-files
         return new HttpOption {
+            Id = "Dingding_UploadMedia",
             Method = "POST",
             Url = "https://oapi.dingtalk.com/media/upload",
             Format = SerializeFormat.Multipart,
@@ -346,6 +351,7 @@ internal class DingdingInternalClient
     private HttpOption SendCard0(int receiveType, string receiveId, string title, string text, string href)
     {
         return new HttpOption {
+            Id = "Dingding_SendCard",
             Method = "POST",
             Url = GetUrl(receiveType),
             Format = SerializeFormat.Json,
