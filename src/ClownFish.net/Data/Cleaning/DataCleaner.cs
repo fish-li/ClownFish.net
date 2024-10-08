@@ -57,9 +57,7 @@ public sealed class DataCleaner
 
                 DataTable dataTable = LoadData();
 
-                if( dataTable.Rows.Count > 0 ) {
-                    sum += DeleteData(dataTable);
-                }
+                sum += DeleteData(dataTable);
 
                 if( dataTable.Rows.Count < _option.BatchRows )
                     break;
@@ -87,7 +85,7 @@ public sealed class DataCleaner
 
             dataTable.TableName = _option.TableName;
 
-            WriteLog("LOAD", $"batch={_batchId}, load {dataTable.Rows.Count} rows");
+            //WriteLog("LOAD", $"batch={_batchId}, load {dataTable.Rows.Count} rows");
             return dataTable;
         }
     }
@@ -95,6 +93,11 @@ public sealed class DataCleaner
 
     internal int DeleteData(DataTable dataTable)
     {
+        if( dataTable == null || dataTable.Rows.Count == 0 ) {
+            WriteLog("DELE", $"batch={_batchId}, delete 0 rows");
+            return 0;
+        }
+
         // 注意：这里的 “删除操作” 影响的记录范围 可能会大于 dataTable.Rows.Count
         // 因为在同一时刻，程序可能产生了多条数据，LoadData方法中由于加了 limit，所以同一时刻的数据可能会被切分到不同批次
         // 所以按时间去删除，范围就会不一样。
