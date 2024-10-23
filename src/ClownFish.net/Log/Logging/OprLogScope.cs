@@ -120,7 +120,9 @@ public sealed class OprLogScope : IDisposable
 
     void IDisposable.Dispose()
     {
-        this.Release();
+        if( _isNullInstance == false ) {
+            this.Release();
+        }
     }
 
     /// <summary>
@@ -128,7 +130,9 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     public void Suspend()
     {
-        _isSuspend = true;
+        if( _isNullInstance == false ) {
+            _isSuspend = true;
+        }
     }
 
     /// <summary>
@@ -136,7 +140,9 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     public void Restore()
     {
-        _isSuspend = false;
+        if( _isNullInstance == false ) {
+            _isSuspend = false;
+        }
     }
 
 
