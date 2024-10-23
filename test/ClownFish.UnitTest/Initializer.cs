@@ -66,10 +66,11 @@ public class UnitTestAppStartup : ConsoleAppStartup
         ClownFish.Log.Logging.DbLogger.Init();
         ClownFish.Log.Logging.HttpClientLogger.Init();
 
-        //#if NETCOREAPP
-        //        // support Encoding.GetEncoding("GB2312")
-        //        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-        //#endif
+#if NETCOREAPP
+        ClownFish.Log.Logging.HttpClientLogger2.Init();
+        // support Encoding.GetEncoding("GB2312")
+        //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
     }
 
     private static void InitClownFishData()

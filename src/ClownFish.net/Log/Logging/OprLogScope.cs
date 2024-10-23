@@ -11,15 +11,18 @@ public sealed class OprLogScope : IDisposable
 
     private Exception _exObject;
 
-    private bool _isEnd = false;
-
     private List<StepItem> _steps;
-
     internal List<StepItem> GetStepItems() => _steps;
 
     private List<NameTime> _logs;
-
     internal List<NameTime> GetLogs() => _logs;
+
+    private List<NameTime> _events;
+    /// <summary>
+    /// 记录一些时间序列，描述在什么时候开始执行什么操作，用于性能监控。
+    /// 此属性需要在要请求入口时赋值，如果属性为NULL表示不启用。
+    /// </summary>
+    public List<NameTime> GetEvents() => _events;
 
     /// <summary>
     /// 是否必须记录 HttpRequest/MessageObject 对象到日志中。 默认值：LoggingOptions.Http.MustLogRequest
@@ -31,21 +34,21 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     public OprLog OprLog { get; private set; }
 
+    private bool _isNullInstance = false;
+    private bool _isSuspend = false;
+    private bool _isEnd = false;
+
+    internal bool IsNullInstance => _isNullInstance;
 
     /// <summary>
-    /// 指示当前实例是否为“空实例”
+    /// 指示当前实例是否为“空实例”，或者为不可用状态
     /// </summary>
-    public bool IsNull { get; private set; }
+    public bool IsNull => _isNullInstance || _isSuspend;
 
-
-    private List<NameTime> _events;
     /// <summary>
-    /// 记录一些时间序列，描述在什么时候开始执行什么操作，用于性能监控。
-    /// 此属性需要在要请求入口时赋值，如果属性为NULL表示不启用。
+    /// 指示当前实例是否可记录日志
     /// </summary>
-    public List<NameTime> GetEvents() => _events;
-       
-
+    public bool CanLog => _isNullInstance == false && _isSuspend == false;
 
     /// <summary>
     /// 一个不与任何线程关联的 “空对象”。
@@ -53,7 +56,7 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     public static readonly OprLogScope NullObject = new OprLogScope {
         _isEnd = true,
-        IsNull = true,
+        _isNullInstance = true,
         OprLog = new OprLog()
     };
 
@@ -63,7 +66,6 @@ public sealed class OprLogScope : IDisposable
         // 这个类型必须配合 AsyncLocal 一起使用，因为对于性能监控这类操作，不可能指望用传递 OprLog 的方式来实现，
         // 所以这个类不允许在外部实例化，只允许用 Start 方法来创建。
     }
-
 
     /// <summary>
     /// 开启监控
@@ -99,6 +101,9 @@ public sealed class OprLogScope : IDisposable
             return NullObject;
         }
 
+        if( scope != null && scope._isSuspend )
+            return NullObject;
+
         // 说明：返回 NullObject 可以避免 NullReferenceException 的可能性，代码写起来也更容易。
         return scope ?? NullObject;
     }
@@ -109,13 +114,29 @@ public sealed class OprLogScope : IDisposable
     /// </summary>
     private void Release()
     {
-        s_local.Value = null;
         _isEnd = true;
+        s_local.Value = null;
     }
 
     void IDisposable.Dispose()
     {
         this.Release();
+    }
+
+    /// <summary>
+    /// 挂起日志监控
+    /// </summary>
+    public void Suspend()
+    {
+        _isSuspend = true;
+    }
+
+    /// <summary>
+    /// 恢复日志监控
+    /// </summary>
+    public void Restore()
+    {
+        _isSuspend = false;
     }
 
 
@@ -128,7 +149,7 @@ public sealed class OprLogScope : IDisposable
         if( step == null )
             return -1;
 
-        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         lock( _lockObject ) {
@@ -160,7 +181,7 @@ public sealed class OprLogScope : IDisposable
         if( name.IsNullOrEmpty() )
             return 0;
 
-        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         StepItem step = StepItem.CreateNew(start);
@@ -182,7 +203,7 @@ public sealed class OprLogScope : IDisposable
         if( message.IsNullOrEmpty() )
             return 0;
 
-        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         lock( _lockObject ) {
@@ -206,7 +227,7 @@ public sealed class OprLogScope : IDisposable
     /// <returns></returns>
     public int EnableFxEvent()
     {
-        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         lock( _lockObject ) {
@@ -223,14 +244,14 @@ public sealed class OprLogScope : IDisposable
     /// <param name="x"></param>
     public int AddFxEvent(NameTime x)
     {
-        if( _isEnd )  // 防止OprLogScope实例逃逸（被其它线程捕获）
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         if( _events == null )
             return 0;
 
         lock( _lockObject ) {
-            
+
             if( _events.Count < LoggingLimit.OprLog.FxEventsMaxCount ) {
                 _events.Add(x);
                 return 1;
@@ -251,7 +272,7 @@ public sealed class OprLogScope : IDisposable
         if( ex == null )
             return -1;
 
-        if( _isEnd )
+        if( _isEnd || _isSuspend )  // 防止OprLogScope实例逃逸（被其它线程捕获）
             return -2;
 
         _exObject = ex;
@@ -304,7 +325,7 @@ public sealed class OprLogScope : IDisposable
         if( _isEnd )
             return;
 
-        this.Release();       
+        this.Release();
 
         this.OprLog.IsLongTask = context.IsLongTask ? 1 : 0;
         this.OprLog.CalcTime(context.PerformanceThresholdMs, context.EndTime);

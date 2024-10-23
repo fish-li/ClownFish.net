@@ -178,7 +178,8 @@ internal static class HttpObjectUtils
     public static HttpClientHandler CreateClientHandler(MyHttpOption httpOption)
     {
         HttpClientHandler clientHandler = new HttpClientHandler();
-        clientHandler.AutomaticDecompression = DecompressionMethods.All;
+        
+        clientHandler.AutomaticDecompression = (DecompressionMethods)ClownFishOptions.HttpClient_DecompressionMethods;
 
         if( httpOption.Credentials != null )
             clientHandler.Credentials = httpOption.Credentials;

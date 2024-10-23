@@ -29,6 +29,10 @@ internal static class ClownFishOptions
 
     public static readonly int GCCollectPeriodSec = LocalSettings.GetInt("ClownFish_GCCollect_PeriodSec", 60);
 
+    // HttpClientHandler 的压缩设计的非常SB， （.net framework没有这个问题）
+    // 如果你设置为 DecompressionMethods.All ，那么就会出现3个Accept-Encoding请求头，
+    // 实际上，目前几乎都是使用 gzip，所以为了节约网络流量，所以就只支持 gzip
+    public static readonly int HttpClient_DecompressionMethods = LocalSettings.GetUInt("ClownFish_HttpClient_DecompressionMethods", 1);  // GZip
 }
 
 

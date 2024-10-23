@@ -130,14 +130,7 @@ public static class EnvUtils
         // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
 
         ApplicationName = GetApplicationName0();
-        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";
-
-        // 复杂部署场景
-        if( EnvUtils.IsInDocker ) {
-            // 示例：ClownFish.HttpClient/8.24.820.9/TxClientX/fish-debian12/Debian GNU-Linux 12 (bookworm)
-            string userAgent = $"ClownFish.HttpClient/{ConstValues.CurrentVersion}/{ApplicationName}/{HostName}/{OsUtils.GetOsName().Replace('/', '-')}";
-            ConstValues.SetHttpClientUserAgent(userAgent);
-        }
+        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";        
     }
 
     private static string GetRunEnvName()

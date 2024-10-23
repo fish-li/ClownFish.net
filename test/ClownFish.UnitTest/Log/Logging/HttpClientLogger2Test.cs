@@ -10,10 +10,6 @@ public class HttpClientLogger2Test
     // 模拟 HttpClient 发布事件
     private static readonly DiagnosticListener s_diagnosticSource = new DiagnosticListener("HttpHandlerDiagnosticListener");
 
-    static HttpClientLogger2Test()
-    {
-        HttpClientLogger2.Init();
-    }
 
     [TestMethod]
     public void Test1()

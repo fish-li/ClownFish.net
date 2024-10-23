@@ -81,7 +81,7 @@ public abstract class BasePipelineContext
 
     internal void DisposeOprLogScope()
     {
-        if( this.OprLogScope != null && this.OprLogScope.IsNull == false ) {
+        if( this.OprLogScope != null && this.OprLogScope.IsNullInstance == false ) {
             (this.OprLogScope as IDisposable).Dispose();
             this.OprLogScope = OprLogScope.NullObject;
         }

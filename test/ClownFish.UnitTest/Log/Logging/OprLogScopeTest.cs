@@ -4,7 +4,7 @@
 public class OprLogScopeTest
 {
     [TestMethod]
-    public async Task Test1()
+    public async Task Test_HttpLog()
     {
         MockRequestData requestData = new MockRequestData {
             HttpMethod = "GET",
@@ -227,4 +227,245 @@ public class OprLogScopeTest
         Assert.AreEqual(-2, scope.Log("xxxxxxxxxxxxxx"));
     }
 
+
+
+    [TestMethod]
+    public void Test_Suspend1()
+    {
+        OprLog oprLog = null;
+
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(OprLogScopeTest), "Test_Suspend1", 1) ) {
+            oprLog = ctx.OprLog;
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Thread.Sleep(10);
+
+            // 访问数据库，会记录2个操作步骤：OpenConnection, ExecuteScalar
+            using( DbContext dbContext = DbContext.Create("mysql") ) {
+                int x1 = dbContext.CPQuery.Create("select 1+1 as a").ExecuteScalar<int>();
+            }
+
+            // 下面的调用，不在乎是否能调用成功，只要发生调用即可
+            SendHttpRpc();
+
+            ShowSteps(ctx.OprLogScope);
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            // 由于 HttpClientLogger，HttpClientLogger2 同时在工作，所以发起HTTP调用时，会产生2个 StepItem，所以下面会做去重的操作
+            string[] oprNames = ctx.OprLogScope.GetStepItems().Select(x => x.StepName).Distinct().ToArray();
+            Assert.AreEqual(3, oprNames.Length);
+            Assert.IsTrue(oprNames.Contains("OpenConnection"));
+            Assert.IsTrue(oprNames.Contains("ExecuteScalar"));
+            Assert.IsTrue(oprNames.Contains("SendHttp"));
+        }
+
+        Assert.IsNotNull(oprLog.OprDetails);
+        Assert.IsTrue(oprLog.OprDetails.Length > 0);
+        //Console.WriteLine(oprLog.OprDetails);
+
+#if NETCOREAPP
+        string details = BrotliHelper.Decompress(oprLog.OprDetails);
+        Assert.IsTrue(details.Contains("[StepName]: OpenConnection"));
+        Assert.IsTrue(details.Contains("[StepName]: ExecuteScalar"));
+        Assert.IsTrue(details.Contains("[StepName]: SendHttp"));
+        Assert.IsTrue(details.Contains("http://www.xxxxxxxxxx.com/test1.aspx"));
+#endif
+
+    }
+
+    private void SendHttpRpc()
+    {
+        HttpOption httpOption = new HttpOption {
+            Url = "http://www.xxxxxxxxxx.com/test1.aspx",
+            Timeout = 100
+        };
+
+        try {
+            _ = httpOption.GetResult();
+        }
+        catch { }
+    }
+
+    private void ShowSteps(OprLogScope scope)
+    {
+#if NETCOREAPP
+        var list = scope.GetStepItems();
+        foreach( var item in list ) {
+            Console.WriteLine("Step: " + item.ToJson());
+            if( item.Cmdx != null ) {
+                Console.WriteLine("   " + item.Cmdx.GetType().FullName);
+                if( item.Cmdx is HttpClientEventData httpdata ) {
+                    Console.WriteLine("   " + httpdata.Request.RequestUri.ToString());
+                }
+                if( item.Cmdx is RequestFinishedEventArgs requestArgs ) {
+                    Console.WriteLine("   " + requestArgs.Request.RequestUri.ToString());
+                }
+            }
+        }
+#endif
+    }
+
+    [TestMethod]
+    public void Test_Suspend2()
+    {
+        OprLog oprLog = null;
+
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(OprLogScopeTest), "Test_Suspend1", 1) ) {
+            oprLog = ctx.OprLog;
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Thread.Sleep(10);
+
+            // 访问数据库，会记录2个操作步骤：OpenConnection, ExecuteScalar
+            using( DbContext dbContext = DbContext.Create("mysql") ) {
+                int x1 = dbContext.CPQuery.Create("select 1+1 as a").ExecuteScalar<int>();
+            }
+
+            ctx.OprLogScope.Suspend();         // 注意这个调用
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            // 下面的调用，不在乎是否能调用成功，只要发生调用即可
+            SendHttpRpc();
+            ctx.OprLogScope.Restore();
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            string[] oprNames = ctx.OprLogScope.GetStepItems().Select(x => x.StepName).ToArray();
+            Assert.AreEqual(2, oprNames.Length);                       // 这里变成 2
+            Assert.IsTrue(oprNames.Contains("OpenConnection"));
+            Assert.IsTrue(oprNames.Contains("ExecuteScalar"));
+        }
+
+        Assert.IsNotNull(oprLog.OprDetails);
+        Assert.IsTrue(oprLog.OprDetails.Length > 0);
+
+#if NETCOREAPP
+        string details = BrotliHelper.Decompress(oprLog.OprDetails);
+        Assert.IsTrue(details.Contains("[StepName]: OpenConnection"));
+        Assert.IsTrue(details.Contains("[StepName]: ExecuteScalar"));
+        Assert.IsFalse(details.Contains("[StepName]: SendHttp"));
+        Assert.IsFalse(details.Contains("http://www.xxxxxxxxxx.com/test1.aspx"));
+#endif
+    }
+
+    [TestMethod]
+    public void Test_Suspend3()
+    {
+        OprLog oprLog = null;
+
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(OprLogScopeTest), "Test_Suspend1", 1) ) {
+            oprLog = ctx.OprLog;
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Thread.Sleep(10);
+
+            ctx.OprLogScope.Suspend();         // 注意这个调用
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            // 访问数据库，会记录2个操作步骤：OpenConnection, ExecuteScalar
+            using( DbContext dbContext = DbContext.Create("mysql") ) {
+                int x1 = dbContext.CPQuery.Create("select 1+1 as a").ExecuteScalar<int>();
+            }
+
+            ctx.OprLogScope.Restore();
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            // 下面的调用，不在乎是否能调用成功，只要发生调用即可
+            SendHttpRpc();
+
+            // 由于 HttpClientLogger，HttpClientLogger2 同时在工作，所以发起HTTP调用时，会产生2个 StepItem，所以下面会做去重的操作
+            string[] oprNames = ctx.OprLogScope.GetStepItems().Select(x => x.StepName).Distinct().ToArray();
+            Assert.AreEqual(1, oprNames.Length);
+            Assert.IsTrue(oprNames.Contains("SendHttp"));
+        }
+
+        Assert.IsNotNull(oprLog.OprDetails);
+        Assert.IsTrue(oprLog.OprDetails.Length > 0);
+
+#if NETCOREAPP
+        string details = BrotliHelper.Decompress(oprLog.OprDetails);
+        Assert.IsFalse(details.Contains("[StepName]: OpenConnection"));
+        Assert.IsFalse(details.Contains("[StepName]: ExecuteScalar"));
+        Assert.IsTrue(details.Contains("[StepName]: SendHttp"));
+        Assert.IsTrue(details.Contains("http://www.xxxxxxxxxx.com/test1.aspx"));
+#endif
+    }
+
+
+    [TestMethod]
+    public void Test_Suspend4()
+    {
+        OprLog oprLog = null;
+
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(OprLogScopeTest), "Test_Suspend1", 1) ) {
+            oprLog = ctx.OprLog;
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Thread.Sleep(10);
+
+            ctx.OprLogScope.Suspend();         // 注意这个调用
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            // 访问数据库，会记录2个操作步骤：OpenConnection, ExecuteScalar
+            using( DbContext dbContext = DbContext.Create("mysql") ) {
+                int x1 = dbContext.CPQuery.Create("select 1+1 as a").ExecuteScalar<int>();
+            }            
+
+            // 下面的调用，不在乎是否能调用成功，只要发生调用即可
+            SendHttpRpc();
+
+            ctx.OprLogScope.Restore();
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Assert.IsNull(ctx.OprLogScope.GetStepItems());   // #######
+        }
+
+        Assert.AreEqual("", oprLog.OprDetails);
+    }
+
+    [TestMethod]
+    public void Test_Suspend5()
+    {
+        OprLog oprLog = null;
+
+        using( CodeSnippetContext ctx = new CodeSnippetContext(typeof(OprLogScopeTest), "Test_Suspend1", 1) ) {
+            oprLog = ctx.OprLog;
+
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            Thread.Sleep(10);            
+
+            // 访问数据库，会记录2个操作步骤：OpenConnection, ExecuteScalar
+            using( DbContext dbContext = DbContext.Create("mysql") ) {
+                int x1 = dbContext.CPQuery.Create("select 1+1 as a").ExecuteScalar<int>();
+            }
+
+            // 下面的调用，不在乎是否能调用成功，只要发生调用即可
+            SendHttpRpc();
+
+            ctx.OprLogScope.Suspend();         // 注意这个调用，但是后面没有调用 Restore
+
+            Assert.AreEqual(ctx.OprLogScope.CanLog, !ctx.OprLogScope.IsNull);
+
+            int x2 = ctx.OprLogScope.AddStep(DateTime.Now, "abc");
+            Assert.AreEqual(-2, x2);
+
+            int x3 = ctx.OprLogScope.AddFxEvent(new NameTime("x3", DateTime.Now));
+            Assert.AreEqual(-2, x3);
+
+            int x4 = ctx.OprLogScope.Log("xxxxxxxxxxxxxx");
+            Assert.AreEqual(-2, x4);
+
+            int x5 = ctx.OprLogScope.AddStep(new StepItem { StepName = "xxxxx" });
+            Assert.AreEqual(-2, x5);
+
+            // 由于 HttpClientLogger，HttpClientLogger2 同时在工作，所以发起HTTP调用时，会产生2个 StepItem，所以下面会做去重的操作
+            string[] oprNames = ctx.OprLogScope.GetStepItems().Select(x => x.StepName).Distinct().ToArray();
+            Assert.AreEqual(3, oprNames.Length);
+            Assert.IsTrue(oprNames.Contains("OpenConnection"));
+            Assert.IsTrue(oprNames.Contains("ExecuteScalar"));
+            Assert.IsTrue(oprNames.Contains("SendHttp"));
+        }
+
+        Assert.IsNull(oprLog.OprDetails);   // ###### 没有调用 Restore() 导致日志在最后没有执行保存操作，OprDetails没有机会赋值
+    }
 }

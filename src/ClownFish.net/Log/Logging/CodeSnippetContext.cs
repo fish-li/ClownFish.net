@@ -49,8 +49,9 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
                 // 记录日志(OprLog + InvokeLog)
                 this.SaveLog();
             }
-            this.DisposeOprLogScope();
         }
+
+        this.DisposeOprLogScope();
     }
 
 
