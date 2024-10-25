@@ -55,7 +55,7 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
 
 
         OprLogScope scope = httpContext.PipelineContext.OprLogScope;
-        if( scope.IsNull == false ) {
+        if( scope.IsNullInstance == false ) {
 
             // 填充 HTTP 相关信息
             OprLog log = scope.OprLog;

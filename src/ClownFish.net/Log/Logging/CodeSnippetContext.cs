@@ -44,11 +44,9 @@ public sealed class CodeSnippetContext : BasePipelineContext, IDisposable
     {
         this.End();
 
-        if( this.OprLogScope.IsNull == false ) {
-            if( EnableLog ) {
-                // 记录日志(OprLog + InvokeLog)
-                this.SaveLog();
-            }
+        if( EnableLog && this.OprLogScope.IsNullInstance == false ) {
+            // 记录日志(OprLog + InvokeLog)
+            this.SaveLog();
         }
 
         this.DisposeOprLogScope();

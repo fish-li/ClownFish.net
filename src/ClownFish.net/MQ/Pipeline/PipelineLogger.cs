@@ -33,7 +33,7 @@ internal static class PipelineLogger
 
 
         OprLogScope scope = context.OprLogScope;
-        if( scope.IsNull == false ) {
+        if( scope.IsNullInstance == false ) {
             scope.SetException(context.LastException);
             try {
                 scope.SaveOprLog(context);

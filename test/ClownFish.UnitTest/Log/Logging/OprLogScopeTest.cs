@@ -466,6 +466,15 @@ public class OprLogScopeTest
             Assert.IsTrue(oprNames.Contains("SendHttp"));
         }
 
-        Assert.IsNull(oprLog.OprDetails);   // ###### 没有调用 Restore() 导致日志在最后没有执行保存操作，OprDetails没有机会赋值
+        Assert.IsNotNull(oprLog.OprDetails);
+        Assert.IsTrue(oprLog.OprDetails.Length > 0);
+
+#if NETCOREAPP
+        string details = BrotliHelper.Decompress(oprLog.OprDetails);
+        Assert.IsTrue(details.Contains("[StepName]: OpenConnection"));
+        Assert.IsTrue(details.Contains("[StepName]: ExecuteScalar"));
+        Assert.IsTrue(details.Contains("[StepName]: SendHttp"));
+        Assert.IsTrue(details.Contains("http://www.xxxxxxxxxx.com/test1.aspx"));
+#endif
     }
 }
