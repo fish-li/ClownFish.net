@@ -103,14 +103,10 @@ public partial class OprLog
             this.Module = a1?.Module ?? controllerType.Namespace;
             this.Controller = a1?.Name ?? controllerType.Name;
             this.Action = a2?.Name ?? actionMethod.Name;
-
-            if( this.OprName.IsNullOrEmpty() ) {
-                this.OprName = "HttRequest";
-            }
         }
 
         if( this.OprName.IsNullOrEmpty() ) {
-            this.OprName = "req";
+            this.OprName = "http";
         }
     }
 

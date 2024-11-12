@@ -1,7 +1,10 @@
 ﻿namespace ClownFish.WebClient;
 
 /// <summary>
-/// 表示在HTTP调用时发生的远程服务端异常。例如：HTTP 404, HTTP500 之类的异常。
+/// 表示在HTTP调用时发生的异常，包括来自客户端和服务端的异常，
+/// 通常客户端出现的异常有：HTTP调用超时，网络不通，或者URL地址无效，等等。
+/// 服务端的异常包含有：HTTP 404, HTTP500,502,503 之类的异常。
+/// 
 /// 这个异常类型解决了二个问题：
 /// 1、WebException异常消息Message太笼统，没有任何价值，不利于排查问题。
 /// 2、Response属性的内容编码不确定（ASP.NET 采用UTF-8，IIS采用GB2312），直接获取异常页面内容时容易出现乱码问题。
@@ -31,7 +34,7 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
         if( statusCode == 0 )
             statusCode = 500;
 
-        return StatusCodeUtils.GetStatusCodeForRemoteWebException(statusCode);
+        return StatusCodeUtils.GetStatusCodeForRemoteWebException(statusCode);   // 例如 401 => 701
     }
 
     /// <summary>
