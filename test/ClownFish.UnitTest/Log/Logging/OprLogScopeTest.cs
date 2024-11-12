@@ -29,7 +29,7 @@ public class OprLogScopeTest
 
             OprLog log = oprLogScope.OprLog;
             Assert.AreEqual("http", log.OprKind);
-            Assert.AreEqual("req", log.OprName);
+            Assert.AreEqual("http", log.OprName);
             Assert.AreEqual(1, log.HasError);
             Assert.AreEqual(1, log.IsSlow);
             Assert.AreEqual("ClownFish.Data.DbExceuteException", log.ExType);

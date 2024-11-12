@@ -164,7 +164,7 @@ public class OprLogTest
             await mock.ProcessRequest();
 
             OprLog log = mock.PipelineContext.OprLogScope.OprLog;
-            Assert.AreEqual("req", log.OprName);
+            Assert.AreEqual("http", log.OprName);
         }
     }
 
@@ -253,8 +253,7 @@ public class OprLogTest
         Assert.AreEqual(thisType.Namespace, log.Module);
         Assert.AreEqual(thisType.Name, log.Controller);
         Assert.AreEqual(method.Name, log.Action);
-        Assert.AreEqual($"HttRequest", log.OprName);
-        //Assert.AreEqual("HttpRequest", log.OprName);
+        Assert.AreEqual("http", log.OprName);
     }
 
 
@@ -286,8 +285,7 @@ public class OprLogTest
         Assert.AreEqual("测试模块A1", log.Module);
         Assert.AreEqual("测试类型B1", log.Controller);
         Assert.AreEqual("功能点C1", log.Action);
-        Assert.AreEqual($"HttRequest", log.OprName);
-        //Assert.AreEqual("HttpRequest", log.OprName);
+        Assert.AreEqual("http", log.OprName);
     }
 
 
@@ -311,7 +309,7 @@ public class OprLogTest
         Assert.IsNull(log.Module);
         Assert.IsNull(log.Controller);
         Assert.IsNull(log.Action);
-        Assert.AreEqual("req", log.OprName);
+        Assert.AreEqual("http", log.OprName);
     }
 
 

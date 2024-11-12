@@ -33,6 +33,9 @@ internal static class ClownFishOptions
     // 如果你设置为 DecompressionMethods.All ，那么就会出现3个Accept-Encoding请求头，
     // 实际上，目前几乎都是使用 gzip，所以为了节约网络流量，所以就只支持 gzip
     public static readonly int HttpClient_DecompressionMethods = LocalSettings.GetUInt("ClownFish_HttpClient_DecompressionMethods", 1);  // GZip
+
+
+    public static readonly int HttpClient_GzipThreshold = LocalSettings.GetUInt("ClownFish_HttpClient_GzipThreshold", 1024);
 }
 
 

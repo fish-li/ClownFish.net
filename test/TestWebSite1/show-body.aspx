@@ -6,8 +6,13 @@
         base.OnPreLoad(e);
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("Content-Type: ").AppendLine(this.Request.ContentType);
-        sb.Append("ContentLength: ").AppendLine(this.Request.ContentLength.ToString());
+
+        foreach( string name in this.Request.Headers.AllKeys ) {
+            string[] values = this.Request.Headers.GetValues(name);
+            foreach( string value in values ) {
+                sb.Append(name).Append(": ").AppendLine(value);
+            }
+        }
         sb.AppendLine();
 
         sb.AppendLine(GetRequestBody());
@@ -26,12 +31,13 @@
         if( hasBody == false )
             return null;
 
+        string contentEncoding = this.Request.Headers["Content-Encoding"];
         bool bodyIsText = contentType.StartsWith("text/")
                         || contentType.StartsWith("application/json")
                         || contentType.StartsWith("application/xml")
                         || contentType.StartsWith("application/x-www-form-urlencoded");
 
-        if( bodyIsText ) {
+        if( bodyIsText && string.IsNullOrEmpty(contentEncoding) ) {
             this.Request.InputStream.Position = 0;
             using( var reader = new System.IO.StreamReader(this.Request.InputStream, Encoding.UTF8) ) {
                 return reader.ReadToEnd();

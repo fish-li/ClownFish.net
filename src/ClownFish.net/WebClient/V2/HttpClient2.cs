@@ -67,6 +67,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
     {
         // 创建请求消息对象，包含设置提交数据
         this.BeforeCreateRequest();
+
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
         bool clientFromCache = this.HttpOption.IsClientEnableCached();
@@ -102,6 +103,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
     {
         // 创建请求消息对象，包含设置提交数据
         this.BeforeCreateRequest();
+
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
         bool clientFromCache = this.HttpOption.IsClientEnableCached();

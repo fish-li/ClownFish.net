@@ -144,25 +144,24 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_GzipJson()
     {
-        var data = new NameValue { Name = "abc", Value = "123" };
-        string json = data.ToJson();
-        byte[] jsonGzip = json.ToGzip();
+        var data = new NameValue { Name = "abc", Value = new string('x', 2048) };
 
         HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request2.aspx",
-            Data = jsonGzip,
-            Format = SerializeFormat.None
+            Data = data,
+            Format = SerializeFormat.Json,
+            AutoGzipUpload = true
         };
-        httpOption.Headers.Add("Content-Type", "application/json");
-        httpOption.Headers.Add("Content-Encoding", "gzip");
 
         string text = httpOption.GetResult();
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type = application/json"));
         Assert.IsTrue(text.Contains("Content-Encoding = gzip"));
-        Assert.IsTrue(text.Contains("Content-Length = 45"));
+
+        string base64 = data.ToJson().ToGzip().ToBase64();
+        Assert.IsTrue(text.Contains(base64));
     }
 
 

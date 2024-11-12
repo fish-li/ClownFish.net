@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ClownFish.UnitTest.WebClient;
 
@@ -499,4 +501,90 @@ Host=www.fish-test.com
     }
 #endif
 
+
+    [TestMethod]
+    public void Test_Gzip_Text_2048()
+    {
+        string text = new string('中', 2048);
+
+        HttpOption http = new HttpOption {
+            Method = "POST",
+            Url = "http://www.fish-test.com/show-body.aspx",
+            Data = text,
+            Format = SerializeFormat.Text
+        };
+
+        string response1 = http.GetResult();
+
+        Assert.IsTrue(response1.Contains("Content-Type: text/plain"));
+        Assert.IsFalse(response1.Contains("Content-Encoding: gzip"));
+
+        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(response1);
+
+        Assert.IsTrue(response1.Contains(text));
+
+
+        // ==============================================================================
+
+        http.Finished = false;
+        http.AutoGzipUpload = true;
+
+        string response2 = http.GetResult();
+        
+        Assert.IsTrue(response2.Contains("Content-Type: text/plain"));
+        Assert.IsTrue(response2.Contains("Content-Encoding: gzip"));
+
+        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(response2);
+
+        Assert.IsFalse(response2.Contains(text));
+
+        string text2 = text.ToGzip().ToBase64();
+        Assert.IsTrue(response2.Contains(text2));
+    }
+
+
+
+    [TestMethod]
+    public void Test_Gzip_Json_2048()
+    {
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        HttpOption http = new HttpOption {
+            Method = "POST",
+            Url = "http://www.fish-test.com/show-body.aspx",
+            Data = data,
+            Format = SerializeFormat.Json
+        };
+
+        string response1 = http.GetResult();
+
+        Assert.IsTrue(response1.Contains("Content-Type: application/json"));
+        Assert.IsFalse(response1.Contains("Content-Encoding: gzip"));
+
+        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(response1);
+
+        Assert.IsTrue(response1.Contains(data.Value));
+
+
+        // ==============================================================================
+
+        http.Finished = false;
+        http.AutoGzipUpload = true;
+
+        string response2 = http.GetResult();
+
+        Assert.IsTrue(response2.Contains("Content-Type: application/json"));
+        Assert.IsTrue(response2.Contains("Content-Encoding: gzip"));
+
+        Console.WriteLine("------------------------------------------------");
+        Console.WriteLine(response2);
+
+        Assert.IsFalse(response2.Contains(data.Value));
+
+        string text2 = data.ToJson().ToGzip().ToBase64();
+        Assert.IsTrue(response2.Contains(text2));
+    }
 }

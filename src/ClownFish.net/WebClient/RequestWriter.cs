@@ -6,27 +6,29 @@ internal struct RequestWriter
 
     public string ContentType { get; private set; }
 
+    public bool IsGzip { get; private set; }
 
-    public void Write(Stream stream, object data, SerializeFormat format)
+
+    public void Write(Stream stream, object data, SerializeFormat format, bool autoGzip = false)
     {
         if( stream == null || data == null )
             return;
 
         switch( format ) {
             case SerializeFormat.Text:
-                WriteAsTextFormat(stream, data);
+                WriteAsTextFormat(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Json:
-                WriteAsJsonFormat(stream, data);
+                WriteAsJsonFormat(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Json2:
-                WriteAsJson2Format(stream, data);
+                WriteAsJson2Format(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Xml:
-                WriteAsXmlFormat(stream, data);
+                WriteAsXmlFormat(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Form:
@@ -44,7 +46,19 @@ internal struct RequestWriter
         }
     }
 
-    private void WriteText(Stream stream, string text)
+    private void WriteText2(Stream stream, string text, bool autoGzip)
+    {
+        if( autoGzip && text.Length > ClownFishOptions.HttpClient_GzipThreshold ) {
+            byte[] gzipData = text.ToGzip();
+            WriteBinary(stream, gzipData);    // WriteText2
+            IsGzip = true;
+        }
+        else {
+            WriteText(stream, text);        // WriteText2
+        }
+    }
+
+    private static void WriteText(Stream stream, string text)
     {
         if( text != null && text.Length > 0 ) {
             byte[] bb = s_defaultEncoding.GetBytes(text);
@@ -55,14 +69,14 @@ internal struct RequestWriter
         }
     }
 
-    private void WriteBinary(Stream stream, byte[] bb)
+    private static void WriteBinary(Stream stream, byte[] bb)
     {
         if( bb != null && bb.Length > 0 ) {
             stream.Write(bb, 0, bb.Length);
         }
     }
 
-    private void WriteBinary(Stream destStream, Stream srcStream)
+    private static void WriteBinary(Stream destStream, Stream srcStream)
     {
         if( srcStream == null )
             return;
@@ -73,44 +87,45 @@ internal struct RequestWriter
         srcStream.CopyTo(destStream);
     }
 
-    private void WriteAsTextFormat(Stream stream, object data)
+    private void WriteAsTextFormat(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = RequestContentType.Text;
-        WriteText(stream, data.ToString());
+        string text = data.ToString();
+        WriteText2(stream, text, autoGzip);    // text
     }
 
-    private void WriteAsJsonFormat(Stream stream, object data)
+    private void WriteAsJsonFormat(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = RequestContentType.Json;
         string text = (data.GetType() == typeof(string))
                         ? (string)data
                         : JsonExtensions.ToJson(data);
-        WriteText(stream, text);
+        WriteText2(stream, text, autoGzip);    // json
     }
 
-    private void WriteAsJson2Format(Stream stream, object data)
+    private void WriteAsJson2Format(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = RequestContentType.Json;
         string text = (data.GetType() == typeof(string))
                         ? (string)data
                         : JsonExtensions.ToJson(data, JsonStyle.KeepType);    // 序列化时保留类型信息
-        WriteText(stream, text);
+        WriteText2(stream, text, autoGzip);    // json2
     }
 
-    private void WriteAsXmlFormat(Stream stream, object data)
+    private void WriteAsXmlFormat(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = RequestContentType.Xml;
         string text = (data.GetType() == typeof(string))
                             ? (string)data
                              : XmlHelper.XmlSerialize(data, Encoding.UTF8);
-        WriteText(stream, text);
+        WriteText2(stream, text, autoGzip);    // xml
     }
 
     private void WriteAsFormFormat(Stream stream, object data)
     {
         if( data.GetType() == typeof(string) ) {
             this.ContentType = RequestContentType.Form;
-            WriteText(stream, (string)data);
+            WriteText(stream, (string)data);   // 这里不做gzip压缩
         }
         else {
             FormDataCollection form = FormDataCollection.Create(data);
@@ -128,11 +143,11 @@ internal struct RequestWriter
     {
         if( data.GetType() == typeof(byte[]) ) {
             this.ContentType = RequestContentType.Binary;
-            WriteBinary(stream, (byte[])data);
+            WriteBinary(stream, (byte[])data);     // WriteAsBinFormat
         }
         else if( data is Stream ) {
             this.ContentType = RequestContentType.Binary;
-            WriteBinary(stream, (Stream)data);
+            WriteBinary(stream, (Stream)data);     // WriteAsBinFormat
         }
         else {
             throw new NotSupportedException();
@@ -146,13 +161,13 @@ internal struct RequestWriter
         Type dataType = data.GetType();
 
         if( dataType == typeof(string) ) {
-            WriteText(stream, (string)data);
+            WriteText(stream, (string)data);       // 这里不做gzip压缩
         }
         else if( dataType == typeof(byte[]) ) {
-            WriteBinary(stream, (byte[])data);
+            WriteBinary(stream, (byte[])data);     // WriteAsUnknownFormat
         }
         else if( data is Stream ) {
-            WriteBinary(stream, (Stream)data);
+            WriteBinary(stream, (Stream)data);     // WriteAsUnknownFormat
         }
         else {
             throw new NotSupportedException();

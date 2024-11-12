@@ -213,6 +213,12 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     public bool AutoDecompressResponse { get; set; }
 
 
+    /// <summary>
+    /// 上传数据时，是否【尽量】采用gzip压缩，仅对文本类数据尝试启用gzip，包含：text, json, xml
+    /// </summary>
+    public bool AutoGzipUpload { get; set; }
+
+
 #if NETFRAMEWORK
     /// <summary>
     /// Request对象创建完成后的回调委托
@@ -384,7 +390,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     }
 
 
-    private string GetPostBodyAsString(int mode)
+    private string GetPostBodyAsString(int mode)   // 用于生成日志
     {
         if( mode == 0 )
             return null;
@@ -404,7 +410,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
 
             RequestWriter writer = new RequestWriter();
-            writer.Write(ms, data, this.Format);
+            writer.Write(ms, data, this.Format, false);   // 生成日志时不做gzip
 
             if( HttpUtils.RequestBodyIsText(contetType) ) {
                 return Encoding.UTF8.GetString(ms.ToArray());

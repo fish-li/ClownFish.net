@@ -15,7 +15,7 @@ namespace ClownFish.WebClient.V1;
 /// var result = option.GetResult();
 /// </example>
 internal sealed class HttpClient : BaseHttpClient
-{ 
+{
     /// <summary>
     /// 构造方法
     /// </summary>
@@ -33,6 +33,9 @@ internal sealed class HttpClient : BaseHttpClient
     /// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
     public override T Send<T>()
     {
+        // 触发事件，允许在发送请求前修改某些参数
+        this.BeforeCreateRequest();
+
         this.Request = CreateWebRequest();
         SetRequest();
 
@@ -44,7 +47,7 @@ internal sealed class HttpClient : BaseHttpClient
 
         return ReturnResult<T>(response);
     }
-           
+
 
     /// <summary>
     /// 根据指定的HttpOption参数，用【异步】方式发起一次HTTP请求
@@ -53,11 +56,14 @@ internal sealed class HttpClient : BaseHttpClient
     /// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
     public override async Task<T> SendAsync<T>()
     {
-        this.Request = CreateWebRequest();
+        // 触发事件，允许在发送请求前修改某些参数
+        this.BeforeCreateRequest();
+
+        this.Request = CreateWebRequest();         
         SetRequest();
 
         // 触发【发送前】事件
-        this.BeforeSend();            
+        this.BeforeSend();
 
         // 发出HTTP请求，获取响应
         HttpWebResponse response = await GetResponseAsync();
@@ -70,7 +76,7 @@ internal sealed class HttpClient : BaseHttpClient
         // 添加链路日志相关请求头
         HttpTraceUtils.SetTraceHeader(this);
 
-        this.HttpOption.OnSetRequest?.Invoke(this.Request);
+        this.HttpOption.OnSetRequest?.Invoke(this.Request);        
     }
 
     private T ReturnResult<T>(HttpWebResponse response)
@@ -95,7 +101,7 @@ internal sealed class HttpClient : BaseHttpClient
     private HttpWebResponse GetResponse()
     {
         this.SetStartTime();
-        SetRequestData();
+        SetRequestBody();
 
         try {
             HttpWebResponse response = (HttpWebResponse)this.Request.GetResponse();
@@ -119,7 +125,7 @@ internal sealed class HttpClient : BaseHttpClient
     private async Task<HttpWebResponse> GetResponseAsync()
     {
         this.SetStartTime();
-        await SetRequestDataAsync();
+        await SetRequestBodyAsync();
 
         try {
             HttpWebResponse response = (HttpWebResponse)await this.Request.GetResponseAsync();
@@ -141,19 +147,16 @@ internal sealed class HttpClient : BaseHttpClient
 
 
 
-#region 发送过程
+    #region 发送过程
 
 
     private HttpWebRequest CreateWebRequest()
     {
-        // 触发事件，允许在发送请求前修改某些参数
-        this.BeforeCreateRequest();
-
         HttpOption option = this.HttpOption;
         HttpWebRequest request = null;
         string url = this.HttpOption.GetRequestUrl();
 
-        try {                
+        try {
             request = WebRequest.CreateHttp(url);
         }
         catch( Exception ex ) {
@@ -161,7 +164,7 @@ internal sealed class HttpClient : BaseHttpClient
         }
 
         request.Method = option.Method;
-        request.ServicePoint.Expect100Continue = false;            
+        request.ServicePoint.Expect100Continue = false;
         request.AutomaticDecompression = (DecompressionMethods)ClownFishOptions.HttpClient_DecompressionMethods;
 
         if( option.AllowAutoRedirect.HasValue )
@@ -194,8 +197,8 @@ internal sealed class HttpClient : BaseHttpClient
 
         return request;
     }
-    
-    private void SetRequestData()
+
+    private void SetRequestBody()
     {
         object data = this.HttpOption.GetPostData();
         if( data == null )
@@ -206,7 +209,7 @@ internal sealed class HttpClient : BaseHttpClient
         }
     }
 
-    private async Task SetRequestDataAsync()
+    private async Task SetRequestBodyAsync()
     {
         object data = this.HttpOption.GetPostData();
         if( data == null )
@@ -223,7 +226,6 @@ internal sealed class HttpClient : BaseHttpClient
         //    this.Request.Method = "POST";
 
         // 下面2种进制数据(Stream, byte[])就直接处理，因为它们不需要序列化或者编码，所以就不使用RequestWriter
-        // 可能会有一个小缺陷：data是二进制数据，但是 Format 却是 Multipart，这种情况需要调用方自己覆盖ContentType
 
         if( data is Stream srcStream ) {
             SetRequestStream1(destStream, srcStream);
@@ -235,12 +237,14 @@ internal sealed class HttpClient : BaseHttpClient
             return;
         }
 
-
         RequestWriter writer = new RequestWriter();
-        writer.Write(destStream, data, this.HttpOption.Format);
+        writer.Write(destStream, data, this.HttpOption.Format, this.HttpOption.AutoGzipUpload);
 
         if( writer.ContentType.IsNullOrEmpty() == false )
             this.Request.ContentType = writer.ContentType;
+
+        if( writer.IsGzip )
+            this.Request.Headers.Add(HttpHeaders.Request.ContentEncoding, "gzip");
     }
 
 
@@ -269,7 +273,7 @@ internal sealed class HttpClient : BaseHttpClient
     }
 
 
-#endregion
+    #endregion
 
 }
 

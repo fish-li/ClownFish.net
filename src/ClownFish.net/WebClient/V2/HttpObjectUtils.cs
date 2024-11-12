@@ -88,7 +88,7 @@ internal static class HttpObjectUtils
             return CreateRequestMessageBody2(httpOption.Format, bytes);     // ByteArrayContent
         }
 
-        return CreateRequestMessageBody3(httpOption.Format, postData);      // StreamContent
+        return CreateRequestMessageBody3(httpOption.Format, postData, httpOption.AutoGzipUpload);      // StreamContent
     }
 
 
@@ -121,13 +121,13 @@ internal static class HttpObjectUtils
         return content;
     }
 
-    internal static HttpContent CreateRequestMessageBody3(SerializeFormat format, object postData)
+    internal static HttpContent CreateRequestMessageBody3(SerializeFormat format, object postData, bool autoGzip = false)
     {
         MemoryStream ms = new MemoryStream();
         HttpContent content = new StreamContent(ms);
 
         var writer = new ClownFish.WebClient.RequestWriter();
-        writer.Write(ms, postData, format);
+        writer.Write(ms, postData, format, autoGzip);
         ms.Position = 0;
 
         //byte[] buffer = ms.ToArray();
@@ -136,6 +136,10 @@ internal static class HttpObjectUtils
         if( writer.ContentType.IsNullOrEmpty() == false ) {
             //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(writer.ContentType);
             content.Headers.TryAddWithoutValidation(HttpHeaders.Request.ContentType, writer.ContentType);
+        }
+
+        if( writer.IsGzip ) {
+            content.Headers.TryAddWithoutValidation(HttpHeaders.Request.ContentEncoding, "gzip");
         }
 
         return content;

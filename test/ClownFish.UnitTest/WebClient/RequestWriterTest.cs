@@ -3,221 +3,448 @@
 namespace ClownFish.UnitTest.WebClient;
 
 [TestClass]
-	public class RequestWriterTest
-	{
-		[TestMethod]
-		public void Test_Write_Null()
+public class RequestWriterTest
+{
+    [TestMethod]
+    public void Test_Write_Null()
     {
-			RequestWriter writer = new RequestWriter();
-			writer.Write(null, "xx", SerializeFormat.Text);
-			Assert.IsNull(writer.ContentType);
+        RequestWriter writer = new RequestWriter();
+        writer.Write(null, "xx", SerializeFormat.Text);
+        Assert.IsNull(writer.ContentType);
 
 
-			writer.Write(new MemoryStream(), null, SerializeFormat.Text);
-			Assert.IsNull(writer.ContentType);
-		}
+        writer.Write(new MemoryStream(), null, SerializeFormat.Text);
+        Assert.IsNull(writer.ContentType);
+    }
 
-		[TestMethod]
-		public void Test_Write_Text()
-		{
-			var data = new { a = 1, b = 2, c = "xyz中文汉字" };
-			var actual = WriteStream1(data, SerializeFormat.Text);
-
-			Assert.AreEqual("text/plain", actual.ContentType);
-			Assert.AreEqual("{ a = 1, b = 2, c = xyz中文汉字 }", actual.Body);
-		}
-		
-
-		[TestMethod]
-		public void Test_Write_Json()
-		{
-			string json = @"{""a"":1,""b"":2,""c"":""xyz中文汉字""}";
-			var data = new { a = 1, b = 2, c = "xyz中文汉字" };
-
-			var actual = WriteStream1(data, SerializeFormat.Json);
-			Assert.AreEqual("application/json", actual.ContentType);
-			Assert.AreEqual(json, actual.Body);
-
-
-			var actual2 = WriteStream1(data, SerializeFormat.Json2);
-			Assert.AreEqual("application/json", actual2.ContentType);
-			Assert.AreEqual(json, actual2.Body);
-
-
-			var actual3 = WriteStream1(json, SerializeFormat.Json);
-			Assert.AreEqual("application/json", actual3.ContentType);
-			Assert.AreEqual(json, actual3.Body);
-		}
-
-		[TestMethod]
-		public void Test_Write_Xml()
-		{
-			Product2 p = new Product2 { ProductID = 2, ProductName = "abc" };
-			string xml = p.ToXml();
-
-			var actual = WriteStream1(p, SerializeFormat.Xml);
-			Assert.AreEqual("application/xml", actual.ContentType);
-			Assert.AreEqual(xml, actual.Body);
-
-
-			var actual2 = WriteStream1(xml, SerializeFormat.Xml);
-			Assert.AreEqual("application/xml", actual2.ContentType);
-			Assert.AreEqual(xml, actual2.Body);
-		}
-
-		[TestMethod]
-		public void Test_Write_Form()
-		{
-			string text = "a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97";
-			var data = new { a = 1, b = 2, c = "xyz中文汉字" };
-
-
-			var actual = WriteStream1(data, SerializeFormat.Form);
-			Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
-			Assert.AreEqual(text, actual.Body);
-
-
-			var actual2 = WriteStream1(text, SerializeFormat.Form);
-			Assert.AreEqual("application/x-www-form-urlencoded", actual2.ContentType);
-			Assert.AreEqual(text, actual2.Body);
-		}
-
-
-		[TestMethod]
-		public void Test_Write_Form_Text()
-		{
-			var data = "a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97";
-			var actual = WriteStream1(data, SerializeFormat.Form);
-
-			Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
-			Assert.AreEqual("a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97", actual.Body);
-		}
-
-		[TestMethod]
-		public void Test_Write_Empty_Text()
-		{
-			string data = string.Empty;
-			var actual = WriteStream2(data, SerializeFormat.Text);
-			Assert.AreEqual(RequestContentType.Text, actual.ContentType);
-			Assert.AreEqual(0, actual.Body.Length);
-		}
-
-
-		[TestMethod]
-		public void Test_Write_Empty_Bytes()
+    [TestMethod]
+    public void Test_Write_Text()
     {
-			byte[] data = Empty.Array<byte>();
-			var actual = WriteStream2(data, SerializeFormat.Binary);
-			Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
+        var data = new { a = 1, b = 2, c = "xyz中文汉字" };
+        var actual = WriteStream1(data, SerializeFormat.Text);
+
+        Assert.AreEqual("text/plain", actual.ContentType);
+        Assert.AreEqual("{ a = 1, b = 2, c = xyz中文汉字 }", actual.Body);
+    }
+
+
+    [TestMethod]
+    public void Test_Write_Json()
+    {
+        string json = @"{""a"":1,""b"":2,""c"":""xyz中文汉字""}";
+        var data = new { a = 1, b = 2, c = "xyz中文汉字" };
+
+        var actual = WriteStream1(data, SerializeFormat.Json);
+        Assert.AreEqual("application/json", actual.ContentType);
+        Assert.AreEqual(json, actual.Body);
+
+
+        var actual2 = WriteStream1(data, SerializeFormat.Json2);
+        Assert.AreEqual("application/json", actual2.ContentType);
+        Assert.AreEqual(json, actual2.Body);
+
+
+        var actual3 = WriteStream1(json, SerializeFormat.Json);
+        Assert.AreEqual("application/json", actual3.ContentType);
+        Assert.AreEqual(json, actual3.Body);
+    }
+
+    [TestMethod]
+    public void Test_Write_Xml()
+    {
+        Product2 p = new Product2 { ProductID = 2, ProductName = "abc" };
+        string xml = p.ToXml();
+
+        var actual = WriteStream1(p, SerializeFormat.Xml);
+        Assert.AreEqual("application/xml", actual.ContentType);
+        Assert.AreEqual(xml, actual.Body);
+
+
+        var actual2 = WriteStream1(xml, SerializeFormat.Xml);
+        Assert.AreEqual("application/xml", actual2.ContentType);
+        Assert.AreEqual(xml, actual2.Body);
+    }
+
+    [TestMethod]
+    public void Test_Write_Form()
+    {
+        string text = "a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97";
+        var data = new { a = 1, b = 2, c = "xyz中文汉字" };
+
+
+        var actual = WriteStream1(data, SerializeFormat.Form);
+        Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
+        Assert.AreEqual(text, actual.Body);
+
+
+        var actual2 = WriteStream1(text, SerializeFormat.Form);
+        Assert.AreEqual("application/x-www-form-urlencoded", actual2.ContentType);
+        Assert.AreEqual(text, actual2.Body);
+    }
+
+
+    [TestMethod]
+    public void Test_Write_Form_Text()
+    {
+        var data = "a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97";
+        var actual = WriteStream1(data, SerializeFormat.Form);
+
+        Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
+        Assert.AreEqual("a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97", actual.Body);
+    }
+
+    [TestMethod]
+    public void Test_Write_Empty_Text()
+    {
+        string data = string.Empty;
+        var actual = WriteStream2(data, SerializeFormat.Text);
+        Assert.AreEqual(RequestContentType.Text, actual.ContentType);
         Assert.AreEqual(0, actual.Body.Length);
     }
 
 
-		
+    [TestMethod]
+    public void Test_Write_Empty_Bytes()
+    {
+        byte[] data = Empty.Array<byte>();
+        var actual = WriteStream2(data, SerializeFormat.Binary);
+        Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
+        Assert.AreEqual(0, actual.Body.Length);
+    }
 
-		[TestMethod]
-		public void Test_Write_Binary()
-		{
-			Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
-			var data = guid.ToByteArray();
 
-			var actual = WriteStream2(data, SerializeFormat.Binary);
-			Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
+
+
+    [TestMethod]
+    public void Test_Write_Binary()
+    {
+        Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
+        var data = guid.ToByteArray();
+
+        var actual = WriteStream2(data, SerializeFormat.Binary);
+        Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
         MyAssert.AreEqual(data, actual.Body);
 
 
-			var data2 = new MemoryStream(data);
-			var actual2 = WriteStream2(data2, SerializeFormat.Binary);
-			Assert.AreEqual(RequestContentType.Binary, actual2.ContentType);
-			MyAssert.AreEqual(data, actual2.Body);
-		}
+        var data2 = new MemoryStream(data);
+        var actual2 = WriteStream2(data2, SerializeFormat.Binary);
+        Assert.AreEqual(RequestContentType.Binary, actual2.ContentType);
+        MyAssert.AreEqual(data, actual2.Body);
+    }
 
 
-		[TestMethod]
-		public void Test_Write_Direct_Text()
-		{
-			var data = "xyz中文汉字";
-			var actual = WriteStream1(data, SerializeFormat.None);
+    [TestMethod]
+    public void Test_Write_Direct_Text()
+    {
+        var data = "xyz中文汉字";
+        var actual = WriteStream1(data, SerializeFormat.None);
 
-			Assert.IsNull(actual.ContentType);
-			Assert.AreEqual(data, actual.Body);
-		}
+        Assert.IsNull(actual.ContentType);
+        Assert.AreEqual(data, actual.Body);
+    }
 
-		[TestMethod]
-		public void Test_Write_Direct_Bytes()
-		{
-			Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
-			byte[] bytes = guid.ToByteArray();
+    [TestMethod]
+    public void Test_Write_Direct_Bytes()
+    {
+        Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
+        byte[] bytes = guid.ToByteArray();
 
-			var actual = WriteStream2(bytes, SerializeFormat.None);
+        var actual = WriteStream2(bytes, SerializeFormat.None);
 
-			Assert.IsNull(actual.ContentType);
+        Assert.IsNull(actual.ContentType);
         MyAssert.AreEqual(bytes, actual.Body);
-		}
+    }
 
 
-		[TestMethod]
-		public void Test_Write_Direct_Stream()
-		{
-			Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
-			byte[] bytes = guid.ToByteArray();
+    [TestMethod]
+    public void Test_Write_Direct_Stream()
+    {
+        Guid guid = new Guid("994b07c4-068f-4b76-afad-c457cc5b8473");
+        byte[] bytes = guid.ToByteArray();
 
-			var data = new MemoryStream(bytes);
+        var data = new MemoryStream(bytes);
 
-			var actual = WriteStream2(data, SerializeFormat.None);
+        var actual = WriteStream2(data, SerializeFormat.None);
 
-			Assert.IsNull(actual.ContentType);
+        Assert.IsNull(actual.ContentType);
         MyAssert.AreEqual(bytes, actual.Body);
-		}
+    }
 
 
-		[TestMethod]
-		public void Test_Write_NotSupportedException()
-		{
-			var data = new {
-				a = "11",
-				b = 22
-			};
+    [TestMethod]
+    public void Test_Write_NotSupportedException()
+    {
+        var data = new {
+            a = "11",
+            b = 22
+        };
 
-			MyAssert.IsError<NotSupportedException>(() => {
-				_= WriteStream1(data, SerializeFormat.None);
-			});
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = WriteStream1(data, SerializeFormat.None);
+        });
 
-			MyAssert.IsError<NotSupportedException>(() => {
-				_ = WriteStream1(data, SerializeFormat.Binary);
-			});
-		}
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = WriteStream1(data, SerializeFormat.Binary);
+        });
+    }
 
-		private (string ContentType, string Body) WriteStream1(object data, SerializeFormat format)
-		{
-			RequestWriter writer = new RequestWriter();
+    private (string ContentType, string Body) WriteStream1(object data, SerializeFormat format)
+    {
+        RequestWriter writer = new RequestWriter();
 
-			using(MemoryStream ms = new MemoryStream() ) {
-				writer.Write(ms, data, format);
+        using( MemoryStream ms = new MemoryStream() ) {
+            writer.Write(ms, data, format);
 
-				ms.Position = 0;
-				byte[] bytes = ms.ToArray();
+            ms.Position = 0;
+            byte[] bytes = ms.ToArray();
 
-				string contentType = writer.ContentType;
-				string body = Encoding.UTF8.GetString(bytes);
+            string contentType = writer.ContentType;
+            string body = Encoding.UTF8.GetString(bytes);
 
-				return (contentType, body);
-			}
-		}
+            return (contentType, body);
+        }
+    }
 
-		private (string ContentType, byte[] Body) WriteStream2(object data, SerializeFormat format)
-		{
-			RequestWriter writer = new RequestWriter();
+    private (string ContentType, byte[] Body) WriteStream2(object data, SerializeFormat format)
+    {
+        RequestWriter writer = new RequestWriter();
 
-			using( MemoryStream ms = new MemoryStream() ) {
-				writer.Write(ms, data, format);
+        using( MemoryStream ms = new MemoryStream() ) {
+            writer.Write(ms, data, format);
 
-				ms.Position = 0;
-				byte[] bytes = ms.ToArray();
+            ms.Position = 0;
+            byte[] bytes = ms.ToArray();
 
-				string contentType = writer.ContentType;
+            string contentType = writer.ContentType;
 
-				return (contentType, bytes);
-			}
-		}
-	}
+            return (contentType, bytes);
+        }
+    }
+
+
+    [TestMethod]
+    public void Test_Gzip_Text_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        string text = new string('中', 2048);
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, text, SerializeFormat.Text, true);
+
+        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.IsTrue(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray().UnGzip();
+        string text2 = Encoding.UTF8.GetString(bytes);
+        Assert.AreEqual(text, text2);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Text_512()
+    {
+        using MemoryStream ms = new MemoryStream();
+        string text = new string('中', 512);
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, text, SerializeFormat.Text, true);
+
+        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+        Assert.AreEqual(text, text2);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_false_Text_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        string text = new string('中', 2048);
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, text, SerializeFormat.Text, false);
+
+        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+        Assert.AreEqual(text, text2);
+    }
+
+
+    [TestMethod]
+    public void Test_Gzip_Json_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue {Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json, true);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsTrue(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray().UnGzip();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Json_512()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 512) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json, true);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Json_Text_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json, false);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+
+    [TestMethod]
+    public void Test_Gzip_Json2_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json2, true);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsTrue(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray().UnGzip();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Json2_512()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 512) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json2, true);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Json2_Text_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Json2, false);
+
+        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromJson<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+
+
+    [TestMethod]
+    public void Test_Gzip_Xml_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Xml, true);
+
+        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.IsTrue(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray().UnGzip();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromXml<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Xml_512()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 512) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Xml, true);
+
+        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromXml<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+
+    [TestMethod]
+    public void Test_Gzip_Xml_Text_2048()
+    {
+        using MemoryStream ms = new MemoryStream();
+        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
+
+        RequestWriter writer = new RequestWriter();
+        writer.Write(ms, data, SerializeFormat.Xml, false);
+
+        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.IsFalse(writer.IsGzip);
+
+        byte[] bytes = ms.ToArray();
+        string text2 = Encoding.UTF8.GetString(bytes);
+
+        NameValue data2 = text2.FromXml<NameValue>();
+        Assert.AreEqual(data2.Value, data.Value);
+    }
+}
