@@ -145,7 +145,9 @@ public static class AssemblyExtensions
 
         using( Stream stream = assembly.GetManifestResourceStream(filename) ) {
             byte[] bytes = new byte[stream.Length];
+#pragma warning disable CA2022 // 避免使用 "Stream.Read" 进行不准确读取
             stream.Read(bytes, 0, bytes.Length);
+#pragma warning restore CA2022 // 避免使用 "Stream.Read" 进行不准确读取
             return bytes;
         }
     }

@@ -40,6 +40,12 @@ internal static class PluginManager<T, P>
         s_pluginList.Add(pluginType);
     }
 
+    internal static void Reset()
+    {
+        s_inited = false;
+        s_pluginList.Clear();
+    }
+
 
     /// <summary>
     /// 创建插件对象列表

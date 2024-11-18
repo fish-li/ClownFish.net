@@ -7,12 +7,14 @@ internal static class SysNetInitializer
 {
     static SysNetInitializer()
     {
+#if NETFRAMEWORK
         // .net 默认值： ASP.NET 10， others 2
         if( ServicePointManager.DefaultConnectionLimit < 128 )
             ServicePointManager.DefaultConnectionLimit = 128;
 
         // 设置无效证书的处理方式：忽略错误
         ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
+#endif
     }
 
     private static bool RemoteCertificateValidationCallback(

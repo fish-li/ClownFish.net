@@ -19,6 +19,8 @@ public class PluginManagerTest
     [TestMethod]
     public void Test1()
     {
+        PluginManager<MyTest, BaseTestPlugin>.Reset();
+
         PluginManager<MyTest, BaseTestPlugin>.RegisterPlugin<Plugin1>();
         PluginManager<MyTest, BaseTestPlugin>.RegisterPlugin<Plugin2>();
 

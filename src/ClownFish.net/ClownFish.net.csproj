@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net45;net462;net48;netcoreapp3.1;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.1112.1</Version>
-        <FileVersion>8.24.1112.1</FileVersion>
+        <AssemblyVersion>9.0.0.0</AssemblyVersion>
+        <Version>9.24.1118.1</Version>
+        <FileVersion>9.24.1118.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
-        <LangVersion>12.0</LangVersion>
+        <LangVersion>13.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -32,6 +32,16 @@
         <PackageReference Include="Cronos" Version="0.8.4" />
     </ItemGroup>
 
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
+        <PackageReference Include="Cronos" Version="0.8.4" />
+        <PackageReference Include="System.CodeDom" Version="9.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+    </ItemGroup>
    
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' ">
         <PackageReference Include="Cronos" Version="0.8.4" />

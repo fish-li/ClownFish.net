@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net48;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net462;net48;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish.Email</RootNamespace>
-        <AssemblyVersion>8.0.0.0</AssemblyVersion>
-        <Version>8.24.1112.1</Version>
-        <FileVersion>8.24.1112.1</FileVersion>
+        <AssemblyVersion>9.0.0.0</AssemblyVersion>
+        <Version>9.24.1118.1</Version>
+        <FileVersion>9.24.1118.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\ClownFish.Email.xml</DocumentationFile>
-        <LangVersion>12.0</LangVersion>
+        <LangVersion>13.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -138,7 +138,11 @@ public static class X509Finder
         // 1，用 byte[] 生成临时文件，文件临时文件中构造X509Certificate2实例
         // 2，创建临时文件时，计算publicKey的sha1值，用来做临时文件名，用完后不删除，就当是文件缓存了
 
+#if NET9_0_OR_GREATER
+        X509Certificate2 cert = X509CertificateLoader.LoadCertificate(publicKey);
+#else
         X509Certificate2 cert = new X509Certificate2(publicKey);
+#endif
 
         if( cert.HasPrivateKey )        // 防止开发保员把私钥写到程序中，泄露私钥
             throw new ArgumentException("公钥证书中不允许包含私钥！");
@@ -157,9 +161,13 @@ public static class X509Finder
         if( string.IsNullOrEmpty(publicKeyText) )
             throw new ArgumentNullException(nameof(publicKeyText));
 
-        byte[] bb = Encoding.ASCII.GetBytes(publicKeyText.Trim());
+        byte[] publicKey = Encoding.ASCII.GetBytes(publicKeyText.Trim());
 
-        X509Certificate2 cert = new X509Certificate2(bb);
+#if NET9_0_OR_GREATER
+        X509Certificate2 cert = X509CertificateLoader.LoadCertificate(publicKey);
+#else
+        X509Certificate2 cert = new X509Certificate2(publicKey);
+#endif
 
         if( cert.HasPrivateKey )        // 增加这个检查可以防止把私钥写到字符串中，从而泄露私钥
             throw new ArgumentException("公钥证书中不允许包含私钥！");
@@ -178,7 +186,11 @@ public static class X509Finder
         if( publicKeyFilePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(publicKeyFilePath));
 
+#if NET9_0_OR_GREATER
+        X509Certificate2 cert = X509CertificateLoader.LoadCertificateFromFile(publicKeyFilePath);
+#else
         X509Certificate2 cert = new X509Certificate2(publicKeyFilePath);
+#endif
 
         if( cert.HasPrivateKey )
             throw new ArgumentException("公钥证书中不允许包含私钥！");
@@ -198,7 +210,11 @@ public static class X509Finder
         if( pfxBody == null )
             throw new ArgumentNullException(nameof(pfxBody));
 
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12(pfxBody, password, X509KeyStorageFlags.DefaultKeySet);
+#else
         return new X509Certificate2(pfxBody, password, X509KeyStorageFlags.DefaultKeySet);
+#endif
     }
 
 
@@ -213,7 +229,11 @@ public static class X509Finder
         if( pfxFilePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(pfxFilePath));
 
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12FromFile(pfxFilePath, password, X509KeyStorageFlags.DefaultKeySet);
+#else
         return new X509Certificate2(pfxFilePath, password, X509KeyStorageFlags.DefaultKeySet);
+#endif
     }
 
 
@@ -238,6 +258,11 @@ public static class X509Finder
 
         string pwd = lines[0].FromBase64(true);
         byte[] body = Convert.FromBase64String(lines[1]);
+
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12(body, pwd, X509KeyStorageFlags.DefaultKeySet);
+#else
         return new X509Certificate2(body, pwd, X509KeyStorageFlags.DefaultKeySet);
+#endif
     }
 }

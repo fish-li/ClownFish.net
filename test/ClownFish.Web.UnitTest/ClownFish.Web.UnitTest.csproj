@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <RootNamespace>ClownFish.Web.UnitTest</RootNamespace>
         <AssemblyName>ClownFish.Web.UnitTest</AssemblyName>
@@ -24,9 +24,9 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-        <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
-        <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
         <PackageReference Include="coverlet.collector" Version="1.0.1" />
         <PackageReference Include="JWT" Version="9.0.0" />
     </ItemGroup>

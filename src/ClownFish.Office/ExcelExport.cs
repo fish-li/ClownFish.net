@@ -241,29 +241,30 @@ public static class ExcelExport
                 text = text.Substring(0, 32767);
 
             cell.Value = text;
-            cell.DataType = XLDataType.Text;
+            //cell.DataType = XLDataType.Text;
+
         }
         else if( col.DataType == typeof(DateTime) ) {
-            cell.Value = value;
+            cell.Value = ((DateTime)value).ToTimeString();
             cell.Style.DateFormat.Format = "yyyy-MM-dd HH:mm:ss";
-            cell.DataType = XLDataType.DateTime;
+            //cell.DataType = XLDataType.DateTime;
         }
         else if( col.DataType == typeof(double) || col.DataType == typeof(decimal) || col.DataType == typeof(float) ) {
-            cell.Value = value;
+            cell.Value = Convert.ToDouble(value);
 
             // 设置小数位数
             string format = GetNumberCellFormat(col, dict);
             if( format != null )
                 cell.Style.NumberFormat.Format = format;
 
-            cell.DataType = XLDataType.Number;
+            //cell.DataType = XLDataType.Number;
         }
         else if( col.DataType == typeof(int) || col.DataType == typeof(long) || col.DataType == typeof(short) ) {
-            cell.Value = value;
-            cell.DataType = XLDataType.Number;
+            cell.Value = Convert.ToDouble(value);
+            //cell.DataType = XLDataType.Number;
         }
         else {
-            cell.Value = value;
+            cell.Value = value.ToString();
         }
     }
 

@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net45;net462;net48;net8.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>8.0.0.0</AssemblyVersion>
+        <AssemblyVersion>9.0.0.0</AssemblyVersion>
         <Version>8.22.805.100</Version>
         <FileVersion>8.22.805.100</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\ClownFish.netfx.xml</DocumentationFile>
-        <LangVersion>12.0</LangVersion>
+        <LangVersion>13.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -33,11 +33,6 @@
         <Reference Include="System.IO.Compression" />
         <Reference Include="System.Web" />
         <Reference Include="System.Configuration" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' ">
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup>

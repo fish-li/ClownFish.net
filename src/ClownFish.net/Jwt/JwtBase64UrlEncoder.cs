@@ -32,7 +32,7 @@ internal static class NbJwtBase64UrlEncoder
 #if NETCOREAPP
     public static string Encode(ReadOnlySpan<byte> input)
     {
-        if( input == null || input.Length == 0 )
+        if( input.Length == 0 )
             return string.Empty;
 
         return ReplaceChars(Convert.ToBase64String(input));

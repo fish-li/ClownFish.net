@@ -84,7 +84,7 @@ public sealed class ExceptionModule : NHttpModule
     {
         NHttpResponse response = httpContext.Response;
         response.SetHeader(HttpHeaders.XResponse.ExceptionType, ex.GetType().FullName);
-        response.SetHeader(HttpHeaders.XResponse.ErrorMessage, ex.Message.UrlEncode());
+        response.SetHeader(HttpHeaders.XResponse.ErrorMessage, ex.Message.SubstringN(1000).UrlEncode());
 
         httpContext.HttpReply(ex.GetErrorCode(), reponseBody, contentType);
     }

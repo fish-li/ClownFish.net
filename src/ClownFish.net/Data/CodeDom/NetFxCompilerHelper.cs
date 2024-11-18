@@ -39,7 +39,9 @@ internal static class CodeCompilerHelper
             // 已导入一个具有相同标识“Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a”的程序集。请尝试移除其中一个重复的引用。
             // 已导入一个具有相同标识“Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a”的程序集。请尝试移除其中一个重复的引用。
 
-            if( assembly.Location.IndexOfIgnoreCase("VisualStudio") > 0 )
+            if( assembly.Location.IndexOfIgnoreCase(".VisualStudio.") > 0 )
+                continue;
+            if( assembly.Location.IndexOfIgnoreCase(".TestPlatform.") > 0 )
                 continue;
 
             cp.ReferencedAssemblies.Add(assembly.Location);
