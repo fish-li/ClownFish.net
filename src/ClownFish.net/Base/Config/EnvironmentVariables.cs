@@ -31,7 +31,7 @@ public static class EnvironmentVariables
         Fill(EnvironmentVariableTarget.User, s_dict);
         Fill(EnvironmentVariableTarget.Process, s_dict);
 
-        if( s_dict.TryGet("DOTNET_RUNNING_IN_CONTAINER").TryToBool() ) {
+        if( EnvArgs0.IsInK8s ) {
             CleanK8sHeaders(s_dict);
         }
 

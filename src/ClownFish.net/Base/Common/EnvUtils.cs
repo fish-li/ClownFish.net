@@ -19,28 +19,17 @@ public static class EnvUtils
     /// <summary>
     /// 判断当前进程是不是运行在 docker 容器中
     /// </summary>
-    public static readonly bool IsInDocker = EnvironmentVariables.Get("DOTNET_RUNNING_IN_CONTAINER").TryToBool();
+    public static bool IsInDocker => EnvArgs0.IsInDocker;
 
     /// <summary>
     /// 判断当前进程是不是部署在 Kubernetes 集群中
     /// </summary>
-    public static readonly bool IsInK8s;
+    public static bool IsInK8s => EnvArgs0.IsInK8s;
 
     /// <summary>
     /// 获取当前POD所在的 K8S 命名空间。如果当前进程没有部署在K8S集群中，则返回 null
     /// </summary>
-    public static readonly string K8sNamespace;
-
-    private static string GetCurrentK8sNamespace()
-    {
-        string filePath = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
-        if( File.Exists(filePath) ) {
-            return File.ReadAllText(filePath);
-        }
-        else {
-            return null;
-        }
-    }
+    public static string K8sNamespace => EnvArgs0.K8sNamespace;
 
 
     internal static readonly string HostName;
@@ -90,10 +79,6 @@ public static class EnvUtils
 
     static EnvUtils()
     {
-        string k8sNamespace = GetCurrentK8sNamespace();
-        IsInK8s = IsInDocker && k8sNamespace.HasValue();
-        K8sNamespace = IsInK8s ? k8sNamespace : null;
-
         RunEnv = GetRunEnvName();
 
         RunEnvEnum flag = GetRunEnvEnum(RunEnv);
@@ -122,7 +107,7 @@ public static class EnvUtils
     //       所以，它仅访问 “本地配置”，如果在集群中运行，可再调用 ReLoad 方法。
 
     /// <summary>
-    /// 框架内部使用
+    /// ClownFish/Nebula 内部使用
     /// </summary>
     public static void ReLoad()
     {
@@ -130,7 +115,7 @@ public static class EnvUtils
         // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
 
         ApplicationName = GetApplicationName0();
-        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";        
+        ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";
     }
 
     private static string GetRunEnvName()
