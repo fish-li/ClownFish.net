@@ -9,16 +9,17 @@ public abstract class HttpProxyModule : NHttpModule
     /// 不需要处理的请求头
     /// </summary>
     public static readonly HashSet<string> IgnoreRequestHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
-        "Connection", "Referer", "Origin",    // 这3个头会有特殊的处理方式，所以在复制时直接忽略。
-        "Content-Length",                     // 这个头基本上没用，发送请求时会自动计算请求体长度
-        "Host"                                // 这个头也不需要，如果保留反而会出现和完整URL不匹配的情况，所以忽略它会更合适。
+        "Connection",                       // 这个头不能直接复制，要翻译为设置属性，可参考：HttpProxyHandler2.CopyRequestHeaders
+        "Host",                             // 这个头也不需要，如果保留反而会出现和完整URL不匹配的情况，所以忽略它会更合适。
+        //"Referer", "Origin",               // 这2个头会有特殊的处理方式，所以在复制时直接忽略。可参考：HttpProxyHandler2.SetRefererRequestHeader
     };
 
     /// <summary>
     /// 不需要复制的响应头
     /// </summary>
     public static readonly HashSet<string> IgnoreResponseHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
-        "Server", "X-Powered-By", "x-tracesteps",
+        // 下面2个头不起任何作用，所以忽略
+        "Server", "X-Powered-By",
 
         // 下面这个响应头只能通过“属性”的方式指定，所以在“复制”时必须排除
         "Content-Type",

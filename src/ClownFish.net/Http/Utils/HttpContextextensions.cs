@@ -169,7 +169,7 @@ public static partial class HttpContextExtensions
         response.StatusCode = httpResult.StatusCode;
 
         // 复制响应头
-        ResponseUtils.CopyResponseHeaders(httpResult.Headers, response);
+        response.SetResponseHeaders(httpResult.Headers);
 
         // response.Content != null 对于 204 这种响应来说没有用，仍然会引发异常，所以需要增加下面的判断
         if( HttpUtils.CanWriteResponseBody(httpContext.Request.HttpMethod, httpResult.StatusCode) == false )

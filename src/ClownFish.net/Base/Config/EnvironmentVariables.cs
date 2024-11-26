@@ -32,7 +32,11 @@ public static class EnvironmentVariables
         Fill(EnvironmentVariableTarget.Process, s_dict);
 
         if( EnvArgs0.IsInK8s ) {
-            CleanK8sHeaders(s_dict);
+            int count1 = s_dict.Count;
+            CleanK8sHeaders(s_dict);    // 删除一些无用的环境变量（在K8S环境中，每个服务有7个环境变量来描述它的调用地址信息）
+
+            int count2 = s_dict.Count;
+            Console2.Info($"已删除 {count1 - count2} 个K8S注入的无用环境变量");
         }
 
         // 增加兼容KEY查找项
@@ -74,7 +78,7 @@ public static class EnvironmentVariables
     internal static void CleanK8sHeaders(Dictionary<string, string> dict)
     {
         // 清理一些无用的环境变量
-        // 例如：在K8S环境中，会为每个服务增加7个变量：
+        // 例如：在K8S环境中，每个服务有7个环境变量来描述它的调用地址信息：
         // CONFIGSERVICE_PORT: tcp://172.21.0.119:80
         // CONFIGSERVICE_PORT_80_TCP: tcp://172.21.0.119:80
         // CONFIGSERVICE_PORT_80_TCP_ADDR: 172.21.0.119

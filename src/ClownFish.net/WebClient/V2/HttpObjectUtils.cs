@@ -1,6 +1,7 @@
 ﻿#if NETCOREAPP
 
 using System.Net.Http;
+using System.Net.Security;
 using System.Net.Sockets;
 using ClownFish.Http.Utils;
 using MyHttpOption = ClownFish.WebClient.HttpOption;
@@ -158,9 +159,11 @@ internal static class HttpObjectUtils
 
     public static HttpClient CreateClient(MyHttpOption httpOption)
     {
-        HttpMessageHandler clientHandler = httpOption.MessageHandler 
-                                            ?? TryCreateUnixSocketHandler(httpOption) 
+        HttpMessageHandler clientHandler = httpOption.MessageHandler
+                                            ?? TryCreateUnixSocketHandler(httpOption)
                                             ?? CreateClientHandler(httpOption);
+
+        httpOption.OnCreateHttpMessageHandler?.Invoke(clientHandler);
 
         // 如果 MessageHandler 由外部指定，则由外部代码负责销毁
         // 如果是 UnixSocket，则调用结束后，随着HttpClient自动销毁
@@ -176,13 +179,15 @@ internal static class HttpObjectUtils
                         : System.Threading.Timeout.InfiniteTimeSpan;
         }
 
+        httpOption.OnCreateHttpClient?.Invoke(client);
+
         return client;
     }
 
-    public static HttpClientHandler CreateClientHandler(MyHttpOption httpOption)
+    public static HttpMessageHandler CreateClientHandler(MyHttpOption httpOption)
     {
-        HttpClientHandler clientHandler = new HttpClientHandler();
-        
+        SocketsHttpHandler clientHandler = new SocketsHttpHandler();
+
         clientHandler.AutomaticDecompression = (DecompressionMethods)ClownFishOptions.HttpClient_DecompressionMethods;
 
         if( httpOption.Credentials != null )
@@ -191,18 +196,19 @@ internal static class HttpObjectUtils
         if( httpOption.AllowAutoRedirect.HasValue )
             clientHandler.AllowAutoRedirect = httpOption.AllowAutoRedirect.Value;
 
-        clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        //clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        clientHandler.SslOptions.RemoteCertificateValidationCallback = HttpObjectUtils.DangerousAcceptAnyServerCertificateValidator;
 
-        //clientHandler.MaxAutomaticRedirections = 50;
-        //clientHandler.MaxResponseHeadersLength = 128;
         //clientHandler.PreAuthenticate = false;
-        clientHandler.MaxConnectionsPerServer = 1024;
+        //clientHandler.MaxAutomaticRedirections = 50;    // The default value is 50
+        //clientHandler.MaxConnectionsPerServer = 1024;   // default value: int.MaxValue
+        clientHandler.MaxResponseHeadersLength = 256;     // 256 kB, default value: 64
 
         //if( httpOption.Cookie != null ) {
         //	clientHandler.CookieContainer = httpOption.Cookie;
         //}
         //else {
-        clientHandler.UseCookies = false;
+        clientHandler.UseCookies = false;    // 为了让HttpClientHandler能重用，在外面处理 Cookie
         //}
         //if( _proxy == null ) {
         //	clientHandler.UseProxy = false;
@@ -213,6 +219,10 @@ internal static class HttpObjectUtils
         //clientHandler.ClientCertificates.AddRange(ClientCertificates);
         //clientHandler.SslProtocols = (SslProtocols)ServicePointManager.SecurityProtocol;
         //clientHandler.CheckCertificateRevocationList = ServicePointManager.CheckCertificateRevocationList;
+
+        if( HttpClientDefaults.HttpClientCacheSeconds > 0 ) {
+            clientHandler.PooledConnectionLifetime = TimeSpan.FromSeconds(HttpClientDefaults.HttpClientCacheSeconds);
+        }
 
         return clientHandler;
     }
@@ -229,6 +239,12 @@ internal static class HttpObjectUtils
 #endif
     }
 
+    internal static readonly RemoteCertificateValidationCallback DangerousAcceptAnyServerCertificateValidator = DangerousAcceptAnyServerCertificateValidator0;
+
+    private static bool DangerousAcceptAnyServerCertificateValidator0(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    {
+        return true;
+    }
 
 
 }

@@ -8,11 +8,11 @@ namespace ClownFish.Web.Utils;
 public static class RequestBufferingUtils
 {
     /// <summary>
-    /// 设置请求体为缓冲模式，可用于多次读取请求体
+    /// 尝试设置请求体为缓冲模式，可用于多次读取请求体
     /// </summary>
     /// <param name="httpContextNetCore">NHttpContext实例</param>
     /// <param name="checkBodyFunc">检查请求体是否可以被缓冲的委托。强烈建议：【不要指定这个参数】，或者检查【请求体是小于bufferSize的文本数据】</param>
-    public static int SetRequestBuffering(this NHttpContext httpContextNetCore, Func<NHttpContext, int, bool> checkBodyFunc = null)
+    public static int TrySetRequestBodyBuffering(this NHttpContext httpContextNetCore, Func<NHttpContext, int, bool> checkBodyFunc = null)
     {
         if( LoggingOptions.RequestBodyBufferSize <= 0 )
             return 0;

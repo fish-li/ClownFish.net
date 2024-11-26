@@ -133,18 +133,23 @@ public abstract partial class NHttpRequest
         return null;
     }
 
-
+    private long? _contentLength;
 
     /// <summary>
     /// 获取请求体的长度。
     /// 如果没有指定 Content-Length 则返回 -1
     /// </summary>
-    public virtual long ContentLength {
-        get => this.Header(HttpHeaders.Request.ContentLength)?.TryToLong() ?? -1;
+    public long ContentLength {
+        get {
+            if( _contentLength.HasValue == false ) {
+                _contentLength = this.Header(HttpHeaders.Request.ContentLength)?.TryToLong() ?? -1;
+            }
+            return _contentLength.Value;
+        }
     }
 
     /// <summary>
-    /// 获取请求体文本的长度(ContentLength)。
+    /// 获取请求体文本的长度(Content-Length)。
     /// 如果请求没有请求体，或者请求体不是文本格式，都返回 0，
     /// 如果没有指定Content-Length头，则返回 -1
     /// </summary>

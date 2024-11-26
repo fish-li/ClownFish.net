@@ -104,14 +104,39 @@ public static partial class ResponseUtils
         return null;
     }
 
+    /// <summary>
+    /// 读取指定的响应头
+    /// </summary>
+    /// <param name="responseMessage"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static string GetHeader(this HttpResponseMessage responseMessage, string name)
+    {
+        if( responseMessage == null )
+            throw new ArgumentNullException(nameof(responseMessage));
+        if( name.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(name));
+
+        if( responseMessage.Headers.TryGetValues(name, out var values) ) {
+            return string.Join(", ", values);
+        }
+
+        if( responseMessage.Content != null ) {
+            if( responseMessage.Content.Headers.TryGetValues(name, out var values2) ) {
+                return string.Join(", ", values2);
+            }
+        }
+
+        return null;
+    }
 
     /// <summary>
-    /// 读取指定的响应头，它会在内部
+    /// 读取指定的响应头
     /// </summary>
     /// <param name="responseMessage"></param>
     /// <param name="name">响应头名称</param>
     /// <returns></returns>
-    public static string[] GetHeaderValues(this HttpResponseMessage responseMessage, string name)
+    public static string[] GetHeaders(this HttpResponseMessage responseMessage, string name)
     {
         if( responseMessage == null )
             throw new ArgumentNullException(nameof(responseMessage));
@@ -132,42 +157,6 @@ public static partial class ResponseUtils
         return null;
     }
 
-
-    /// <summary>
-    /// 复制响应头
-    /// </summary>
-    /// <param name="responseMessage"></param>
-    /// <param name="httpResponse"></param>
-    /// <param name="ignoreResponseHeaders">需要忽略的请求头</param>
-    public static void CopyResponseHeaders(HttpResponseMessage responseMessage, NHttpResponse httpResponse, HashSet<string> ignoreResponseHeaders = null)
-    {
-        if( ignoreResponseHeaders == null )
-            ignoreResponseHeaders = HttpProxyModule.IgnoreResponseHeaders;
-
-        string contentType = responseMessage.GetContentType();
-        if( contentType.IsNullOrEmpty() == false ) {
-            httpResponse.ContentType = contentType;
-        }
-
-        foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
-            if( ignoreResponseHeaders.Contains(kv.Key) )
-                continue;
-
-            SetResponseHeader(httpResponse, kv.Key, kv.Value.ToArray());
-        }
-
-        if( responseMessage.Content != null ) {
-            foreach( KeyValuePair<string, IEnumerable<string>> kv2 in responseMessage.Content.Headers ) {
-                if( ignoreResponseHeaders.Contains(kv2.Key) )
-                    continue;
-
-                if( HttpHeaders.Response.ContentType.Is(kv2.Key) )
-                    continue;
-
-                SetResponseHeader(httpResponse, kv2.Key, kv2.Value.ToArray());
-            }
-        }
-    }
 
 
     /// <summary>

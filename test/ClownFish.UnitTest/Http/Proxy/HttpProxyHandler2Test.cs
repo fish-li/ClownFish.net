@@ -21,8 +21,7 @@ public class HttpProxyHandler2Test
         MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
         NHttpContext httpContext = new MockHttpContext(reqdata);
 
-        HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
-        HttpContent body = handler.CreateRequestBody(httpContext.Request);
+        HttpContent body = HttpProxyHandler2.CreateRequestBodyStatic(httpContext.Request);
 
         Assert.IsInstanceOfType(body, typeof(ByteArrayContent));
         Assert.AreEqual(0, body.ReadAsStream().Length);
@@ -44,12 +43,12 @@ Content-Length: 666
 
         NHttpContext httpContext = new MockHttpContext(reqdata);
 
-        HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
-        HttpContent body = handler.CreateRequestBody(httpContext.Request);
+        HttpContent body = HttpProxyHandler2.CreateRequestBodyStatic(httpContext.Request);
 
         Assert.IsInstanceOfType(body, typeof(StreamContent));
         Assert.AreEqual(16, body.ReadAsStream().Length);
-        Assert.AreEqual(666, body.Headers.ContentLength);
+        Assert.AreEqual(16, body.Headers.ContentLength);
+        //Assert.AreEqual(666, body.Headers.ContentLength);
     }
 
 
@@ -64,11 +63,12 @@ Accept: application/json, text/plain, */*
 x-grafana-org-id: 1
 User-Agent: Mozilla/5.0 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0
 Content-Type: application/json; charset=utf-8
-Origin: http://localpc:5025
-Referer: http://localpc:5025/d/6581e46e4e5c7ba40a07646395ef7b25/podjian-kong?theme=light
+Origin: https://localpc:5025
+Referer: https://localpc:5025/d/6581e46e4e5c7ba40a07646395ef7b25/podjian-kong?theme=light
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7
 Cookie: grafana_session=a9fa11c9c11b27e1951a95746995aa0c
+Content-Length: 16
 
 {""a"": 2, ""b"": 3}
 ".Trim());
@@ -89,28 +89,199 @@ Cookie: grafana_session=a9fa11c9c11b27e1951a95746995aa0c
         Assert.AreEqual("1", requestMessage.GetHeader("x-grafana-org-id"));
         Assert.AreEqual("Mozilla/5.0 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0", requestMessage.Headers.UserAgent.ToString());
         Assert.AreEqual("application/json; charset=utf-8", requestMessage.GetHeader("Content-Type"));
-        Assert.AreEqual("http://www.xyz.com", requestMessage.GetHeader("Origin"));
-        Assert.AreEqual("http://www.xyz.com/d/6581e46e4e5c7ba40a07646395ef7b25/podjian-kong?theme=light", requestMessage.GetHeader("Referer"));
+        Assert.AreEqual("https://localpc:5025", requestMessage.GetHeader("Origin"));
+        Assert.AreEqual("https://localpc:5025/d/6581e46e4e5c7ba40a07646395ef7b25/podjian-kong?theme=light", requestMessage.GetHeader("Referer"));
         Assert.AreEqual("gzip, deflate", requestMessage.GetHeader("Accept-Encoding"));
         Assert.AreEqual("zh-CN, zh; q=0.9, en-US; q=0.8, en; q=0.7", requestMessage.GetHeader("Accept-Language"));
         Assert.AreEqual("grafana_session=a9fa11c9c11b27e1951a95746995aa0c", requestMessage.GetHeader("Cookie"));
+        Assert.AreEqual("16", requestMessage.GetHeader("Content-Length"));
 
         Assert.AreEqual("https", requestMessage.GetHeader("X-Forwarded-Proto"));
         Assert.AreEqual("localpc:5025", requestMessage.GetHeader("X-Forwarded-Host"));
         Assert.AreEqual("https://localpc:5025/api/ds/query", requestMessage.GetHeader("X-CfProxy-OrgUrl"));
     }
 
-    //[TestMethod]
-    //public void Test_CopyResponseHeaders()
-    //{
 
-    //}
+    [TestMethod]
+    public void Test_CreateRequest2()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Host: localpc:5025
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+x-grafana-org-id: 1
+User-Agent: Mozilla/5.0 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0
+Content-Type: application/json; charset=utf-8
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: grafana_session=a9fa11c9c11b27e1951a95746995aa0c
+Content-Length: 16
 
-    //[TestMethod]
-    //public async Task Test_CopyResponseBodyAsync()
-    //{
-    //    await Task.CompletedTask;
-    //}
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual(HttpMethod.Post, requestMessage.Method);
+        Assert.AreEqual(destUrl, requestMessage.RequestUri.ToString());
+
+        Assert.IsNull(requestMessage.GetHeader("Host"));  // 已忽略
+        Assert.AreEqual("Keep-Alive", requestMessage.GetHeader("Connection"));
+        Assert.AreEqual("application/json, text/plain, */*", requestMessage.GetHeader("Accept"));
+        Assert.AreEqual("1", requestMessage.GetHeader("x-grafana-org-id"));
+        Assert.AreEqual("Mozilla/5.0 Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0", requestMessage.Headers.UserAgent.ToString());
+        Assert.AreEqual("application/json; charset=utf-8", requestMessage.GetHeader("Content-Type"));
+        Assert.IsNull(requestMessage.GetHeader("Origin"));
+        Assert.IsNull(requestMessage.GetHeader("Referer"));
+        Assert.AreEqual("gzip, deflate", requestMessage.GetHeader("Accept-Encoding"));
+        Assert.AreEqual("zh-CN, zh; q=0.9, en-US; q=0.8, en; q=0.7", requestMessage.GetHeader("Accept-Language"));
+        Assert.AreEqual("grafana_session=a9fa11c9c11b27e1951a95746995aa0c", requestMessage.GetHeader("Cookie"));
+        Assert.AreEqual("16", requestMessage.GetHeader("Content-Length"));
+
+        Assert.AreEqual("https", requestMessage.GetHeader("X-Forwarded-Proto"));
+        Assert.AreEqual("localpc:5025", requestMessage.GetHeader("X-Forwarded-Host"));
+        Assert.AreEqual("https://localpc:5025/api/ds/query", requestMessage.GetHeader("X-CfProxy-OrgUrl"));
+    }
+
+
+    [TestMethod]
+    public void Test_CopyHeader_Origin1()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Origin: null
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual("null", requestMessage.GetHeader("Origin"));
+    }
+
+    [TestMethod]
+    public void Test_CopyHeader_Origin2()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Origin: https://www.abc.com
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual("https://www.abc.com", requestMessage.GetHeader("Origin"));
+    }
+
+
+    [TestMethod]
+    public void Test_CopyHeader_Referer1()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Referer: https://www.abc.com/aa/bb
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+        handler.AdjustRefererHeader = true;
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual("https://www.abc.com/aa/bb", requestMessage.GetHeader("Referer"));   // 跨域引用，不能被调整
+    }
+
+
+    [TestMethod]
+    public void Test_CopyHeader_Referer2()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Referer: podjian-kong?theme=light
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+        handler.AdjustRefererHeader = true;
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual("podjian-kong?theme=light", requestMessage.GetHeader("Referer"));   // 不正确的请求头，忽略不调整
+    }
+
+
+    [TestMethod]
+    public void Test_CopyHeader_Referer3()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Referer: https://localpc:5025/aa/bb
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+        handler.AdjustRefererHeader = true;
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.AreEqual("http://www.xyz.com/aa/bb", requestMessage.GetHeader("Referer"));   // 被调整了，指向目标站点
+    }
+
+    [TestMethod]
+    public void Test_CopyHeader_Referer4()
+    {
+        MockRequestData reqdata = MockRequestData.FromText(@"
+POST https://localpc:5025/api/ds/query?xx=2 HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{""a"": 2, ""b"": 3}
+".Trim());
+
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        string destUrl = "http://www.xyz.com/test1";
+        HttpProxyHandler2 handler = new HttpProxyHandler2(destUrl);
+        handler.AdjustRefererHeader = true;
+
+        HttpRequestMessage requestMessage = handler.CreateRequest(httpContext.Request, new Uri(destUrl));
+
+        Assert.IsNull(requestMessage.GetHeader("Referer"));   // 没有Referer头，AdjustRefererHeader不起作用
+    }
+
 
     [TestMethod]
     public async Task Test_CopyResponseAsync()
@@ -121,6 +292,8 @@ Cookie: grafana_session=a9fa11c9c11b27e1951a95746995aa0c
         HttpResponseMessage responseMessage = new HttpResponseMessage();
         responseMessage.StatusCode = HttpStatusCode.OK;
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody2(SerializeFormat.Json, @"{""a"": 2, ""b"": 3}".ToUtf8Bytes());
+
+        responseMessage.Headers.Add("Server", "ClownFish-UnitTest-Server");
         responseMessage.Headers.Add("Connection", "keep-alive");
         responseMessage.Content.Headers.Add("Content-Encoding", "");
         responseMessage.Headers.Add("Pragma", "no-cache");
@@ -152,14 +325,98 @@ Cookie: grafana_session=a9fa11c9c11b27e1951a95746995aa0c
         Assert.AreEqual("no-cache", response.GetHeader("Cache-Control"));
         Assert.AreEqual("Thu, 07 Mar 2024 06:38:26 GMT", response.GetHeader("Date"));
         Assert.AreEqual("aaaa", response.GetHeader("x-name1"));
+
+        Assert.IsNull(response.GetHeader("Server"));
     }
+
+ 
+    [TestMethod]
+    public async Task Test_CopyResponseAsync_Location1()
+    {
+        MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        HttpResponseMessage responseMessage = new HttpResponseMessage();
+        responseMessage.StatusCode = HttpStatusCode.OK;
+
+        responseMessage.Headers.Add("Location", "/aa/bb/cc.html");
+
+        HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
+        await handler.CopyResponseAsync(responseMessage, httpContext.Response);
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(200, response.StatusCode);
+
+        Assert.AreEqual("/aa/bb/cc.html", response.GetHeader("Location"));    // 相对路径，站点内部跳转
+    }
+
+    [TestMethod]
+    public async Task Test_CopyResponseAsync_Location2()
+    {
+        MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
+        NHttpContext httpContext = new MockHttpContext(reqdata);
+
+        HttpResponseMessage responseMessage = new HttpResponseMessage();
+        responseMessage.StatusCode = HttpStatusCode.OK;
+
+        responseMessage.Headers.Add("Location", "http://www.xxx.com/aa/bb/cc.html");
+
+        HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
+        await handler.CopyResponseAsync(responseMessage, httpContext.Response);
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(200, response.StatusCode);
+
+        Assert.AreEqual("http://www.xxx.com/aa/bb/cc.html", response.GetHeader("Location"));  // 绝对路径，跳转到外部站点
+    }
+
+    //[TestMethod]
+    //public async Task Test_CopyResponseAsync_Location3()     // 不支持这种2B场景
+    //{
+    //    MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
+    //    NHttpContext httpContext = new MockHttpContext(reqdata);
+
+    //    HttpResponseMessage responseMessage = new HttpResponseMessage();
+    //    responseMessage.StatusCode = HttpStatusCode.OK;
+
+    //    responseMessage.Headers.Add("Location", "http://www.abc.com/aa/bb/cc.html");
+
+    //    HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
+    //    await handler.CopyResponseAsync(responseMessage, httpContext.Response);
+
+    //    MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+    //    Assert.AreEqual(200, response.StatusCode);
+
+    //    Assert.AreEqual("/aa/bb/cc.html", response.GetHeader("Location"));
+    //}
+
+    //[TestMethod]
+    //public async Task Test_CopyResponseAsync_Location4()
+    //{
+    //    MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
+    //    NHttpContext httpContext = new MockHttpContext(reqdata);
+
+    //    HttpResponseMessage responseMessage = new HttpResponseMessage();
+    //    responseMessage.StatusCode = HttpStatusCode.OK;
+
+    //    responseMessage.Headers.Add("Location", "cc.html");   // 不正确的写法，不做校验
+
+    //    HttpProxyHandler2 handler = new HttpProxyHandler2("http://www.xyz.com/test1");
+    //    await handler.CopyResponseAsync(responseMessage, httpContext.Response);
+
+    //    MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+    //    Assert.AreEqual(200, response.StatusCode);
+
+    //    Assert.AreEqual("cc.html", response.GetHeader("Location"));
+    //}
+
 
 
     [TestMethod]
     public async Task Test_CopyResponseAsync_Error()
     {
         await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
-            
+
             MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
             NHttpContext httpContext = new MockHttpContext(reqdata);
             HttpResponseMessage responseMessage = null;

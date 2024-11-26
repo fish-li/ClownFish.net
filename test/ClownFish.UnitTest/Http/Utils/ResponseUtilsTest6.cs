@@ -15,6 +15,64 @@ namespace ClownFish.UnitTest.Http.Utils;
 [TestClass]
 public class ResponseUtilsTest6
 {
+    private static readonly ConstructorInfo s_ctor = typeof(HttpWebResponse).GetConstructor(
+                                                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                                                        null, new Type[] { typeof(HttpResponseMessage), typeof(Uri), typeof(CookieContainer) }, null);
+
+    internal static HttpWebResponse CreateHttpWebResponse(HttpResponseMessage responseMessage, 
+                                    string url = "http://www.abc.com/aa/bb", CookieContainer cookieContainer = null)
+    {
+        Uri requestUri = new Uri(url);
+        return (HttpWebResponse)s_ctor.Invoke(new object[] { responseMessage, requestUri, null });
+    }
+
+    [TestMethod]
+    public void Test_GetResult_Null()
+    {
+        Assert.IsNull(ResponseUtils.GetResult(null));
+    }
+
+    [TestMethod]
+    public void Test_GetResult()
+    {
+        HttpResponseMessage responseMessage = new HttpResponseMessage();
+        responseMessage.StatusCode = HttpStatusCode.OK;
+        responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody2(SerializeFormat.Json, @"{""a"": 2, ""b"": 3}".ToUtf8Bytes());
+        responseMessage.Headers.Add("Connection", "keep-alive");
+        responseMessage.Content.Headers.Add("Content-Encoding", "zstd");
+        responseMessage.Headers.Add("Pragma", "no-cache");
+        responseMessage.Headers.Add("Vary", "Accept-Encoding");
+        responseMessage.Headers.Add("X-Content-Type-Options", "nosniff");
+        responseMessage.Headers.Add("X-XSS-Protection", "1; mode=block");
+        responseMessage.Headers.Add("Strict-Transport-Security", "max-age=15724800; includeSubDomains");
+        responseMessage.Headers.Add("Content-Security-Policy", "frame-ancestors *.aaa.com *.bbb.com.cn *.ccc.com");
+        responseMessage.Headers.Add("Cache-Control", "no-cache");
+        responseMessage.Headers.Add("Date", "Thu, 07 Mar 2024 06:38:26 GMT");
+        //responseMessage.Content.Headers.Add("Expires", "-1");  // The format of value '-1' is invalid.
+        responseMessage.Headers.Add("x-name1", "aaaa");
+        responseMessage.Headers.Add("Location", "/aa/bb/cc.html");
+
+
+        HttpWebResponse response = CreateHttpWebResponse(responseMessage);
+
+        HttpResult<string> httpResult = ResponseUtils.GetResult(response);
+
+        Assert.AreEqual(200, httpResult.StatusCode);
+        Assert.AreEqual("application/json; charset=utf-8", httpResult.GetHeader("Content-Type"));
+        Assert.AreEqual("keep-alive", httpResult.GetHeader("Connection"));
+        Assert.AreEqual("zstd", httpResult.GetHeader("Content-Encoding"));
+        Assert.AreEqual("no-cache", httpResult.GetHeader("Pragma"));
+        Assert.AreEqual("Accept-Encoding", httpResult.GetHeader("Vary"));
+        Assert.AreEqual("nosniff", httpResult.GetHeader("X-Content-Type-Options"));
+        Assert.AreEqual("1; mode=block", httpResult.GetHeader("X-XSS-Protection"));
+        Assert.AreEqual("max-age=15724800; includeSubDomains", httpResult.GetHeader("Strict-Transport-Security"));
+        Assert.AreEqual("frame-ancestors *.aaa.com *.bbb.com.cn *.ccc.com", httpResult.GetHeader("Content-Security-Policy"));
+        Assert.AreEqual("no-cache", httpResult.GetHeader("Cache-Control"));
+        Assert.AreEqual("Thu, 07 Mar 2024 06:38:26 GMT", httpResult.GetHeader("Date"));
+        Assert.AreEqual("aaaa", httpResult.GetHeader("x-name1"));
+        Assert.AreEqual("/aa/bb/cc.html", httpResult.GetHeader("Location"));
+    }
+
     [Obsolete]
     [TestMethod]
     public void Test_ToResponseMessage()
@@ -107,23 +165,23 @@ public class ResponseUtilsTest6
         responseMessage.Headers.Add("x-b", "bbb");
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody(httpOption);
 
-        string[] values = responseMessage.GetHeaderValues(HttpHeaders.Response.ContentType);
+        string[] values = responseMessage.GetHeaders(HttpHeaders.Response.ContentType);
         Assert.AreEqual(1, values.Length);
         Assert.AreEqual("application/json", values[0]);
 
 
-        string[] values2 = responseMessage.GetHeaderValues("x-a");
+        string[] values2 = responseMessage.GetHeaders("x-a");
         Assert.AreEqual(1, values2.Length);
         Assert.AreEqual("aaa", values2[0]);
 
 
-        Assert.IsNull(ResponseUtils.GetHeaderValues(responseMessage, "xxxx"));
+        Assert.IsNull(ResponseUtils.GetHeaders(responseMessage, "xxxx"));
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = ResponseUtils.GetHeaderValues(null,  "xx");
+            _ = ResponseUtils.GetHeaders(null,  "xx");
         });
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = ResponseUtils.GetHeaderValues(responseMessage, null);
+            _ = ResponseUtils.GetHeaders(responseMessage, null);
         });
     }
 
@@ -134,31 +192,25 @@ public class ResponseUtilsTest6
         MockRequestData requestData = HttpTest1.GetRequestData();
         MockHttpContext httpContext = new MockHttpContext(requestData);
 
-        Assert.AreEqual(0, ResponseUtils.CopyResponseHeaders((NameValueCollection)null, httpContext.Response));
-        Assert.AreEqual(0, ResponseUtils.CopyResponseHeaders(new NameValueCollection(), httpContext.Response));
+        Assert.AreEqual(0, httpContext.Response.SetResponseHeaders((NameValueCollection)null));
+        Assert.AreEqual(0, httpContext.Response.SetResponseHeaders(new NameValueCollection()));
 
         NameValueCollection headers = new NameValueCollection();
         headers.Set("x-a", "aaa");
         headers.Set("x-b", "bbb");
         headers.Set(HttpHeaders.Response.ContentType, "application/json");
-        headers.Set("Server", "test");
+        headers.Set("Server", "test");   // 这个头被忽略
+        headers.Set("Location", "/aa/bb.html");
 
-        int count = ResponseUtils.CopyResponseHeaders(headers, httpContext.Response);
-        Assert.AreEqual(3, count);
+        int count = httpContext.Response.SetResponseHeaders(headers);
+        Assert.AreEqual(4, count);
 
-        bool flagA = false, flagB = false;
 
-        foreach( var x in httpContext.Response.GetAllHeaders() ) {
-            if( x.Key == "x-a" && x.Value.First() == "aaa" )
-                flagA = true;
-
-            if( x.Key == "x-b" && x.Value.First() == "bbb" )
-                flagB = true;
-        }
-
-        Assert.AreEqual(true, flagA);
-        Assert.AreEqual(true, flagB);
+        Assert.AreEqual("aaa", httpContext.Response.GetHeader("x-a"));
+        Assert.AreEqual("bbb", httpContext.Response.GetHeader("x-b"));
         Assert.AreEqual("application/json", httpContext.Response.ContentType);
+        Assert.AreEqual("/aa/bb.html", httpContext.Response.GetHeader("Location"));
+        Assert.IsNull(httpContext.Response.GetHeader("Server"));
     }
 
     [TestMethod]
@@ -169,10 +221,24 @@ public class ResponseUtilsTest6
 
 
         Assert.AreEqual(0, ResponseUtils.SetResponseHeader(httpContext.Response, "xxx", null));
-        Assert.AreEqual(0, ResponseUtils.SetResponseHeader(httpContext.Response, "xxx", new string[0]));
+        Assert.AreEqual(0, ResponseUtils.SetResponseHeader(httpContext.Response, "xxx", ""));
 
-        Assert.AreEqual(1, ResponseUtils.SetResponseHeader(httpContext.Response, "x-x1", new string[] { "xxxxxxxxxx" }));
-        Assert.AreEqual(-1, ResponseUtils.SetResponseHeader(httpContext.Response, null, new string[] { "xxxxxxxxxx" }));
+        Assert.AreEqual(1, ResponseUtils.SetResponseHeader(httpContext.Response, "x-x1", "xxxxxxxxxx"));
+        Assert.AreEqual(-1, ResponseUtils.SetResponseHeader(httpContext.Response, null, "xxxxxxxxxx"));
+    }
+
+    [TestMethod]
+    public void Test_SetResponseHeaders()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+
+
+        Assert.AreEqual(0, ResponseUtils.SetResponseHeaders(httpContext.Response, "xxx", null));
+        Assert.AreEqual(0, ResponseUtils.SetResponseHeaders(httpContext.Response, "xxx", new string[0]));
+
+        Assert.AreEqual(1, ResponseUtils.SetResponseHeaders(httpContext.Response, "x-x1", new string[] { "xxxxxxxxxx" }));
+        Assert.AreEqual(-1, ResponseUtils.SetResponseHeaders(httpContext.Response, null, new string[] { "xxxxxxxxxx" }));
     }
 
 }

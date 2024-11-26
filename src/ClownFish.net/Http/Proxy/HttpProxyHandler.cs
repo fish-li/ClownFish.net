@@ -98,6 +98,12 @@ public class HttpProxyHandler : IAsyncNHttpHandler
     /// <param name="webRequest"></param>
     protected virtual void CopyRequestHeaders(NHttpRequest httpRequest, HttpWebRequest webRequest)
     {
+        //webRequest.Headers.Remove("Cache-Control");
+
+        if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
+            webRequest.KeepAlive = true;
+
+
         // 复制请求头
         foreach( string name in httpRequest.HeaderKeys ) {
             // 过滤不允许直接指定的请求头
@@ -109,33 +115,44 @@ public class HttpProxyHandler : IAsyncNHttpHandler
             foreach( string value in values )
                 SetRequestHeader(webRequest, name, value);
         }
+                
 
-        //webRequest.Headers.Remove("Cache-Control");
+        //string destRoot = null;
 
-        if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
-            webRequest.KeepAlive = true;
+        //string referer = httpRequest.Header("Referer");
+        //if( referer.HasValue() ) {
 
-        string destRoot = null;
+        //    string refererRoot = Urls.GetWebSiteRoot(referer);
+        //    if( refererRoot.HasValue() ) {
 
-        string referer = httpRequest.Header("Referer");
-        if( string.IsNullOrEmpty(referer) == false ) {
-            if( referer.IndexOf("://", StringComparison.Ordinal) > 0 ) {
-                string refererRoot = Urls.GetWebSiteRoot(referer);
-                if( destRoot == null ) {
-                    destRoot = Urls.GetWebSiteRoot(_destUr);
-                }
-                string referer2 = destRoot + referer.Substring(refererRoot.Length);
-                SetRequestHeader(webRequest, "Referer", referer2);
-            }
-        }
+        //        if( httpRequest.FullPath.StartsWith1(refererRoot) ) {   // 站点内部引用，需要修改请求头
 
-        string origin = httpRequest.Header("Origin");
-        if( string.IsNullOrEmpty(origin) == false ) {
-            if( destRoot == null ) {
-                destRoot = Urls.GetWebSiteRoot(_destUr);
-            }
-            SetRequestHeader(webRequest, "Origin", destRoot);
-        }
+        //            if( destRoot == null ) {
+        //                destRoot = Urls.GetWebSiteRoot(_destUr);
+        //            }
+        //            string referer2 = destRoot + referer.Substring(refererRoot.Length);
+        //            SetRequestHeader(webRequest, "Referer", referer2);
+        //        }
+        //        else {
+        //            SetRequestHeader(webRequest, "Referer", referer);   // 跨域引用，直接复制
+        //        }
+        //    }
+        //    // else // Referer 头【不可能】是一个 相对地址
+        //}
+
+        //string origin = httpRequest.Header("Origin");
+        //if( origin.HasValue() ) {
+
+        //    if( httpRequest.FullPath.StartsWith1(origin) ) {
+        //        if( destRoot == null ) {
+        //            destRoot = Urls.GetWebSiteRoot(_destUr);
+        //        }
+        //        SetRequestHeader(webRequest, "Origin", destRoot);
+        //    }
+        //    else {
+        //        SetRequestHeader(webRequest, "Origin", origin);
+        //    }
+        //}
 
         // 设置2个代理相关的请求头
         if( httpRequest.HeaderKeys.Contains("X-Forwarded-Proto", StringComparer.OrdinalIgnoreCase) == false ) {
@@ -262,28 +279,14 @@ public class HttpProxyHandler : IAsyncNHttpHandler
 
         // 复制响应头
         foreach( string name in headers.AllKeys ) {
-            if( HttpProxyModule.IgnoreResponseHeaders.Contains(name))
+            if( HttpProxyModule.IgnoreResponseHeaders.Contains(name) )
                 continue;
 
-
             string[] values = headers.GetValues(name);
-            SetResponseHeader(httpResponse, name, values);
+            httpResponse.SetResponseHeaders(name, values);
         }
     }
 
-
-    private void SetResponseHeader(NHttpResponse httpResponse, string name, string[] values)
-    {
-        if( values == null )
-            return;
-
-        try {
-            httpResponse.SetHeaders(name, values, true);
-        }
-        catch {
-            // 防止出现不允许设置的请求头，未来可以增加日志记录
-        }
-    }
 
     private void CopyResponseBody(Stream src, Stream dest)
     {

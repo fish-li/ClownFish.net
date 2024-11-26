@@ -52,6 +52,17 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// </summary>
     public System.Net.Http.HttpMessageHandler MessageHandler { get; set; }
 
+
+    /// <summary>
+    /// HttpMessageHandler对象创建完成后的回调委托
+    /// </summary>
+    public Action<System.Net.Http.HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
+
+    /// <summary>
+    /// HttpClient对象创建完成后的回调委托
+    /// </summary>
+    public Action<System.Net.Http.HttpClient> OnCreateHttpClient { get; set; }
+
 #endif
 
 #if NET6_0_OR_GREATER

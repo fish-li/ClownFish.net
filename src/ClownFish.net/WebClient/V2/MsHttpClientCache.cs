@@ -17,11 +17,6 @@ internal static class MsHttpClientCache
 
     public static bool IsClientEnableCached(this MyHttpOption httpOption)
     {
-#if NET6_0_OR_GREATER
-        if( httpOption.UnixSocketEndPoint.HasValue() )
-            return false;
-#endif
-
         if( httpOption.MessageHandler != null )
             return false;
 
@@ -30,7 +25,6 @@ internal static class MsHttpClientCache
             return false;
 
 
-        // TODO: 目前不支持 Proxy
         // 这里不支持CredentialCache，因为authType没法确定。 绝大部分场景下使用NetworkCredential也够用了
         return (httpOption.Credentials == null || httpOption.Credentials is NetworkCredential);
     }
@@ -57,13 +51,12 @@ internal static class MsHttpClientCache
                         // 每个HttpClient实例都使用自己的连接池，将其请求与其他 HttpClient 实例执行的请求隔离开来。
                         // HttpClient 旨在实例化一次，并在应用程序的整个生命周期内重复使用。
 
-                        // 参考：https://learn.microsoft.com/zh-cn/dotnet/api/system.net.http.httpclient?view=net-7.0
                         // 参考：https://learn.microsoft.com/zh-cn/dotnet/fundamentals/networking/http/httpclient-guidelines
 
-                        if( HttpClientDefaults.HttpClientCacheSeconds > 0 )
-                            s_httpClients.Set(cacheKey, client, DateTime.Now.AddSeconds(HttpClientDefaults.HttpClientCacheSeconds));
-                        else
-                            s_httpClients.Set(cacheKey, client);
+                        //if( HttpClientDefaults.HttpClientCacheSeconds > 0 )
+                        //    s_httpClients.Set(cacheKey, client, DateTime.Now.AddSeconds(HttpClientDefaults.HttpClientCacheSeconds));
+                        //else
+                        s_httpClients.Set(cacheKey, client);
                     }
                 }
             }

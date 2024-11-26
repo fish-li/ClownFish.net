@@ -11,13 +11,18 @@ namespace ClownFish.Http.Proxy;
 public class HttpProxyHandler2 : IAsyncNHttpHandler
 {
     /// <summary>
-    /// 
+    /// 转发过程中产生的 HttpRequestMessage 实例
     /// </summary>
     public HttpRequestMessage Request { get; private set; }
     /// <summary>
-    /// 
+    /// 转发过程中产生的 HttpResponseMessage 实例
     /// </summary>
     public HttpResponseMessage Response { get; private set; }
+
+    /// <summary>
+    /// 转发时，是否需要修改Referer头（指向目标转发地址）
+    /// </summary>
+    public bool AdjustRefererHeader { get; set; }
 
     private readonly string _destUr;
 
@@ -31,10 +36,10 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     }
 
     /// <summary>
-    /// 
+    /// 执行转发操作
     /// </summary>
     /// <returns></returns>
-    public async Task ProcessRequestAsync(NHttpContext httpContext)
+    public virtual async Task ProcessRequestAsync(NHttpContext httpContext)
     {
         try {
             Uri destUri = new Uri(_destUr);
@@ -62,7 +67,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
 
 
     /// <summary>
-    /// 
+    /// 发送请求并获取响应
     /// </summary>
     /// <param name="requestMessage"></param>
     /// <returns></returns>
@@ -75,7 +80,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     }
 
     /// <summary>
-    /// 
+    /// 创建 HttpClient 实例
     /// </summary>
     /// <param name="requestMessage"></param>
     /// <returns></returns>
@@ -86,7 +91,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
 
 
     /// <summary>
-    /// 
+    /// 创建 HttpRequestMessage 实例
     /// </summary>
     /// <param name="httpRequest"></param>
     /// <param name="destUri"></param>
@@ -105,19 +110,39 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         return requestMessage;
     }
 
-
     /// <summary>
-    /// 
+    /// 复制【所有的】请求头
     /// </summary>
     /// <param name="httpRequest"></param>
     /// <param name="requestMessage"></param>
     protected virtual void CopyRequestHeaders(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
     {
+        if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
+            requestMessage.SetKeepAlive(true);
+
+        CopyRequestHeadersStatic(httpRequest, requestMessage);
+
+        //SetOriginRequestHeader(httpRequest, requestMessage);
+
+        if( this.AdjustRefererHeader )
+            SetRefererRequestHeader(httpRequest, requestMessage);
+
+        AddProxyRequestHeaders(httpRequest, requestMessage);
+    }
+
+
+    /// <summary>
+    /// 复制【普通的】请求头
+    /// </summary>
+    /// <param name="httpRequest"></param>
+    /// <param name="requestMessage"></param>
+    public static void CopyRequestHeadersStatic(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
+    {
         // 复制请求头
         foreach( string name in httpRequest.HeaderKeys ) {
 
             // 过滤不允许直接指定的请求头
-            if( HttpProxyModule.IgnoreRequestHeaders.Contains(name))
+            if( HttpProxyModule.IgnoreRequestHeaders.Contains(name) )
                 continue;
 
             if( HttpObjectUtils.IsWellKnownContentHeader(name) ) {
@@ -134,32 +159,90 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
                 }
             }
         }
+    }
 
-        if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
-            requestMessage.SetKeepAlive(true);
+    private string _destRoot;
 
-        string destRoot = null;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string GetDestUrlRoot()
+    {
+        if( _destRoot == null )
+            _destRoot = Urls.GetWebSiteRoot(_destUr);
+        return _destRoot;
+    }
 
+    ///// <summary>
+    ///// 设置 Origin 请求头
+    ///// </summary>
+    ///// <param name="httpRequest"></param>
+    ///// <param name="requestMessage"></param>
+    //protected void SetOriginRequestHeader(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
+    //{
+    //    // Origin 不包含路径部分，但是其值可以为 null 值。
+    //    // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin
+    //    string origin = httpRequest.Header("Origin");
+
+    //    if( origin.IsNullOrEmpty() )
+    //        return;
+
+    //    if( origin == "null" ) {  // 可参考：https://stackoverflow.com/a/42242802/
+    //        requestMessage.Headers.TryAddWithoutValidation("Origin", origin);
+    //        return;
+    //    }
+
+    //    if( httpRequest.FullPath.StartsWith1(origin) ) {  // 当前站点，修改为目标站点
+    //        requestMessage.Headers.Remove("Origin");
+    //        requestMessage.Headers.TryAddWithoutValidation("Origin", GetDestUrlRoot());
+    //    }
+    //    else {
+    //        //requestMessage.Headers.TryAddWithoutValidation("Origin", origin);
+    //        return;
+    //    }
+    //}
+
+    /// <summary>
+    /// 设置 Referer 请求头
+    /// </summary>
+    /// <param name="httpRequest"></param>
+    /// <param name="requestMessage"></param>
+    protected void SetRefererRequestHeader(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
+    {
+        // Referer 请求头的调整逻辑：将 http://srchost:xx/aa/bb/cc.page 修改为：http://desthost:xx/aa/bb/cc.page
         string referer = httpRequest.Header("Referer");
-        if( string.IsNullOrEmpty(referer) == false ) {
-            if( referer.IndexOf("://", StringComparison.Ordinal) > 0 ) {
-                string refererRoot = Urls.GetWebSiteRoot(referer);
-                if( destRoot == null ) {
-                    destRoot = Urls.GetWebSiteRoot(_destUr);
-                }
-                string referer2 = destRoot + referer.Substring(refererRoot.Length);
-                requestMessage.Headers.TryAddWithoutValidation("Referer", referer2);
-            }
-        }
 
-        string origin = httpRequest.Header("Origin");
-        if( string.IsNullOrEmpty(origin) == false ) {
-            if( destRoot == null ) {
-                destRoot = Urls.GetWebSiteRoot(_destUr);
-            }
-            requestMessage.Headers.TryAddWithoutValidation("Origin", destRoot);
-        }
+        if( referer.IsNullOrEmpty() )
+            return;
 
+        string refererRoot = Urls.GetWebSiteRoot(referer);
+
+        // Referer 头【不可能】是一个 相对地址
+        // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Referer
+        if( refererRoot.IsNullOrEmpty() )
+            return;
+
+
+        // 只有当 Referer 的地址是当前站点才做修改，否则（跨域）请求就不需要修改这个头
+        if( httpRequest.FullPath.StartsWith1(refererRoot) ) {
+
+            string referer2 = GetDestUrlRoot() + referer.Substring(refererRoot.Length);
+            requestMessage.Headers.Remove("Referer");
+            requestMessage.Headers.TryAddWithoutValidation("Referer", referer2);
+        }
+        else {   // 跨域引用
+            //requestMessage.Headers.TryAddWithoutValidation("Referer", referer);
+            return;
+        }
+    }
+
+
+    /// <summary>
+    /// 补充【代理相关】的请求头
+    /// </summary>
+    /// <param name="httpRequest"></param>
+    /// <param name="requestMessage"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void AddProxyRequestHeaders(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
+    {
         // 设置2个代理相关的请求头
         if( httpRequest.HeaderKeys.Contains("X-Forwarded-Proto", StringComparer.OrdinalIgnoreCase) == false ) {
             requestMessage.Headers.TryAddWithoutValidation("X-Forwarded-Proto", httpRequest.RequestUri.Scheme);
@@ -173,11 +256,22 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     }
 
     /// <summary>
-    /// 
+    /// Create Request HttpContent
     /// </summary>
     /// <param name="httpRequest"></param>
     /// <returns></returns>
-    internal protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
+    protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
+    {
+        return CreateRequestBodyStatic(httpRequest);
+    }
+
+    /// <summary>
+    /// 根据NHttpRequest实例创建请求体
+    /// </summary>
+    /// <param name="httpRequest"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static HttpContent CreateRequestBodyStatic(NHttpRequest httpRequest)
     {
         Stream srcStream = httpRequest.InputStream;
 
@@ -186,19 +280,10 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
             if( srcStream.CanSeek )
                 srcStream.Position = 0;
 
-            // 这种做法虽然结果是正确的，但不是最优方法，最好的做法是直接传递流对象而不去读它！
-            //return new StreamContent(srcStream.ToMemoryStream()); 
-
             // 在启用Request.EnableBuffering时，这里会导致发出去的请求体为空~~  
             // 补充说明：问题已解决，将EnableBuffering的调用延后。可参考 SpacerModule.SetRequestBuffering 方法的调用时机
             StreamContent result = new StreamContent(srcStream);
 
-            // 由于 httpRequest.InputStream 的长度未知，所以导致最终发送的请求会采用 Transfer-Encoding: chunked
-            // 但是对于输入请求来说，长度是明确的！
-            // 所以这里的处理方式是：如果当前请求的【长度明确】，请强行指定 ContentLength
-            if( httpRequest.ContentLength > 0 ) {
-                result.Headers.ContentLength = httpRequest.ContentLength;
-            }
             return result;
         }
         else {
@@ -206,8 +291,9 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         }
     }
 
+
     /// <summary>
-    /// 
+    /// 异常处理
     /// </summary>
     /// <param name="httpContext"></param>
     /// <param name="ex"></param>
@@ -276,6 +362,96 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         await CopyResponseBodyAsync(responseMessage, httpResponse);
     }
 
+    /// <summary>
+    /// 复制响应头
+    /// </summary>
+    /// <param name="responseMessage"></param>
+    /// <param name="httpResponse"></param>
+    protected virtual void CopyResponseHeaders(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
+    {
+        CopyResponseHeadersStatic(responseMessage, httpResponse);
+
+        //SetLocationResponseHeader(responseMessage, httpResponse);
+    }
+
+    ///// <summary>
+    ///// 设置 Location 响应头
+    ///// </summary>
+    ///// <param name="responseMessage"></param>
+    ///// <param name="httpResponse"></param>
+    //protected void SetLocationResponseHeader(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
+    //{
+    //    // Location 这个头也比较特殊，它支持 相对地址 和 绝对地址 ，
+    //    // 如果是【绝对地址】，并且 协议+域名 和当前请求一致，那么它也需要Referer的类似处理
+    //    // 参考：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Location
+
+    //    string location = responseMessage.GetHeader("Location");
+
+    //    if( location.IsNullOrEmpty() )
+    //        return;
+
+    //    if( this.ChangeSomeUrlHeader == false ) {  // 无需修改响应头
+    //        httpResponse.SetResponseHeader("Location", location);
+    //        return;
+    //    }
+
+    //    // 相对地址，可以直接复制
+    //    if( location[0] == '/' ) {
+    //        httpResponse.SetResponseHeader("Location", location);    // ##### 正常站内跳转
+    //        return;
+    //    }
+
+    //    // 下面是绝对地址
+
+    //    string locationRoot = Urls.GetWebSiteRoot(location);
+    //    if( locationRoot.HasValue() ) {
+    //        if( _destUr.StartsWith1(locationRoot) ) {  // SB框架或者代码，站内也使用了绝对地址
+
+    //            string location2 = location.Substring(locationRoot.Length);    // 强制修改为 相对地址
+    //            httpResponse.SetResponseHeader("Location", location2);
+
+    //        }
+    //        else {   // 跨域名跳转，，可以直接复制
+    //            httpResponse.SetResponseHeader("Location", location);   // ##### 跨域名跳转
+    //        }
+    //    }
+    //    else {   // 无效的地址？？
+    //        httpResponse.SetResponseHeader("Location", location);
+    //    }
+    //}
+
+
+    /// <summary>
+    /// 复制响应头
+    /// </summary>
+    /// <param name="responseMessage">源</param>
+    /// <param name="httpResponse">目标</param>
+    public static void CopyResponseHeadersStatic(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
+    {
+        string contentType = responseMessage.GetContentType();
+        if( contentType.IsNullOrEmpty() == false ) {
+            httpResponse.ContentType = contentType;
+        }
+
+        foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
+            if( HttpProxyModule.IgnoreResponseHeaders.Contains(kv.Key) )
+                continue;
+
+            httpResponse.SetResponseHeaders(kv.Key, kv.Value.ToArray());
+        }
+
+        if( responseMessage.Content != null ) {
+            foreach( KeyValuePair<string, IEnumerable<string>> kv2 in responseMessage.Content.Headers ) {
+                if( HttpProxyModule.IgnoreResponseHeaders.Contains(kv2.Key) )
+                    continue;
+
+                //if( HttpHeaders.Response.ContentType.Is(kv2.Key) )  // HttpProxyModule.IgnoreResponseHeaders 已包含
+                //    continue;
+
+                httpResponse.SetResponseHeaders(kv2.Key, kv2.Value.ToArray());
+            }
+        }
+    }
 
     /// <summary>
     /// 复制响应体
@@ -289,20 +465,6 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
             await responseMessage.Content.CopyToAsync(httpResponse.OutputStream);
         }
     }
-
-    /// <summary>
-    /// 复制响应头
-    /// </summary>
-    /// <param name="responseMessage"></param>
-    /// <param name="httpResponse"></param>
-    protected virtual void CopyResponseHeaders(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
-    {
-        ResponseUtils.CopyResponseHeaders(responseMessage, httpResponse);
-    }
-
-
-    
-
 
 }
 

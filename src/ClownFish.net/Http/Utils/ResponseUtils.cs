@@ -19,15 +19,13 @@ public static partial class ResponseUtils
     }
 
 
-    internal static int CopyResponseHeaders(NameValueCollection headers, NHttpResponse httpResponse, HashSet<string> ignoreResponseHeaders = null)
+    internal static int SetResponseHeaders(this NHttpResponse httpResponse, NameValueCollection headers)
     {
         int count = 0;
 
         if( headers == null || headers.Count == 0 )
             return count;
 
-        if( ignoreResponseHeaders == null )
-            ignoreResponseHeaders = HttpProxyModule.IgnoreResponseHeaders;
 
         string contentType = headers[HttpHeaders.Response.ContentType];
         if( contentType.IsNullOrEmpty() == false ) {
@@ -35,28 +33,45 @@ public static partial class ResponseUtils
             count++;
         }
 
-
         // 复制响应头
         foreach( string name in headers.AllKeys ) {
-            if( ignoreResponseHeaders.Contains(name) )
+            if( HttpProxyModule.IgnoreResponseHeaders.Contains(name) )
                 continue;
 
-
             string[] values = headers.GetValues(name);
-            SetResponseHeader(httpResponse, name, values);
+            httpResponse.SetResponseHeaders(name, values);
             count++;
         }
+
         return count;
     }
 
 
-    internal static int SetResponseHeader(NHttpResponse httpResponse, string name, string[] values)
+    internal static int SetResponseHeaders(this NHttpResponse httpResponse, string name, string[] values)
     {
         if( values == null || values.Length == 0 )
             return 0;
 
         try {
             httpResponse.SetHeaders(name, values, true);
+            return 1;
+        }
+        catch( Exception ex ) {
+            Console2.Info($"SetResponseHeaders({name}) ERROR: " + ex.Message);
+
+            // 防止出现不允许设置的请求头，未来可以增加日志记录
+            return -1;
+        }
+    }
+
+
+    internal static int SetResponseHeader(this NHttpResponse httpResponse, string name, string value)
+    {
+        if( string.IsNullOrEmpty(value) )
+            return 0;
+
+        try {
+            httpResponse.SetHeader(name, value, true);
             return 1;
         }
         catch( Exception ex ) {

@@ -84,4 +84,9 @@ public sealed class HttpResult<T> : IToAllText
         }
     }
 
+
+    internal string GetHeader(string name)
+    {
+        return this.Headers[name];
+    }
 }

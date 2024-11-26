@@ -130,7 +130,7 @@ internal class AspnetEventObserver : IObserver<KeyValuePair<string, object>>
         NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
         HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore);
 
-        httpContextNetCore.SetRequestBuffering();
+        httpContextNetCore.TrySetRequestBodyBuffering();
                 
 
         s_oprLogModule.BeginRequest(httpContextNetCore);

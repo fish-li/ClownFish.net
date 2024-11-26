@@ -59,7 +59,7 @@ public class FirstModule
             app.BeginRequest(httpContextNetCore);
 
             // 允许 body 多次读取
-            SetRequestBuffering(httpContextNetCore);
+            TrySetRequestBodyBuffering(httpContextNetCore);
             
             flag = await app.ExecuteHttpHandlerAsync(httpContextNetCore);
             if( flag == false ) {
@@ -108,9 +108,9 @@ public class FirstModule
         return origin.HasValue();
     }
 
-    public virtual void SetRequestBuffering(NHttpContext httpContext)
+    public virtual void TrySetRequestBodyBuffering(NHttpContext httpContext)
     {
-        httpContext.SetRequestBuffering();
+        httpContext.TrySetRequestBodyBuffering();
     }
 
     private void CheckMaxRequestBodySize(NHttpContext httpContext)

@@ -94,7 +94,7 @@ Referer: http://www.abc.com:14752/aaa/bb/text.aspx
             Assert.IsTrue(lines.Contains("Cookie = c1=1111111; c2=22222222"));
             Assert.IsTrue(lines.Contains("x-client-app = HttpTest1"));
             Assert.IsTrue(lines.Contains("X-CfProxy-OrgUrl = http://www.abc.com:14752/aaa/bb/ccc.aspx"));
-            Assert.IsTrue(lines.Contains("Referer = http://www.fish-test.com/aaa/bb/text.aspx"));
+            Assert.IsTrue(lines.Contains("Referer = http://www.abc.com:14752/aaa/bb/text.aspx"));
 
             //Console.WriteLine("OK");
             //File.WriteAllText("./temp/__test_Proxy_responseText.txt", responseText, Encoding.UTF8);
@@ -139,7 +139,7 @@ Referer: http://www.abc.com:14752/aaa/bb/text.aspx
             Assert.IsTrue(lines.Contains("Cookie = c1=1111111; c2=22222222"));
             Assert.IsTrue(lines.Contains("x-client-app = HttpTest1"));
             Assert.IsTrue(lines.Contains("X-CfProxy-OrgUrl = http://www.abc.com:14752/aaa/bb/ccc.aspx"));
-            Assert.IsTrue(lines.Contains("Referer = http://www.fish-test.com/aaa/bb/text.aspx"));
+            Assert.IsTrue(lines.Contains("Referer = http://www.abc.com:14752/aaa/bb/text.aspx"));
 
             //Console.WriteLine("OK");
             //File.WriteAllText("./temp/__test_Proxy_responseText.txt", responseText, Encoding.UTF8);
