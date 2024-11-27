@@ -168,7 +168,7 @@ internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
 
         DateTime endTime = DateTime.Now;
 
-        string parentId = data.Request.GetHeader(HttpHeaders.XRequest.ParentId);
+        string parentId = data.Request.GetHeaderFirstValue(HttpHeaders.XRequest.ParentId);
         // parentId格式：RequestId/OperationId，可参考：ClownFish.Log.Logging.HttpTraceUtils.SetClientRequest 方法
         var id2 = HttpTraceUtils.ParseParentIdHeader(parentId);
         string operationId = id2.OperationId.HasValue() ? id2.OperationId : Guid.NewGuid().ToString("N");

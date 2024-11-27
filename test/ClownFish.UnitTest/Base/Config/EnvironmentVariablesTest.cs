@@ -54,7 +54,7 @@ public class EnvironmentVariablesTest
     {
         Dictionary<string, string> dict = s_text.ToHeaderDictionary();
 
-        EnvironmentVariables.CleanK8sHeaders(dict);
+        EnvironmentVariables.CleanK8sVariables(dict);
 
         foreach( var x in dict )
             Console.WriteLine($"{x.Key}: {x.Value}");

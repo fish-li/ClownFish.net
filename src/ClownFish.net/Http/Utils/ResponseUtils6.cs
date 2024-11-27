@@ -70,6 +70,8 @@ public static partial class ResponseUtils
 
         NameValueCollection headers = new NameValueCollection();
 
+        // 注意：这里有个问题，可搜索："Docker/24.0.6 (linux)"，有几个测试用例
+
         foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
             foreach( string value in kv.Value ) {
                 headers.Add(kv.Key, value);
@@ -104,31 +106,31 @@ public static partial class ResponseUtils
         return null;
     }
 
-    /// <summary>
-    /// 读取指定的响应头
-    /// </summary>
-    /// <param name="responseMessage"></param>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public static string GetHeader(this HttpResponseMessage responseMessage, string name)
-    {
-        if( responseMessage == null )
-            throw new ArgumentNullException(nameof(responseMessage));
-        if( name.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(name));
+    ///// <summary>
+    ///// 读取指定的响应头
+    ///// </summary>
+    ///// <param name="responseMessage"></param>
+    ///// <param name="name"></param>
+    ///// <returns></returns>
+    //public static string GetHeader(this HttpResponseMessage responseMessage, string name)
+    //{
+    //    if( responseMessage == null )
+    //        throw new ArgumentNullException(nameof(responseMessage));
+    //    if( name.IsNullOrEmpty() )
+    //        throw new ArgumentNullException(nameof(name));
 
-        if( responseMessage.Headers.TryGetValues(name, out var values) ) {
-            return string.Join(", ", values);
-        }
+    //    if( responseMessage.Headers.TryGetValues(name, out var values) ) {
+    //        return string.Join(", ", values);    // 有些头并不是用 逗号 来拼接（用空格），所以这个方法不再使用！
+    //    }
 
-        if( responseMessage.Content != null ) {
-            if( responseMessage.Content.Headers.TryGetValues(name, out var values2) ) {
-                return string.Join(", ", values2);
-            }
-        }
+    //    if( responseMessage.Content != null ) {
+    //        if( responseMessage.Content.Headers.TryGetValues(name, out var values2) ) {
+    //            return string.Join(", ", values2);
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
     /// <summary>
     /// 读取指定的响应头

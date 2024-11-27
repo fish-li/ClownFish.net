@@ -199,18 +199,17 @@ public class ResponseUtilsTest6
         headers.Set("x-a", "aaa");
         headers.Set("x-b", "bbb");
         headers.Set(HttpHeaders.Response.ContentType, "application/json");
-        headers.Set("Server", "test");   // 这个头被忽略
+        headers.Set("Server", "test");
         headers.Set("Location", "/aa/bb.html");
 
         int count = httpContext.Response.SetResponseHeaders(headers);
-        Assert.AreEqual(4, count);
-
+        Assert.AreEqual(5, count);
 
         Assert.AreEqual("aaa", httpContext.Response.GetHeader("x-a"));
         Assert.AreEqual("bbb", httpContext.Response.GetHeader("x-b"));
         Assert.AreEqual("application/json", httpContext.Response.ContentType);
         Assert.AreEqual("/aa/bb.html", httpContext.Response.GetHeader("Location"));
-        Assert.IsNull(httpContext.Response.GetHeader("Server"));
+        Assert.AreEqual("test", httpContext.Response.GetHeader("Server"));
     }
 
     [TestMethod]

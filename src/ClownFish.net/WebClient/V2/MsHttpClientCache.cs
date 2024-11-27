@@ -17,6 +17,11 @@ internal static class MsHttpClientCache
 
     public static bool IsClientEnableCached(this MyHttpOption httpOption)
     {
+#if NET6_0_OR_GREATER
+        if( httpOption.UnixSocketEndPoint.HasValue() )
+            return false;   // 此时创建的Socket其实是一次性的，包含在NetworkStream中
+#endif
+
         if( httpOption.MessageHandler != null )
             return false;
 

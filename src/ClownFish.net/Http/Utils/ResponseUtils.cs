@@ -35,7 +35,7 @@ public static partial class ResponseUtils
 
         // 复制响应头
         foreach( string name in headers.AllKeys ) {
-            if( HttpProxyModule.IgnoreResponseHeaders.Contains(name) )
+            if( name.Is(HttpHeaders.Response.ContentType) || name.Is("Transfer-Encoding") )
                 continue;
 
             string[] values = headers.GetValues(name);

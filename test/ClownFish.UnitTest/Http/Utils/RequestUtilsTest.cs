@@ -11,6 +11,21 @@ namespace ClownFish.UnitTest.Http.Utils;
 public class RequestUtilsTest
 {
     [TestMethod]
+    public void Test_GetHeaderFirstValue1()
+    {
+        HttpRequestMessage requestMessage = new HttpRequestMessage();
+        requestMessage.Headers.Add("name1", "aa");
+        requestMessage.Headers.Add("name1", "bb");
+
+        requestMessage.Headers.Add("name2", "cc");
+
+
+        Assert.AreEqual("aa", requestMessage.GetHeaderFirstValue("name1"));
+        Assert.AreEqual("cc", requestMessage.GetHeaderFirstValue("name2"));
+        Assert.IsNull(requestMessage.GetHeaderFirstValue("name3"));
+    }
+
+    [TestMethod]
     public void Test_SetOptionValue()
     {
         MyAssert.IsError<ArgumentNullException>(() => {

@@ -31,12 +31,12 @@ public static class EnvironmentVariables
         Fill(EnvironmentVariableTarget.User, s_dict);
         Fill(EnvironmentVariableTarget.Process, s_dict);
 
-        if( EnvArgs0.IsInK8s ) {
+        if( s_dict.TryGet("DOTNET_RUNNING_IN_CONTAINER").TryToBool() && s_dict.ContainsKey("KUBERNETES_PORT") ) {
             int count1 = s_dict.Count;
-            CleanK8sHeaders(s_dict);    // 删除一些无用的环境变量（在K8S环境中，每个服务有7个环境变量来描述它的调用地址信息）
+            CleanK8sVariables(s_dict);    // 删除一些无用的环境变量
 
             int count2 = s_dict.Count;
-            Console2.Info($"已删除 {count1 - count2} 个K8S注入的无用环境变量");
+            Console2.Info($"已删除 {count1 - count2} 个K8S注入的环境变量");
         }
 
         // 增加兼容KEY查找项
@@ -75,10 +75,19 @@ public static class EnvironmentVariables
         }
     }
 
-    internal static void CleanK8sHeaders(Dictionary<string, string> dict)
+    internal static void CleanK8sVariables(Dictionary<string, string> dict)
     {
-        // 清理一些无用的环境变量
-        // 例如：在K8S环境中，每个服务有7个环境变量来描述它的调用地址信息：
+        // 清理一些无用的K8S环境变量
+        //KUBERNETES_PORT: tcp://172.21.0.1:443
+        //KUBERNETES_PORT_443_TCP: tcp://172.21.0.1:443
+        //KUBERNETES_PORT_443_TCP_ADDR: 172.21.0.1
+        //KUBERNETES_PORT_443_TCP_PORT: 443
+        //KUBERNETES_PORT_443_TCP_PROTO: tcp
+        //KUBERNETES_SERVICE_HOST: 172.21.0.1
+        //KUBERNETES_SERVICE_PORT: 443
+        //KUBERNETES_SERVICE_PORT_HTTPS: 443
+
+        // 而且，在K8S环境中，每个服务有7个环境变量来描述它的调用地址信息：
         // CONFIGSERVICE_PORT: tcp://172.21.0.119:80
         // CONFIGSERVICE_PORT_80_TCP: tcp://172.21.0.119:80
         // CONFIGSERVICE_PORT_80_TCP_ADDR: 172.21.0.119
