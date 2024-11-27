@@ -188,7 +188,7 @@ internal static class HttpObjectUtils
     {
         SocketsHttpHandler clientHandler = new SocketsHttpHandler();
 
-        clientHandler.AutomaticDecompression = (DecompressionMethods)ClownFishOptions.HttpClient_DecompressionMethods;
+        clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Brotli;
 
         if( httpOption.Credentials != null )
             clientHandler.Credentials = httpOption.Credentials;

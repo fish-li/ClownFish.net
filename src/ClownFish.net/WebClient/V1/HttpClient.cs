@@ -165,7 +165,7 @@ internal sealed class HttpClient : BaseHttpClient
 
         request.Method = option.Method;
         request.ServicePoint.Expect100Continue = false;
-        request.AutomaticDecompression = (DecompressionMethods)ClownFishOptions.HttpClient_DecompressionMethods;
+        request.AutomaticDecompression = DecompressionMethods.GZip;
 
         if( option.AllowAutoRedirect.HasValue )
             request.AllowAutoRedirect = option.AllowAutoRedirect.Value;
