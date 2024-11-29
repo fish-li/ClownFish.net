@@ -97,8 +97,8 @@ internal sealed class DirectoryBrowseHandlerFactory
 
         int index = 1;
 
-        string rowFormat = "<tr><td>{0}</td><td><a href=\"{1}\" >{2}</a></td><td>{3}</td><td class=\"filesize\">{4}</td></tr>\r\n";
-        string rowFormat2 = "<tr><td>{0}</td><td><a href=\"{1}\" target=\"_blank\">{2}</a></td><td>{3}</td><td class=\"filesize\">{4}</td></tr>\r\n";
+        string rowFormat = "<tr><td>{0}</td><td>[目录]</td><td><a href=\"{1}\" >{2}</a></td><td>{3}</td><td class=\"filesize\">{4}</td></tr>\r\n";
+        string rowFormat2 = "<tr><td>{0}</td><td>file</td><td><a href=\"{1}\" target=\"_blank\">{2}</a></td><td>{3}</td><td class=\"filesize\">{4}</td></tr>\r\n";
 
         StringBuilder html = new StringBuilder();
         DirectoryInfo dir = new DirectoryInfo(physicalPath);
@@ -110,7 +110,7 @@ internal sealed class DirectoryBrowseHandlerFactory
 
             string link = rawPath + "/" + UrlEncode(d.Name) + "/";
             string time = d.LastWriteTime.ToTimeString();
-            html.AppendFormat(rowFormat, index++, link, d.Name, time, "[文件夹]");
+            html.AppendFormat(rowFormat, index++, link, d.Name, time, "-");
         }
 
         // 遍历目录下的文件
@@ -164,7 +164,7 @@ internal sealed class DirectoryBrowseHandlerFactory
 
     internal class HtmlTextOutHandler : IHttpHandler
     {
-        private string _html;
+        private readonly string _html;
 
         public HtmlTextOutHandler(string html)
         {

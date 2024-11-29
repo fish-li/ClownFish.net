@@ -1,4 +1,5 @@
 ﻿using ClownFish.WebApi;
+using ClownFish.WebApi.Controllers;
 using ClownFish.WebHost.Objects;
 
 namespace ClownFish.WebHost;
@@ -10,7 +11,7 @@ internal class WebHostSpacer
         NHttpContext httpContext = new HttpContextSysNet(context);
         NHttpApplication app = HttpAppHost.Application;
 
-        bool flag = false;   // 一个标记，用于判断当前请求是否已经被httphandler处理
+        bool isHandled = false;   // 标记当前请求是否已经被httphandler处理
 
         using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext) ) {
 
@@ -20,31 +21,45 @@ internal class WebHostSpacer
                 app.InitResponse(httpContext);
                 app.BeginRequest(httpContext);
 
-                flag = await app.ExecuteHttpHandlerAsync(httpContext);
-                if( flag == false ) {
+                isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
+                if( isHandled == false ) {
 
                     app.AuthenticateRequest(httpContext);
                     app.PostAuthenticateRequest(httpContext);
                     app.ResolveRequestCache(httpContext);
 
-                    flag = await app.ExecuteHttpHandlerAsync(httpContext);
-                    if( flag == false ) {
+                    isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
+                    if( isHandled == false ) {
 
                         app.PreFindAction(httpContext);
-                        ActionLocator.Instance.FindAction(pipelineContext);
-                        app.PostFindAction(httpContext);
 
-                        app.AuthorizeRequest(httpContext);
-                        app.PreRequestExecute(httpContext);
+                        ActionDescription action = ActionLocator.FindAction(pipelineContext);
+                        if( action != null ) {
 
-                        await ActionExecutor.Instance.ExecuteAction(pipelineContext);
+                            app.PostFindAction(httpContext);
+
+                            app.AuthorizeRequest(httpContext);
+                            app.PreRequestExecute(httpContext);
+
+                            await ActionExecutor.Execute(pipelineContext);
+                            app.PostRequestExecute(httpContext);
+                        }
+                        else {
+                            app.NotFoundAction(httpContext);   // 可以在这里指定 httphandler
+
+                            if( pipelineContext.Action == null ) {
+                                action = ControllerFactory.CreateHandler(Http404Handler.Instance);
+                                pipelineContext.SetAction(action);                                
+                            }
+
+                            await ActionExecutor.Execute(pipelineContext);
+                        }
                     }
                 }
-
-                app.PostRequestExecute(httpContext);
+                
                 app.UpdateRequestCache(httpContext);
 
-                ActionExecutor.Instance.SendResult(pipelineContext);
+                ActionExecutor.SendResult(pipelineContext);
             }
             catch( AbortRequestException ) { /* 这里就是一个标记异常，所以直接吃掉 */ }
 

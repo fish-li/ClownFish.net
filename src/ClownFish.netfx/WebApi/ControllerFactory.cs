@@ -5,11 +5,10 @@ internal class ControllerFactory
     public static readonly ControllerFactory Instance = new ControllerFactory();
 
 
-
     internal static ActionDescription CreateHandler(IHttpHandler handler)
     {
         if( handler == null )
-            throw new ArgumentNullException(nameof(handler));
+            return null;
 
         MethodInfo method = handler.GetType().GetInstanceMethod(nameof(IHttpHandler.ProcessRequest));
 
@@ -41,7 +40,7 @@ internal class ControllerFactory
         if( controllerType == null )
             throw new ArgumentNullException(nameof(controllerType));
 
-        // TODO: 以后用IOC来实现
+        // TODO: 以后要不要支持 IOC ??
         object controller = Activator.CreateInstance(controllerType);
 
         return controller;

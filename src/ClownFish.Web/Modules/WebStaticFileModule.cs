@@ -8,19 +8,41 @@ public sealed class WebStaticFileModule : NHttpModule
 
     internal static readonly Dictionary<string, string> MimeDict = new Dictionary<string, string>(128, StringComparer.OrdinalIgnoreCase) {
         { ".htm",  "text/html" },
-        { ".html", "text/html" },        
-        { ".js",   "text/javascript" },   //{ ".js", "application/javascript" }, 这个是过时写法！
+        { ".html", "text/html" },
+        { ".js",   "text/javascript" },
+      //{ ".js",   "application/javascript" }, 这个是过时写法！
         { ".css",  "text/css" },
-        { ".jpg", "image/jpeg" },
-        { ".png", "image/png" },
-        { ".gif", "image/gif" },
-        { ".ico", "image/x-icon" },
-        { ".svg", "image/svg+xml" },
-        { ".eot", "application/vnd.ms-fontobject" },
-        { ".ttf", "font/ttf" },
+        { ".jpg",  "image/jpeg" },
+        { ".png",  "image/png" },
+        { ".gif",  "image/gif" },
+        { ".ico",  "image/x-icon" },
+      //{ ".txt",  "text/plain" },
+      //{ ".log",  "text/plain" },
+      //{ ".md",   "text/markdown" },
+        { ".svg",  "image/svg+xml" },
+        { ".eot",  "application/vnd.ms-fontobject" },
+        { ".ttf",  "font/ttf" },
         { ".woff", "font/woff" },
         { ".woff2", "font/woff2" },
+      //{ ".xml",  "application/xml" },
+      //{ ".json", "application/json" },
+        { ".zip",  "application/octet-stream" },
+        { ".pdf",  "application/pdf" },
     };
+
+    /// <summary>
+    /// 注册一种静态文件
+    /// </summary>
+    /// <param name="extName">文件扩展名，例如：".txt"</param>
+    /// <param name="contentType">对应的 Content-Type 取值</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static void RegisterMime(string extName, string contentType)
+    {
+        if( extName.IsNullOrEmpty() || contentType.IsNullOrEmpty() )
+            return;
+
+        MimeDict[extName] = contentType;
+    }
 
     //public override void PostAuthenticateRequest(NHttpContext httpContext)
     //{
@@ -36,6 +58,7 @@ public sealed class WebStaticFileModule : NHttpModule
         string path = httpContext.Request.Path;
         string ext = Path.GetExtension(path);
 
+        // 为了安全，只处理“白名单”中的文件，没有在 MimeDict 登记的文件将不会处理，哪怕这些文件就是存在
         if( MimeDict.TryGetValue(ext, out var contentType) ) {
             string filePath = Path.Combine(AppContext.BaseDirectory, "wwwroot", path.TrimStart('/'));
             if( File.Exists(filePath) ) {

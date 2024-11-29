@@ -41,7 +41,7 @@ public class FirstModule
 
     public virtual async Task Execute(HttpPipelineContext pipelineContext, HttpContext httpContext)
     {
-        bool flag = false;  // 一个标记，用于判断当前请求是否已经被httphandler处理
+        bool isHandled = false;  // 标记当前请求是否已经被httphandler处理
         NHttpApplication app = NHttpApplication.Instance;
         NHttpContext httpContextNetCore = pipelineContext.HttpContext;
 
@@ -49,7 +49,7 @@ public class FirstModule
         ClownFishCounters.ExecuteTimes.HttpCount.Increment();
 
         try {
-            CheckMaxRequestBodySize(httpContextNetCore);
+            ValidateMaxRequestBodySize(httpContextNetCore);
 
             string origin = httpContextNetCore.Request.Header("Origin");
             if( origin.HasValue() && IsAllowCors(httpContextNetCore, origin) )
@@ -60,21 +60,27 @@ public class FirstModule
 
             // 允许 body 多次读取
             TrySetRequestBodyBuffering(httpContextNetCore);
-            
-            flag = await app.ExecuteHttpHandlerAsync(httpContextNetCore);
-            if( flag == false ) {
+
+            isHandled = await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
+            if( isHandled == false ) {
 
                 app.AuthenticateRequest(httpContextNetCore);
                 app.PostAuthenticateRequest(httpContextNetCore);
                 app.ResolveRequestCache(httpContextNetCore);
 
-                flag = await app.ExecuteHttpHandlerAsync(httpContextNetCore);
-                if( flag == false ) {
+                isHandled = await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
+                if( isHandled == false ) {
 
                     app.PreFindAction(httpContextNetCore);
 
-                    // 在这个调用中，Action将会被定位，然后进入 MvcLogFilter
+                    // 在这个调用中，Action将会被定位，然后进入 FirstFilter
                     await _next(httpContext);
+
+                    // 有可能URL没有匹配到Action
+                    if( httpContext.Response.StatusCode == 404 ) {
+                        app.NotFoundAction(httpContextNetCore);
+                        await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
+                    }
                 }
             }
 
@@ -113,7 +119,7 @@ public class FirstModule
         httpContext.TrySetRequestBodyBuffering();
     }
 
-    private void CheckMaxRequestBodySize(NHttpContext httpContext)
+    private void ValidateMaxRequestBodySize(NHttpContext httpContext)
     {
         if( httpContext.Request.ContentLength > ClownFishWebOptions.MaxRequestBodySize ) {
 

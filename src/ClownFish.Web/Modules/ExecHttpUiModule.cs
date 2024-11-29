@@ -2,7 +2,7 @@
 
 namespace ClownFish.Web.Modules;
 
-internal class ExecHttpUiModule : NHttpModule
+public sealed class ExecHttpUiModule : NHttpModule
 {
     private static readonly string s_accessKey = Guid.NewGuid().ToString("N");
 

@@ -3,17 +3,10 @@ using ClownFish.WebApi.Routing;
 
 namespace ClownFish.WebApi;
 
-internal class ActionLocator
+internal static class ActionLocator
 {
-    public static readonly ActionLocator Instance = new ActionLocator();
-
-    public virtual void FindAction(HttpPipelineContext pipelineContext)
+    public static ActionDescription FindAction(HttpPipelineContext pipelineContext)
     {
-        // 允许在框架外部直接指定结果
-        if( pipelineContext.Action != null )
-            return;
-
-
         // 检查是不是 OPTIONS 请求
         ActionDescription action = TryCreateOptionAction(pipelineContext);
 
@@ -31,15 +24,17 @@ internal class ActionLocator
         if( action == null )
             action = ControllerFactory.CreateHandler(GetDefaultHandler(pipelineContext));
 
+        if( action != null )
+            pipelineContext.SetAction(action);
 
-        pipelineContext.SetAction(action);
+        return action;
     }
 
     private static IHttpHandler GetDefaultHandler(HttpPipelineContext pipelineContext)
     {
         return StaticFileHandlerFactory.Instance.GetHandler(pipelineContext.HttpContext)
             ?? DirectoryBrowseHandlerFactory.Instance.GetHandler(pipelineContext.HttpContext)
-            ?? Http404Handler.Instance;
+            ?? null;
     }
 
 

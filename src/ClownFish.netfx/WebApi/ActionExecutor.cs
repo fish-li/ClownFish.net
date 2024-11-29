@@ -2,11 +2,9 @@
 
 namespace ClownFish.WebApi;
 
-internal class ActionExecutor
+internal static class ActionExecutor
 {
-    public static readonly ActionExecutor Instance = new ActionExecutor();
-
-    public virtual async Task ExecuteAction(HttpPipelineContext pipelineContext)
+    public static async Task Execute(HttpPipelineContext pipelineContext)
     {
         // 允许在框架外部直接指定结果
         if( pipelineContext.RespResult != null )
@@ -24,18 +22,18 @@ internal class ActionExecutor
 
         // 尝试按 IHttpHandler 的方式执行
         IHttpHandler httpHandler = action.Controller as IHttpHandler;
-        if(httpHandler != null ) {
+        if( httpHandler != null ) {
             httpHandler.ProcessRequest(pipelineContext.HttpContext);
             return;
         }
-
-
-        await ExecuteActionMethod(pipelineContext);
+        else {
+            await ExecuteActionMethod(pipelineContext);
+        }
     }
 
 
 
-    protected virtual async Task ExecuteActionMethod(HttpPipelineContext pipelineContext)
+    private static async Task ExecuteActionMethod(HttpPipelineContext pipelineContext)
     {
         ActionDescription action = pipelineContext.Action;
 
@@ -69,7 +67,7 @@ internal class ActionExecutor
         pipelineContext.RespResult = ResultConverter.Convert(result);
     }
 
-    public virtual void SendResult(HttpPipelineContext pipelineContext)
+    public static void SendResult(HttpPipelineContext pipelineContext)
     {
         object result = pipelineContext.RespResult;
 

@@ -97,6 +97,16 @@ public abstract class NHttpModule
     }
 
     /// <summary>
+    /// NotFoundAction
+    /// </summary>
+    /// <param name="httpContext"></param>
+    public virtual void NotFoundAction(NHttpContext httpContext)
+    {
+        // 可以在这里指定 httphandler
+    }
+
+
+    /// <summary>
     /// UpdateRequestCache
     /// </summary>
     /// <param name="httpContext"></param>

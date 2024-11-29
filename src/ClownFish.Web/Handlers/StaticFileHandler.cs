@@ -29,7 +29,7 @@ public sealed class StaticFileHandler : IAsyncNHttpHandler
 
         if( _cacheMaxAge > 0 ) {
             if( _cacheMaxAge == 2592000 )
-                response.SetHeader("Cache-Control", "public, max-age=2592000", true);
+                response.SetHeader("Cache-Control", "public, max-age=2592000", true);  // 2592000 = 3600*24*30
             else
                 response.SetHeader("Cache-Control", $"public, max-age={_cacheMaxAge}", true);
         }

@@ -66,37 +66,37 @@ public class MockHttpPipeline : IDisposable
 
         MockHttpContext httpContext = this.HttpContext;            
 
-        bool flag = false;   // 一个标记，用于判断当前请求是否已经被httphandler处理
-        
+        bool isHandled = false;   // 标记当前请求是否已经被httphandler处理
+
         try {
             // 设置基本的响应头
             app.EnableCors(httpContext);
             app.InitResponse(httpContext);
             app.BeginRequest(httpContext);
 
-            flag = await app.ExecuteHttpHandlerAsync(httpContext);
-            if( flag == false ) {
+            isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
+            if( isHandled == false ) {
 
                 app.AuthenticateRequest(httpContext);
                 app.PostAuthenticateRequest(httpContext);
                 app.ResolveRequestCache(httpContext);
 
-                flag = await app.ExecuteHttpHandlerAsync(httpContext);
-                if( flag == false ) {
+                isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
+                if( isHandled == false ) {
 
                     app.PreFindAction(httpContext);
+                    // mock的实现，不查找 mvc action
                     app.PostFindAction(httpContext);
 
                     app.AuthorizeRequest(httpContext);
                     app.PreRequestExecute(httpContext);
 
-                    await app.ExecuteHttpHandlerAsync(httpContext);
+                    await app.TryExecuteHttpHandlerAsync(httpContext);
+                    app.PostRequestExecute(httpContext);
                 }
             }
-
-            app.PostRequestExecute(httpContext);
+            
             app.UpdateRequestCache(httpContext);
-
         }
         catch( AbortRequestException ex ) { /* 这里就是一个标记异常，所以直接吃掉 */
             this.LastException = ex;

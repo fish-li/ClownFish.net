@@ -3,6 +3,29 @@
 public sealed class ExceptionModule : NHttpModule
 {
     public override int Order => 99999;   // 尽量放在最后面，允许项目中定义自己的ExceptionModule抢先执行异常处理
+        
+
+    #region 避免 favicon.ico 引起的 HTTP404 错误
+
+    private static readonly string s_icoFilePath = Path.Combine(AppContext.BaseDirectory, "wwwroot/favicon.ico");
+    //private static readonly bool s_icoExist = File.Exists(s_icoFilePath);  // 这样不利于开发阶段更换文件
+
+    public override void NotFoundAction(NHttpContext httpContext)
+    {
+        if( httpContext.Response.StatusCode == 404 && httpContext.Request.Path == "/favicon.ico" ) {
+            if( File.Exists(s_icoFilePath) ) {
+                httpContext.PipelineContext.SetHttpHandler(new StaticFileHandler(s_icoFilePath, "image/x-icon"));
+                return;
+            }
+            else {
+                httpContext.PipelineContext.SetHttpHandler(FavIconHandler.Instance);
+            }
+        }
+    }
+
+    #endregion
+
+    #region OnError
 
     /// <summary>
     /// 决定在异常发生时，是否要给客户端输出异常详情的回调委托
@@ -88,5 +111,25 @@ public sealed class ExceptionModule : NHttpModule
 
         httpContext.HttpReply(ex.GetErrorCode(), reponseBody, contentType);
     }
+
+    #endregion
+
 }
 
+
+internal sealed class FavIconHandler : IAsyncNHttpHandler
+{
+    public static readonly FavIconHandler Instance = new FavIconHandler();
+
+    private static readonly byte[] s_icoBytes = typeof(FavIconHandler).Assembly.ReadResAsBytes("ClownFish.Web.files.favicon.ico");
+
+    public async Task ProcessRequestAsync(NHttpContext httpContext)
+    {
+        NHttpResponse response = httpContext.Response;
+
+        response.StatusCode = 200;
+        response.SetHeader("Cache-Control", "public, max-age=2592000");  // 2592000 = 3600*24*30
+        response.ContentType = "image/x-icon";
+        await response.WriteAllAsync(s_icoBytes);
+    }
+}

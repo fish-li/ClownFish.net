@@ -119,11 +119,11 @@ public sealed class NHttpApplication
     }
 
     /// <summary>
-    /// ExecuteHttpHandlerAsync
+    /// TryExecuteHttpHandlerAsync
     /// </summary>
     /// <param name="httpContext"></param>
     /// <returns></returns>
-    public async Task<bool> ExecuteHttpHandlerAsync(NHttpContext httpContext)
+    public async Task<bool> TryExecuteHttpHandlerAsync(NHttpContext httpContext)
     {
         IAsyncNHttpHandler handler = httpContext.PipelineContext.Action?.Controller as IAsyncNHttpHandler;
         if( handler != null ) {
@@ -258,6 +258,21 @@ public sealed class NHttpApplication
             module.PostRequestExecute(httpContext);
         }
     }
+
+
+    /// <summary>
+    /// NotFoundAction
+    /// </summary>
+    /// <param name="httpContext"></param>
+    public void NotFoundAction(NHttpContext httpContext)
+    {
+        httpContext.LogFxEvent(new NameTime(nameof(NotFoundAction)));
+
+        foreach( NHttpModule module in _modules ) {
+            module.NotFoundAction(httpContext);
+        }
+    }
+
 
     /// <summary>
     /// UpdateRequestCache
