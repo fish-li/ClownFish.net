@@ -36,7 +36,7 @@ public static class EnvironmentVariables
             CleanK8sVariables(s_dict);    // 删除一些无用的环境变量
 
             int count2 = s_dict.Count;
-            Console2.Info($"已删除 {count1 - count2} 个K8S注入的环境变量");
+            Console2.Info($"已忽略 {count1 - count2} 个K8S注入的环境变量");
         }
 
         // 增加兼容KEY查找项

@@ -250,6 +250,10 @@ public static class AspnetCoreStarter
             NHttpModuleFactory.RegisterModule<ExecHttpUiModule>();
         }
 
+        if( LocalSettings.GetBool("ClownFish_WebStaticFileModule_Enable") ) {
+            NHttpModuleFactory.RegisterModule<WebStaticFileModule>();
+        }
+
         // 搜索当前应用中的Http模块并注册
         foreach( Assembly asm in AppPartUtils.GetApplicationPartAsmList() ) {
             Type[] types = (from x in asm.GetPublicTypes()

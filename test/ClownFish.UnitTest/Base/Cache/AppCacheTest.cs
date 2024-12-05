@@ -1,4 +1,6 @@
-﻿namespace ClownFish.UnitTest.Base.Cache;
+﻿using static Mysqlx.Expect.Open.Types.Condition.Types;
+
+namespace ClownFish.UnitTest.Base.Cache;
 
 [TestClass]
 public class AppCacheTest
@@ -11,7 +13,7 @@ public class AppCacheTest
         Product2 p1 = AppCache.GetObject<Product2>(key);
         Assert.IsNull(p1);
 
-        Product2 p2 = AppCache.GetObject<Product2>(key, ()=> {
+        Product2 p2 = AppCache.GetObject<Product2>(key, () => {
             return new Product2 { ProductID = 3, ProductName = "Name5" };
         });
 
@@ -46,27 +48,90 @@ public class AppCacheTest
 
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_GetObject_ArgsNull()
+    public void Test_Error()
     {
-        string key = null;
-        Product2 value = AppCache.GetObject<Product2>(key);
+        MyAssert.IsError<ArgumentNullException>(() => {
+            string key = null;
+            Product2 value = AppCache.GetObject<Product2>(key);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            string key = null;
+            AppCache.SetObject(key, new Product2(), DateTime.Now.AddDays(1));
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            string key = null;
+            AppCache.RemoveObject(key);
+        });
     }
 
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_SetObject_ArgsNull()
-    {
-        string key = null;
-        AppCache.SetObject(key, new Product2(), DateTime.Now.AddDays(1));
-    }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_RemoveObject_ArgsNull()
+    public void Test_GetObject_cacheMs()
     {
-        string key = null;
-        AppCache.RemoveObject(key);
+        string key = Guid.NewGuid().ToString();
+
+        Product2 LoadData()
+        {
+            return new Product2 { ProductID = 3, ProductName = "Name5" };
+        }
+
+        Product2 p1 = AppCache.GetObject<Product2>(key, LoadData, 20);
+        Assert.IsNotNull(p1);
+
+        Thread.Sleep(50);
+
+        Product2 p2 = AppCache.GetObject<Product2>(key);
+        Assert.IsNull(p2);
+    }
+
+
+    [TestMethod]
+    public void Test_GetObject_lock()
+    {
+        string key = Guid.NewGuid().ToString();
+        ValueCounter loadCounter = new ValueCounter();
+        ValueCounter errorCounter = new ValueCounter();
+
+        Product2 LoadData()
+        {
+            loadCounter.Increment();
+            Thread.Sleep(100);
+            return new Product2 { ProductID = 3, ProductName = "Name" + loadCounter.Get() };
+        }
+
+        void ThreadAction(object xx)
+        {
+            Product2 p = AppCache.GetObject<Product2>(key, LoadData) as Product2;
+
+            try {
+                Assert.IsNotNull(p);
+                Assert.AreEqual("Name1", p.ProductName);
+            }
+            catch {
+                errorCounter.Increment();
+            }
+        }
+
+        Thread[] threads = new Thread[20];
+
+        for( int i = 0; i < threads.Length; i++ ) {
+            Thread thread = new Thread(ThreadAction);
+            thread.IsBackground = true;
+            threads[i] = thread;
+        }
+
+        for( int i = 0; i < threads.Length; i++ ) {
+            threads[i].Start();
+        }
+
+        for( int i = 0; i < threads.Length; i++ ) {
+            threads[i].Join();
+        }
+
+        Assert.AreEqual(1, loadCounter.Get());
+        Assert.AreEqual(0, errorCounter.Get());
     }
 
 }
