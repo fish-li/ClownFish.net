@@ -10,7 +10,12 @@ public sealed class CacheItem<T> : IDisposable where T : class
     private T _value;
     private WeakReference<T> _weakObject;
 
+#if NET9_0_OR_GREATER
+    private readonly Lock _syncLock = new Lock();
+#else
     private readonly object _syncLock = new object();
+#endif
+
     private long _expiration;
 
     private readonly bool _useWeakReference;

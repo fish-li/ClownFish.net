@@ -10,7 +10,11 @@ public static class Console2
     /// </summary>
     public static bool InfoEnabled = true;
 
+#if NET9_0_OR_GREATER
+    private static readonly Lock s_lock = new Lock();
+#else
     private static readonly object s_lock = new object();
+#endif
 
     private static IConsole s_console = new SysConsoleImpl();
 

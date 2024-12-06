@@ -5,7 +5,12 @@
 /// </summary>
 public sealed class ObjectQueue
 {
+#if NET9_0_OR_GREATER
+    private readonly Lock _lock = new Lock();
+#else
     private readonly object _lock = new object();
+#endif
+
     private readonly Queue<object> _queue = new Queue<object>(1024);
 
     private readonly int _maxQueueLength;

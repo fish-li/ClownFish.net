@@ -28,7 +28,11 @@ internal sealed class RabbitConnection : IDisposable
     /// <summary>
     /// RabbitConnection的实例可能会被缓存起来共享使用，所以在使用共享连接时需要加锁。
     /// </summary>
+#if NET9_0_OR_GREATER
+    public readonly Lock SyncLock = new Lock();
+#else
     public readonly object SyncLock = new object();
+#endif
 
 
     /// <summary>

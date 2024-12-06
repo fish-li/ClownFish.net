@@ -7,7 +7,11 @@ public sealed class OprLogScope : IDisposable
 {
     private static readonly AsyncLocal<OprLogScope> s_local = new AsyncLocal<OprLogScope>();
 
+#if NET9_0_OR_GREATER
+    private readonly Lock _lockObject = new Lock();
+#else
     private readonly object _lockObject = new object();
+#endif
 
     private Exception _exObject;
 

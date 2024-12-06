@@ -9,7 +9,12 @@
 public sealed class CacheDictionary<T> where T : class
 {
     private long _lastScanTime = DateTime.Now.Ticks;
+
+#if NET9_0_OR_GREATER
+    private readonly Lock _lock = new Lock();
+#else
     private readonly object _lock = new object();
+#endif
 
 
     private readonly TSafeDictionary<string, CacheItem<T>> _cache;

@@ -12,8 +12,11 @@ public static class Redis
     /// </summary>
     public static string DefaultConnSettingName = "Redis_Connection";
 
-
+#if NET9_0_OR_GREATER
+    private static readonly Lock s_lock = new Lock();
+#else
     private static readonly object s_lock = new object();
+#endif
 
     // 默认连接实例
     private static RedisClient s_client;

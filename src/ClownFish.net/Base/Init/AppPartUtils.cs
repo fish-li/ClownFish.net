@@ -6,7 +6,11 @@
 public static class AppPartUtils
 {
     private static List<Assembly> s_list;
+#if NET9_0_OR_GREATER
+    private static readonly Lock s_syncLock = new Lock();
+#else
     private static readonly object s_syncLock = new object();
+#endif
 
     /// <summary>
     /// 获取所有的【应用程序模块】清单

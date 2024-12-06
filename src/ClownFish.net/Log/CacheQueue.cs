@@ -22,7 +22,11 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
     /// <summary>
     /// 队列锁
     /// </summary>
+#if NET9_0_OR_GREATER
+    private readonly Lock _lock = new Lock();
+#else
     private readonly object _lock = new object();
+#endif
 
     /// <summary>
     /// 静态缓冲队列

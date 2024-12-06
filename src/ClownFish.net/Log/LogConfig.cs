@@ -19,7 +19,11 @@ public static class LogConfig
 
 
     private static bool s_inited = false;
+#if NET9_0_OR_GREATER
+    private static readonly Lock s_lock = new Lock();
+#else
     private static readonly object s_lock = new object();
+#endif
 
     /// <summary>
     /// 指示日志组件是否已初始化结束

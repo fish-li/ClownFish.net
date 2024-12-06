@@ -13,7 +13,12 @@ public sealed class TSafeDictionary<TKey, TValue>
 {
     private readonly ConcurrentDictionary<TKey, TValue> _dict;
 
+#if NET9_0_OR_GREATER
+    private readonly Lock _syncLock = new Lock();
+#else
     private readonly object _syncLock = new object();
+#endif
+
 
     /// <summary>
     /// 构造方法
