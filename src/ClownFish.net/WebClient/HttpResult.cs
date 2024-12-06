@@ -4,7 +4,7 @@
 /// 表示一个HTTP的调用结果，包含响应头和响应内容
 /// </summary>
 /// <typeparam name="T">响应内容的类型参数</typeparam>
-public sealed class HttpResult<T> : IToAllText
+public sealed partial class HttpResult<T> : IToAllText
 {
     /// <summary>
     /// 状态码
@@ -36,14 +36,14 @@ public sealed class HttpResult<T> : IToAllText
     /// <param name="headers"></param>
     /// <param name="result"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public HttpResult(int statusCode, NameValueCollection headers, T result) 
+    public HttpResult(int statusCode, NameValueCollection headers, T result)
     {
         this.StatusCode = statusCode;
         this.Headers = headers ?? new NameValueCollection();
         this.Result = result;
     }
 
-   
+
     /// <summary>
     /// 将一个对象的所有信息全部转成文本形式输出
     /// </summary>
@@ -75,7 +75,7 @@ public sealed class HttpResult<T> : IToAllText
             sb.AppendLineRN();
 
             if( includeBody ) {
-                sb.Append(this.Result);
+                sb.Append(GetResultAsText());
             }
             return sb.ToString();
         }
@@ -85,8 +85,232 @@ public sealed class HttpResult<T> : IToAllText
     }
 
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal string GetResultAsText()
+    {
+        if( this.Result == null ) {
+            return string.Empty;     // response body = null 没有意义
+        }
+
+        if( this.Result is string text ) {
+            return text;
+        }
+        else if( this.Result is byte[] bytes ) {
+            return Convert.ToBase64String(bytes);
+        }
+        else {
+            return this.Result.ToJson();
+        }
+    }
+
     internal string GetHeader(string name)
     {
         return this.Headers[name];
     }
+
 }
+
+
+
+#if NETCOREAPP
+public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
+{
+    string ITextSerializer.ToText()
+    {
+        return this.ToAllText(true);
+    }
+
+    void ITextSerializer.LoadData(string text)
+    {
+        this.StatusCode = -1;
+        this.Headers = new NameValueCollection();
+        this.Result = default(T);
+
+        if( text.IsNullOrEmpty() )
+            return;
+
+
+        using( StringReader reader = new StringReader(text) ) {
+
+            // 第一行，固定是开始行
+            string responseLine = reader.ReadLine();
+            string[] items = responseLine.Split(' ');   // responseLine示例值  "HTTP/1.1 200 OK"
+            if( items.Length != 3 )
+                throw new InvalidDataException($"responseLine is error, items.Length={items.Length}");
+
+            this.StatusCode = int.Parse(items[1]);
+
+            // 解析 响应头
+            string line = null;
+            while( (line = reader.ReadLine()) != null ) {
+
+                // 中间一个空行用于隔开请求体
+                if( line.Length == 0 ) {
+                    break;
+                }
+                else {
+                    int p = line.IndexOf(':');  // line示例  "name: value"
+                    if( p > 0 && p < line.Length - 2 ) {
+                        string name = line.Substring(0, p);
+                        string value = line.Substring(p + 2);
+                        this.Headers.Add(name, value);
+                    }
+                }
+            }
+
+            // 最后读取响应体，可能是NULL
+            string body = reader.ReadToEnd();
+            if( body.HasValue() ) {
+                if( typeof(T) == typeof(string) ) {
+                    this.Result = (T)(object)body;
+                }
+                else if( typeof(T) == typeof(byte[]) ) {
+                    this.Result = (T)(object)Convert.FromBase64String(body);
+                }
+                else {
+                    this.Result = body.FromJson<T>();
+                }
+            }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal string GetHeadersAsText()
+    {
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            foreach( string name in this.Headers.Keys ) {
+                string[] values = this.Headers.GetValues(name);
+                foreach( string value in values )
+                    sb.Append(name).Append('\n').Append(value).Append('\n');   // name, value 各占一行，简化后续解析过程
+            }
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
+    }
+
+    private static readonly char[] s_headersSplitChars = new char[] { '\n' };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void FillNameValueCollection(string text, NameValueCollection collection)
+    {
+        string[] items = text.Split(s_headersSplitChars, StringSplitOptions.RemoveEmptyEntries);
+        if( items.Length % 2 != 0 )
+            throw new InvalidDataException($"headers is error, items.Length={items.Length}");
+
+        for( int i = 0; i < items.Length; i = i + 2 ) {
+            string name = items[i];
+            string value = items[i + 1];
+            collection.Add(name, value);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal byte[] GetResultAsBytes()
+    {
+        if( this.Result == null )
+            return Empty.Array<byte>();
+
+        if( this.Result is string text ) {
+            return text.GetBytes();
+        }
+        else if( this.Result is byte[] bb ) {
+            return bb;
+        }
+        else {
+            return this.Result.ToJson().GetBytes();
+        }
+    }
+
+    byte[] IBinarySerializer.ToBytes()
+    {
+        string headers = GetHeadersAsText();
+
+        byte[] body = GetResultAsBytes();
+
+        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+
+            // 写入 StatusCode
+            byte[] statusBytes = BitConverter.GetBytes(this.StatusCode);
+            ms.Write(statusBytes, 0, statusBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+
+
+            // 写响应头，先写长度，再写内容
+            byte[] b1 = Encoding.UTF8.GetBytes(headers);
+            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
+            ms.Write(lenBytes, 0, lenBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+            ms.Write(b1, 0, b1.Length);
+
+
+            // 写消息体
+            byte[] b2 = body;
+            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
+            ms.Write(lenBytes, 0, lenBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+            ms.Write(b2, 0, b2.Length);
+
+            return ms.ToArray();
+        }
+    }
+
+    void IBinarySerializer.LoadData(ReadOnlyMemory<byte> body)
+    {
+        this.StatusCode = -1;
+        this.Headers = new NameValueCollection();
+        this.Result = default(T);
+
+        if( body.Length == 0 )
+            return;
+
+        int start = 0;
+        ReadOnlySpan<byte> span = body.Span;
+
+        this.StatusCode = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 4;
+        start++; // 跳过 \n 符号
+
+        // 读取“响应头”的长度
+        int len = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 4;
+        start++; // 跳过 \n 符号
+
+        // 读取“响应头” 二进制数据
+        ReadOnlySpan<byte> data = span.Slice(start, len);
+        start += len;
+
+        string header = Encoding.UTF8.GetString(data);
+        FillNameValueCollection(header, this.Headers);
+
+        // -------------------------------------------------------
+
+        // 读取“响应体”的长度
+        len = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 4;
+
+        if( len > 0 ) {
+            // 跳过 \n 符号
+            start++;
+            // 读取“响应体” 二进制数据
+            data = span.Slice(start, len);
+
+            if( typeof(T) == typeof(byte[]) ) {
+                byte[] bb = data.ToArray();
+                this.Result = (T)(object)bb;
+            }
+            else {
+                string text = Encoding.UTF8.GetString(data);
+                if( typeof(T) == typeof(string) ) {
+                    this.Result = (T)(object)text;
+                }
+                else {
+                    this.Result = text.FromJson<T>();
+                }
+            }
+        }
+    }
+}
+#endif
