@@ -33,7 +33,7 @@ public static class AppCache
 
             if( loadFunc != null ) {
 
-                object loadSyncLock = s_syncLock.GetLock(key);
+                var loadSyncLock = s_syncLock.GetLock(key);
 
                 // 调用委托加载对象
                 lock( loadSyncLock ) {

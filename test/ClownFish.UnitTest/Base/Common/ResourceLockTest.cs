@@ -17,12 +17,15 @@ public class ResourceLockTest
         // 这里只检查相同的KEY能拿到同一个锁对象就可以了
 
         ResourceLock resource = new ResourceLock();
+
+#pragma warning disable CS9216  // CS9216: 转换为不同类型的类型“System.Threading.Lock”的值将在“lock”语句中使用可能意外的基于监视器的锁定。
         object lock1 = resource.GetLock(key1);
         object lock2 = resource.GetLock(key2);
         object lock3 = resource.GetLock(key3);
 
         Assert.IsTrue(object.ReferenceEquals(lock1, lock2));
         Assert.IsFalse(object.ReferenceEquals(lock1, lock3));
+#pragma warning restore CS9216
     }
 
 
