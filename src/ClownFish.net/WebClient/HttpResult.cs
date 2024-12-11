@@ -96,7 +96,7 @@ public sealed partial class HttpResult<T> : IToAllText
             return text;
         }
         else if( this.Result is byte[] bytes ) {
-            return Convert.ToBase64String(bytes);
+            return bytes.ToBase64();
         }
         else {
             return this.Result.ToJson();
@@ -270,13 +270,11 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
         ReadOnlySpan<byte> span = body.Span;
 
         this.StatusCode = BitConverter.ToInt32(span.Slice(start, 4));
-        start += 4;
-        start++; // 跳过 \n 符号
+        start += 5;  // 5 = 4 + 1
 
         // 读取“响应头”的长度
         int len = BitConverter.ToInt32(span.Slice(start, 4));
-        start += 4;
-        start++; // 跳过 \n 符号
+        start += 5;  // 5 = 4 + 1
 
         // 读取“响应头” 二进制数据
         ReadOnlySpan<byte> data = span.Slice(start, len);
@@ -289,11 +287,9 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
 
         // 读取“响应体”的长度
         len = BitConverter.ToInt32(span.Slice(start, 4));
-        start += 4;
+        start += 5;  // 5 = 4 + 1
 
         if( len > 0 ) {
-            // 跳过 \n 符号
-            start++;
             // 读取“响应体” 二进制数据
             data = span.Slice(start, len);
 

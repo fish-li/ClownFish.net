@@ -23,7 +23,7 @@ public class RequestWriterTest
         var data = new { a = 1, b = 2, c = "xyz中文汉字" };
         var actual = WriteStream1(data, SerializeFormat.Text);
 
-        Assert.AreEqual("text/plain", actual.ContentType);
+        Assert.AreEqual("text/plain; charset=utf-8", actual.ContentType);
         Assert.AreEqual("{ a = 1, b = 2, c = xyz中文汉字 }", actual.Body);
     }
 
@@ -35,17 +35,17 @@ public class RequestWriterTest
         var data = new { a = 1, b = 2, c = "xyz中文汉字" };
 
         var actual = WriteStream1(data, SerializeFormat.Json);
-        Assert.AreEqual("application/json", actual.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", actual.ContentType);
         Assert.AreEqual(json, actual.Body);
 
 
         var actual2 = WriteStream1(data, SerializeFormat.Json2);
-        Assert.AreEqual("application/json", actual2.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", actual2.ContentType);
         Assert.AreEqual(json, actual2.Body);
 
 
         var actual3 = WriteStream1(json, SerializeFormat.Json);
-        Assert.AreEqual("application/json", actual3.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", actual3.ContentType);
         Assert.AreEqual(json, actual3.Body);
     }
 
@@ -56,12 +56,12 @@ public class RequestWriterTest
         string xml = p.ToXml();
 
         var actual = WriteStream1(p, SerializeFormat.Xml);
-        Assert.AreEqual("application/xml", actual.ContentType);
+        Assert.AreEqual("application/xml; charset=utf-8", actual.ContentType);
         Assert.AreEqual(xml, actual.Body);
 
 
         var actual2 = WriteStream1(xml, SerializeFormat.Xml);
-        Assert.AreEqual("application/xml", actual2.ContentType);
+        Assert.AreEqual("application/xml; charset=utf-8", actual2.ContentType);
         Assert.AreEqual(xml, actual2.Body);
     }
 
@@ -73,12 +73,12 @@ public class RequestWriterTest
 
 
         var actual = WriteStream1(data, SerializeFormat.Form);
-        Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
+        Assert.AreEqual("application/x-www-form-urlencoded; charset=utf-8", actual.ContentType);
         Assert.AreEqual(text, actual.Body);
 
 
         var actual2 = WriteStream1(text, SerializeFormat.Form);
-        Assert.AreEqual("application/x-www-form-urlencoded", actual2.ContentType);
+        Assert.AreEqual("application/x-www-form-urlencoded; charset=utf-8", actual2.ContentType);
         Assert.AreEqual(text, actual2.Body);
     }
 
@@ -89,7 +89,7 @@ public class RequestWriterTest
         var data = "a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97";
         var actual = WriteStream1(data, SerializeFormat.Form);
 
-        Assert.AreEqual("application/x-www-form-urlencoded", actual.ContentType);
+        Assert.AreEqual("application/x-www-form-urlencoded; charset=utf-8", actual.ContentType);
         Assert.AreEqual("a=1&b=2&c=xyz%e4%b8%ad%e6%96%87%e6%b1%89%e5%ad%97", actual.Body);
     }
 
@@ -98,7 +98,7 @@ public class RequestWriterTest
     {
         string data = string.Empty;
         var actual = WriteStream2(data, SerializeFormat.Text);
-        Assert.AreEqual(RequestContentType.Text, actual.ContentType);
+        Assert.AreEqual("text/plain; charset=utf-8", actual.ContentType);
         Assert.AreEqual(0, actual.Body.Length);
     }
 
@@ -108,7 +108,7 @@ public class RequestWriterTest
     {
         byte[] data = Empty.Array<byte>();
         var actual = WriteStream2(data, SerializeFormat.Binary);
-        Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
+        Assert.AreEqual("application/octet-stream", actual.ContentType);
         Assert.AreEqual(0, actual.Body.Length);
     }
 
@@ -122,13 +122,13 @@ public class RequestWriterTest
         var data = guid.ToByteArray();
 
         var actual = WriteStream2(data, SerializeFormat.Binary);
-        Assert.AreEqual(RequestContentType.Binary, actual.ContentType);
+        Assert.AreEqual("application/octet-stream", actual.ContentType);
         MyAssert.AreEqual(data, actual.Body);
 
 
         var data2 = new MemoryStream(data);
         var actual2 = WriteStream2(data2, SerializeFormat.Binary);
-        Assert.AreEqual(RequestContentType.Binary, actual2.ContentType);
+        Assert.AreEqual("application/octet-stream", actual2.ContentType);
         MyAssert.AreEqual(data, actual2.Body);
     }
 
@@ -231,7 +231,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, text, SerializeFormat.Text, true);
 
-        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.AreEqual("text/plain; charset=utf-8", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
 
         byte[] bytes = ms.ToArray().UnGzip();
@@ -248,7 +248,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, text, SerializeFormat.Text, true);
 
-        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.AreEqual("text/plain; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -265,7 +265,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, text, SerializeFormat.Text, false);
 
-        Assert.AreEqual("text/plain", writer.ContentType);
+        Assert.AreEqual("text/plain; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -283,7 +283,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json, true);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
 
         byte[] bytes = ms.ToArray().UnGzip();
@@ -302,7 +302,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json, true);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -321,7 +321,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json, false);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -341,7 +341,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json2, true);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
 
         byte[] bytes = ms.ToArray().UnGzip();
@@ -360,7 +360,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json2, true);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -379,7 +379,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Json2, false);
 
-        Assert.AreEqual("application/json", writer.ContentType);
+        Assert.AreEqual("application/json; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -400,7 +400,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Xml, true);
 
-        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.AreEqual("application/xml; charset=utf-8", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
 
         byte[] bytes = ms.ToArray().UnGzip();
@@ -419,7 +419,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Xml, true);
 
-        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.AreEqual("application/xml; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();
@@ -438,7 +438,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, data, SerializeFormat.Xml, false);
 
-        Assert.AreEqual("application/xml", writer.ContentType);
+        Assert.AreEqual("application/xml; charset=utf-8", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         byte[] bytes = ms.ToArray();

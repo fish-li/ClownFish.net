@@ -77,7 +77,7 @@ public static class ContenTypeUtils
                 return ResponseContentType.XmlUtf8;   // 固定采用 utf-8
 
             case SerializeFormat.Form:
-                return RequestContentType.Form;
+                return RequestContentType.FormUtf8;   // 固定采用 utf-8
 
             case SerializeFormat.Multipart:
                 return RequestContentType.Multipart;

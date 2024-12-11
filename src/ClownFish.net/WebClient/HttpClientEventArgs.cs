@@ -109,9 +109,9 @@ public sealed class RequestFinishedEventArgs : EventArgs, ILoggingObject
 #if NETCOREAPP
         return this.Request != null
                 ? this.Request.ToLoggingText()
-                : this.HttpOption.ToLoggingText();
+                : ((ILoggingObject)this.HttpOption).ToLoggingText();
 #else
-        return this.HttpOption.ToLoggingText();
+        return ((ILoggingObject)this.HttpOption).ToLoggingText();
 #endif
         //#if NETCOREAPP
         //            if( this.Request is HttpWebRequest )

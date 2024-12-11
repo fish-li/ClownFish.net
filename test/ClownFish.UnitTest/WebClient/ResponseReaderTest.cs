@@ -1,5 +1,11 @@
 ﻿#pragma warning disable SYSLIB0014 // 类型或成员已过时
+using System.Net.Http;
 using ClownFish.UnitTest.Base;
+
+#if NETCOREAPP
+using ClownFish.WebClient.V2;
+using MimeKit;
+#endif
 
 namespace ClownFish.UnitTest.WebClient;
 
@@ -12,7 +18,6 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_As_Text()
     {
-
         HttpWebRequest request = WebRequest.CreateHttp(TestUrl);
         using( HttpWebResponse response = (HttpWebResponse)request.GetResponse() ) {
 
@@ -582,6 +587,128 @@ public class ResponseReaderTest
 
         Assert.AreEqual(123, ResponseReader.ConvertResult<int>("123", "text/plain; charset=utf-8"));
     }
+
+#if NETCOREAPP
+    [TestMethod]
+    public void Test_CheckMaxAllowLen()
+    {
+        HttpResponseMessage responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody3(SerializeFormat.Text, "中华文明-5000年");   // ContentLength = 20
+        HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
+
+        ResponseReader reader1 = new ResponseReader(response, false, 10);
+        MyAssert.IsError<InvalidOperationException>(() => {
+            reader1.CheckMaxAllowLen();
+        });
+
+        ResponseReader reader2 = new ResponseReader(response, false, -10);  // 不检查长度
+        Assert.AreEqual(0, reader2.CheckMaxAllowLen());
+
+        ResponseReader reader3 = new ResponseReader(response, false, int.MaxValue);
+        Assert.AreEqual(-1L, reader3.CheckMaxAllowLen());    // 长度已检查，然后直接修改内部变量
+    }
+
+    [TestMethod]
+    public void Test_CheckMaxAllowLen2()
+    {
+        byte[] data = "中华文明-5000年".ToUtf8Bytes();
+        NotLenMemoryStream ms = new NotLenMemoryStream(data);
+        HttpResponseMessage responseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody1(SerializeFormat.None, ms);   //  没有 Content-Length 头
+
+        HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
+
+        ResponseReader reader1 = new ResponseReader(response, false, 10);
+        Assert.AreEqual(10, reader1.CheckMaxAllowLen());
+    }
+
+
+    private class NotLenMemoryStream : Stream
+    {
+        public override bool CanRead => true;
+
+        public override bool CanSeek => false;
+
+        public override bool CanWrite => false;
+
+        public override long Length => throw new NotImplementedException();
+
+        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        private readonly MemoryStream _ms;
+
+        public NotLenMemoryStream(byte[] data)
+        {
+            _ms = new MemoryStream(data);
+        }
+
+        public override void Flush()
+        {
+
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return _ms.Read(buffer, offset, count);
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    [TestMethod]
+    public void Test_ReadResponseAsBytes_LimitLen()
+    {
+        byte[] data = "中华文明-5000年".ToUtf8Bytes();
+
+        NotLenMemoryStream ms1 = new NotLenMemoryStream(data);
+        byte[] data2 = ResponseReader.ReadResponseAsBytes(ms1, 0);  // 不检查长度
+        MyAssert.AreEqual(data, data2);
+
+        NotLenMemoryStream ms2 = new NotLenMemoryStream(data);
+        byte[] data3 = ResponseReader.ReadResponseAsBytes(ms2, 100);  // 流的长度没有超过最大值
+        MyAssert.AreEqual(data, data3);
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            NotLenMemoryStream ms3 = new NotLenMemoryStream(data);
+            byte[] data4 = ResponseReader.ReadResponseAsBytes(ms3, 10);  // 流的长度超标
+        });       
+    }
+
+
+    [TestMethod]
+    public void Test_ReadText_LimitLen()
+    {
+        string input = "中华文明-5000年；中华文明-5000年；\r\n中华文明-5000年；中华文明-5000年；\r\n中华文明-5000年；";
+
+        NotLenMemoryStream ms1 = new NotLenMemoryStream(input.ToUtf8Bytes());
+        string text1 = ResponseReader.ReadText(ms1, null, 0);
+        Assert.AreEqual(input, text1);
+
+        NotLenMemoryStream ms2 = new NotLenMemoryStream(input.ToUtf8Bytes());
+        string text2 = ResponseReader.ReadText(ms2, null, 100);
+        Assert.AreEqual(input, text2);
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            NotLenMemoryStream ms3 = new NotLenMemoryStream(input.ToUtf8Bytes());
+            string text3 = ResponseReader.ReadText(ms3, null, 10);  // 流的长度超标
+        });
+    }
+
+#endif
 
 }
 #pragma warning restore SYSLIB0014 // 类型或成员已过时

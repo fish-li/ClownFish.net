@@ -54,13 +54,13 @@ public class HttpResultTest
         headers.Add("name2", "222");
         string body = Guid.NewGuid().ToString() + " 中华文明";
 
-        HttpResult<string> httpResult = new HttpResult<string>(400, headers, body);
+        HttpResult<string> httpResult = new HttpResult<string>(666, headers, body);
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<string> httpResult2 = new HttpResult<string>(200, null, null);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.AreEqual("111", httpResult2.GetHeader("name1"));
         Assert.AreEqual("222", httpResult2.GetHeader("name2"));
@@ -70,7 +70,7 @@ public class HttpResultTest
         HttpResult<string> httpResult3 = new HttpResult<string>(200, null, null);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.AreEqual("111", httpResult3.GetHeader("name1"));
         Assert.AreEqual("222", httpResult3.GetHeader("name2"));
@@ -83,13 +83,13 @@ public class HttpResultTest
         NameValueCollection headers = null;
         string body = Guid.NewGuid().ToString() + " 中华文明";
 
-        HttpResult<string> httpResult = new HttpResult<string>(400, headers, body);
+        HttpResult<string> httpResult = new HttpResult<string>(666, headers, body);
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<string> httpResult2 = new HttpResult<string>(200, null, null);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.AreEqual(body, httpResult2.Result);
 
@@ -97,7 +97,7 @@ public class HttpResultTest
         HttpResult<string> httpResult3 = new HttpResult<string>(200, null, null);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.AreEqual(body, httpResult3.Result);
     }
@@ -108,13 +108,13 @@ public class HttpResultTest
         NameValueCollection headers = null;
         string body = "";
 
-        HttpResult<string> httpResult = new HttpResult<string>(400, headers, body);
+        HttpResult<string> httpResult = new HttpResult<string>(666, headers, body);
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<string> httpResult2 = new HttpResult<string>(200, null, null);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.IsNull(httpResult2.Result);
 
@@ -122,7 +122,7 @@ public class HttpResultTest
         HttpResult<string> httpResult3 = new HttpResult<string>(200, null, null);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.IsNull(httpResult3.Result);
     }
@@ -135,13 +135,13 @@ public class HttpResultTest
         headers.Add("name2", "222");
         long body = 123L;
 
-        HttpResult<long> httpResult = new HttpResult<long>(400, headers, body);
+        HttpResult<long> httpResult = new HttpResult<long>(666, headers, body);
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<long> httpResult2 = new HttpResult<long>(200, null, 0);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.AreEqual("111", httpResult2.GetHeader("name1"));
         Assert.AreEqual("222", httpResult2.GetHeader("name2"));
@@ -151,7 +151,7 @@ public class HttpResultTest
         HttpResult<long> httpResult3 = new HttpResult<long>(200, null, 0);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.AreEqual("111", httpResult3.GetHeader("name1"));
         Assert.AreEqual("222", httpResult3.GetHeader("name2"));
@@ -166,13 +166,13 @@ public class HttpResultTest
         headers.Add("name2", "222");
         string body = Guid.NewGuid().ToString() + " 中华文明";
 
-        HttpResult<byte[]> httpResult = new HttpResult<byte[]>(400, headers, body.GetBytes());
+        HttpResult<byte[]> httpResult = new HttpResult<byte[]>(666, headers, body.GetBytes());
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<byte[]> httpResult2 = new HttpResult<byte[]>(200, null, null);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.AreEqual("111", httpResult2.GetHeader("name1"));
         Assert.AreEqual("222", httpResult2.GetHeader("name2"));
@@ -182,7 +182,7 @@ public class HttpResultTest
         HttpResult<byte[]> httpResult3 = new HttpResult<byte[]>(200, null, null);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.AreEqual("111", httpResult3.GetHeader("name1"));
         Assert.AreEqual("222", httpResult3.GetHeader("name2"));
@@ -208,13 +208,13 @@ public class HttpResultTest
         };
         string bodyJson = body.ToJson();
 
-        HttpResult<Product2> httpResult = new HttpResult<Product2>(400, headers, body);
+        HttpResult<Product2> httpResult = new HttpResult<Product2>(666, headers, body);
         string text1 = (httpResult as ITextSerializer).ToText();
 
         HttpResult<Product2> httpResult2 = new HttpResult<Product2>(200, null, null);
         (httpResult2 as ITextSerializer).LoadData(text1);
 
-        Assert.AreEqual(400, httpResult2.StatusCode);
+        Assert.AreEqual(666, httpResult2.StatusCode);
         Assert.IsNotNull(httpResult2.Headers);
         Assert.AreEqual("111", httpResult2.GetHeader("name1"));
         Assert.AreEqual("222", httpResult2.GetHeader("name2"));
@@ -224,7 +224,7 @@ public class HttpResultTest
         HttpResult<Product2> httpResult3 = new HttpResult<Product2>(200, null, null);
         (httpResult3 as IBinarySerializer).LoadData(bb);
 
-        Assert.AreEqual(400, httpResult3.StatusCode);
+        Assert.AreEqual(666, httpResult3.StatusCode);
         Assert.IsNotNull(httpResult3.Headers);
         Assert.AreEqual("111", httpResult3.GetHeader("name1"));
         Assert.AreEqual("222", httpResult3.GetHeader("name2"));

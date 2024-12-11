@@ -27,13 +27,13 @@ public class HttpHeaderCollectionTest
             h.Remove(null);
         });
         MyAssert.IsError<ArgumentNullException>(() => {
-            h.ContainsName(null);
+            h.ContainsKey(null);
         });
 
-        Assert.IsTrue(h.ContainsName("b"));
+        Assert.IsTrue(h.ContainsKey("b"));
         h.Remove("b");
         Assert.AreEqual(2, h.Count);
-        Assert.IsFalse(h.ContainsName("b"));
+        Assert.IsFalse(h.ContainsKey("b"));
     }
 
     [TestMethod]

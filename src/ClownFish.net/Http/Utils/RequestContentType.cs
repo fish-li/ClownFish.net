@@ -15,6 +15,8 @@ public static class RequestContentType
     /// </summary>
     public static readonly string Form = "application/x-www-form-urlencoded";
 
+    internal static readonly string FormUtf8 = "application/x-www-form-urlencoded; charset=utf-8";
+
     /// <summary>
     /// 指示请求体是一个FORM表单且包含上传文件
     /// </summary>

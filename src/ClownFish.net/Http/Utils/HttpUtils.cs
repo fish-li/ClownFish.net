@@ -93,10 +93,10 @@ public static class HttpUtils
         }
 
         if( contentType[0] == 'a' ) {
-            return contentType.StartsWith0(RequestContentType.Json)  // 可包含：application/json-seq
-                || contentType.StartsWith0(RequestContentType.Xml)
+            return contentType.StartsWith0(ResponseContentType.Json)  // 可包含：application/json-seq
+                || contentType.StartsWith0(ResponseContentType.Xml)
                 //|| contentType.StartsWith0(RequestContentType.Form)  // Response根本不使用这个类型
-                || contentType.StartsWith0(RequestContentType.JsonLines)
+                || contentType.StartsWith0(ResponseContentType.JsonLines)
                 || contentType.StartsWith0("application/problem+json");
 
             //|| contentType.StartsWith0("application/problem+xml")

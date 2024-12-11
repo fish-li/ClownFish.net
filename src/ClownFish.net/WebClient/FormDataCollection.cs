@@ -11,6 +11,8 @@ public sealed class FormDataCollection
 
     private readonly List<KeyValuePair<string, object>> _list = new List<KeyValuePair<string, object>>(32);
 
+    internal static readonly string MultipartContentType = "multipart/form-data; boundary=" + s_boundary;
+
     /// <summary>
     /// 是否包含上传文件
     /// </summary>
@@ -25,7 +27,7 @@ public sealed class FormDataCollection
         if( HasFile == false )
             throw new InvalidOperationException();
 
-        return "multipart/form-data; boundary=" + s_boundary;
+        return MultipartContentType;
     }
 
 
@@ -38,7 +40,7 @@ public sealed class FormDataCollection
     public FormDataCollection AddString(string key, string value)
     {
         if( string.IsNullOrEmpty(key) )
-            throw new ArgumentNullException("key");
+            throw new ArgumentNullException(nameof(key));
 
         _list.Add(new KeyValuePair<string, object>(key, value ?? string.Empty));
         return this;
@@ -53,7 +55,7 @@ public sealed class FormDataCollection
     public FormDataCollection AddFile(string key, FileInfo file)
     {
         if( string.IsNullOrEmpty(key) )
-            throw new ArgumentNullException("key");
+            throw new ArgumentNullException(nameof(key));
         if( file == null )
             throw new ArgumentNullException(nameof(file));
 
@@ -77,7 +79,7 @@ public sealed class FormDataCollection
     public FormDataCollection AddFile(string key, HttpFile file)
     {
         if( string.IsNullOrEmpty(key) )
-            throw new ArgumentNullException("key");
+            throw new ArgumentNullException(nameof(key));
         if( file == null )
             throw new ArgumentNullException(nameof(file));
 
@@ -100,7 +102,7 @@ public sealed class FormDataCollection
     public FormDataCollection AddObject(string key, object value)
     {
         if( string.IsNullOrEmpty(key) )
-            throw new ArgumentNullException("key");
+            throw new ArgumentNullException(nameof(key));
 
         // 除了上传文件之外，其它数据都转换成字符串。
 
@@ -122,7 +124,7 @@ public sealed class FormDataCollection
         }
 
         if( valueType == typeof(byte[]) ) {
-            string text = Convert.ToBase64String((byte[])value);
+            string text = ((byte[])value).ToBase64();
             return AddString(key, text);
         }
 
@@ -170,9 +172,9 @@ public sealed class FormDataCollection
     public void WriteToStream(Stream stream, Encoding encoding)
     {
         if( stream == null )
-            throw new ArgumentNullException("stream");
+            throw new ArgumentNullException(nameof(stream));
         if( encoding == null )
-            throw new ArgumentNullException("encoding");
+            throw new ArgumentNullException(nameof(encoding));
 
         if( HasFile == false )
             WriteSimpleTextToStream(stream, encoding);
@@ -281,7 +283,7 @@ public sealed class FormDataCollection
     internal static FormDataCollection Create(object obj)
     {
         if( obj == null )
-            throw new ArgumentNullException("obj");
+            throw new ArgumentNullException(nameof(obj));
 
         // 对参数做个简单的判断，防止传入了错误的类型
         if( obj.GetType().IsPrimitive )

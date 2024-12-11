@@ -6,7 +6,7 @@ namespace ClownFish.WebClient;
 /// <summary>
 /// 表示一次HTTP请求的描述信息
 /// </summary>
-public sealed class HttpOption : ILoggingObject, IToAllText
+public sealed partial class HttpOption
 {
     /// <summary>
     /// 构造方法
@@ -215,7 +215,7 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     public bool? KeepAlive { get; set; }
 
 
-    //public IWebProxy Proxy { get; set; }  // TODO: 以后再支持
+    //public IWebProxy Proxy { get; set; }  // TODO: 以后再考虑支持
 
 
     /// <summary>
@@ -350,15 +350,21 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     }
 
 
+}
+
+
+
+public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerializer  // 日志和文本序列化接口的实现
+{
     /// <summary>
     /// 获取当前对象的日志展示文本
     /// </summary>
     /// <returns></returns>
-    public string ToLoggingText()
+    string ILoggingObject.ToLoggingText()
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            FillLineAndHeaders(sb);
+            LogLineAndHeaders(sb);
 
             return sb.ToString();
         }
@@ -371,25 +377,31 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     /// 将一个对象的所有信息全部转成文本形式输出
     /// </summary>
     /// <returns></returns>
-    public string ToAllText()
+    string IToAllText.ToAllText()
     {
         return ToRawText(1);
     }
 
     /// <summary>
-    /// 转换成全文本形式。
-    /// 建议：仅在记录日志时才调用当前方法。
+    /// 将HttpOption的各属性值转换成全文本形式。
+    /// 注意：此方法返回的结果（在某些场景下）并不是实际发送的内容，因此结果仅供记录日志时使用。
     /// </summary>
     /// <param name="mode">0：不包含请求体数据，1：仅仅包含文本内容的请求体，2：包含请求体，不管数据是什么格式。</param>
     /// <returns></returns>
     public string ToRawText(int mode = 1)
     {
+        string body = this.GetPostBodyAsString(mode, out bool isBinData, out string contentType);
+
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            FillLineAndHeaders(sb);
+            LogLineAndHeaders(sb, contentType);
+
+            if( isBinData ) {
+                sb.Append(BodyBinDataHeaderName).AppendLineRN(": 1");
+            }
+
             sb.AppendLineRN();
 
-            string body = this.GetPostBodyAsString(mode);
             if( body != null )
                 sb.Append(body);
 
@@ -401,47 +413,14 @@ public sealed class HttpOption : ILoggingObject, IToAllText
     }
 
 
-    private string GetPostBodyAsString(int mode)   // 用于生成日志
-    {
-        if( mode == 0 )
-            return null;
-
-        object data = this.GetPostData();
-        if( data == null )
-            return null;
-
-        // 有可能 contetType 在请求头中直接指定的，而不是设置的 Format 属性
-        string contetType = ContenTypeUtils.GetByFormat(this.Format);
-
-        if( contetType.IsNullOrEmpty() )
-            contetType = this.Headers[HttpHeaders.Request.ContentType];
-
-
-
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
-
-            RequestWriter writer = new RequestWriter();
-            writer.Write(ms, data, this.Format, false);   // 生成日志时不做gzip
-
-            if( HttpUtils.RequestBodyIsText(contetType) ) {
-                return Encoding.UTF8.GetString(ms.ToArray());
-            }
-
-            if( mode == 2 )
-                return "已将二进制数据转成Base64字符串：" + ms.ToArray().ToBase64();
-            else  // mode == 1
-                return $"##--非文本类数据，长度：({ms.Length})--##";
-        }
-    }
-
-
-    private void FillLineAndHeaders(StringBuilder sb)
+    internal void LogLineAndHeaders(StringBuilder sb, string contentType = null)
     {
         // 填充【请求行】
         sb.Append(this.Method).Append(' ').Append(this.GetRequestUrl()).AppendLineRN(" HTTP/1.1");
 
-
         if( _headers != null ) {
+
+            // 说明：如果用户在 _headers 中指定了不正确的ContentType请求头，那么最后得到的结果就不对了~~， 这里不管了~~
             foreach( var x in _headers ) {
                 sb.AppendLineRN($"{x.Name}: {x.Value}");
             }
@@ -454,49 +433,118 @@ public sealed class HttpOption : ILoggingObject, IToAllText
             }
         }
 
-        if( HttpUtils.RequestHasBody(this.Method) ) {
-            string contentType = ContenTypeUtils.GetByFormat(this.Format);
-            if( contentType.IsNullOrEmpty() == false )
-                sb.AppendLineRN($"{HttpHeaders.Request.ContentType}: {contentType}");
+        if( this.UserAgent.HasValue() ) {
+            sb.AppendLineRN($"{HttpHeaders.Request.UserAgent}: {this.UserAgent}");
         }
 
-        if( this.UserAgent.HasValue() )
-            sb.AppendLineRN($"{HttpHeaders.Request.UserAgent}: {this.UserAgent}");
-
+        if( HttpUtils.RequestHasBody(this.Method)
+            && (_headers == null || _headers.ContainsKey(HttpHeaders.Request.ContentType) == false) ) {
+            if( contentType == null ) {
+                contentType = ContenTypeUtils.GetByFormat(this.Format);  // 这里得到的结果可能不正确~~，只适用于简单场景
+            }
+            if( contentType.HasValue() ) {
+                sb.AppendLineRN($"{HttpHeaders.Request.ContentType}: {contentType}");
+            }
+        }
     }
 
+
+    // mode: 0：不包含请求体数据，1：仅仅包含文本内容的请求体，2：包含请求体，不管数据是什么格式。
+    internal string GetPostBodyAsString(int mode, out bool isBinData, out string contentType)   // 用于生成日志
+    {
+        isBinData = false;
+        contentType = null;
+
+        if( mode == 0 )
+            return null;
+
+        object data = this.GetPostData();
+        if( data == null )
+            return null;
+
+        if( data is string text ) {
+            return text;
+        }
+
+        if( data is byte[] bb ) {
+            isBinData = true;
+
+            if( mode == 2 )
+                return bb.ToBase64();
+            else  // mode == 1
+                return $"##--NOT TEXT DATA, Length:({bb.Length})--##";
+        }
+
+        // data 是一个 Entity/DTO/object，需要根据 this.Format 做序列化
+        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+
+            RequestWriter writer = new RequestWriter();
+            writer.Write(ms, data, this.Format, false);   // 生成日志时不做gzip
+
+            isBinData = writer.IsBinaryData;
+            contentType = writer.ContentType;
+
+            string contentType2 = contentType;
+            if( contentType2.IsNullOrEmpty() )
+                contentType2 = ContenTypeUtils.GetByFormat(this.Format);
+            if( contentType2.IsNullOrEmpty() )
+                contentType2 = this.Headers[HttpHeaders.Request.ContentType];
+
+            if( HttpUtils.RequestBodyIsText(contentType2) ) {
+                return Encoding.UTF8.GetString(ms.ToArray());
+            }
+            else {   // 二进制数据
+                if( mode == 2 )
+                    return ms.ToArray().ToBase64();
+                else  // mode == 1
+                    return $"##--NOT TEXT DATA, Length:({ms.Length})--##";
+            }
+        }
+    }
+
+    //internal static readonly string BodyBinDataPrefix = "bin-data/base64:";
+    // 加前缀的问题在于，生成时要【拼接字符串】，解析时要【裁剪字符串】，都是低效操作！
+
+    internal static readonly string BodyBinDataHeaderName = "[BODY-IS-BIN]";
+
+    // raw-text 示例数据：
+    //POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
+    //Host: www.fish-test.com
+    //User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
+    //Accept: */*
+    //Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+    //Accept-Encoding: gzip, deflate
+    //Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    //X-Requested-With: XMLHttpRequest
+    //Referer: http://www.fish-test.com/Pages/Demo/TestAutoFindAction.htm
+    //Content-Length: 72
+    //Cookie: hasplmlang=_int_; LoginBy=productKey; PageStyle=Style2;
+    //Connection: keep-alive
+    //Pragma: no-cache
+    //Cache-Control: no-cache
+
+    //input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
 
 
     /// <summary>
     /// 根据原始请求信息文本构建 HttpOption 对象（格式可参考Fiddler的Inspectors标签页内容）
-    /// 注意：此方法会忽略部分请求头及内容，涉及范围：Content-Length, Connection, Content-Type
+    /// 注意：1，此方法会忽略部分请求头及内容，涉及范围：Content-Length, Connection
+    /// 2，对于 二进制 提交数据，此方法可能并不能正确识别。
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
     public static HttpOption FromRawText(string text)
     {
-        // text参数的 示例数据：
-        //POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1
-        //Host: www.fish-test.com
-        //User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0
-        //Accept: */*
-        //Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
-        //Accept-Encoding: gzip, deflate
-        //Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-        //X-Requested-With: XMLHttpRequest
-        //Referer: http://www.fish-test.com/Pages/Demo/TestAutoFindAction.htm
-        //Content-Length: 72
-        //Cookie: hasplmlang=_int_; LoginBy=productKey; PageStyle=Style2;
-        //Connection: keep-alive
-        //Pragma: no-cache
-        //Cache-Control: no-cache
+        HttpOption httpOption = new HttpOption();
+        FillFromRawText(httpOption, text);
 
-        //input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
+        return httpOption;
+    }
 
+    private static void FillFromRawText(HttpOption httpOption, string text)
+    {
         if( string.IsNullOrEmpty(text) )
             throw new ArgumentNullException("text");
-
-        HttpOption httpOption = new HttpOption();
 
         // 放弃构造方法中的默认值格式，因为请求头中可能会指定
         httpOption.Format = SerializeFormat.None;
@@ -504,22 +552,281 @@ public sealed class HttpOption : ILoggingObject, IToAllText
         using( StringReader reader = new StringReader(text.Trim()) ) {
 
             // 设置请求方法和URL
-            httpOption.SetRequestLine(reader.ReadLine());
+            PopulateRequestLine(httpOption, reader.ReadLine());
 
             // 读取请求头
-            httpOption.SetHeaders(reader);
+            PopulateHeaders(httpOption, reader);
 
             // 读取请求体数据
             string postText = reader.ReadToEnd();
-            if( string.IsNullOrEmpty(postText) == false )
-                httpOption.Data = postText;
+            // 设置提交数据
+            PopulatePostData(httpOption, postText);
+        }
+    }
+
+    internal static void PopulateRequestLine(HttpOption httpOption, string requestLine)
+    {
+        int p1 = requestLine.IndexOf(' ');
+        int p2 = requestLine.LastIndexOf(' ');
+
+        if( p1 < 0 || p1 == p2 )
+            throw new ArgumentException($"不能识别的请求文本格式，开始行：[{requestLine}]");
+
+        // 设置请求方法，GET OR POST
+        httpOption.Method = requestLine.Substring(0, p1);
+
+
+        // 不使用HTTP协议版本，只做校验。
+        string httpVersion = requestLine.Substring(p2 + 1);
+        if( httpVersion.StartsWith("HTTP/", StringComparison.Ordinal) == false )
+            throw new ArgumentException($"不能识别的请求文本格式，开始行：[{requestLine}]");
+
+        httpOption.Url = requestLine.Substring(p1 + 1, p2 - p1 - 1);
+    }
+
+    internal static void PopulateHeaders(HttpOption httpOption, StringReader reader)
+    {
+        string line = null;
+        while( (line = reader.ReadLine()) != null ) {
+            if( line.Length > 0 ) {
+                // 处理请求头
+                int p3 = line.IndexOf(':');
+                if( p3 > 0 ) {
+                    string name = line.Substring(0, p3);
+
+                    // 这个头直接丢弃，因为文本在计算二进制时会随着编码不同而变化
+                    if( name.EqualsIgnoreCase("Content-Length") )
+                        continue;
+
+                    // 这里强制要求的请求头格式： "name: value" ，中间一个冒号加一个空格，如果格式不正确，有可能会出现异常！
+                    string value = line.Substring(p3 + 2);
+                    // line.Substring(p3 + 1).TrimTrimStart(' ')  这种写法会造成无意义的性能浪费，所以不采用！
+
+                    if( name.Is("Connection") ) {
+                        // Connection 头有二个可选值，Keep-Alive  or  close
+                        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Connection
+                        // 下面为了简单，只判断其中之一。
+                        httpOption.KeepAlive = value.Is("Keep-Alive");
+                        continue;
+                    }
+
+#if NET6_0_OR_GREATER
+                    if( name == "--unix-socket" ) {
+                        httpOption.UnixSocketEndPoint = value;
+                        continue;
+                    }
+#endif
+                    httpOption.Headers.Add(name, value);
+                }
+                else {
+                    throw new ArgumentException($"不能识别的请求文本格式，请求头：[{line}]");
+                }
+            }
+            else {  // line.Length == 0
+                // 空行，表示请求头已读完
+                break;
+            }
         }
 
-        // 纠正一些请求头数据
-        httpOption.FixHeaders();
 
-        return httpOption;
+        // 纠正一些请求头数据
+        FixInputHeaders(httpOption);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void FixInputHeaders(HttpOption httpOption)
+    {
+        // 可能的输入格式  Content-Type: xxxxxxx; charset=gb2312
+        // 此时强制修改为  Content-Type: xxxxxxx; charset=utf-8
+
+        string contentType = httpOption.Headers[HttpHeaders.Request.ContentType];
+        if( contentType.HasValue() ) {
+            Match m = s_charsetReg.Match(contentType);
+            if( m.Success && m.Groups["name"].Value.Is("utf-8") == false ) {
+                string value = s_charsetReg.Replace(contentType, "; charset=utf-8");
+                httpOption.Headers[HttpHeaders.Request.ContentType] = value;
+            }
+        }
+    }
+
+    private static readonly Regex s_charsetReg = new Regex(";\\s?charset=(?<name>[\\w\\-]+)", RegexOptions.Compiled);
+
+    private static void PopulatePostData(HttpOption httpOption, string postText)
+    {
+        if( string.IsNullOrEmpty(postText) == false ) {
+
+            string isBinData = httpOption.Headers[BodyBinDataHeaderName];
+
+            if( isBinData.HasValue() )
+                httpOption.Headers.Remove(BodyBinDataHeaderName);
+
+            if( isBinData == "1" ) {
+                try {
+                    httpOption.Data = Convert.FromBase64String(postText);
+                }
+                catch {  // $"##--NOT TEXT DATA, Length:({bb.Length})--##";
+                    httpOption.Data = postText;
+                }
+            }
+            else {
+                httpOption.Data = postText;
+            }
+        }
+    }
+
+    string ITextSerializer.ToText()
+    {
+        return ToRawText(2);
+    }
+
+    void ITextSerializer.LoadData(string text)
+    {
+        FillFromRawText(this, text);
+    }
+}
+
+
+
+#if NETCOREAPP
+
+public sealed partial class HttpOption : IBinarySerializer  // 二进制序列化相关实现
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string GetStartLineAndHeaders(string contentType)
+    {
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            LogLineAndHeaders(sb, contentType);
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
     }
 
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private byte[] GetPostBodyBytes(out bool isBinData, out string contentType)
+    {
+        isBinData = false;
+        contentType = null;
+
+        object data = this.GetPostData();
+        if( data == null )
+            return Empty.Array<byte>();
+
+        if( data is string text ) {
+            return text.ToUtf8Bytes();
+        }
+
+        if( data is byte[] bb ) {
+            isBinData = true;
+            return bb;
+        }
+
+        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+
+            RequestWriter writer = new RequestWriter();
+            writer.Write(ms, data, this.Format, false);   // 不做gzip
+
+            contentType = writer.ContentType;
+            isBinData = writer.IsBinaryData;
+            return ms.ToArray();
+        }
+    }
+
+    private static void PopulatePostData(HttpOption httpOption, byte[] postData, int bodyDataType)
+    {
+        if( postData.HasValue() ) {
+
+            if( bodyDataType == 1 ) {  // 二进制数据
+                httpOption.Data = postData;
+            }
+            else {
+                httpOption.Data = postData.ToUtf8String();
+            }
+        }
+    }
+
+    byte[] IBinarySerializer.ToBytes()
+    {
+        byte[] body = GetPostBodyBytes(out bool bodyIsBinData, out string contentType);
+
+        string startLineAndHeaders = GetStartLineAndHeaders(contentType);
+
+
+        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+
+            // 写入 "开始行和请求头"
+            byte[] b1 = Encoding.UTF8.GetBytes(startLineAndHeaders);
+            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
+            ms.Write(lenBytes, 0, lenBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+            ms.Write(b1, 0, b1.Length);
+
+            // 写入 "数据类型标志"
+            int bodyDataType = bodyIsBinData ? 1 : 0;
+            byte[] dataTypeBytes = BitConverter.GetBytes(bodyDataType);  // 长度固定为 4
+            ms.Write(dataTypeBytes, 0, dataTypeBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+
+            // 写入 "请求体"
+            byte[] b2 = body;
+            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
+            ms.Write(lenBytes, 0, lenBytes.Length);
+            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+            ms.Write(b2, 0, b2.Length);
+
+            return ms.ToArray();
+        }
+    }
+
+
+    void IBinarySerializer.LoadData(ReadOnlyMemory<byte> body)
+    {
+        if( body.Length == 0 )
+            return;
+
+        // 放弃构造方法中的默认值格式，因为请求头中可能会指定
+        this.Format = SerializeFormat.None;
+
+        int start = 0;
+        ReadOnlySpan<byte> span = body.Span;
+
+
+        // 读取 “开始行和请求头” 的长度
+        int len = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 5;  // 5 = 4 + 1
+
+        // 读取 “开始行和请求头”  二进制数据
+        ReadOnlySpan<byte> data = span.Slice(start, len);
+        start += len;
+
+        string text1 = Encoding.UTF8.GetString(data);
+        using( StringReader reader = new StringReader(text1) ) {
+            PopulateRequestLine(this, reader.ReadLine());   //==========================1
+            PopulateHeaders(this, reader);                  //==========================2
+        }
+
+        // -------------------------------------------------------
+
+        int bodyDataType = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 5;  // 5 = 4 + 1
+
+
+        // 读取“请求体”的长度
+        len = BitConverter.ToInt32(span.Slice(start, 4));
+        start += 5;  // 5 = 4 + 1
+
+        if( len > 0 ) {
+            // 读取“请求体” 二进制数据
+            data = span.Slice(start, len);
+
+            byte[] postData = data.ToArray();
+            PopulatePostData(this, postData, bodyDataType);   //==========================3
+        }
+    }
+
 }
+#endif

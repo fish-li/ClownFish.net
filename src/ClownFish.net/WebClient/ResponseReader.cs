@@ -1,4 +1,6 @@
-﻿namespace ClownFish.WebClient;
+﻿using System.IO;
+
+namespace ClownFish.WebClient;
 
 /// <summary>
 /// 读取HttpWebResponse的工具类
@@ -8,6 +10,8 @@ public sealed class ResponseReader : IDisposable
     private readonly HttpWebResponse _response;
 
     private readonly bool _autoDecompress;
+
+    private long _maxLimitLen;
 
     private Stream _responseStream;
 
@@ -23,13 +27,15 @@ public sealed class ResponseReader : IDisposable
     /// </summary>
     /// <param name="response"></param>
     /// <param name="autoDecompress"></param>
-    public ResponseReader(HttpWebResponse response, bool autoDecompress = false)
+    /// <param name="maxLimitLen">最大允许的响应体长度，可以不指定</param>
+    public ResponseReader(HttpWebResponse response, bool autoDecompress = false, long? maxLimitLen = null)
     {
         if( response == null )
             throw new ArgumentNullException("response");
 
         _response = response;
         _autoDecompress = autoDecompress;
+        _maxLimitLen = maxLimitLen.GetValueOrDefault(ClownFishOptions.HttpClient_MaxResponseBodySize);
     }
 
     /// <summary>
@@ -63,20 +69,43 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
+    internal long CheckMaxAllowLen()
+    {
+        if( _maxLimitLen <= 0 )
+            return 0;
+
+        // 这里也有可能读不到长度（值：-1），例如：Transfer-Encoding: chunked
+        long contentLength = _response.ContentLength;
+
+        // 先尝试直接根据ContentLength请求头 检查 maxAllowLen
+        if( contentLength > 0 ) {
+            if( contentLength > _maxLimitLen )
+                throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制：" + _maxLimitLen.ToString());
+            else
+                _maxLimitLen = -1;   // ContentLength请求头存在，并且没有触发上面的异常检查，就不需要再检查了
+        }
+        // else 
+        // Transfer-Encoding: chunked 场景，需要在读取响应体的时候执行长度检查
+
+        return _maxLimitLen;
+    }
+
 
     private T GetResult<T>()
     {
+        CheckMaxAllowLen();
+
         if( typeof(T) == typeof(byte[]) ) {
             // 二进制，就直接读取，忽略字符编码
-            return (T)(object)ReadResponseAsBytes();
+            return (T)(object)ReadResponseAsBytes(_responseStream, _maxLimitLen);
         }
         else if( typeof(T) == typeof(Stream) ) {
             // 二进制，就直接返回
-            return (T)(object)ReadResponseAsStream();
+            return (T)(object)ReadResponseAsStream();   // 这里不读取响应流内容，就不做长度检查了~~
         }
         else {
             // 其它类型的结果，先得到字符串，再做反序列化处理
-            string responseText = ReadResponseAsText(_responseStream, _contentType);
+            string responseText = ReadResponseAsText(_responseStream, _contentType, _maxLimitLen);
 
             // 转换结果
             return ConvertResult<T>(responseText, _contentType);
@@ -111,9 +140,31 @@ public sealed class ResponseReader : IDisposable
         return responseStream;
     }
 
-    private byte[] ReadResponseAsBytes()
+    internal static byte[] ReadResponseAsBytes(Stream responseStream, long maxAllowLen = 0)
     {
-        return _responseStream.ToArray();
+        if( maxAllowLen <= 0 ) {   // 不检查长度
+            return responseStream.ToArray();
+        }
+
+
+        // 读取流，并检查最大了限制长度
+        using( MemoryStream ms2 = MemoryStreamPool.GetStream() ) {
+            using( ByteBuffer byteBuffer = new ByteBuffer(1024) ) {
+                byte[] buffer = byteBuffer.Buffer;
+                int len = 0;
+                long sumLen = 0L;
+
+                while( (len = responseStream.Read(buffer, 0, buffer.Length)) > 0 ) {
+                    sumLen += len;
+                    if( sumLen > maxAllowLen ) {
+                        throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制-2：" + maxAllowLen.ToString());
+                    }
+                    ms2.Write(buffer, 0, len);
+                }
+            }
+
+            return ms2.ToArray();
+        }
     }
 
     private Stream ReadResponseAsStream()
@@ -145,7 +196,7 @@ public sealed class ResponseReader : IDisposable
     }
 
 
-    internal static string ReadResponseAsText(Stream responseStream, string contentType)
+    internal static string ReadResponseAsText(Stream responseStream, string contentType, long maxAllowLen = 0)
     {
         // 共有 4 种场景
         // 1，contentType is null  , 按 UTF-8 方式读取
@@ -156,17 +207,17 @@ public sealed class ResponseReader : IDisposable
 
 
         if( contentType.IsNullOrEmpty() )    // 场景 1
-            return ReadText(responseStream, Encoding.UTF8);
+            return ReadText(responseStream, Encoding.UTF8, maxAllowLen);
 
 
         Encoding encoding = GetEncodingFromContentType(contentType);
         if( encoding != null )  // 场景 2
-            return ReadText(responseStream, encoding);
+            return ReadText(responseStream, encoding, maxAllowLen);
 
 
         bool isHtml = contentType.StartsWithIgnoreCase(ResponseContentType.Html);
         if( isHtml == false )     // 场景 3
-            return ReadText(responseStream, Encoding.UTF8);
+            return ReadText(responseStream, Encoding.UTF8, maxAllowLen);
         else
             return ReadHtml(responseStream, Encoding.UTF8, out Encoding htmlEncoding);    // 场景 4, html
     }
@@ -227,12 +278,12 @@ public sealed class ResponseReader : IDisposable
             }
 
             // 按新的编码再次读取
-            return ReadText(ms, htmlEncoding);
+            return ReadText(ms, htmlEncoding);  // html 不会非常大，所以不检查长度
         }
     }
 
 
-    internal static string ReadText(Stream stream, Encoding encoding)
+    internal static string ReadText(Stream stream, Encoding encoding, long maxAllowLen = 0)
     {
         if( stream.CanSeek )
             stream.Position = 0;
@@ -240,9 +291,27 @@ public sealed class ResponseReader : IDisposable
         if( stream.CanRead == false )
             return string.Empty;
 
-        using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
-            return reader.ReadToEnd();
+        if( maxAllowLen <= 0 ) {   // 不检查长度
+            using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+                return reader.ReadToEnd();
+            }
         }
+
+        // 读取流，并检查最大了限制长度
+        StringBuilder sb = new StringBuilder();
+        using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+            string line = null;
+            while( (line = reader.ReadLine()) != null ) {
+                if( sb.Length + line.Length + 2 > maxAllowLen ) {  // 2 = 换行符 \r\n 长度
+                    throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制-3：" + maxAllowLen.ToString());
+                }
+                if( sb.Length > 0 )
+                    sb.AppendLineRN();
+
+                sb.Append(line);
+            }
+        }
+        return sb.ToString();
     }
 
 
@@ -322,7 +391,7 @@ public sealed class ResponseReader : IDisposable
 
 
 
-#region IDisposable 成员
+    #region IDisposable 成员
 
     [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
     void IDisposable.Dispose()
@@ -335,5 +404,5 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
-#endregion
+    #endregion
 }

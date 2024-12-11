@@ -128,7 +128,7 @@ public class ResponseUtilsTest6
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody(httpOption);
 
         string contentType = responseMessage.GetContentType();
-        Assert.AreEqual("application/json", contentType);
+        Assert.AreEqual("application/json; charset=utf-8", contentType);
 
         responseMessage.Content.Headers.Remove("Content-Type");
         Assert.IsNull(responseMessage.GetContentType());
@@ -167,7 +167,7 @@ public class ResponseUtilsTest6
 
         string[] values = responseMessage.GetHeaders(HttpHeaders.Response.ContentType);
         Assert.AreEqual(1, values.Length);
-        Assert.AreEqual("application/json", values[0]);
+        Assert.AreEqual("application/json; charset=utf-8", values[0]);
 
 
         string[] values2 = responseMessage.GetHeaders("x-a");

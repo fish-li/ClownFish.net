@@ -9,18 +9,18 @@ public class HttpHeaderCollectionTest
         HttpHeaderCollection collection = new HttpHeaderCollection();
 
         collection.Add("k1", "abc");
-        Assert.IsTrue(collection.ContainsName("k1"));
+        Assert.IsTrue(collection.ContainsKey("k1"));
         Assert.AreEqual("abc", collection["k1"]);
 
         collection.Add("k1", "abc2");
         int count = collection.Remove("k1");
         Assert.AreEqual(2, count);
-        Assert.IsFalse(collection.ContainsName("k1"));
+        Assert.IsFalse(collection.ContainsKey("k1"));
         Assert.IsNull(collection["k1"]);
 
 
         collection["k2"] = "2222";
-        Assert.IsTrue(collection.ContainsName("k2"));
+        Assert.IsTrue(collection.ContainsKey("k2"));
         Assert.AreEqual("2222", collection["k2"]);
     }
 

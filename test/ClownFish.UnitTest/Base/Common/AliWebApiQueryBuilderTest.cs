@@ -28,7 +28,7 @@ public class AliWebApiQueryBuilderTest
             },
         };
 
-        string text = httpOption.ToAllText();
+        string text = ((IToAllText)httpOption).ToAllText();
 
         Console.WriteLine(text);
     }

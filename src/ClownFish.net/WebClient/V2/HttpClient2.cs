@@ -1,4 +1,5 @@
 ﻿#if NETCOREAPP
+using System.Net;
 using System.Net.Http;
 using MyHttpOption = ClownFish.WebClient.HttpOption;
 
@@ -292,6 +293,11 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
                                                             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
                                                             null, new Type[] { typeof(HttpResponseMessage), typeof(Uri), typeof(CookieContainer) }, null);
 
+
+    internal static HttpWebResponse CreateHttpWebResponse(HttpResponseMessage responseMessage, Uri requestUri, CookieContainer cookieContainer)
+    {
+        return (HttpWebResponse)s_ctor.Invoke(new object[] { responseMessage, requestUri, cookieContainer });
+    }
 
     private HttpWebResponse CreateHttpWebResponse(HttpResponseMessage responseMessage, bool checkStatus)
     {

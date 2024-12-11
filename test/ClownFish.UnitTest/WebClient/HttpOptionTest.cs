@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Runtime.InteropServices;
 
 namespace ClownFish.UnitTest.WebClient;
 
@@ -20,7 +18,7 @@ public class HttpOptionTest
         Assert.AreEqual(TestUrl, option.Url);
         Assert.AreEqual(SerializeFormat.Form, option.Format);
 
-        MyAssert.IsError<ArgumentNullException>(()=> {
+        MyAssert.IsError<ArgumentNullException>(() => {
             option.Method = "";
         });
 
@@ -180,17 +178,17 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = HttpOption.FromRawText("");
         });
-                    
+
 
         HttpOption option = HttpOption.FromRawText(s_requestRaw);
 
         Assert.AreEqual("http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx", option.GetRequestUrl());
         Assert.AreEqual("input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81", option.GetPostData().ToString());
-        Assert.AreEqual("application/x-www-form-urlencoded", option.Headers["Content-Type"]);
+        Assert.AreEqual("application/x-www-form-urlencoded; charset=UTF-8", option.Headers["Content-Type"]);
 
-        
 
-        string text2 = option.ToAllText();
+
+        string text2 = ((IToAllText)option).ToAllText();
         Assert.IsTrue(text2.Contains("POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1"));
         Assert.IsTrue(text2.Contains("Host: www.fish-test.com"));
         Assert.IsTrue(text2.Contains("User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0"));
@@ -259,7 +257,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
         Assert.IsTrue(text.Contains("POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1"));
         Assert.IsTrue(text.Contains("User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0"));
         Assert.IsTrue(text.Contains("Content-Type: application/octet-stream"));
-        Assert.IsTrue(text.Contains("已将二进制数据转成Base64字符串：" + bytes.ToBase64()));
+        Assert.IsTrue(text.Contains(bytes.ToBase64()));
     }
 
     [TestMethod]
@@ -349,7 +347,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
 
 
     [TestMethod]
-    public void Test_HttpOptionBuilder()
+    public void Test_PopulateRequestLine()
     {
         HttpOption option = new HttpOption();
 
@@ -358,17 +356,17 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
         string text3 = "POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP15";
 
         var ex1 = MyAssert.IsError<ArgumentException>(() => {
-            HttpOptionBuilder.SetRequestLine(option, "http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx");
+            HttpOption.PopulateRequestLine(option, "http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx");
         });
         Assert.AreEqual($"不能识别的请求文本格式，开始行：[{text1}]", ex1.Message);
 
         var ex2 = MyAssert.IsError<ArgumentException>(() => {
-            HttpOptionBuilder.SetRequestLine(option, "POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx");
+            HttpOption.PopulateRequestLine(option, "POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx");
         });
         Assert.AreEqual($"不能识别的请求文本格式，开始行：[{text2}]", ex2.Message);
 
         var ex3 = MyAssert.IsError<ArgumentException>(() => {
-            HttpOptionBuilder.SetRequestLine(option, "POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP15");
+            HttpOption.PopulateRequestLine(option, "POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP15");
         });
         Assert.AreEqual($"不能识别的请求文本格式，开始行：[{text3}]", ex3.Message);
 
@@ -407,7 +405,7 @@ Host=www.fish-test.com
 
         option.CompletionOption = System.Net.Http.HttpCompletionOption.ResponseHeadersRead;
         Assert.AreEqual(System.Net.Http.HttpCompletionOption.ResponseHeadersRead, option.CompletionOption);
-        
+
         option.MessageHandler = null;
         Assert.IsNull(option.MessageHandler);
 
@@ -430,23 +428,23 @@ Host=www.fish-test.com
             Format = SerializeFormat.Text
         };
 
-        string text0 = (string)option.InvokeMethod("GetPostBodyAsString", 0);
+        string text0 = option.GetPostBodyAsString(0, out _, out _);
         Assert.IsNull(text0);
 
         option.Data = "abc".ToUtf8Bytes();
         option.Format = SerializeFormat.Binary;
 
-        string text1 = (string)option.InvokeMethod("GetPostBodyAsString", 1);
-        Assert.AreEqual("##--非文本类数据，长度：(3)--##", text1);
+        string text1 = option.GetPostBodyAsString(1, out _, out _);
+        Assert.AreEqual("##--NOT TEXT DATA, Length:(3)--##", text1);
 
 
-        string text2 = (string)option.InvokeMethod("GetPostBodyAsString", 2);
-        Assert.AreEqual("已将二进制数据转成Base64字符串：YWJj", text2);
+        string text2 = option.GetPostBodyAsString(2, out _, out _);
+        Assert.AreEqual("YWJj", text2);
     }
 
 
     [TestMethod]
-    public void Test_FillLineAndHeaders_Cookie()
+    public void Test_LogLineAndHeaders_Cookie()
     {
         HttpOption option = new HttpOption {
             Method = "POST",
@@ -462,13 +460,13 @@ Host=www.fish-test.com
         option.Cookie = cookieContainer;
 
         StringBuilder sb = new StringBuilder();
-        option.InvokeMethod("FillLineAndHeaders", sb);
+        option.LogLineAndHeaders(sb);
 
         string text = sb.ToString();
         Console.WriteLine(sb.ToString());
 
         Assert.IsTrue(text.Contains("Cookie: name1=abc"));
-        
+
     }
 
 #if NETCOREAPP
@@ -485,7 +483,7 @@ Host=www.fish-test.com
         try {
             option.Send();
         }
-        catch(Exception ex2 ) {
+        catch( Exception ex2 ) {
             ex = ex2;
         }
 
@@ -495,96 +493,29 @@ Host=www.fish-test.com
         Console.WriteLine(exAll);
 
 
-        Assert.IsInstanceOfType(ex, typeof(TaskCanceledException));    
+        Assert.IsInstanceOfType(ex, typeof(TaskCanceledException));
 
         Assert.IsTrue(exAll.Contains("HTTP call timeout, destination address: http://127.0.0.1:30000/test1.aspx"));
     }
 #endif
 
 
+
     [TestMethod]
-    public void Test_Gzip_Text_2048()
+    public void Test_xxx()
     {
-        string text = new string('中', 2048);
+        Console.WriteLine(RuntimeInformation.FrameworkDescription);
+        Console.WriteLine(Convert.ToBase64String("中华文明-5000年".ToUtf8Bytes().ToGzip()));
 
-        HttpOption http = new HttpOption {
-            Method = "POST",
-            Url = "http://www.fish-test.com/show-body.aspx",
-            Data = text,
-            Format = SerializeFormat.Text
-        };
+        //.NET Framework 4.8.4762.0
+        //H4sIAAAAAAAEAHuyY+3T3r5n09qfzejTNTUwMHi6cwsAjK8TFxQAAAA=
+	
+        //.NET 9.0.0
+        //H4sIAAAAAAAACnuyY+3T3r5n09qfzejTNTUwMHi6cwsAjK8TFxQAAAA=
 
-        string response1 = http.GetResult();
-
-        Assert.IsTrue(response1.Contains("Content-Type: text/plain"));
-        Assert.IsFalse(response1.Contains("Content-Encoding: gzip"));
-
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine(response1);
-
-        Assert.IsTrue(response1.Contains(text));
-
-
-        // ==============================================================================
-
-        http.Finished = false;
-        http.AutoGzipUpload = true;
-
-        string response2 = http.GetResult();
-        
-        Assert.IsTrue(response2.Contains("Content-Type: text/plain"));
-        Assert.IsTrue(response2.Contains("Content-Encoding: gzip"));
-
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine(response2);
-
-        Assert.IsFalse(response2.Contains(text));
-
-        string text2 = text.ToGzip().ToBase64();
-        Assert.IsTrue(response2.Contains(text2));
+        // 2种运行时出来的结果不一样！！
     }
 
 
 
-    [TestMethod]
-    public void Test_Gzip_Json_2048()
-    {
-        NameValue data = new NameValue { Name = "abc", Value = new string('中', 2048) };
-
-        HttpOption http = new HttpOption {
-            Method = "POST",
-            Url = "http://www.fish-test.com/show-body.aspx",
-            Data = data,
-            Format = SerializeFormat.Json
-        };
-
-        string response1 = http.GetResult();
-
-        Assert.IsTrue(response1.Contains("Content-Type: application/json"));
-        Assert.IsFalse(response1.Contains("Content-Encoding: gzip"));
-
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine(response1);
-
-        Assert.IsTrue(response1.Contains(data.Value));
-
-
-        // ==============================================================================
-
-        http.Finished = false;
-        http.AutoGzipUpload = true;
-
-        string response2 = http.GetResult();
-
-        Assert.IsTrue(response2.Contains("Content-Type: application/json"));
-        Assert.IsTrue(response2.Contains("Content-Encoding: gzip"));
-
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine(response2);
-
-        Assert.IsFalse(response2.Contains(data.Value));
-
-        string text2 = data.ToJson().ToGzip().ToBase64();
-        Assert.IsTrue(response2.Contains(text2));
-    }
 }

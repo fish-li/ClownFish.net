@@ -220,7 +220,7 @@ public sealed class HttpHeaderCollection : List<NameValue>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public bool ContainsName(string name)
+    public bool ContainsKey(string name)
     {
         if( string.IsNullOrEmpty(name) )
             throw new ArgumentNullException("name");

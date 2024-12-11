@@ -30,6 +30,10 @@ internal static class ClownFishOptions
     public static readonly int GCCollectPeriodSec = LocalSettings.GetInt("ClownFish_GCCollect_PeriodSec", 60);
 
     public static readonly int HttpClient_GzipThreshold = LocalSettings.GetUInt("ClownFish_HttpClient_GzipThreshold", 1024);
+
+    // 防止用 httpOption.GetResult<byte[]>() 的方式去下载一个大文件，出现OOM
+    // 真需要下载文件，可以使用 httpOption.GetResult<Stream>() 
+    public static readonly long HttpClient_MaxResponseBodySize = LocalSettings.GetInt("ClownFish_HttpClient_MaxResponseBodySize", 0);
 }
 
 

@@ -34,13 +34,13 @@ public class RequestContentTypeTest
     [TestMethod]
     public void Test_GetByFormat()
     {
-        Assert.AreEqual(ResponseContentType.TextUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Text));
-        Assert.AreEqual(ResponseContentType.JsonUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Json));
-        Assert.AreEqual(ResponseContentType.JsonUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Json2));
-        Assert.AreEqual(ResponseContentType.XmlUtf8, ContenTypeUtils.GetByFormat(SerializeFormat.Xml));
-        Assert.AreEqual(RequestContentType.Form, ContenTypeUtils.GetByFormat(SerializeFormat.Form));
-        Assert.AreEqual(RequestContentType.Multipart, ContenTypeUtils.GetByFormat(SerializeFormat.Multipart));
-        Assert.AreEqual(RequestContentType.Binary, ContenTypeUtils.GetByFormat(SerializeFormat.Binary));
+        Assert.AreEqual("text/plain; charset=utf-8", ContenTypeUtils.GetByFormat(SerializeFormat.Text));
+        Assert.AreEqual("application/json; charset=utf-8", ContenTypeUtils.GetByFormat(SerializeFormat.Json));
+        Assert.AreEqual("application/json; charset=utf-8", ContenTypeUtils.GetByFormat(SerializeFormat.Json2));
+        Assert.AreEqual("application/xml; charset=utf-8", ContenTypeUtils.GetByFormat(SerializeFormat.Xml));
+        Assert.AreEqual("application/x-www-form-urlencoded; charset=utf-8", ContenTypeUtils.GetByFormat(SerializeFormat.Form));
+        Assert.AreEqual("multipart/form-data", ContenTypeUtils.GetByFormat(SerializeFormat.Multipart));
+        Assert.AreEqual("application/octet-stream", ContenTypeUtils.GetByFormat(SerializeFormat.Binary));
         Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.None));
         Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.Auto));
         Assert.AreEqual(string.Empty, ContenTypeUtils.GetByFormat(SerializeFormat.Unknown));
