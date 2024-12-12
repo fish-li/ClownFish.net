@@ -97,6 +97,30 @@ public class HttpContextExtensionsTest
 
 
     [TestMethod]
+    public async Task Test_HttpReplyAsync_bytes()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        byte[] bb = "中华文明_abc".GetBytes();
+        await httpContext.HttpReplyAsync(221, bb, "text/abc");
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(221, response.StatusCode);
+        Assert.AreEqual("中华文明_abc", response.GetResponseAsText());
+        Assert.AreEqual("text/abc", response.ContentType);
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync((NHttpContext)null, 200, bb);
+        });
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync(httpContext, 200, (byte[])null);
+        });
+    }
+
+    [TestMethod]
     public async Task Test_HttpReplyAsync_stream()
     {
         MockRequestData requestData = HttpTest1.GetRequestData();
@@ -301,7 +325,33 @@ public class HttpContextExtensionsTest
         });
     }
 
+    [TestMethod]
+    public async Task Test_HttpReplyAsync_HttpResult_bytes()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
 
+        NameValueCollection headers = new NameValueCollection();
+        headers.Add("Content-Type", ResponseContentType.OctetStream);
+
+        HttpResult<byte[]> httpResult = new HttpResult<byte[]>(321, headers, "abc".ToUtf8Bytes());
+        await httpContext.HttpReplyAsync(httpResult);
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(321, response.StatusCode);
+        Assert.AreEqual("abc", response.GetResponseAsText());
+        Assert.AreEqual("application/octet-stream", response.ContentType);
+
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync(httpContext, (HttpResult<byte[]>)null);
+        });
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpReplyAsync((MockHttpContext)null, httpResult);
+        });
+    }
 
 
     [TestMethod]

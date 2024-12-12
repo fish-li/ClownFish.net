@@ -112,9 +112,38 @@ public static partial class HttpContextExtensions
         else {
             NHttpResponse response = httpContext.Response;
             response.StatusCode = statusCode;
-            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
+            response.ContentType = contentType ?? ResponseContentType.OctetStream;
 
             await stream.CopyToAsync(response.OutputStream);
+        }
+    }
+
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="statusCode"></param>
+    /// <param name="data"></param>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public static async Task HttpReplyAsync(this NHttpContext httpContext, int statusCode, byte[] data, string contentType = null)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( data == null )
+            throw new ArgumentNullException(nameof(data));
+
+        if( data.Length == 0 ) {
+            httpContext.Response.StatusCode = 204;
+        }
+        else {
+            NHttpResponse response = httpContext.Response;
+            response.StatusCode = statusCode;
+            response.ContentType = contentType ?? ResponseContentType.OctetStream;
+
+            await response.WriteAllAsync(data);
         }
     }
 
@@ -180,6 +209,37 @@ public static partial class HttpContextExtensions
 
         await response.WriteAllAsync(httpResult.Result.GetBytes());
         httpContext.PipelineContext.RespResult = httpResult.Result;
+    }
+
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="httpResult">做为输出的数据对象</param>
+    /// <returns></returns>
+    public static async Task HttpReplyAsync(this NHttpContext httpContext, HttpResult<byte[]> httpResult)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+        if( httpResult == null )
+            throw new ArgumentNullException(nameof(httpResult));
+
+        NHttpResponse response = httpContext.Response;
+
+        response.StatusCode = httpResult.StatusCode;
+
+        // 复制响应头
+        response.SetResponseHeaders(httpResult.Headers);
+
+        // response.Content != null 对于 204 这种响应来说没有用，仍然会引发异常，所以需要增加下面的判断
+        if( HttpUtils.CanWriteResponseBody(httpContext.Request.HttpMethod, httpResult.StatusCode) == false )
+            return;
+
+        if( httpResult.Result.IsNullOrEmpty() )
+            return;
+
+        await response.WriteAllAsync(httpResult.Result);
     }
 
 
