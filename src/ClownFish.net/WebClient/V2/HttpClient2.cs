@@ -49,6 +49,8 @@ namespace ClownFish.WebClient.V2;
 /// </example>
 internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
 {
+    private bool _checkSuccessStatusCode;
+
     /// <summary>
     /// 构造方法
     /// </summary>
@@ -56,8 +58,6 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
     public HttpClient2(MyHttpOption option) : base(option)
     {
     }
-
-
 
     /// <summary>
     /// 根据指定的HttpOption参数，用【同步】方式发起一次HTTP请求
@@ -68,6 +68,10 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
     {
         // 创建请求消息对象，包含设置提交数据
         this.BeforeCreateRequest();
+
+        _checkSuccessStatusCode = this.HttpOption.CheckSuccessStatusCode.HasValue
+                                        ? this.HttpOption.CheckSuccessStatusCode.Value
+                                        : (typeof(T) != typeof(HttpWebResponse));
 
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
@@ -80,8 +84,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             this.BeforeSend();
 
             // 发出HTTP请求，获取响应
-            bool checkStatus = typeof(T) != typeof(HttpWebResponse);
-            HttpWebResponse response = GetResponse(client, checkStatus);
+            HttpWebResponse response = GetResponse(client);
 
             return ReturnResult<T>(response);
         }
@@ -105,6 +108,10 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
         // 创建请求消息对象，包含设置提交数据
         this.BeforeCreateRequest();
 
+        _checkSuccessStatusCode = this.HttpOption.CheckSuccessStatusCode.HasValue
+                                        ? this.HttpOption.CheckSuccessStatusCode.Value
+                                        : (typeof(T) != typeof(HttpWebResponse));
+
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
         bool clientFromCache = this.HttpOption.IsClientEnableCached();
@@ -115,9 +122,8 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             // 触发【发送前】事件
             this.BeforeSend();
 
-            // 发出HTTP请求，获取响应                
-            bool checkStatus = typeof(T) != typeof(HttpWebResponse);
-            HttpWebResponse response = await GetResponseAsync(client, checkStatus);
+            // 发出HTTP请求，获取响应            
+            HttpWebResponse response = await GetResponseAsync(client);
 
             return ReturnResult<T>(response);
         }
@@ -209,7 +215,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
         }
     }
 
-    private HttpWebResponse GetResponse(HttpClient client, bool checkStatus)
+    private HttpWebResponse GetResponse(HttpClient client)
     {
         this.SetStartTime();
 
@@ -226,7 +232,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             SaveResponseCookie(responseMessage);
 
             // 转成HttpWebResponse类型
-            HttpWebResponse response = CreateHttpWebResponse(responseMessage, checkStatus);
+            HttpWebResponse response = CreateHttpWebResponse(responseMessage);
 
             // 引发结束事件
             this.RequestFinished(response, null);
@@ -249,7 +255,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
         }
     }
 
-    private async Task<HttpWebResponse> GetResponseAsync(HttpClient client, bool checkStatus)
+    private async Task<HttpWebResponse> GetResponseAsync(HttpClient client)
     {
         this.SetStartTime();
 
@@ -261,7 +267,7 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             SaveResponseCookie(responseMessage);
 
             // 转成HttpWebResponse类型
-            HttpWebResponse response = CreateHttpWebResponse(responseMessage, checkStatus);
+            HttpWebResponse response = CreateHttpWebResponse(responseMessage);
 
             // 引发结束事件
             this.RequestFinished(response, null);
@@ -299,14 +305,14 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
         return (HttpWebResponse)s_ctor.Invoke(new object[] { responseMessage, requestUri, cookieContainer });
     }
 
-    private HttpWebResponse CreateHttpWebResponse(HttpResponseMessage responseMessage, bool checkStatus)
+    private HttpWebResponse CreateHttpWebResponse(HttpResponseMessage responseMessage)
     {
         Uri requestUri = this.HttpOption.GetReuestUri();
         CookieContainer cookieContainer = this.HttpOption.Cookie;
 
         HttpWebResponse response = (HttpWebResponse)s_ctor.Invoke(new object[] { responseMessage, requestUri, cookieContainer });
 
-        if( checkStatus && responseMessage.IsSuccessStatusCode == false ) {
+        if( _checkSuccessStatusCode && responseMessage.IsSuccessStatusCode == false ) {
 
             //string message = string.Format("The remote server returned an error: ({0}) {1}.", (int)responseMessage.StatusCode, responseMessage.ReasonPhrase);
             string message = CreateExceptionMessage(responseMessage);

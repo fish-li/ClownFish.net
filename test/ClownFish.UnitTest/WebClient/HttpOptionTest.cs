@@ -497,6 +497,62 @@ Host=www.fish-test.com
 
         Assert.IsTrue(exAll.Contains("HTTP call timeout, destination address: http://127.0.0.1:30000/test1.aspx"));
     }
+
+
+    [TestMethod]
+    public async Task Test_CheckSuccessStatusCode()
+    {
+        MyAssert.IsError<RemoteWebException>(() => {
+            HttpOption httpOption = new HttpOption {
+                Url = "http://www.fish-test.com/throw-error.aspx"
+            };
+
+            HttpResult<string> result1 = httpOption.GetResult<HttpResult<string>>();
+        });
+
+        HttpOption httpOption2 = new HttpOption {
+            Url = "http://www.fish-test.com/throw-error.aspx",
+            CheckSuccessStatusCode = false
+        };
+
+        HttpResult<string> result2 = httpOption2.GetResult<HttpResult<string>>();
+        Assert.IsNotNull(result2);
+        Assert.AreEqual(500, result2.StatusCode);
+        Assert.IsTrue(result2.Result.Contains("test throw error!"));
+
+
+        HttpOption httpOption3 = new HttpOption {
+            Url = "http://www.fish-test.com/throw-error.aspx",
+            CheckSuccessStatusCode = false
+        };
+
+        HttpResult<string> result3 = await httpOption3.GetResultAsync<HttpResult<string>>();
+        Assert.IsNotNull(result3);
+        Assert.AreEqual(500, result3.StatusCode);
+        Assert.IsTrue(result3.Result.Contains("test throw error!"));
+
+
+        HttpOption httpOption4 = new HttpOption {
+            Url = "http://www.fish-test.com/throw-error.aspx",
+        };
+
+        using HttpWebResponse result4 = await httpOption4.GetResultAsync<HttpWebResponse>();
+        Assert.IsNotNull(result4);
+        Assert.AreEqual(500, (int)result4.StatusCode);
+        string responseText4 = result4.GetResponseStream().ToArray().ToUtf8String();
+        Assert.IsTrue(responseText4.Contains("test throw error!"));
+
+        MyAssert.IsError<RemoteWebException>(() => {
+            HttpOption httpOption5 = new HttpOption {
+                Url = "http://www.fish-test.com/throw-error.aspx",
+                CheckSuccessStatusCode = true
+            };
+
+            HttpWebResponse result5 = httpOption5.GetResult<HttpWebResponse>();
+        });
+    }
+
+
 #endif
 
 
@@ -509,7 +565,7 @@ Host=www.fish-test.com
 
         //.NET Framework 4.8.4762.0
         //H4sIAAAAAAAEAHuyY+3T3r5n09qfzejTNTUwMHi6cwsAjK8TFxQAAAA=
-	
+
         //.NET 9.0.0
         //H4sIAAAAAAAACnuyY+3T3r5n09qfzejTNTUwMHi6cwsAjK8TFxQAAAA=
 

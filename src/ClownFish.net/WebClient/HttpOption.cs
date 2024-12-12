@@ -63,6 +63,11 @@ public sealed partial class HttpOption
     /// </summary>
     public Action<System.Net.Http.HttpClient> OnCreateHttpClient { get; set; }
 
+    /// <summary>
+    /// 是否需要在【非成功】响应状态码时主动抛出异常。默认值：由框架决定（只要返回值不是HttpWebResponse就检查状态码）
+    /// </summary>
+    public bool? CheckSuccessStatusCode { get; set; }
+
 #endif
 
 #if NET6_0_OR_GREATER
