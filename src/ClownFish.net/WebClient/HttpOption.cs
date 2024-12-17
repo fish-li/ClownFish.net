@@ -52,21 +52,15 @@ public sealed partial class HttpOption
     /// </summary>
     public System.Net.Http.HttpMessageHandler MessageHandler { get; set; }
 
-
-    /// <summary>
-    /// HttpMessageHandler对象创建完成后的回调委托
-    /// </summary>
-    public Action<System.Net.Http.HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
-
-    /// <summary>
-    /// HttpClient对象创建完成后的回调委托
-    /// </summary>
-    public Action<System.Net.Http.HttpClient> OnCreateHttpClient { get; set; }
-
     /// <summary>
     /// 是否需要在【非成功】响应状态码时主动抛出异常。默认值：由框架决定（只要返回值不是HttpWebResponse就检查状态码）
     /// </summary>
     public bool? CheckSuccessStatusCode { get; set; }
+
+    /// <summary>
+    /// IsProxyRequest
+    /// </summary>
+    public bool IsProxyRequest { get; set; }
 
 #endif
 
@@ -205,6 +199,7 @@ public sealed partial class HttpOption
 
     /// <summary>
     /// 获取或设置请求的身份验证信息。
+    /// 【注意-注意】设置这个属性可能会导致底层的Socket连接不能重用，频繁使用会导致TCP端口耗尽，除非设置为NetworkCredential的实例。
     /// </summary>
     public ICredentials Credentials { get; set; }
 
@@ -214,19 +209,8 @@ public sealed partial class HttpOption
     /// </summary>
     public int? Timeout { get; set; }
 
-    /// <summary>
-    /// KeepAlive
-    /// </summary>
-    public bool? KeepAlive { get; set; }
-
 
     //public IWebProxy Proxy { get; set; }  // TODO: 以后再考虑支持
-
-
-    /// <summary>
-    /// 在读取响应流时自动做解压缩处理
-    /// </summary>
-    public bool AutoDecompressResponse { get; set; }
 
 
     /// <summary>
@@ -610,8 +594,8 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
                     if( name.Is("Connection") ) {
                         // Connection 头有二个可选值，Keep-Alive  or  close
                         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Connection
-                        // 下面为了简单，只判断其中之一。
-                        httpOption.KeepAlive = value.Is("Keep-Alive");
+                        // 但是，几乎不会使用 Connection: close，所以直接忽略这个头
+                        // 因为，程序不可能确定说某个站点或者服务，一个很长的时间范围内只访问一次，因此设置为 close 就没有意义了！
                         continue;
                     }
 
@@ -635,15 +619,31 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
 
 
         // 纠正一些请求头数据
-        FixInputHeaders(httpOption);
+        FixContentTypeCharset(httpOption);
     }
 
+
+#if NET7_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void FixInputHeaders(HttpOption httpOption)
+    internal static void FixContentTypeCharset(HttpOption httpOption)
     {
         // 可能的输入格式  Content-Type: xxxxxxx; charset=gb2312
         // 此时强制修改为  Content-Type: xxxxxxx; charset=utf-8
 
+        string contentType = httpOption.Headers[HttpHeaders.Request.ContentType];
+        if( contentType.HasValue() ) {
+            if( System.Net.Http.Headers.MediaTypeHeaderValue.TryParse(contentType, out var mediaType) ) {
+                if( mediaType.CharSet.HasValue() && mediaType.CharSet.Is("utf-8") == false ) {
+                    System.Net.Http.Headers.MediaTypeHeaderValue mediaType2 = new(mediaType.MediaType, "utf-8");
+                    httpOption.Headers[HttpHeaders.Request.ContentType] = mediaType2.ToString();
+                }
+            }
+        }
+    }
+#else
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void FixContentTypeCharset(HttpOption httpOption)
+    {
         string contentType = httpOption.Headers[HttpHeaders.Request.ContentType];
         if( contentType.HasValue() ) {
             Match m = s_charsetReg.Match(contentType);
@@ -654,7 +654,9 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
         }
     }
 
-    private static readonly Regex s_charsetReg = new Regex(";\\s?charset=(?<name>[\\w\\-]+)", RegexOptions.Compiled);
+    private static readonly Regex s_charsetReg = new Regex(";\\s?charset=(?<name>[\\w\\-]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+#endif
+
 
     private static void PopulatePostData(HttpOption httpOption, string postText)
     {

@@ -11,30 +11,22 @@ namespace ClownFish.WebClient.V2;
 
 internal static class HttpObjectUtils
 {
-    private static readonly string[] s_wellKnownContentHeaders = new string[10]
-        {
-                "Content-Disposition",
-                "Content-Encoding",
-                "Content-Language",
-                "Content-Length",
-                "Content-Location",
-                "Content-MD5",
-                "Content-Range",
-                "Content-Type",
-                "Expires",
-                "Last-Modified"
-        };
-
+    private static readonly HashSet<string> s_wellKnownContentHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
+            "Content-Disposition",
+            "Content-Encoding",
+            "Content-Language",
+            "Content-Length",
+            "Content-Location",
+            "Content-MD5",
+            "Content-Range",
+            "Content-Type",
+            "Expires",
+            "Last-Modified"
+     };
 
     public static bool IsWellKnownContentHeader(string header)
     {
-        string[] array = s_wellKnownContentHeaders;
-        foreach( string b in array ) {
-            if( string.Equals(header, b, StringComparison.OrdinalIgnoreCase) ) {
-                return true;
-            }
-        }
-        return false;
+        return s_wellKnownContentHeaders.Contains(header);
     }
 
 
@@ -146,106 +138,15 @@ internal static class HttpObjectUtils
         return content;
     }
 
-    public static void SetKeepAlive(this HttpRequestMessage requestMessage, bool keepAlive)
-    {
-        if( keepAlive ) {
-            requestMessage.Headers.Connection.Add("Keep-Alive");
-        }
-        else {
-            requestMessage.Headers.ConnectionClose = true;
-        }
-    }
-
-
-    public static HttpClient CreateClient(MyHttpOption httpOption)
-    {
-        HttpMessageHandler clientHandler = httpOption.MessageHandler
-                                            ?? TryCreateUnixSocketHandler(httpOption)
-                                            ?? CreateClientHandler(httpOption);
-
-        httpOption.OnCreateHttpMessageHandler?.Invoke(clientHandler);
-
-        // 如果 MessageHandler 由外部指定，则由外部代码负责销毁
-        // 如果是 UnixSocket，则调用结束后，随着HttpClient自动销毁
-        // 其它，MessageHandler 由 ClownFish.net 创建的，随着HttpClient自动销毁
-
-        bool disposeHandler = httpOption.MessageHandler == null;
-        HttpClient client = new HttpClient(clientHandler, disposeHandler);
-
-
-        if( httpOption.Timeout.HasValue ) {
-            client.Timeout = httpOption.Timeout.Value > 0
-                        ? TimeSpan.FromMilliseconds(httpOption.Timeout.Value)
-                        : System.Threading.Timeout.InfiniteTimeSpan;
-        }
-
-        httpOption.OnCreateHttpClient?.Invoke(client);
-
-        return client;
-    }
-
-    public static HttpMessageHandler CreateClientHandler(MyHttpOption httpOption)
-    {
-        SocketsHttpHandler clientHandler = new SocketsHttpHandler();
-
-        clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Brotli;
-
-        if( httpOption.Credentials != null )
-            clientHandler.Credentials = httpOption.Credentials;
-
-        if( httpOption.AllowAutoRedirect.HasValue )
-            clientHandler.AllowAutoRedirect = httpOption.AllowAutoRedirect.Value;
-
-        //clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-        clientHandler.SslOptions.RemoteCertificateValidationCallback = HttpObjectUtils.DangerousAcceptAnyServerCertificateValidator;
-
-        //clientHandler.PreAuthenticate = false;
-        //clientHandler.MaxAutomaticRedirections = 50;    // The default value is 50
-        //clientHandler.MaxConnectionsPerServer = 1024;   // default value: int.MaxValue
-        clientHandler.MaxResponseHeadersLength = 256;     // 256 kB, default value: 64
-
-        //if( httpOption.Cookie != null ) {
-        //	clientHandler.CookieContainer = httpOption.Cookie;
-        //}
-        //else {
-        clientHandler.UseCookies = false;    // 为了让HttpClientHandler能重用，在外面处理 Cookie
-        //}
-        //if( _proxy == null ) {
-        //	clientHandler.UseProxy = false;
-        //}
-        //else if( _proxy != WebRequest.GetSystemWebProxy() ) {
-        //	clientHandler.Proxy = _proxy;
-        //}
-        //clientHandler.ClientCertificates.AddRange(ClientCertificates);
-        //clientHandler.SslProtocols = (SslProtocols)ServicePointManager.SecurityProtocol;
-        //clientHandler.CheckCertificateRevocationList = ServicePointManager.CheckCertificateRevocationList;
-
-        if( HttpClientDefaults.HttpClientCacheSeconds > 0 ) {
-            clientHandler.PooledConnectionLifetime = TimeSpan.FromSeconds(HttpClientDefaults.HttpClientCacheSeconds);
-        }
-
-        return clientHandler;
-    }
-
-    public static HttpMessageHandler TryCreateUnixSocketHandler(MyHttpOption httpOption)
-    {
-#if NET6_0_OR_GREATER
-        if( httpOption.UnixSocketEndPoint.HasValue() )
-            return UnixHelper.CreateSocketHandler(httpOption.UnixSocketEndPoint);
-        else
-            return null;
-#else
-        return null;
-#endif
-    }
-
-    internal static readonly RemoteCertificateValidationCallback DangerousAcceptAnyServerCertificateValidator = DangerousAcceptAnyServerCertificateValidator0;
-
-    private static bool DangerousAcceptAnyServerCertificateValidator0(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-    {
-        return true;
-    }
-
+    //public static void SetKeepAlive(this HttpRequestMessage requestMessage, bool keepAlive)
+    //{
+    //    if( keepAlive ) {
+    //        requestMessage.Headers.Connection.Add("Keep-Alive");
+    //    }
+    //    else {
+    //        requestMessage.Headers.ConnectionClose = true;
+    //    }
+    //}
 
 }
 #endif

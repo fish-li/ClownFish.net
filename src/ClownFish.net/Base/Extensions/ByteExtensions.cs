@@ -35,7 +35,7 @@ public static class ByteExtensions
 
 
     /// <summary>
-	/// 将byte[]做BASE64编码，Convert.ToBase64String(bytes);
+	/// Convert.ToBase64String(bytes);
 	/// </summary>
 	/// <param name="bytes"></param>
 	/// <returns></returns>
@@ -47,6 +47,18 @@ public static class ByteExtensions
         return Convert.ToBase64String(bytes);
     }
 
+    /// <summary>
+    /// Convert.FromBase64String(text)
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static byte[] UnBase64(this string text)
+    {
+        if( text.IsNullOrEmpty() )
+            return Empty.Array<byte>();
+
+        return Convert.FromBase64String(text);
+    }
 
     /// <summary>
 	/// 将byte[]按十六进制转换成字符串，BitConverter.ToString(bytes).Replace("-", "");

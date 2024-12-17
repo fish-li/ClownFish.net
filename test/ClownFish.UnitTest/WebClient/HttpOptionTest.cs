@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using ClownFish.Base;
 
 namespace ClownFish.UnitTest.WebClient;
 
@@ -409,8 +410,8 @@ Host=www.fish-test.com
         option.MessageHandler = null;
         Assert.IsNull(option.MessageHandler);
 
-        option.AutoDecompressResponse = true;
-        Assert.IsTrue(option.AutoDecompressResponse);
+        //option.AutoDecompressResponse = true;
+        //Assert.IsTrue(option.AutoDecompressResponse);
 
         option.OnSetRequest = null;
         Assert.IsNull(option.OnSetRequest);
@@ -572,6 +573,46 @@ Host=www.fish-test.com
         // 2种运行时出来的结果不一样！！
     }
 
+    [TestMethod]
+    public void Test_FixContentTypeCharset_1()   // 强制修改 charset
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "POST",
+            Url = "http://xxxxxxxxxxxxxxxxxxxx",
+        };
+        httpOption.Headers.Add("Content-Type", "text/abc; charset=gb2312");
 
+        HttpOption.FixContentTypeCharset(httpOption);
+
+        Assert.AreEqual("text/abc; charset=utf-8", httpOption.Headers["Content-Type"]);
+    }
+
+    [TestMethod]
+    public void Test_FixContentTypeCharset_2()  // 没有 charset，不需要修改
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "POST",
+            Url = "http://xxxxxxxxxxxxxxxxxxxx",
+        };
+        httpOption.Headers.Add("Content-Type", "text/abc");
+
+        HttpOption.FixContentTypeCharset(httpOption);
+
+        Assert.AreEqual("text/abc", httpOption.Headers["Content-Type"]);
+    }
+
+    [TestMethod]
+    public void Test_FixContentTypeCharset_3()   // 不需要修改 charset
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "POST",
+            Url = "http://xxxxxxxxxxxxxxxxxxxx",
+        };
+        httpOption.Headers.Add("Content-Type", "text/abc; charset=UTF-8");
+
+        HttpOption.FixContentTypeCharset(httpOption);
+
+        Assert.AreEqual("text/abc; charset=UTF-8", httpOption.Headers["Content-Type"]);
+    }
 
 }

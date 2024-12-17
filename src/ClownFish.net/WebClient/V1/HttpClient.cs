@@ -170,9 +170,6 @@ internal sealed class HttpClient : BaseHttpClient
         if( option.AllowAutoRedirect.HasValue )
             request.AllowAutoRedirect = option.AllowAutoRedirect.Value;
 
-        if( option.KeepAlive.HasValue )
-            request.KeepAlive = option.KeepAlive.Value;
-
         foreach( NameValue item in option.Headers )
             request.Headers.InternalAdd(item.Name, item.Value);
 

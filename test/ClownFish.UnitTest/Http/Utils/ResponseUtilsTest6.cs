@@ -165,12 +165,12 @@ public class ResponseUtilsTest6
         responseMessage.Headers.Add("x-b", "bbb");
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody(httpOption);
 
-        string[] values = responseMessage.GetHeaders(HttpHeaders.Response.ContentType);
+        string[] values = responseMessage.GetHeaders(HttpHeaders.Response.ContentType).ToArray();
         Assert.AreEqual(1, values.Length);
         Assert.AreEqual("application/json; charset=utf-8", values[0]);
 
 
-        string[] values2 = responseMessage.GetHeaders("x-a");
+        string[] values2 = responseMessage.GetHeaders("x-a").ToArray();
         Assert.AreEqual(1, values2.Length);
         Assert.AreEqual("aaa", values2[0]);
 

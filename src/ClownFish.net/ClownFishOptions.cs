@@ -34,6 +34,10 @@ internal static class ClownFishOptions
     // 防止用 httpOption.GetResult<byte[]>() 的方式去下载一个大文件，出现OOM
     // 真需要下载文件，可以使用 httpOption.GetResult<Stream>() 
     public static readonly long HttpClient_MaxResponseBodySize = LocalSettings.GetInt("ClownFish_HttpClient_MaxResponseBodySize", 0);
+
+    public static readonly bool AutoEnableCors = LocalSettings.GetBool("ClownFish_NHttpApplication_AutoEnableCors", 1);
+
+    public static readonly bool ShowOneoffHttpMessageHandlerWarnning = LocalSettings.GetBool("ClownFish_ShowOneoffHttpMessageHandlerWarnning", 0);
 }
 
 

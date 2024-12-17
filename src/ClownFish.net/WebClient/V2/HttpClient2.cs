@@ -1,6 +1,7 @@
 ﻿#if NETCOREAPP
 using System.Net;
 using System.Net.Http;
+using ClownFish.Http.Proxy;
 using MyHttpOption = ClownFish.WebClient.HttpOption;
 
 
@@ -75,10 +76,9 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
 
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
-        bool clientFromCache = this.HttpOption.IsClientEnableCached();
-        HttpClient client = MsHttpClientCache.GetCachedOrCreate(this.HttpOption, clientFromCache);
+        HttpClient client = CreateHttpClient(this.HttpOption);
         try {
-            SetRequest(clientFromCache);
+            SetRequest();
 
             // 触发【发送前】事件
             this.BeforeSend();
@@ -93,10 +93,10 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             throw new TaskCanceledException("HTTP call timeout, destination address: " + this.Request.RequestUri.AbsoluteUri, ex);
         }
         finally {
-            if( clientFromCache == false )
-                client?.Dispose();
+            client.Dispose();
         }
     }
+        
 
     /// <summary>
     /// 根据指定的HttpOption参数，用【同步】方式发起一次HTTP请求
@@ -114,10 +114,9 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
 
         this.Request = HttpObjectUtils.CreateRequestMessage(this.HttpOption);
 
-        bool clientFromCache = this.HttpOption.IsClientEnableCached();
-        HttpClient client = MsHttpClientCache.GetCachedOrCreate(this.HttpOption, clientFromCache);
+        HttpClient client = CreateHttpClient(this.HttpOption);
         try {
-            SetRequest(clientFromCache);
+            SetRequest();
 
             // 触发【发送前】事件
             this.BeforeSend();
@@ -131,18 +130,63 @@ internal sealed partial class HttpClient2 : ClownFish.WebClient.BaseHttpClient
             throw new TaskCanceledException("HTTP call timeout, destination address: " + this.Request.RequestUri.AbsoluteUri, ex);
         }
         finally {
-            if( clientFromCache == false )
-                client?.Dispose();
+            client.Dispose();
         }
     }
 
-
-    private void SetRequest(bool clientFromCache)
+    internal static HttpClient CreateHttpClient(HttpOption httpOption)
     {
-        // 如果 clientFromCached == false，表示HttpClient需要在用过后释放，那么连接也就没有必要保持，即：keepAlive = false
-        bool keepAlive = clientFromCache;
-        this.Request.SetKeepAlive(keepAlive);
+        HttpMessageHandler clientHandler = CreateClientHandler(httpOption, out bool disposeHandler);
 
+        // 如果 MessageHandler 由外部指定，则由外部代码负责销毁
+        // 如果是 UnixSocket，则调用结束后，随着HttpClient自动销毁
+        // 其它，MessageHandler 由 ClownFish.net 创建的，随着HttpClient自动销毁
+
+        HttpClient client = new HttpClient(clientHandler, disposeHandler);
+
+        if( httpOption.Timeout.HasValue ) {
+            client.Timeout = httpOption.Timeout.Value > 0
+                        ? TimeSpan.FromMilliseconds(httpOption.Timeout.Value)
+                        : System.Threading.Timeout.InfiniteTimeSpan;
+        }
+
+        return client;
+    }
+
+    internal static HttpMessageHandler CreateClientHandler(HttpOption httpOption, out bool disposeHandler)
+    {
+        if( httpOption.MessageHandler != null ) {
+            disposeHandler = false;
+            return httpOption.MessageHandler;
+        }
+
+        if( httpOption.UnixSocketEndPoint.HasValue() ) {
+            disposeHandler = true;
+            return UnixHelper.CreateSocketHandler(httpOption.UnixSocketEndPoint);
+        }
+
+        // 未知的身份验证方式，不确定连接是否能重用~~~
+        bool flag1 = (httpOption.Credentials != null && httpOption.Credentials is not NetworkCredential);
+
+        if( flag1 ) {
+            disposeHandler = true;    // 用完后释放
+            if( ClownFishOptions.ShowOneoffHttpMessageHandlerWarnning ) {
+                Console2.Info("[Warnning] Create a one-off HttpMessageHandler. The current URL is：" + httpOption.Url);
+            }
+            return MsHttpClientCache.CreateClientHandler(httpOption.Credentials, httpOption.AllowAutoRedirect);
+        }
+
+        if( httpOption.IsProxyRequest ) {
+            disposeHandler = false;
+            return ProxyHttpClientCache.GetClientHandler(new Uri(httpOption.Url));
+        }
+
+        disposeHandler = false;
+        return MsHttpClientCache.GetClientHandler(httpOption);
+    }
+
+    private void SetRequest()
+    {
         // 设置Cookie头
         SetRequestCookie();
 

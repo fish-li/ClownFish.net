@@ -73,8 +73,19 @@ public static partial class ResponseUtils
         // 注意：这里有个问题，可搜索："Docker/24.0.6 (linux)"，有几个测试用例
 
         foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
-            foreach( string value in kv.Value ) {
-                headers.Add(kv.Key, value);
+
+            // ##### 如里修改了这里，要 同步 调整 HttpResponseSerializer.ToLoggingText 方法
+
+            if( kv.Key.Is("Server") ) {
+                headers.Add(kv.Key, responseMessage.Headers.Server.ToString());
+            }
+            else if( kv.Key.Is("Vary") ) {
+                headers.Add(kv.Key, responseMessage.Headers.Vary.ToString());
+            }
+            else {
+                foreach( string value in kv.Value ) {
+                    headers.Add(kv.Key, value);
+                }
             }
         }
         if( responseMessage.Content != null ) {
@@ -138,7 +149,7 @@ public static partial class ResponseUtils
     /// <param name="responseMessage"></param>
     /// <param name="name">响应头名称</param>
     /// <returns></returns>
-    public static string[] GetHeaders(this HttpResponseMessage responseMessage, string name)
+    internal static IEnumerable<string> GetHeaders(this HttpResponseMessage responseMessage, string name)
     {
         if( responseMessage == null )
             throw new ArgumentNullException(nameof(responseMessage));
@@ -147,13 +158,13 @@ public static partial class ResponseUtils
 
         foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
             if( kv.Key.Is(name) )
-                return kv.Value.ToArray();
+                return kv.Value;
         }
 
         if( responseMessage.Content != null ) {
             foreach( KeyValuePair<string, IEnumerable<string>> kv2 in responseMessage.Content.Headers ) {
                 if( kv2.Key.Is(name) )
-                    return kv2.Value.ToArray();
+                    return kv2.Value;
             }
         }
         return null;

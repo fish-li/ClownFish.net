@@ -36,8 +36,19 @@ internal static class HttpResponseSerializer
             return;
 
         foreach( var x in response.Headers ) {
-            foreach( var v in x.Value ) {
-                sb.AppendLineRN($"{x.Key}: {v}");
+
+            // ##### 如里修改了这里，要 同步 调整 ResponseUtils6.CloneAllHeaders 方法
+
+            if( x.Key.Is("Server") ) {
+                sb.AppendLineRN($"{x.Key}: {response.Headers.Server.ToString()}");
+            }
+            else if( x.Key.Is("Vary") ) {
+                sb.AppendLineRN($"{x.Key}: {response.Headers.Vary.ToString()}");
+            }
+            else {
+                foreach( var v in x.Value ) {
+                    sb.AppendLineRN($"{x.Key}: {v}");
+                }
             }
         }
 

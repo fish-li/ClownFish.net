@@ -152,7 +152,6 @@ public class HttpOptionExtensionsTest
         HttpOption option = new HttpOption {
             Url = "http://www.fish-test.com/test1111111111.aspx",
             AllowAutoRedirect = false,
-            KeepAlive = false
         };
 
         Exception exception = null;

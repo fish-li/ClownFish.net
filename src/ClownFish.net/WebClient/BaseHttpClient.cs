@@ -74,7 +74,7 @@ internal abstract class BaseHttpClient
         if( typeof(T) == typeof(ClownFish.Base.Void) )
             return (T)(object)ClownFish.Base.Void.Value;
 
-        using( ResponseReader reader = new ResponseReader(response, this.HttpOption.AutoDecompressResponse) ) {
+        using( ResponseReader reader = new ResponseReader(response) ) {
             return reader.Read<T>();
         }
     }

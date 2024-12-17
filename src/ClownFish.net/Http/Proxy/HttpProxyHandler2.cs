@@ -86,7 +86,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// <returns></returns>
     protected virtual HttpClient GetHttpClient(HttpRequestMessage requestMessage)
     {
-        return MsHttpClientCache2.GetCachedOrCreate(requestMessage.RequestUri);
+        return ProxyHttpClientCache.GetClient(requestMessage.RequestUri);
     }
 
 
@@ -117,8 +117,8 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// <param name="requestMessage"></param>
     protected virtual void CopyRequestHeaders(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
     {
-        if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
-            requestMessage.SetKeepAlive(true);
+        //if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
+        //    requestMessage.SetKeepAlive(true);
 
         CopyRequestHeadersStatic(httpRequest, requestMessage);
 

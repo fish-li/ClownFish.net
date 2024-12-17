@@ -81,12 +81,14 @@ public sealed class NHttpApplication
         if( origin.IsNullOrEmpty() )
             return;
 
-        httpContext.Response.SetHeader("Access-Control-Allow-Origin", origin);
+        if( ClownFishOptions.AutoEnableCors ) {
+            httpContext.Response.SetHeader("Access-Control-Allow-Origin", origin);
 
-        // 简单 GET 请求，浏览器不会对其发起“预检请求”。
-        // 但是，如果服务器端的响应中未携带 Access-Control-Allow-Credentials: true ，浏览器将不会把响应内容返回给请求的发送者。
-        // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS#%E9%99%84%E5%B8%A6%E8%BA%AB%E4%BB%BD%E5%87%AD%E8%AF%81%E7%9A%84%E8%AF%B7%E6%B1%82
-        httpContext.Response.SetHeader("Access-Control-Allow-Credentials", "true");
+            // 简单 GET 请求，浏览器不会对其发起“预检请求”。
+            // 但是，如果服务器端的响应中未携带 Access-Control-Allow-Credentials: true ，浏览器将不会把响应内容返回给请求的发送者。
+            // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS#%E9%99%84%E5%B8%A6%E8%BA%AB%E4%BB%BD%E5%87%AD%E8%AF%81%E7%9A%84%E8%AF%B7%E6%B1%82
+            httpContext.Response.SetHeader("Access-Control-Allow-Credentials", "true");
+        }
 
         // 下面2个头只在【预检请求】时有效
         // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82

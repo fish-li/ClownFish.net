@@ -42,6 +42,24 @@ public class ByteExtensionsTest
     }
 
     [TestMethod]
+    public void Test_UnBase64()
+    {
+        string s1 = null;
+        string s2 = "";
+
+        MyAssert.AreEqual(Empty.Array<byte>(), s1.UnBase64());
+        MyAssert.AreEqual(Empty.Array<byte>(), s2.UnBase64());
+
+        
+        byte[] b1 = "中华文明-5000年".ToUtf8Bytes();
+        byte[] b2 = Guid.NewGuid().ToByteArray();
+
+        MyAssert.AreEqual(b1, b1.ToBase64().UnBase64());
+        MyAssert.AreEqual(b2, b2.ToBase64().UnBase64());
+    }
+
+
+    [TestMethod]
     public void Test_ToHexString()
     {
         byte[] b0 = Empty.Array<byte>();
