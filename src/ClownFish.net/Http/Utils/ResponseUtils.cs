@@ -53,7 +53,7 @@ public static partial class ResponseUtils
             return 0;
 
         try {
-            httpResponse.SetHeaders(name, values, true);
+            httpResponse.SetHeaders(name, values, false);
             return 1;
         }
         catch( Exception ex ) {
@@ -71,7 +71,7 @@ public static partial class ResponseUtils
             return 0;
 
         try {
-            httpResponse.SetHeader(name, value, true);
+            httpResponse.SetHeader(name, value, false);
             return 1;
         }
         catch( Exception ex ) {
