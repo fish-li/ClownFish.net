@@ -113,4 +113,20 @@ Fragment:
 IdnHost: www.abc.com
 Segments: /
 ===================================================================
+===================================================================
+OriginalString: http://www.abc.com
+AbsolutePath: /
+AbsoluteUri: http://www.abc.com/
+PathAndQuery: /
+Port: 80
+Scheme: http
+Host: www.abc.com
+LocalPath: /
+Query: 
+Authority: www.abc.com
+DnsSafeHost: www.abc.com
+Fragment: 
+IdnHost: www.abc.com
+Segments: /
+===================================================================
 */
