@@ -227,13 +227,15 @@ public static class Console2
             Console.ResetColor();
             Console2.WriteLine("================================ Response ============================================");
 
-            if( success ) {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console2.WriteLine(response?.ToAllText(true));
-            }
-            else {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console2.WriteLine(response?.ToAllText(true));
+            if( response != null ) {
+                if( success ) {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console2.WriteLine(response.ToAllText(true));
+                }
+                else {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console2.WriteLine(response.ToAllText(true));
+                }
             }
 
             Console.ResetColor();

@@ -87,7 +87,7 @@ public class OprLogTest
             log.SetException(ex);
             Assert.AreEqual(500, log.Status);
             Assert.AreEqual(1, log.HasError);
-            Assert.AreEqual(typeof(InvalidOperationException).FullName, log.ExType);
+            Assert.AreEqual(typeof(MessageException).FullName, log.ExType);
             Assert.AreEqual("xxxxxxxxxxxxxxx", log.ExMessage);
             Assert.IsNotNull(log.ExAll);
 

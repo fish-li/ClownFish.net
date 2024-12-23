@@ -230,7 +230,9 @@ public partial class OprLog
             this.Status = ex.GetErrorCode();
             this.HasError = StatusCodeUtils.IsServerError(this.Status) ? 1 : 0;
 
-            this.ExType = ex.GetType().FullName;
+            // 有些异常可能太“笼统”，例如 RemoteWebException, DbExceuteException，直接记录这样的异常类型不方便做异常过滤，因此取 ex.GetBaseException()
+            // 但是“异常消息”可以直接取 ex.Message
+            this.ExType = ex.GetBaseException().GetType().FullName;
             this.ExMessage = ex.Message;
             this.ExAll = ex.GetErrorLogText();
             return 1;

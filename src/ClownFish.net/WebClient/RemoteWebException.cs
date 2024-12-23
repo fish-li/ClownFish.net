@@ -53,13 +53,36 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
         get => this.Result?.Result ?? string.Empty;
     }
 
+    /* 一些典型的异常调用堆栈，
+     * 可以发现直接取 innerException.Message 得到的结果如果是 "An error occurred while sending the request."
+     * 那就没什么意义了，所以要取 GetBaseException().Message
+     * 
+---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+     * 
+---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.IO.IOException: Unable to read data from the transport connection: Connection timed out.
+ ---> System.Net.Sockets.SocketException (110): Connection timed out
+
+
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.IO.IOException: Unable to read data from the transport connection: Connection reset by peer.
+ ---> System.Net.Sockets.SocketException (104): Connection reset by peer
+
+
+ ---> System.Net.Http.HttpRequestException: Connection timed out (xxxxxxxxx.com:443)
+ ---> System.Net.Sockets.SocketException (110): Connection timed out
+
+ ---> System.Net.Http.HttpRequestException: Name or service not known (xxxxxxxxx.com:443)
+ ---> System.Net.Sockets.SocketException (0xFFFDFFFF): Name or service not known
+     */
 
     /// <summary>
     /// 异常的简单描述
     /// </summary>
     public override string Message {
         get {
-            return (_message ?? base.Message)
+            return (_message ?? this.GetBaseException().Message)
                     + (string.IsNullOrEmpty(Url) ? string.Empty : ("\r\n=)本次调用的目标地址：" + this.Url));
         }
     }
@@ -128,19 +151,19 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
     /// <summary>
     /// 尝试从一段HTML代码中读取文档标题部分
     /// </summary>
-    /// <param name="text">HTML代码</param>
+    /// <param name="html">HTML代码</param>
     /// <returns>文档标题</returns>
-    private static string GetHtmlTitle(string text)
+    internal static string GetHtmlTitle(string html)
     {
-        if( string.IsNullOrEmpty(text) )
+        if( string.IsNullOrEmpty(html) )
             return null;
 
-        int p1 = text.IndexOfIgnoreCase("<title>");
-        int p2 = text.IndexOfIgnoreCase("</title>");
+        int p1 = html.IndexOfIgnoreCase("<title>");
+        int p2 = html.IndexOfIgnoreCase("</title>");
 
         if( p2 > p1 && p1 > 0 ) {
             p1 += "<title>".Length;
-            return text.Substring(p1, p2 - p1);
+            return html.Substring(p1, p2 - p1);
         }
 
         return null;

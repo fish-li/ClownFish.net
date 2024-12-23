@@ -244,14 +244,22 @@ xx_<title>服务端异常XXX</title>".DeleteErrorLineNo();
         Assert.AreEqual(outText, ex2.ToLoggingText().DeleteErrorLineNo());
         Assert.AreEqual(outText, ex2.ToAllText().DeleteErrorLineNo());
         Assert.AreEqual(outText, ex2.ToString2().DeleteErrorLineNo());
-
-
     }
 
 
 
 #endif
 
+    [TestMethod]
+    public void Test_GetHtmlTitle()
+    {
+        Assert.IsNull(RemoteWebException.GetHtmlTitle(""));
+
+        Assert.IsNull(RemoteWebException.GetHtmlTitle("<html>xx_<title2>服务端异常XXX</title2></html>"));
+        Assert.IsNull(RemoteWebException.GetHtmlTitle("<title>服务端异常XXX</title></html>"));
+
+        Assert.AreEqual("服务端异常XXX", RemoteWebException.GetHtmlTitle("<html>xx_<title>服务端异常XXX</title></html>"));
+    }
 
 
 }

@@ -32,7 +32,7 @@ public class OprLogScopeTest
             Assert.AreEqual("http", log.OprName);
             Assert.AreEqual(1, log.HasError);
             Assert.AreEqual(1, log.IsSlow);
-            Assert.AreEqual("ClownFish.Data.DbExceuteException", log.ExType);
+            Assert.AreEqual("System.Data.SqlClient.SqlException", log.ExType);
             Assert.AreEqual("ClownFish.UnitTest", log.AppName);
             Assert.AreEqual("ClownFish_TEST", log.EnvName);
 
