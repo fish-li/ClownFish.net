@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace ClownFish.WebClient;
+﻿namespace ClownFish.WebClient;
 
 /// <summary>
 /// 读取HttpWebResponse的工具类
@@ -35,7 +33,7 @@ public sealed class ResponseReader : IDisposable
 
         _response = response;
         _autoDecompress = autoDecompress;
-        _maxLimitLen = maxLimitLen.GetValueOrDefault(ClownFishOptions.HttpClient_MaxResponseBodySize);
+        _maxLimitLen = maxLimitLen.GetValueOrDefault();
     }
 
     /// <summary>

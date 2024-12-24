@@ -74,7 +74,9 @@ internal abstract class BaseHttpClient
         if( typeof(T) == typeof(ClownFish.Base.Void) )
             return (T)(object)ClownFish.Base.Void.Value;
 
-        using( ResponseReader reader = new ResponseReader(response) ) {
+        // 这里不使用 ResponseReader 的 “自动解压缩” 功能，因为可以在 SocketsHttpHandler 中设置解决
+
+        using( ResponseReader reader = new ResponseReader(response, false, this.HttpOption.MaxResponseBodySize) ) {
             return reader.Read<T>();
         }
     }

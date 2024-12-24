@@ -34,6 +34,10 @@ public sealed partial class HttpOption
     /// </summary>
     public object MockResult { get; set; }
 
+    /// <summary>
+    /// 最大允许的响应体长度，仅当大于零时执行检查
+    /// </summary>
+    public long MaxResponseBodySize { get; set; }
 
 #if NETCOREAPP
 
