@@ -14,21 +14,21 @@ public class AssemblyExtensionsTest
 
         Assembly assembly = typeof(AssemblyExtensionsTest).Assembly;
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileNotFoundException error = new FileNotFoundException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAttributes<PreApplicationStartMethodAttribute>();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileLoadException error = new FileLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAttributes<PreApplicationStartMethodAttribute>();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             TypeLoadException error = new TypeLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAttributes<PreApplicationStartMethodAttribute>();
@@ -47,33 +47,33 @@ public class AssemblyExtensionsTest
 
         Assembly assembly = typeof(AssemblyExtensionsTest).Assembly;
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileNotFoundException error = new FileNotFoundException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetPublicTypes();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileLoadException error = new FileLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetPublicTypes();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             TypeLoadException error = new TypeLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetPublicTypes();
         });
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             ReflectionTypeLoadException error = new ReflectionTypeLoadException(null, null, "xxx");
             TestHelper.SetException(error);
             _ = assembly.GetPublicTypes();
         });
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             NotSupportedException error = new NotSupportedException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetPublicTypes();
@@ -92,27 +92,27 @@ public class AssemblyExtensionsTest
 
         Assembly assembly = typeof(AssemblyExtensionsTest).Assembly;
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileNotFoundException error = new FileNotFoundException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAllTypes();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             FileLoadException error = new FileLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAllTypes();
         });
 
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             TypeLoadException error = new TypeLoadException("xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAllTypes();
         });
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<RuntimeReflectionException>(() => {
             ReflectionTypeLoadException error = new ReflectionTypeLoadException(null, null, "xxx");
             TestHelper.SetException(error);
             _ = assembly.GetAllTypes();

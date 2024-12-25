@@ -24,7 +24,7 @@ internal class SQLiteClientProvider : BaseClientProvider
         _exceptionType = Type.GetType("System.Data.SQLite.SQLiteException, System.Data.SQLite", true, false);
         PropertyInfo p = _exceptionType.GetProperty("ErrorCode");
         if( p == null )
-            throw new InvalidOperationException("没有找到属性：System.Data.SQLite.SQLiteException.ErrorCode");
+            throw new RuntimeReflectionException("没有找到属性：System.Data.SQLite.SQLiteException.ErrorCode");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

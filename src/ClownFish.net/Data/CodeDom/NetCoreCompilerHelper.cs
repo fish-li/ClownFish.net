@@ -70,7 +70,7 @@ internal static class CodeCompilerHelper
         }
         else {
             SaveError(eResult, errorFilePath);
-            throw new InvalidOperationException("编译实体代理程序集失败，原因可查看错误文件：" + errorFilePath);
+            throw new InvalidProgramException("编译实体代理程序集失败，原因可查看错误文件：" + errorFilePath);
         }
 
         return Assembly.LoadFrom(dllOutPath);

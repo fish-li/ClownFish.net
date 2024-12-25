@@ -36,7 +36,7 @@ public class DingdingGroupChatClient : IGroupChatClient
 
         string chatId = result.ChatId;
         if( chatId.IsNullOrEmpty() )
-            throw new InvalidOperationException("钉钉的服务端接口没有返回期望的数据：openConversationId 不存在！");
+            throw new ImServerException("钉钉的服务端接口没有返回期望的数据：openConversationId 不存在！");
 
         return chatId;
     }
@@ -60,7 +60,7 @@ public class DingdingGroupChatClient : IGroupChatClient
 
         string chatId = result.ChatId;
         if( chatId.IsNullOrEmpty() )
-            throw new InvalidOperationException("钉钉的服务端接口没有返回期望的数据：openConversationId 不存在！");
+            throw new ImServerException("钉钉的服务端接口没有返回期望的数据：openConversationId 不存在！");
 
         return chatId;
     }

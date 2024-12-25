@@ -19,7 +19,7 @@ internal class DaMengClientProvider : BaseClientProvider
         _exceptionType = Type.GetType("Dm.DmException, DmProvider", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
-            throw new InvalidOperationException("没有找到属性：Dm.DmException.Number");
+            throw new RuntimeReflectionException("没有找到属性：Dm.DmException.Number");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

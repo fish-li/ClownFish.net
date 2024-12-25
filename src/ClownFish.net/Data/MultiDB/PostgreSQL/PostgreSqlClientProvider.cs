@@ -19,7 +19,7 @@ internal class PostgreSqlClientProvider : BaseClientProvider
         _exceptionType = Type.GetType("Npgsql.PostgresException, Npgsql", true, false);
         PropertyInfo p = _exceptionType.GetProperty("SqlState");
         if( p == null )
-            throw new InvalidOperationException("没有找到属性：Npgsql.PostgresException.SqlState");
+            throw new RuntimeReflectionException("没有找到属性：Npgsql.PostgresException.SqlState");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

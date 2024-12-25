@@ -17,7 +17,7 @@ public class CodeCompilerHelperTest
             CodeCompilerHelper.CompileCode("xxx", string.Empty);
         });
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<InvalidProgramException>(() => {
             CodeCompilerHelper.CompileCode("xxx", "test_xxx.dll");
         });
 

@@ -209,7 +209,7 @@ internal class FeishuInternalClient
 
         string imageId = result.Data["file_key"]?.ToString();
         if( imageId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的文件上传接口没有返回期望的数据：file_key 不存在！");
+            throw new ImServerException("飞书的文件上传接口没有返回期望的数据：file_key 不存在！");
 
         return imageId;
     }
@@ -225,7 +225,7 @@ internal class FeishuInternalClient
 
         string imageId = result.Data["file_key"]?.ToString();
         if( imageId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的文件上传接口没有返回期望的数据：file_key 不存在！");
+            throw new ImServerException("飞书的文件上传接口没有返回期望的数据：file_key 不存在！");
 
         return imageId;
     }
@@ -311,7 +311,7 @@ internal class FeishuInternalClient
 
         string imageId = result.Data["image_key"]?.ToString();
         if( imageId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的文件上传接口没有返回期望的数据：image_key 不存在！");
+            throw new ImServerException("飞书的文件上传接口没有返回期望的数据：image_key 不存在！");
 
         return imageId;
     }
@@ -324,7 +324,7 @@ internal class FeishuInternalClient
 
         string imageId = result.Data["image_key"]?.ToString();
         if( imageId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的文件上传接口没有返回期望的数据：image_key 不存在！");
+            throw new ImServerException("飞书的文件上传接口没有返回期望的数据：image_key 不存在！");
 
         return imageId;
     }

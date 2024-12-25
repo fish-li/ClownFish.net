@@ -279,7 +279,7 @@ internal class DingdingInternalClient
 
         string mediaId = result.MediaId;
         if( mediaId.IsNullOrEmpty() )
-            throw new InvalidOperationException("钉钉的文件上传接口没有返回期望的数据：media_id 不存在！");
+            throw new ImServerException("钉钉的文件上传接口没有返回期望的数据：media_id 不存在！");
 
         return mediaId;
     }
@@ -299,7 +299,7 @@ internal class DingdingInternalClient
 
         string mediaId = result.MediaId;
         if( mediaId.IsNullOrEmpty() )
-            throw new InvalidOperationException("钉钉的文件上传接口没有返回期望的数据：media_id 不存在！");
+            throw new ImServerException("钉钉的文件上传接口没有返回期望的数据：media_id 不存在！");
 
         return mediaId;
     }

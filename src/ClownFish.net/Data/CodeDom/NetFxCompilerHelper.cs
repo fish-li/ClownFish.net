@@ -59,7 +59,7 @@ internal static class CodeCompilerHelper
         }
         else {
             SaveError(cr, errorFilePath);
-            throw new InvalidOperationException("编译实体代理程序集失败，原因可查看错误文件：" + errorFilePath);
+            throw new InvalidProgramException("编译实体代理程序集失败，原因可查看错误文件：" + errorFilePath);
         }
 
         // 获取编译结果，它是编译后的程序集

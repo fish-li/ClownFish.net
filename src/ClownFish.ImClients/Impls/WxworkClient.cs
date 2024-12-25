@@ -178,7 +178,7 @@ public class WxworkClient
 
         string mediaId = result.MediaId;
         if( mediaId.IsNullOrEmpty() )
-            throw new InvalidOperationException("企业微信的文件上传接口没有返回期望的数据：media_id 不存在！");
+            throw new ImServerException("企业微信的文件上传接口没有返回期望的数据：media_id 不存在！");
 
         return mediaId;
     }
@@ -203,7 +203,7 @@ public class WxworkClient
 
         string mediaId = result.MediaId;
         if( mediaId.IsNullOrEmpty() )
-            throw new InvalidOperationException("企业微信的文件上传接口没有返回期望的数据：media_id 不存在！");
+            throw new ImServerException("企业微信的文件上传接口没有返回期望的数据：media_id 不存在！");
 
         return mediaId;
     }

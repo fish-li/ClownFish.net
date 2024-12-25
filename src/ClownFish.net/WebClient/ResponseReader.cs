@@ -78,7 +78,7 @@ public sealed class ResponseReader : IDisposable
         // 先尝试直接根据ContentLength请求头 检查 maxAllowLen
         if( contentLength > 0 ) {
             if( contentLength > _maxLimitLen )
-                throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制：" + _maxLimitLen.ToString());
+                throw new ResponseBodyTooLargeException(_maxLimitLen);
             else
                 _maxLimitLen = -1;   // ContentLength请求头存在，并且没有触发上面的异常检查，就不需要再检查了
         }
@@ -155,7 +155,7 @@ public sealed class ResponseReader : IDisposable
                 while( (len = responseStream.Read(buffer, 0, buffer.Length)) > 0 ) {
                     sumLen += len;
                     if( sumLen > maxAllowLen ) {
-                        throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制-2：" + maxAllowLen.ToString());
+                        throw new ResponseBodyTooLargeException(maxAllowLen);
                     }
                     ms2.Write(buffer, 0, len);
                 }
@@ -301,7 +301,7 @@ public sealed class ResponseReader : IDisposable
             string line = null;
             while( (line = reader.ReadLine()) != null ) {
                 if( sb.Length + line.Length + 2 > maxAllowLen ) {  // 2 = 换行符 \r\n 长度
-                    throw new InvalidOperationException($"[ClownFish.HttpClient Error] 响应体太大，已超过最大长度限制-3：" + maxAllowLen.ToString());
+                    throw new ResponseBodyTooLargeException(maxAllowLen);
                 }
                 if( sb.Length > 0 )
                     sb.AppendLineRN();

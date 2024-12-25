@@ -35,7 +35,7 @@ public class FeishuGroupChatClient : IGroupChatClient
 
         string chatId = result.Data["chat_id"]?.ToString();
         if( chatId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的服务端接口没有返回期望的数据：chat_id 不存在！");
+            throw new ImServerException("飞书的服务端接口没有返回期望的数据：chat_id 不存在！");
 
         return chatId;
     }
@@ -58,7 +58,7 @@ public class FeishuGroupChatClient : IGroupChatClient
 
         string chatId = result.Data["chat_id"]?.ToString();
         if( chatId.IsNullOrEmpty() )
-            throw new InvalidOperationException("飞书的服务端接口没有返回期望的数据：chat_id 不存在！");
+            throw new ImServerException("飞书的服务端接口没有返回期望的数据：chat_id 不存在！");
 
         return chatId;
     }

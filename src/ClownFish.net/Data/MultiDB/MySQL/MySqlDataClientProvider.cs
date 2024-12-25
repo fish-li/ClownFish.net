@@ -19,7 +19,7 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
         _exceptionType = Type.GetType("MySql.Data.MySqlClient.MySqlException, MySql.Data", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
-            throw new InvalidOperationException("没有找到属性：MySql.Data.MySqlClient.MySqlException.Number");
+            throw new RuntimeReflectionException("没有找到属性：MySql.Data.MySqlClient.MySqlException.Number");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

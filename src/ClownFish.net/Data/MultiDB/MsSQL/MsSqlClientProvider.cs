@@ -19,7 +19,7 @@ internal sealed class MsSqlClientProvider : BaseMsSqlClientProvider
         _exceptionType = Type.GetType("System.Data.SqlClient.SqlException, System.Data.SqlClient", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
-            throw new InvalidOperationException("没有找到属性：System.Data.SqlClient.SqlException.Number");
+            throw new RuntimeReflectionException("没有找到属性：System.Data.SqlClient.SqlException.Number");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

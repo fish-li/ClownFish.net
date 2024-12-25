@@ -597,7 +597,7 @@ public class ResponseReaderTest
         HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
 
         ResponseReader reader1 = new ResponseReader(response, false, 10);
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<ResponseBodyTooLargeException>(() => {
             reader1.CheckMaxAllowLen();
         });
 
@@ -682,7 +682,7 @@ public class ResponseReaderTest
         byte[] data3 = ResponseReader.ReadResponseAsBytes(ms2, 100);  // 流的长度没有超过最大值
         MyAssert.AreEqual(data, data3);
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<ResponseBodyTooLargeException>(() => {
             NotLenMemoryStream ms3 = new NotLenMemoryStream(data);
             byte[] data4 = ResponseReader.ReadResponseAsBytes(ms3, 10);  // 流的长度超标
         });       
@@ -702,7 +702,7 @@ public class ResponseReaderTest
         string text2 = ResponseReader.ReadText(ms2, null, 100);
         Assert.AreEqual(input, text2);
 
-        MyAssert.IsError<InvalidOperationException>(() => {
+        MyAssert.IsError<ResponseBodyTooLargeException>(() => {
             NotLenMemoryStream ms3 = new NotLenMemoryStream(input.ToUtf8Bytes());
             string text3 = ResponseReader.ReadText(ms3, null, 10);  // 流的长度超标
         });

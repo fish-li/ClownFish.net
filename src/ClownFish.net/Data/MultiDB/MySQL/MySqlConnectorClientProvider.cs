@@ -38,7 +38,7 @@ internal sealed class MySqlConnectorClientProvider : BaseMySqlClientProvider
         _exceptionType = Type.GetType(_namespace + ".MySqlException, MySqlConnector", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number", BindingFlags.Instance | BindingFlags.Public);
         if( p == null )
-            throw new InvalidOperationException($"没有找到属性：{_namespace}.MySqlException.Number");
+            throw new RuntimeReflectionException($"没有找到属性：{_namespace}.MySqlException.Number");
 
         _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
     }

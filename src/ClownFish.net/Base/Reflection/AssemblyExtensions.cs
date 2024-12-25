@@ -23,15 +23,15 @@ public static class AssemblyExtensions
             return (T[])assembly.GetCustomAttributes(typeof(T), true);
         }
         catch( FileNotFoundException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( FileLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( TypeLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
     }
@@ -52,23 +52,23 @@ public static class AssemblyExtensions
             return assembly.GetExportedTypes();
         }
         catch( FileNotFoundException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( FileLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( TypeLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( ReflectionTypeLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( NotSupportedException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
     }
@@ -90,19 +90,19 @@ public static class AssemblyExtensions
             return assembly.GetTypes();
         }
         catch( FileNotFoundException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( FileLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( TypeLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
         catch( ReflectionTypeLoadException ex ) {
-            throw new InvalidOperationException(
+            throw new RuntimeReflectionException(
                         "反射程序集时无法加载依赖项，当前程序集名称：" + assembly.FullName, ex);
         }
     }

@@ -11,7 +11,7 @@ public static class ConnectionManager
     {
         ConnectionStringSetting setting = AppConfig.GetConfigObject().GetConfiguration().ConnectionStrings.FirstOrDefault();
         if( setting == null )
-            throw new InvalidOperationException("没有在配置文件中注册数据库连接！");
+            throw new ConfigurationErrorsException("没有在配置文件中注册数据库连接！");
 
         return new ConnectionInfo(setting);
     }
