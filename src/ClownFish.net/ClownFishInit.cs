@@ -170,7 +170,7 @@ public static class ClownFishInit
         int waitMs = ClownFishOptions.GCCollectPeriodSec * 1000;
 
         while( true ) {
-            await Task.Delay(waitMs, AppExitToken);
+            await Task2.Delay(waitMs, AppExitToken);
 
             if( AppExitToken.IsCancellationRequested )
                 return;
