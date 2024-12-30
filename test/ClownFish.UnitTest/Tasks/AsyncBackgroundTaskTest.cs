@@ -80,6 +80,35 @@ public class AsyncBackgroundTaskTest
         Assert.AreEqual(1, task.Count);
     }
 
+    [TestMethod]
+    public async Task Test8()
+    {
+        var task = new AsyncBackgroundTask8();
+
+        Stopwatch watch = Stopwatch.StartNew();
+
+        for( int i = 0; i < 10; i++ ) {
+           Task t =  (Task)task.InvokeMethod("Execute0Async");
+            await t;
+        }
+        TimeSpan time1 = watch.Elapsed;
+
+        task.RunMode = 1;  //切换调度模式
+
+        watch.Restart();
+
+        for( int i = 0; i < 10; i++ ) {
+            Task t = (Task)task.InvokeMethod("Execute0Async");
+            await t;
+        }
+        TimeSpan time2 = watch.Elapsed;
+
+        Console.WriteLine("time1: " + time1.ToString());
+        Console.WriteLine("time2: " + time2.ToString());
+
+        Assert.IsTrue(time2 > time1);
+        Assert.IsTrue((time2 - time1).TotalMilliseconds > 1000d);
+    }
 }
 
 
@@ -168,6 +197,17 @@ internal class AsyncBackgroundTask7 : AsyncBackgroundTask2
     }
 }
 
+
+internal class AsyncBackgroundTask8 : AsyncBackgroundTask
+{
+    //public override string CronValue =>"0 0/2 * * * ?";
+
+    public override Task ExecuteAsync()
+    {
+        // 空跑~~~
+        return Task.CompletedTask;
+    }
+}
 
 
 #endif

@@ -8,6 +8,7 @@ namespace ClownFish.UnitTest.Tasks;
 
 #if NETCOREAPP
 using ClownFish.Tasks;
+using NetTaste;
 
 [TestClass]
 public class BackgroundTaskTest
@@ -80,6 +81,34 @@ public class BackgroundTaskTest
         Assert.AreEqual(1, task.Count);
     }
 
+
+    [TestMethod]
+    public void Test8()
+    {
+        var task = new BackgroundTask8();
+
+        Stopwatch watch = Stopwatch.StartNew();
+
+        for( int i = 0; i < 10; i++ ) {
+            task.InvokeMethod("Execute0");
+        }
+        TimeSpan time1 = watch.Elapsed;
+
+        task.RunMode = 1;  //切换调度模式
+
+        watch.Restart();
+
+        for( int i = 0; i < 10; i++ ) {
+            task.InvokeMethod("Execute0");
+        }
+        TimeSpan time2 = watch.Elapsed;
+
+        Console.WriteLine("time1: " + time1.ToString());
+        Console.WriteLine("time2: " + time2.ToString());
+
+        Assert.IsTrue(time2 > time1);
+        Assert.IsTrue((time2 - time1).TotalMilliseconds > 1000d);
+    }
 
 }
 
@@ -162,6 +191,16 @@ internal class BackgroundTask7 : BackgroundTask2
     {
         base.Execute();
         this.ExitTask();
+    }
+}
+
+internal class BackgroundTask8 : BackgroundTask
+{
+    //public override string CronValue =>"0 0/2 * * * ?";
+
+    public override void Execute()
+    {
+        // 空跑~~~
     }
 }
 

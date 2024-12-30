@@ -44,6 +44,7 @@ public sealed partial class HttpOption
     /// <summary>
     /// CancellationToken
     /// </summary>
+    [JsonIgnore][XmlIgnore]
     public CancellationToken CancellationToken { get; set; }
 
     /// <summary>
@@ -54,6 +55,7 @@ public sealed partial class HttpOption
     /// <summary>
     /// HttpMessageHandler
     /// </summary>
+    [JsonIgnore][XmlIgnore]
     public System.Net.Http.HttpMessageHandler MessageHandler { get; set; }
 
     /// <summary>
@@ -185,6 +187,7 @@ public sealed partial class HttpOption
     /// <summary>
     /// Cookie容器
     /// </summary>
+    [JsonIgnore][XmlIgnore]
     public CookieContainer Cookie { get; set; }
 
 
@@ -205,6 +208,7 @@ public sealed partial class HttpOption
     /// 获取或设置请求的身份验证信息。
     /// 【注意-注意】设置这个属性可能会导致底层的Socket连接不能重用，频繁使用会导致TCP端口耗尽，除非设置为NetworkCredential的实例。
     /// </summary>
+    [JsonIgnore][XmlIgnore]
     public ICredentials Credentials { get; set; }
 
 

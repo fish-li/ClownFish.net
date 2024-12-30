@@ -30,6 +30,11 @@ public abstract class BaseBackgroundTask : BaseTaskObject
     /// </summary>
     internal volatile int LastStatus;
 
+    /// <summary>
+    /// 调度方式。 0: Sleep-Seconds,  1: Cron-Expression
+    /// </summary>
+    internal int RunMode = 0;
+
     
 
     /// <summary>

@@ -47,7 +47,7 @@ public abstract class BackgroundTask : BaseBackgroundTask
                 throw new InvalidCodeException("没有设置执行间隔属性：SleepSeconds 或者 CronValue ");
             }
         }
-        catch(Exception ex) {
+        catch( Exception ex ) {
             this.UnhandledException = ex;
             Console2.Error(ex);
             Console2.Info($"##### BackgroundTask {this.GetType().FullName} 出现未预期异常，它不会继续运行！");
@@ -88,6 +88,8 @@ public abstract class BackgroundTask : BaseBackgroundTask
 
     private void RunByCron()
     {
+        this.RunMode = 1;
+
         // Cron表达式的值不允许执行过程中修改，所以放在循环前只获取一次
         NbCronExpression cron = new NbCronExpression(this.CronValue);
 
@@ -121,9 +123,11 @@ public abstract class BackgroundTask : BaseBackgroundTask
 
     private void Execute0()
     {
+        DateTime now = DateTime.Now;
+
         this.Status = 1;
         this.LastStatus = 1;
-        this.LastRunTime.Set(DateTime.Now.Ticks);
+        this.LastRunTime.Set(now.Ticks);
 
         try {
             using( this.Context = new BgTaskExecuteContext(this) ) {
@@ -148,12 +152,31 @@ public abstract class BackgroundTask : BaseBackgroundTask
         }
         finally {
             this.Context = null;
-            this.Status = 0;            
+            this.Status = 0;
+        }               
+
+        if( this.RunMode == 1 && (DateTime.Now - now).TotalMilliseconds < 10 ) {
+
+            // 一个很特殊场景（真实案例）：
+            // 有个 “清理临时目录” 的作业，Cron表达式  "0 0/2 * * * ?"   2分钟运行一次
+
+            // 作业某一次的【实际】触发时间为： 2024-12-30 14:09:59.999
+            // 【应该】触发时间为： 2024-12-30 14:10:00.000
+
+            // 实际执行时，由于临时目录为空（没有文件），作业立即完成！  作业的执行时间为0
+            // 此时计算下一次的执行时间仍然为 2024-12-30 14:10:00.000，于是又立即执行，
+            // 由于作业的执行时间为0，这个过程要持续很多次（50+）~~~~
+
+            // 解决办法：在作业中增加一行 Thread.Sleep(100)
+            // 虽然解决了这个问题，但是这个问题存在很长时间了，作者一直不看日志，根本发现不了这个问题！
+            // 再者，用 “Thread.Sleep” 来解决BUG，感觉也很奇怪的~~~，所以还是在框架中解决
+
+            Thread.Sleep(100);
         }
     }
 
 
-   
+
 
     /// <summary>
     /// 执行任务的主体过程。

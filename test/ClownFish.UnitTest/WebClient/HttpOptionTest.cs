@@ -615,4 +615,40 @@ Host=www.fish-test.com
         Assert.AreEqual("text/abc; charset=UTF-8", httpOption.Headers["Content-Type"]);
     }
 
+#if NETCOREAPP
+    [TestMethod]
+    public void Test_ToJson()
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "POST",
+            Url = "http://www.abc.com/aa/bb/cc.aspx",
+            Data = new {
+                a = 2, b = 3, c = "abcd"
+            },
+            Format = SerializeFormat.Json,
+            Timeout = 5_000,
+            Header = new {
+                name1 = "111111",
+                name2 = "222222"
+            },
+            Id = "HttpOptionTest_Test_ToJson",
+            Cookie = new CookieContainer(),
+            Credentials = new NetworkCredential("admin", "123"),
+            AllowAutoRedirect = true,
+            CheckSuccessStatusCode = false,
+            IsProxyRequest = true,
+        };
+        httpOption.Headers.Add("Content-Type", "text/abc");
+
+        string json = httpOption.ToJson(JsonStyle.Indented);  // 有些伙计们就是这样用~~~
+
+        Console.WriteLine(json);
+
+        Assert.IsFalse(json.Contains("CancellationToken"));
+
+        Console.WriteLine("------------------------------------");
+        Console.WriteLine(httpOption.ToRawText());
+    }
+#endif
+
 }
