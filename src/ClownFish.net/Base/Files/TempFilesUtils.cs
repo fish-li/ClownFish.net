@@ -15,9 +15,9 @@ public static class TempFilesUtils
         /// </summary>
         public string FullPath { get; set; }
         /// <summary>
-        /// FileInfo对象，仅当删除文件时会指定
+        /// 文件大小
         /// </summary>
-        public FileInfo FileInfo { get; set; }
+        public long FileLength { get; set; }
         /// <summary>
         /// 删除过程中出现的异常，如果没有异常则为null
         /// </summary>
@@ -29,10 +29,11 @@ public static class TempFilesUtils
     /// 删除临时文件
     /// </summary>
     /// <param name="path">要执行删除的根目录</param>
+    /// <param name="searchPattern">文件名通配符规则，如果为Null则匹配所有文件</param>
     /// <param name="timeAgo">一个时间间隔，表示需要删除多久前的文件</param>
     /// <param name="topDirectoryOnly">是否只扫描指定的根目录（不包含子目录），如果需要扫描子目录，请指定为 false</param>
     /// <returns></returns>
-    public static List<DeleteResult> DeleteOldFiles(string path, TimeSpan timeAgo, bool topDirectoryOnly)
+    public static List<DeleteResult> DeleteOldFiles(string path, string searchPattern, TimeSpan timeAgo, bool topDirectoryOnly)
     {
         if( string.IsNullOrEmpty(path) || Directory.Exists(path) == false )
             return new List<DeleteResult>();
@@ -43,9 +44,12 @@ public static class TempFilesUtils
                                         ? SearchOption.TopDirectoryOnly
                                         : SearchOption.AllDirectories;
 
+        if( searchPattern.IsNullOrEmpty() )
+            searchPattern = "*";
+
         List<DeleteResult> resultList = new List<DeleteResult>(128);
 
-        IEnumerable<string> files = Directory.EnumerateFiles(path, "*.*", searchOption);
+        IEnumerable<string> files = Directory.EnumerateFiles(path, searchPattern, searchOption);
 
         foreach( string file in files ) {
 
@@ -61,19 +65,22 @@ public static class TempFilesUtils
             if( span >= timeAgo ) {
 
                 // 清除过程中，也有可能其它进程正在删除文件，所有文件不存在就忽略
-                if( RetryFile.Exists(file) == false )
-                    continue;
+                if( RetryFile.Exists(file) ) {
 
-                DeleteResult deleteResult = new DeleteResult();
-                try {
-                    deleteResult.FileInfo = new FileInfo(file);
-                    RetryFile.Delete(file);
-                    deleteResult.FullPath = file;
+                    DeleteResult deleteResult = new DeleteResult();
+                    try {
+                        long length = (new FileInfo(file)).Length;
+
+                        RetryFile.Delete(file);
+
+                        deleteResult.FileLength = length;
+                        deleteResult.FullPath = file;
+                    }
+                    catch( Exception ex ) {
+                        deleteResult.Exception = ex;
+                    }
+                    resultList.Add(deleteResult);
                 }
-                catch( Exception ex ) {
-                    deleteResult.Exception = ex;
-                }
-                resultList.Add(deleteResult);
             }
         }
 
