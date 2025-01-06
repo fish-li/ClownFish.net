@@ -63,9 +63,6 @@ public static class AspnetCoreStarter
     private static void ConfigClownFish()
     {
         ClownFish.Base.ExceptionExtensions.GetErrorCodeCallbackFunc = GetErrorCode;
-
-        string tempPath = EnvUtils.GetTempPath();
-        RetryDirectory.CreateDirectory(tempPath);
     }
 
     private static int? GetErrorCode(Exception ex)

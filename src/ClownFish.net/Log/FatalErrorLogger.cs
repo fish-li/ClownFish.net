@@ -48,8 +48,9 @@ Time: {DateTime.Now.ToTimeString()}
         try {
             RetryFile.AppendAllText(errorFile, message, Encoding.UTF8);
         }
-        catch {
+        catch( Exception ex2 ) {
             // 这里只能吃掉异常。
+            Console2.Warnning(ex2);
         }
     }
 

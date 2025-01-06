@@ -225,8 +225,9 @@ public sealed class RabbitMonitorClient
         try {
             RetryFile.AppendAllText(filePath, text, Encoding.UTF8);
         }
-        catch {
+        catch( Exception ex ) {
             // 这里只能吃掉异常。
+            Console2.Warnning(ex);
         }
     }
 

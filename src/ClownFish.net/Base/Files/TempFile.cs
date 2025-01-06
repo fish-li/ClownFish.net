@@ -64,6 +64,9 @@ public sealed class TempFile : IDisposable
         if( stream.CanSeek )
             stream.Position = 0;
 
+        // 临时目录有可能会被删除，所以创建临时文件前先创建临时目录
+        Directory.CreateDirectory(EnvUtils.GetTempPath());
+
         string filePath = GenTempFileFullName(extName);
 
         using( FileStream fileStream = File.Create(filePath) ) {
