@@ -257,13 +257,7 @@ GET http://localhost:8206/v20/api/WebSiteApp/test/Databus.aspx HTTP/1.1
         RequestData data = new RequestData("GET http://xxx.com/ HTTP/1.1", null, null);
         HttpRequestAlone req = new HttpRequestAlone(data);
 
-        MyAssert.IsError<NotSupportedException>(() => {
-            _ = req.OriginalHttpRequest;
-        });
-
-        //MyAssert.IsError<NotSupportedException>(() => {
-        //    _ = req.HttpContext;
-        //});
+        Assert.IsTrue(object.ReferenceEquals(req.OriginalHttpRequest, data));
 
         Assert.IsNotNull(req.HttpContext);
 

@@ -48,7 +48,7 @@ public sealed class HttpRequestAlone : NHttpRequest, IDisposable
     /// <summary>
     /// 不支持访问此属性。
     /// </summary>
-    public override object OriginalHttpRequest => throw new NotSupportedException();
+    public override object OriginalHttpRequest => _data;
 
     /// <summary>
     /// IsHttps
