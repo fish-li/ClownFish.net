@@ -51,11 +51,6 @@ public sealed class HttpRequestAlone : NHttpRequest, IDisposable
     public override object OriginalHttpRequest => throw new NotSupportedException();
 
     /// <summary>
-    /// HttpContext
-    /// </summary>
-    public override NHttpContext HttpContext => throw new NotSupportedException();
-
-    /// <summary>
     /// IsHttps
     /// </summary>
     public override bool IsHttps => _fullUrl.StartsWithIgnoreCase("https://");

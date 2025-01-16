@@ -59,7 +59,7 @@ public abstract class NHttpContext
     /// <summary>
     /// OprLog
     /// </summary>
-    public OprLog OprLog => this.PipelineContext.OprLogScope.OprLog;
+    public OprLog OprLog => this.PipelineContext?.OprLogScope.OprLog;
 
     /// <summary>
     /// 当前是否为转发请求
@@ -69,7 +69,7 @@ public abstract class NHttpContext
     /// <summary>
     /// 最近一次产生的异常对象
     /// </summary>
-    public Exception LastException => this.PipelineContext.LastException;
+    public Exception LastException => this.PipelineContext?.LastException;
 
     /// <summary>
     /// 当前请求的用户是否为已登录用户
@@ -142,7 +142,7 @@ public abstract class NHttpContext
     /// <param name="x"></param>
     public virtual void LogFxEvent(NameTime x)
     {
-        if( this.PipelineContext.OprLogScope.IsNull == false ) {
+        if( this.PipelineContext != null && this.PipelineContext.OprLogScope.IsNull == false ) {
             this.PipelineContext.OprLogScope.AddFxEvent(x);
         }
     }

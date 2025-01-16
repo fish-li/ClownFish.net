@@ -27,7 +27,7 @@ public abstract class NHttpResponse
     /// <summary>
     /// 获取NHttpContext的引用
     /// </summary>
-    public virtual NHttpContext HttpContext { get => _httpContext; }
+    public NHttpContext HttpContext { get => _httpContext; }
 
     /// <summary>
     /// 获取或设置返回给客户端的 HTTP 状态代码。

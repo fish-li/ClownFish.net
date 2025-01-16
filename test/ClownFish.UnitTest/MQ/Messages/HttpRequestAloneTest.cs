@@ -261,9 +261,11 @@ GET http://localhost:8206/v20/api/WebSiteApp/test/Databus.aspx HTTP/1.1
             _ = req.OriginalHttpRequest;
         });
 
-        MyAssert.IsError<NotSupportedException>(() => {
-            _ = req.HttpContext;
-        });
+        //MyAssert.IsError<NotSupportedException>(() => {
+        //    _ = req.HttpContext;
+        //});
+
+        Assert.IsNotNull(req.HttpContext);
 
         MyAssert.IsError<NotImplementedException>(() => {
             _ = req.FormKeys;

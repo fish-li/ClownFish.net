@@ -28,7 +28,7 @@ public abstract partial class NHttpRequest
     /// <summary>
     /// HttpContext实例引用
     /// </summary>
-    public virtual NHttpContext HttpContext { get => _httpContext; }
+    public NHttpContext HttpContext { get => _httpContext; }
 
     /// <summary>
     /// true if this request is using https; otherwise, false.
