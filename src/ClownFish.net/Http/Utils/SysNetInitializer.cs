@@ -1,9 +1,9 @@
 ﻿namespace ClownFish.Http.Utils;
 
 /// <summary>
-/// 初始化系统网络相关设置
+/// 初始化系统网络相关设置，只对 .net framework 有效！
 /// </summary>
-internal static class SysNetInitializer
+public static class SysNetInitializer
 {
     static SysNetInitializer()
     {
@@ -34,6 +34,6 @@ internal static class SysNetInitializer
     /// </summary>
     public static void Init()
     {
-        // 触发静态构造方法，设置与HttpWebRequest相关的参数
+        // 触发静态构造方法，设置ServicePointManager相关的参数
     }
 }
