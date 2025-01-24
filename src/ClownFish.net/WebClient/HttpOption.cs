@@ -44,7 +44,8 @@ public sealed partial class HttpOption
     /// <summary>
     /// CancellationToken
     /// </summary>
-    [JsonIgnore][XmlIgnore]
+    [JsonIgnore]
+    [XmlIgnore]
     public CancellationToken CancellationToken { get; set; }
 
     /// <summary>
@@ -55,7 +56,8 @@ public sealed partial class HttpOption
     /// <summary>
     /// HttpMessageHandler
     /// </summary>
-    [JsonIgnore][XmlIgnore]
+    [JsonIgnore]
+    [XmlIgnore]
     public System.Net.Http.HttpMessageHandler MessageHandler { get; set; }
 
     /// <summary>
@@ -187,7 +189,8 @@ public sealed partial class HttpOption
     /// <summary>
     /// Cookie容器
     /// </summary>
-    [JsonIgnore][XmlIgnore]
+    [JsonIgnore]
+    [XmlIgnore]
     public CookieContainer Cookie { get; set; }
 
 
@@ -208,7 +211,8 @@ public sealed partial class HttpOption
     /// 获取或设置请求的身份验证信息。
     /// 【注意-注意】设置这个属性可能会导致底层的Socket连接不能重用，频繁使用会导致TCP端口耗尽，除非设置为NetworkCredential的实例。
     /// </summary>
-    [JsonIgnore][XmlIgnore]
+    [JsonIgnore]
+    [XmlIgnore]
     public ICredentials Credentials { get; set; }
 
 
@@ -218,16 +222,18 @@ public sealed partial class HttpOption
     public int? Timeout { get; set; }
 
 
-    //public IWebProxy Proxy { get; set; }  // TODO: 以后再考虑支持
-
-
-    /// <summary>
+     /// <summary>
     /// 上传数据时，是否【尽量】采用gzip压缩，仅对文本类数据尝试启用gzip，包含：text, json, xml
     /// </summary>
     public bool AutoGzipUpload { get; set; }
 
-
 #if NETFRAMEWORK
+
+    /// <summary>
+    /// 发送请求需要使用的代理
+    /// </summary>
+    public IWebProxy Proxy { get; set; }
+
     /// <summary>
     /// Request对象创建完成后的回调委托
     /// </summary>
@@ -383,24 +389,24 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
     /// 将HttpOption的各属性值转换成全文本形式。
     /// 注意：此方法返回的结果（在某些场景下）并不是实际发送的内容，因此结果仅供记录日志时使用。
     /// </summary>
-    /// <param name="mode">0：不包含请求体数据，1：仅仅包含文本内容的请求体，2：包含请求体，不管数据是什么格式。</param>
+    /// <param name="mode">0：不包含请求体数据，1：仅包含文本内容的请求体（可能需要序列化处理），2：包含请求体，不管数据是什么格式，3：日志场景使用。</param>
     /// <returns></returns>
-    public string ToRawText(int mode = 1)
+    public string ToRawText(int mode = 0)
     {
-        string body = this.GetPostBodyAsString(mode, out bool isBinData, out string contentType);
+        BodyStringResult bodyResult = this.GetPostBodyAsString(mode);
 
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            LogLineAndHeaders(sb, contentType);
+            LogLineAndHeaders(sb, bodyResult.ContentType);
 
-            if( isBinData ) {
+            if( bodyResult.IsBinData ) {
                 sb.Append(BodyBinDataHeaderName).AppendLineRN(": 1");
             }
 
             sb.AppendLineRN();
 
-            if( body != null )
-                sb.Append(body);
+            if( bodyResult.Text != null )
+                sb.Append(bodyResult.Text);
 
             return sb.ToString();
         }
@@ -445,31 +451,48 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
         }
     }
 
-
-    // mode: 0：不包含请求体数据，1：仅仅包含文本内容的请求体，2：包含请求体，不管数据是什么格式。
-    internal string GetPostBodyAsString(int mode, out bool isBinData, out string contentType)   // 用于生成日志
+    internal class BodyStringResult
     {
-        isBinData = false;
-        contentType = null;
+        public string Text;
+        public string ContentType;
+        public bool IsBinData;
+
+        public static readonly BodyStringResult Empty = new BodyStringResult();
+
+        public static BodyStringResult Create(string text, bool isBinData, string contentType)
+        {
+            return new BodyStringResult { Text = text, ContentType = contentType, IsBinData = isBinData };
+        }
+    }
+
+    // mode: 0：不包含请求体数据，1：仅包含文本内容的请求体（可能需要序列化处理），2：包含请求体，不管数据是什么格式，3：日志场景使用。
+    internal BodyStringResult GetPostBodyAsString(int mode)
+    {
+        if( mode < 0 || mode > 3 )
+            throw new ArgumentOutOfRangeException(nameof(mode));
 
         if( mode == 0 )
-            return null;
+            return BodyStringResult.Empty;
 
         object data = this.GetPostData();
         if( data == null )
-            return null;
+            return BodyStringResult.Empty;
 
         if( data is string text ) {
-            return text;
+            return BodyStringResult.Create(text, false, null);
         }
 
-        if( data is byte[] bb ) {
-            isBinData = true;
+        if( mode == 3 ) {
+            return GetPostBodyAsString3(data);
+        }
 
+        // 下面只处理 mode =1 or mode =2 的场景
+
+        if( data is byte[] bb ) {
             if( mode == 2 )
-                return bb.ToBase64();
+                return BodyStringResult.Create(bb.ToBase64(), true, null);
             else  // mode == 1
-                return $"##--NOT TEXT DATA, Length:({bb.Length})--##";
+                return BodyStringResult.Create($"##--NOT TEXT DATA, data-type: byte[], Length:({bb.Length})--##", true, null);
         }
 
         // data 是一个 Entity/DTO/object，需要根据 this.Format 做序列化
@@ -478,8 +501,8 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
             RequestWriter writer = new RequestWriter();
             writer.Write(ms, data, this.Format, false);   // 生成日志时不做gzip
 
-            isBinData = writer.IsBinaryData;
-            contentType = writer.ContentType;
+            bool isBinData = writer.IsBinaryData;
+            string contentType = writer.ContentType;
 
             string contentType2 = contentType;
             if( contentType2.IsNullOrEmpty() )
@@ -488,15 +511,32 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
                 contentType2 = this.Headers[HttpHeaders.Request.ContentType];
 
             if( HttpUtils.RequestBodyIsText(contentType2) ) {
-                return Encoding.UTF8.GetString(ms.ToArray());
+                return BodyStringResult.Create(Encoding.UTF8.GetString(ms.ToArray()), isBinData, contentType);
             }
             else {   // 二进制数据
                 if( mode == 2 )
-                    return ms.ToArray().ToBase64();
+                    return BodyStringResult.Create(ms.ToArray().ToBase64(), isBinData, contentType);
                 else  // mode == 1
-                    return $"##--NOT TEXT DATA, Length:({ms.Length})--##";
+                    return BodyStringResult.Create($"##--NOT TEXT DATA, data-type: byte[], Length:({ms.Length})--##", isBinData, contentType);
             }
         }
+    }
+
+    private BodyStringResult GetPostBodyAsString3(object data)
+    {
+        // data 肯定不是 string
+
+        if( data is byte[] bb ) {
+            if( bb.Length <= 4096 )
+                return BodyStringResult.Create(bb.ToBase64(), true, null);
+            else
+                return BodyStringResult.Create($"##--NOT TEXT DATA, data-type: byte[], Length:({bb.Length})--##", true, null);
+        }
+
+        if( data is FormDataCollection || data is Stream )
+            return BodyStringResult.Create($"##--NOT TEXT DATA, data-type:({data.GetType().FullName})--##", true, null);
+        else
+            return BodyStringResult.Create(data.ToJson(), false, null);
     }
 
     //internal static readonly string BodyBinDataPrefix = "bin-data/base64:";

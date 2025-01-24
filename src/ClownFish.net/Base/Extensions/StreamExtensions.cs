@@ -122,4 +122,51 @@ public static class StreamExtensions
         }
     }
 
+
+    /// <summary>
+    /// 在2个流对象之间复制数据
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="destination"></param>
+    /// <param name="length"></param>
+    /// <returns>实际复制的数据长度</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static long CopyToWithLen(this Stream source, Stream destination, long length)
+    {
+        if( source == null )
+            throw new ArgumentNullException(nameof(source));
+        if( destination == null )
+            throw new ArgumentNullException(nameof(destination));
+        if( length < 0 )
+            throw new ArgumentOutOfRangeException(nameof(length));
+
+        if( length == 0 )
+            return 0;
+
+        int bufferSize = 1024;
+        long sum = 0;
+
+        using( ByteBuffer byteBuffer = new ByteBuffer(bufferSize) ) {
+            byte[] buffer = byteBuffer.Buffer;
+
+            while( true ) {
+                long remaining = length - sum;
+                long readSize = remaining < bufferSize ? remaining : bufferSize;
+
+                int len = source.Read(buffer, 0, (int)readSize);
+                sum += len;
+
+                if( len > 0 ) {
+                    destination.Write(buffer, 0, len);
+                }
+                else {
+                    return sum;
+                }
+
+                if( sum >= length )
+                    return sum;
+            }
+        }
+    }
 }

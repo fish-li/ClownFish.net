@@ -23,6 +23,9 @@ public class HttpResultTest
 
             HttpResult<string> result = response.GetResult();
 
+            Assert.AreEqual(200, result.StatusCode);
+            Assert.AreEqual("text/html; charset=utf-8", result.ContentType);
+
             string text = result.ToAllText();
 
             Console.WriteLine(text);
@@ -229,6 +232,31 @@ public class HttpResultTest
         Assert.AreEqual("111", httpResult3.GetHeader("name1"));
         Assert.AreEqual("222", httpResult3.GetHeader("name2"));
         Assert.AreEqual(bodyJson, httpResult3.Result.ToJson());
+    }
+
+
+
+    [TestMethod]
+    public void Test_Stream_Serialize()
+    {
+        MemoryStream stream = new MemoryStream("abc".GetBytes());
+        HttpResult<Stream> httpResult = new HttpResult<Stream>(200, null, stream);
+
+        MyAssert.IsError<NotSupportedException>(() => { 
+            _ = (httpResult as ITextSerializer).ToText();
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            (httpResult as ITextSerializer).LoadData("xxxxxxxxxxxxxxxxxx");
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = (httpResult as IBinarySerializer).ToBytes();
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            (httpResult as IBinarySerializer).LoadData("xxxxxxxxxxxxxxxxxx".GetBytes());
+        });
     }
 
 #endif

@@ -215,17 +215,18 @@ public static class Console2
     /// <param name="request"></param>
     /// <param name="response"></param>
     /// <param name="success"></param>
-    public static void ShowHTTP(HttpOption request, HttpResult<string> response, bool success)
+    /// <param name="time"></param>
+    public static void ShowHTTP(HttpOption request, HttpResult<string> response, bool success, TimeSpan? time = null)
     {
         // 确保 多行文本 **紧挨** 在一起
         lock( s_lock ) {
             Console2.WriteLine("================================ Request =============================================");
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console2.WriteLine(request.ToRawText());
+            Console2.WriteLine(request.ToRawText(3));
 
             Console.ResetColor();
-            Console2.WriteLine("================================ Response ============================================");
+            Console2.WriteLine("================================ Response ============================================ " + time?.ToString());
 
             if( response != null ) {
                 if( success ) {

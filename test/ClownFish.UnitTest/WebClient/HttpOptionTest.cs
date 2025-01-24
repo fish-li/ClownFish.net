@@ -226,7 +226,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
             }
         };
 
-        string text = option.ToRawText();
+        string text = option.ToRawText(1);
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("POST http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1"));
@@ -271,7 +271,7 @@ input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
             Format = SerializeFormat.Binary,  // 会忽略这个头！
         };
 
-        string text = option.ToRawText();
+        string text = option.ToRawText(1);
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("GET http://www.fish-test.com/api/ns/TestAutoAction/submit.aspx HTTP/1.1"));
@@ -429,20 +429,104 @@ Host=www.fish-test.com
             Format = SerializeFormat.Text
         };
 
-        string text0 = option.GetPostBodyAsString(0, out _, out _);
+        MyAssert.IsError<ArgumentOutOfRangeException>(() => { 
+            _ = option.GetPostBodyAsString(-1);
+        });
+        MyAssert.IsError<ArgumentOutOfRangeException>(() => {
+            _ = option.GetPostBodyAsString(4);
+        });
+
+        string text0 = option.GetPostBodyAsString(0).Text;
         Assert.IsNull(text0);
 
-        option.Data = "abc".ToUtf8Bytes();
+        // ============================================================== small binary
+        byte[] b3 = "abc".ToUtf8Bytes();
+        option.Data = b3;
         option.Format = SerializeFormat.Binary;
 
-        string text1 = option.GetPostBodyAsString(1, out _, out _);
-        Assert.AreEqual("##--NOT TEXT DATA, Length:(3)--##", text1);
+        Assert.IsNull(option.GetPostBodyAsString(0).Text);
+
+        string text1 = option.GetPostBodyAsString(1).Text;
+        Assert.AreEqual("##--NOT TEXT DATA, data-type: byte[], Length:(3)--##", text1);
+
+        string text2 = option.GetPostBodyAsString(2).Text;
+        Assert.AreEqual(b3.ToBase64(), text2);
+
+        string text3 = option.GetPostBodyAsString(3).Text;
+        Assert.AreEqual(b3.ToBase64(), text3);
+
+        // ============================================================== big binary
+        byte[] b6666 = CreateBinData(6666);
+        option.Data = b6666;
+        option.Format = SerializeFormat.Binary;
+
+        Assert.IsNull(option.GetPostBodyAsString(0).Text);
+
+        string text4 = option.GetPostBodyAsString(3).Text;
+        Assert.AreEqual("##--NOT TEXT DATA, data-type: byte[], Length:(6666)--##", text4);
+
+        string text4b = option.GetPostBodyAsString(2).Text;
+        Assert.AreEqual(b6666.ToBase64(), text4b);
+
+        string text4c = option.GetPostBodyAsString(1).Text;
+        Assert.AreEqual("##--NOT TEXT DATA, data-type: byte[], Length:(6666)--##", text4c);
+
+        // ============================================================== FormDataCollection
+        option.Data = FormDataCollection.Create(new NameValue("a", "b"));
+        option.Format = SerializeFormat.Form;
+
+        Assert.IsNull(option.GetPostBodyAsString(0).Text);
+
+        string text5 = option.GetPostBodyAsString(1).Text;
+        Assert.AreEqual($"Name=a&Value=b", text5);
+
+        string text5b = option.GetPostBodyAsString(2).Text;
+        Assert.AreEqual($"Name=a&Value=b", text5b);
+
+        string text5c = option.GetPostBodyAsString(3).Text;
+        Assert.AreEqual($"##--NOT TEXT DATA, data-type:({typeof(FormDataCollection).FullName})--##", text5c);
 
 
-        string text2 = option.GetPostBodyAsString(2, out _, out _);
-        Assert.AreEqual("YWJj", text2);
+        // ============================================================== Stream
+        byte[] b32 = "3c9ff6663c3e4394a905987bbe361cd9".ToUtf8Bytes();
+        option.Data = new MemoryStream(b32);
+        option.Format = SerializeFormat.Binary;
+
+        Assert.IsNull(option.GetPostBodyAsString(0).Text);
+
+        string text6 = option.GetPostBodyAsString(1).Text;
+        Assert.AreEqual($"##--NOT TEXT DATA, data-type: byte[], Length:(32)--##", text6);
+
+        string text6b = option.GetPostBodyAsString(2).Text;
+        Assert.AreEqual(b32.ToBase64(), text6b);
+
+        string text6c = option.GetPostBodyAsString(3).Text;
+        Assert.AreEqual($"##--NOT TEXT DATA, data-type:({typeof(MemoryStream).FullName})--##", text6c);
+
+        // ============================================================== DTO
+        option.Data = new NameValue("name", "abc");
+        option.Format = SerializeFormat.Json;
+
+        Assert.IsNull(option.GetPostBodyAsString(0).Text);
+
+        string text7 = option.GetPostBodyAsString(1).Text;
+        Assert.AreEqual(option.Data.ToJson(), text7);
+
+        string text7b = option.GetPostBodyAsString(2).Text;
+        Assert.AreEqual(option.Data.ToJson(), text7b);
+
+        string text7c = option.GetPostBodyAsString(3).Text;
+        Assert.AreEqual(option.Data.ToJson(), text7c);
     }
 
+
+    private static byte[] CreateBinData(int length)
+    {
+        byte[] data = new byte[length];
+        for( int i = 0; i < length; i++ )
+            data[i] = (byte)6;
+        return data;
+    }
 
     [TestMethod]
     public void Test_LogLineAndHeaders_Cookie()
@@ -647,7 +731,7 @@ Host=www.fish-test.com
         Assert.IsFalse(json.Contains("CancellationToken"));
 
         Console.WriteLine("------------------------------------");
-        Console.WriteLine(httpOption.ToRawText());
+        Console.WriteLine(httpOption.ToRawText(1));
     }
 #endif
 

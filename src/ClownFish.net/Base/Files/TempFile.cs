@@ -25,7 +25,9 @@ public sealed class TempFile : IDisposable
 
         string filePath = GenTempFileFullName(extName);
 
-        File.WriteAllBytes(filePath, body);
+        RetryFile.WriteAllBytes(filePath, body);
+
+        System.Threading.Thread.Sleep(50);
 
         // 确认文件是否已写入磁盘
         CheckFileLength(filePath, body.Length);

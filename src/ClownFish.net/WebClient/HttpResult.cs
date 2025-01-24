@@ -115,13 +115,23 @@ public sealed partial class HttpResult<T> : IToAllText
 #if NETCOREAPP
 public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
 {
+    private void CheckStreamNotSupportSerialize()
+    {
+        if( typeof(T).IsCompatible(typeof(Stream)) )
+            throw new NotSupportedException("Stream对象不支持序列化！");
+    }
+
     string ITextSerializer.ToText()
     {
+        CheckStreamNotSupportSerialize();
+
         return this.ToAllText(true);
     }
 
     void ITextSerializer.LoadData(string text)
     {
+        CheckStreamNotSupportSerialize();
+
         this.StatusCode = -1;
         this.Headers = new NameValueCollection();
         this.Result = default(T);
@@ -226,6 +236,8 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
 
     byte[] IBinarySerializer.ToBytes()
     {
+        CheckStreamNotSupportSerialize();
+
         string headers = GetHeadersAsText();
 
         byte[] body = GetResultAsBytes();
@@ -259,6 +271,8 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
 
     void IBinarySerializer.LoadData(ReadOnlyMemory<byte> body)
     {
+        CheckStreamNotSupportSerialize();
+
         this.StatusCode = -1;
         this.Headers = new NameValueCollection();
         this.Result = default(T);

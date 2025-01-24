@@ -113,6 +113,8 @@ Server: Kestrel";
             HttpResult<string> response = new (200, headerCollection, "d495fe273bf1492c953900fb9738ac30");
 
             Console2.ShowHTTP(request, response, true);
+            Console2.ShowHTTP(request, response, true, TimeSpan.FromSeconds(3.5));
+
             Console2.ShowHTTP(request, response, false);
         }
 

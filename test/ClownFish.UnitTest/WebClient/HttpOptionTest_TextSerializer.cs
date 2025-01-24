@@ -231,7 +231,7 @@ Cookie: name1=abc; name2=xyz
 Content-Type: application/octet-stream
 [BODY-IS-BIN]: 1
 
-##--NOT TEXT DATA, Length:(20)--##".Trim();
+##--NOT TEXT DATA, data-type: byte[], Length:(20)--##".Trim();
 
         Assert.AreEqual(expectedRaw, rawText);
 
@@ -246,7 +246,7 @@ Content-Type: application/octet-stream
 
         Assert.IsTrue(http2.Format == SerializeFormat.None);
         Assert.IsTrue(http2.Data.GetType() == typeof(string));
-        Assert.AreEqual("##--NOT TEXT DATA, Length:(20)--##", http2.Data.ToString());
+        Assert.AreEqual("##--NOT TEXT DATA, data-type: byte[], Length:(20)--##", http2.Data.ToString());
     }
 
     [TestMethod]

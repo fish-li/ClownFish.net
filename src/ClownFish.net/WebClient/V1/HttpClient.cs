@@ -42,6 +42,8 @@ internal sealed class HttpClient : BaseHttpClient
         // 触发【发送前】事件
         this.BeforeSend();
 
+        SetRequestBody();
+
         // 发出HTTP请求，获取响应
         HttpWebResponse response = GetResponse();
 
@@ -59,11 +61,13 @@ internal sealed class HttpClient : BaseHttpClient
         // 触发事件，允许在发送请求前修改某些参数
         this.BeforeCreateRequest();
 
-        this.Request = CreateWebRequest();         
+        this.Request = CreateWebRequest();
         SetRequest();
 
         // 触发【发送前】事件
         this.BeforeSend();
+
+        await SetRequestBodyAsync();
 
         // 发出HTTP请求，获取响应
         HttpWebResponse response = await GetResponseAsync();
@@ -76,7 +80,7 @@ internal sealed class HttpClient : BaseHttpClient
         // 添加链路日志相关请求头
         HttpTraceUtils.SetTraceHeader(this);
 
-        this.HttpOption.OnSetRequest?.Invoke(this.Request);        
+        this.HttpOption.OnSetRequest?.Invoke(this.Request);
     }
 
     private T ReturnResult<T>(HttpWebResponse response)
@@ -101,7 +105,6 @@ internal sealed class HttpClient : BaseHttpClient
     private HttpWebResponse GetResponse()
     {
         this.SetStartTime();
-        SetRequestBody();
 
         try {
             HttpWebResponse response = (HttpWebResponse)this.Request.GetResponse();
@@ -125,7 +128,7 @@ internal sealed class HttpClient : BaseHttpClient
     private async Task<HttpWebResponse> GetResponseAsync()
     {
         this.SetStartTime();
-        await SetRequestBodyAsync();
+
 
         try {
             HttpWebResponse response = (HttpWebResponse)await this.Request.GetResponseAsync();
@@ -192,6 +195,9 @@ internal sealed class HttpClient : BaseHttpClient
                 request.UserAgent = ConstValues.HttpClientUserAgent;
         }
 
+        if( option.Proxy != null )
+            request.Proxy = option.Proxy;
+
         return request;
     }
 
@@ -250,10 +256,19 @@ internal sealed class HttpClient : BaseHttpClient
         if( srcStream.CanRead == false )
             throw new ArgumentException("指定的数据流不能读取。");
 
-        if( srcStream.CanSeek )
+        if( srcStream.CanSeek ) {  // 这种就是 MemoryStream，它们的长度是可以确定的
             srcStream.Position = 0;
-
-        srcStream.CopyTo(destStream);
+            srcStream.CopyTo(destStream);
+        }
+        else {  // 可能会是 SslStream，长度未知，如果此时不指定长度且直接调用 srcStream.CopyTo(destStream) 会导致超时30秒才能结束
+            long length = this.Request.Headers[HttpHeaders.Request.ContentLength].TryToLong();
+            if( length > 0 ) {
+                srcStream.CopyToWithLen(destStream, length);
+            }
+            else {
+                throw new NotSupportedException("未知长度的数据流，不支持做为提交数据！");
+            }
+        }
 
         string contentType = ContenTypeUtils.GetByFormat(this.HttpOption.Format);
         if( contentType.IsNullOrEmpty() == false )

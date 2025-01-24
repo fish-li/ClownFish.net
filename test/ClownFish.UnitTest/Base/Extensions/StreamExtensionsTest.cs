@@ -76,6 +76,56 @@ namespace ClownFish.UnitTest.Base.Extensions
         }
 
 
+        private static byte[] CreateBytes(int length)
+        {
+            byte[] data = new byte[length];
+            for(int i = 0; i < length; i++) 
+                data [i] = (byte)i;
+            return data;
+        }
+
+        [TestMethod]
+        public void Test_CopyToWithLen()
+        {
+            MemoryStream ms0 = new MemoryStream();
+            MemoryStream ms1 = new MemoryStream(CreateBytes(66666));
+
+            MemoryStream ms2 = new MemoryStream();
+            Assert.AreEqual(100, ms1.CopyToWithLen(ms2, 100));
+            Assert.AreEqual(100, ms2.Length);
+
+            MemoryStream ms3 = new MemoryStream();
+            Assert.AreEqual(1024, ms1.CopyToWithLen(ms3, 1024));
+            Assert.AreEqual(1024, ms3.Length);
+
+            MemoryStream ms4 = new MemoryStream();
+            Assert.AreEqual(0, ms1.CopyToWithLen(ms4, 0));
+            Assert.AreEqual(0, ms4.Length);
+
+            MemoryStream ms5 = new MemoryStream();
+            Assert.AreEqual(0, ms0.CopyToWithLen(ms5, 100));
+            Assert.AreEqual(0, ms5.Length);
+
+            MemoryStream ms6 = new MemoryStream();
+            Assert.AreEqual(3333, ms1.CopyToWithLen(ms6, 3333));
+            Assert.AreEqual(3333, ms6.Length);
+
+            MyAssert.IsError<ArgumentNullException>(() => {
+                MemoryStream msNull = null;
+                ms1.CopyToWithLen(msNull, 100);
+            });
+
+            MyAssert.IsError<ArgumentNullException>(() => {
+                MemoryStream msNull = null;
+                msNull.CopyToWithLen(ms0, 100);
+            });
+
+            MyAssert.IsError<ArgumentOutOfRangeException>(() => {
+                ms1.CopyToWithLen(ms0, -100);
+            });
+        }
+
+
         [TestMethod]
         public void Test_Error()
         {
