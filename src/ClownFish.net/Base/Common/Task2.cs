@@ -18,4 +18,23 @@ public static class Task2
         }
         catch( TaskCanceledException ) { }
     }
+
+
+#if NET45
+    private static Task s_completedTask;
+
+    /// <summary>
+    /// 表示一个已完成的任务
+    /// </summary>
+    public static Task CompletedTask {     // 这个属性在 net46 中引入
+        get {
+            Task task = s_completedTask;
+            if( task == null ) {
+                task = (s_completedTask = Task.FromResult<int>(0));
+            }
+            return task;
+        }
+    }
+#endif
+
 }
