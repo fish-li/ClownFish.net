@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// 与BackgroundTask相关的执行上下文对象
 /// </summary>
@@ -8,7 +8,7 @@ public sealed class BgTaskExecuteContext : BasePipelineContext, IDisposable
     /// <summary>
     /// BaseTaskObject instance
     /// </summary>
-    public BaseTaskObject Executor { get; init; }
+    public BaseTaskObject Executor { get; private set; }
 
     /// <summary>
     /// 构造方法
@@ -62,4 +62,4 @@ public sealed class BgTaskExecuteContext : BasePipelineContext, IDisposable
 
     
 }
-#endif
+

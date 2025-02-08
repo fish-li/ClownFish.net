@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// BackgroundTask基类，此类型仅供框架内部使用。
 /// </summary>
@@ -180,4 +180,4 @@ public abstract class BaseBackgroundTask : BaseTaskObject
         Console2.WriteLine("Application exit, stop BackgroundTask: " + this.GetType().FullName);
     }
 }
-#endif
+

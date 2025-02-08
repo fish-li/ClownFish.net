@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// BackgroundTask相关的日志工具类
 /// </summary>
@@ -56,4 +56,3 @@ internal static class BackgroundTaskLogger
 
 
 }
-#endif

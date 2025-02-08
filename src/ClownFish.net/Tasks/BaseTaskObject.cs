@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// 所有后台任务的基类
 /// </summary>
@@ -34,4 +34,4 @@ public abstract class BaseTaskObject
             return value.TryToBool();
     }
 }
-#endif
+

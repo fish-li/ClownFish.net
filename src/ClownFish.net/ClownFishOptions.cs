@@ -13,10 +13,10 @@ internal static class ClownFishOptions
     public static readonly int StringBuilderPool_MaximumRetainedCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetainedCapacity", 512 * 1024);
     public static readonly int StringBuilderPool_MaximumRetained = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetained", Environment.ProcessorCount * 6);
 
+#endif
+
     public static readonly int AsyncBackgroundTask_WaitSeconds1 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds1", 60);
     public static readonly int AsyncBackgroundTask_WaitSeconds2 = LocalSettings.GetUInt("ClownFish_AsyncBackgroundTask_WaitSeconds2", 66);
-
-#endif
 
     public static readonly bool ShowBadHttpRequestException = LocalSettings.GetBool("ClownFish_ShowBadHttpRequestException", 0);
 

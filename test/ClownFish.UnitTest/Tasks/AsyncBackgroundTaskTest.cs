@@ -198,7 +198,7 @@ internal class AsyncBackgroundTask7 : AsyncBackgroundTask2
 }
 
 
-internal class AsyncBackgroundTask8 : AsyncBackgroundTask
+public class AsyncBackgroundTask8 : AsyncBackgroundTask
 {
     //public override string CronValue =>"0 0/2 * * * ?";
 
@@ -206,6 +206,14 @@ internal class AsyncBackgroundTask8 : AsyncBackgroundTask
     {
         // 空跑~~~
         return Task.CompletedTask;
+    }
+}
+
+public class BackgroundTask9 : BackgroundTask
+{
+    public override void Execute()
+    {
+        throw new NotImplementedException();
     }
 }
 

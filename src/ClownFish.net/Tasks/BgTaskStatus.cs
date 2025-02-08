@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// BackgroundTask的运行状态
 /// </summary>
@@ -92,4 +92,3 @@ public sealed class BgTaskStatus
     /// </summary>
     public long NextRunTime { get; set; }
 }
-#endif

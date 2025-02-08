@@ -1,5 +1,4 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
 
 /// <summary>
 /// 管理所有继承BackgroundTask的后台任务工具类
@@ -8,6 +7,25 @@ public static class BackgroundTaskManager
 {
     private static readonly List<BaseBackgroundTask> s_taskList = new List<BaseBackgroundTask>(64);
 
+    /// <summary>
+    /// 搜索所有的 public BackgroundTask/AsyncBackgroundTask 类型
+    /// </summary>
+    /// <returns></returns>
+    public static List<Type> SearchBackgroundTaskTypes()
+    {
+        List<Type> types1 = (from asm in AppPartUtils.GetApplicationPartAsmList()
+                             from t in asm.GetPublicTypes()
+                             where t.IsClass && t.IsAbstract == false && t.IsSubclassOf(typeof(BackgroundTask)) && t.CanNew()
+                             select t).ToList();
+
+        List<Type> types2 = (from asm in AppPartUtils.GetApplicationPartAsmList()
+                             from t in asm.GetPublicTypes()
+                             where t.IsClass && t.IsAbstract == false && t.IsSubclassOf(typeof(AsyncBackgroundTask)) && t.CanNew()
+                             select t).ToList();
+
+        types1.AddRange(types2);
+        return types1;   // 返回 List 可方便调用者继续添加一些 internal 的实现类型
+    }
 
     /// <summary>
     /// 启用所有的BackgroundTask
@@ -40,7 +58,6 @@ public static class BackgroundTaskManager
         }
         return s_taskList.Count;
     }
-
 
     private static void StartSyncTask(Type t)
     {
@@ -133,4 +150,3 @@ public static class BackgroundTaskManager
     }
 }
 
-#endif

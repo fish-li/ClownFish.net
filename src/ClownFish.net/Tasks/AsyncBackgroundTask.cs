@@ -1,5 +1,5 @@
 ﻿namespace ClownFish.Tasks;
-#if NETCOREAPP
+
 /// <summary>
 /// 表示一个后台运行的任务，它的子类会在程序启动时自动创建并运行
 /// </summary>
@@ -194,19 +194,25 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
                 // 否则，先等待 60 秒，下次循环时再计算剩余等待时间，再等待…………
                 await Wait0(TimeSpan.FromSeconds(ClownFishOptions.AsyncBackgroundTask_WaitSeconds1));
 
+#if NET6_0_OR_GREATER
             // 如果用户在界面点击了【立即执行】，此时需要立即结束等待
             if( _tokenSource.IsCancellationRequested )
                 break;
+#endif
         }
 
         CheckWakeTime(time);
     }
 
+#if NET6_0_OR_GREATER
     private CancellationTokenSource _tokenSource = new CancellationTokenSource();
+
 
     private async Task Wait0(TimeSpan waitTime)
     {
         if( _tokenSource != null ) {
+
+            // 实际运行中，后台任务被取消的【可能性】极低，所以为了节省资源，这里尽量重用 _tokenSource 对象
             if( _tokenSource.TryReset() == false ) {   // TryReset() 是 .NET 6 新增的
                 _tokenSource.Dispose();
                 _tokenSource = new CancellationTokenSource();
@@ -242,6 +248,31 @@ public abstract class AsyncBackgroundTask : BaseBackgroundTask
             // 所有这里吃掉所有异常。
         }
     }
+#else   // .net framework 的项目，使用AsyncBackgroundTask的可能性就不高，所以就简单处理（不支持 取消 功能）
+
+    private async Task Wait0(TimeSpan waitTime)
+    {
+        try {
+            await Task.Delay(waitTime);   // 不支持取消
+        }
+        catch( TaskCanceledException ) {
+            // 到达等待超时时间，或者被 StopWait() 触发
+        }
+        catch( Exception ex ) {
+            if( EnvUtils.IsDevEnv )
+                Console2.Error(ex);
+        }
+    }
+
+    /// <summary>
+    /// 如果用户在界面点击了【立即执行】，将会调用此方法。
+    /// </summary>
+    internal override void StopWait()
+    {
+        // 不支持
+    }
+#endif
+
+
 
 }
-#endif

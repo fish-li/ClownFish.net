@@ -15,6 +15,11 @@ public class BackgroundTaskManagerTest
     [TestMethod]
     public void Test_1()
     {
+        List<Type> taskList = BackgroundTaskManager.SearchBackgroundTaskTypes();
+        Assert.AreEqual(2, taskList.Count);
+        taskList.Contains(typeof(AsyncBackgroundTask8));
+        taskList.Contains(typeof(BackgroundTask9));
+
         int count1 = BackgroundTaskManager.StartAll();
         Assert.AreEqual(0, count1);
 
