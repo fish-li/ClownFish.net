@@ -213,4 +213,50 @@ public static class StringConverter
             return TimeSpan.FromTicks(long.Parse(text));
     }
 
+
+    /// <summary>
+    /// 解析字符串中的版本号，例如输入：8.0.1-test，输出：8.0.1
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="strVersion"></param>
+    /// <param name="version"></param>
+    /// <returns></returns>
+    public static bool TryParseVersion(string text, out string strVersion, out Version version)
+    {
+        version = null;
+        strVersion = null;
+
+        if( text.IsNullOrEmpty() ) {
+            return false;
+        }
+
+        int p = -1;
+        for( int i = 0; i < text.Length; i++ ) {
+            char c = text[i];
+
+            if( c.IsDigit09() || c == '.' )
+                p = i;
+            else
+                break;
+        }
+
+        if( p >= 0 && text[p] == '.' )
+            p--;
+
+        if( p <= 0 )
+            return false;
+
+        string verText = text.Substring(0, p + 1);
+
+        if( verText.IndexOf('.') < 1 )
+            return false;
+
+        if( Version.TryParse(verText, out version) ) {
+            strVersion = verText;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

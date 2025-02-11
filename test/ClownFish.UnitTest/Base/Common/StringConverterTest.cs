@@ -272,4 +272,72 @@ Amount=3.14;Week={DayOfWeek.Saturday};time2={time2};bytes={base64};x1=1qaz";
             DayOfWeek w2 = (DayOfWeek)StringConverter.ParseEnumName("xxxx", typeof(DayOfWeek));
         });        
     }
+
+    [TestMethod]
+    public void Test_TryParseVersion()
+    {
+        bool test1 = StringConverter.TryParseVersion("8.0.1-test", out string strVersion1, out Version version1);  // 8.0.1
+        Assert.IsTrue(test1);
+        Assert.AreEqual("8.0.1", strVersion1);
+        Assert.AreEqual(8, version1.Major);
+        Assert.AreEqual(0, version1.Minor);
+        Assert.AreEqual(1, version1.Build);
+
+        bool test2 = StringConverter.TryParseVersion("8.0.1.test", out string strVersion2, out Version version2);  // 8.0.1
+        Assert.IsTrue(test2);
+        Assert.AreEqual("8.0.1", strVersion2);
+        Assert.AreEqual(8, version2.Major);
+        Assert.AreEqual(0, version2.Minor);
+        Assert.AreEqual(1, version2.Build);
+
+        bool test3 = StringConverter.TryParseVersion("8.0.1", out string strVersion3, out Version version3);  // 8.0.1
+        Assert.IsTrue(test3);
+        Assert.AreEqual("8.0.1", strVersion3);
+        Assert.AreEqual(8, version3.Major);
+        Assert.AreEqual(0, version3.Minor);
+        Assert.AreEqual(1, version3.Build);
+
+        bool test4 = StringConverter.TryParseVersion("8.3-1", out string strVersion4, out Version version4);  // 8.3
+        Assert.IsTrue(test4);
+        Assert.AreEqual("8.3", strVersion4);
+        Assert.AreEqual(8, version4.Major);
+        Assert.AreEqual(3, version4.Minor);
+        Assert.AreEqual(-1, version4.Build);
+
+        bool test5 = StringConverter.TryParseVersion("8-3-1", out string strVersion5, out Version version5);  // error
+        Assert.IsFalse(test5);
+
+        bool test6 = StringConverter.TryParseVersion("", out string strVersion6, out Version version6);  // error
+        Assert.IsFalse(test6);
+
+        bool test7 = StringConverter.TryParseVersion("8.a.b", out string strVersion7, out Version version7);  // error
+        Assert.IsFalse(test7);
+
+        bool test8 = StringConverter.TryParseVersion("8.5.a.b", out string strVersion8, out Version version8);  // 8.5
+        Assert.IsTrue(test8);
+        Assert.AreEqual("8.5", strVersion8);
+        Assert.AreEqual(8, version8.Major);
+        Assert.AreEqual(5, version8.Minor);
+        Assert.AreEqual(-1, version8.Build);
+
+        bool test9 = StringConverter.TryParseVersion("8.0.1.5-test", out string strVersion9, out Version version9);  // 8.0.1.5
+        Assert.IsTrue(test9);
+        Assert.AreEqual("8.0.1.5", strVersion9);
+        Assert.AreEqual(8, version9.Major);
+        Assert.AreEqual(0, version9.Minor);
+        Assert.AreEqual(1, version9.Build);
+        Assert.AreEqual(5, version9.Revision);
+
+        bool test10 = StringConverter.TryParseVersion("8.0.1.5", out string strVersion10, out Version version10);  // 8.0.1.5
+        Assert.IsTrue(test10);
+        Assert.AreEqual("8.0.1.5", strVersion10);
+        Assert.AreEqual(8, version10.Major);
+        Assert.AreEqual(0, version10.Minor);
+        Assert.AreEqual(1, version10.Build);
+        Assert.AreEqual(5, version10.Revision);
+
+        bool test11 = StringConverter.TryParseVersion("8.0.1.5.6", out string strVersion11, out Version version11);  // error
+        Assert.IsFalse(test11);
+
+    }
 }

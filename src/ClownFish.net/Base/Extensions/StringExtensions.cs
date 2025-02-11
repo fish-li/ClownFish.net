@@ -709,7 +709,7 @@ public static class StringExtensions
         // 允许没有“单位”，就当字节数来处理
         int p = -1;
         for( int i = 0; i < text.Length; i++ ) {
-            if( char.IsDigit(text[i]) == false ) {
+            if( text[i].IsDigit09() == false ) {
                 p = i;
                 break;
             }
