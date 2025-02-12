@@ -98,7 +98,7 @@ public static class TracingInitializer
         Console2.WriteLine("EntryAssembly          : " + AsmHelper.GetExeFilePath());
         Console2.WriteLine("CLUSTER_ENVIRONMENT    : " + EnvUtils.GetClusterName());
         Console2.WriteLine("RUNTIME_ENVIRONMENT    : " + EnvUtils.GetRunEnv());
-        Console2.WriteLine("ApplicationPath        : " + AppContext.BaseDirectory);
+        Console2.WriteLine("BaseDirectory          : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory       : " + Environment.CurrentDirectory);
         Console2.WriteLine("TempPath               : " + EnvUtils.GetTempPath());
         Console2.WriteLine("HostName               : " + EnvUtils.GetHostName());

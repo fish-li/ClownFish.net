@@ -30,9 +30,17 @@ public class WebApplicationStartup
     public virtual bool AutoInitTracing => false;
 
     /// <summary>
-    /// 在执行框架初始化的一些自定义逻辑。 默认行为：什么也不做。
+    /// 在 ClownFish 执行初始化之前的事件阶段。 默认行为：什么也不做。
     /// </summary>
     public virtual void BeforeFrameworkInit()
+    {
+        // 什么也不做。
+    }
+
+    /// <summary>
+    /// 在 ClownFish 执行初始化之后的事件阶段。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void AfterFrameworkInit()
     {
         // 什么也不做。
     }

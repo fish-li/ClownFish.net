@@ -20,12 +20,12 @@ public static class ConsoleAppStarter
         if( startup == null )
             startup = new ConsoleAppStartup();
 
+        startup.BeforeFrameworkInit();
+
         ClownFishInit.InitBase();
         TypeHelper.Init();
 
         ShowSysEnvInfo();
-
-        startup.BeforeFrameworkInit();
 
         if( startup.AutoInitDAL )
             ClownFishInit.InitDAL();
@@ -45,6 +45,8 @@ public static class ConsoleAppStarter
         // 但是这样做也有一个【隐患】：如果在那里 开启后台线程（3种方式），【默认】会导致 OprLogScope 传递到那些后台线程
         if( startup.AutoInitTracing )
             InitTracing();
+
+        startup.AfterFrameworkInit();
 
         Console2.WriteLine("----------------------- Application Initializer ----------------------------");
         ApplicationInitializer.Execute();
@@ -117,7 +119,7 @@ public static class ConsoleAppStarter
         Console2.WriteLine("GC Mode                  : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
         Console2.WriteLine("Framework  Info          : " + GetFrameworkInfo());
         Console2.WriteLine("ClownFishVer             : " + AsmHelper.GetFileVersion(typeof(ClownFishInit)).IfEmpty(ConstValues.CurrentVersion));
-        Console2.WriteLine("ApplicationPath          : " + AppContext.BaseDirectory);
+        Console2.WriteLine("BaseDirectory            : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
         Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
         Console2.WriteSeparatedLine();
