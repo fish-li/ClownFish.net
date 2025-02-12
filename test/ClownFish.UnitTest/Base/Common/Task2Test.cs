@@ -44,4 +44,16 @@ public class Task2Test
         Assert.IsTrue(task.IsCompleted);
         Assert.IsFalse(task.IsCanceled);
     }
+
+    [TestMethod]
+    public void Test_CompletedTask()
+    {
+        Task task = Task2.CompletedTask;
+        Assert.IsTrue(task.IsCompleted);
+#if NETCOREAPP
+        Assert.IsTrue(task.IsCompletedSuccessfully);
+#endif
+        Assert.IsFalse(task.IsCanceled);
+        Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
+    }
 }

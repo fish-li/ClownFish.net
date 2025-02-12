@@ -20,7 +20,7 @@ public static class Task2
     }
 
 
-#if NET45
+
     private static Task s_completedTask;
 
     /// <summary>
@@ -35,6 +35,6 @@ public static class Task2
             return task;
         }
     }
-#endif
+
 
 }
