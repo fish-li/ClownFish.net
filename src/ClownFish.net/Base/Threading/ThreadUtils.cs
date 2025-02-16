@@ -194,6 +194,7 @@ public static class ThreadUtils
         try {
             OprLog log = OprLog.CreateErrLog(ex);
             log.OprName = operatorName;
+            log.Action = "run";
             log.Controller = nameof(ThreadUtils);
 
             LogHelper.Write(log);
