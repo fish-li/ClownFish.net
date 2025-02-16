@@ -6,7 +6,7 @@
 public static class ThreadUtils
 {
     /// <summary>
-    /// 以后台方式执行一段代码逻辑，类似于 Task.Run(...)
+    /// 以后台方式执行一段代码逻辑，内部使用 Task.Run(...)
     /// </summary>
     /// <param name="operatorName">操作名称，异常时记录到日志中</param>
     /// <param name="action">代码逻辑委托</param>
@@ -24,14 +24,14 @@ public static class ThreadUtils
                     action.Invoke();
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             });
         }
     }
 
     /// <summary>
-    /// 以后台方式执行一段【异步的】代码逻辑
+    /// 以后台方式执行一段【异步的】代码逻辑，内部使用 Task.Run(async () => { ... })
     /// </summary>
     /// <param name="operatorName">操作名称，异常时记录到日志中</param>
     /// <param name="action">代码逻辑委托</param>
@@ -46,17 +46,17 @@ public static class ThreadUtils
         using( ExecutionContext.SuppressFlow() ) {
             return Task.Run(async () => {
                 try {
-                    await action.Invoke();
+                    await action.Invoke().ConfigureAwait(false);
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             });
         }
     }
 
     /// <summary>
-    /// 以后台方式执行一段代码逻辑
+    /// 以后台方式执行一段代码逻辑，内部使用 ThreadPool.QueueUserWorkItem(...)
     /// </summary>
     /// <param name="operatorName">操作名称，异常时记录到日志中</param>
     /// <param name="action">需要执行的逻辑过程</param>
@@ -73,14 +73,14 @@ public static class ThreadUtils
                     action.Invoke();
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             });
         }
     }
 
     /// <summary>
-    /// 以后台方式执行一段代码逻辑
+    /// 以后台方式执行一段代码逻辑，内部使用 ThreadPool.QueueUserWorkItem(...)
     /// </summary>
     /// <param name="operatorName">操作名称，异常时记录到日志中</param>
     /// <param name="action">需要执行的逻辑过程</param>
@@ -98,7 +98,7 @@ public static class ThreadUtils
                     action.Invoke(x);
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             }, args);
         }
@@ -126,7 +126,7 @@ public static class ThreadUtils
                     action.Invoke();
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             });
             thread.Name = threadName;
@@ -157,7 +157,7 @@ public static class ThreadUtils
                     action.Invoke(x);
                 }
                 catch( Exception ex ) {
-                    LogError(operatorName, ex);
+                    HandleException(operatorName, ex);
                 }
             });
             thread.Name = threadName;
@@ -167,11 +167,29 @@ public static class ThreadUtils
     }
 
 
-
-    internal static void LogError(string operatorName, Exception ex)
+    internal static void HandleException(string operatorName, Exception ex)
     {
         if( ClownFishInit.AppExitToken.IsCancellationRequested )
             return;
+
+        // 注意：这个方法在【单元测试】环境中执行时，Console.Write 会不起作用（没任何输出），
+        //      原因在于  ExecutionContext.SuppressFlow() 这个调用，
+        //      所以在单元测试时，会修改 ExceptionHandler 这个委托 
+
+        ExceptionHandler?.Invoke(operatorName, ex);
+    }
+
+    /// <summary>
+    /// 当出现未处理异常时的处理方法
+    /// </summary>
+    public static Action<string, Exception> ExceptionHandler = LogException;
+        
+
+    internal static void LogException(string operatorName, Exception ex)
+    {
+        if( ClownFishOptions.ThreadUtilsShowErrorToConsole ) {
+            Console2.Error(operatorName + " ERROR:", ex);
+        }
 
         try {
             OprLog log = OprLog.CreateErrLog(ex);
@@ -186,10 +204,26 @@ public static class ThreadUtils
             }
         }
         catch(Exception ex2 ) {
-            Console2.Error(ex2);
-            Console2.WriteLine("--------------- original exception: --------------");
-            Console2.Error(ex);
+            try {
+                LogException2(operatorName, ex, ex2);
+            }
+            catch {  // 这里只能吃掉异常
+            }
         }
     }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void LogException2(string operatorName, Exception ex, Exception ex2)
+    {
+        string message = $@"ClownFish.Base.ThreadUtils has a new exception while handling an uncaught exception for {operatorName}：
+{ex2.ToString()}
+-------------------- original exception: --------------------
+{ex.ToString()}
+";
+        Console2.Error(message);
+    }
+
+
 
 }

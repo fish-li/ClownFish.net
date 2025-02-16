@@ -34,6 +34,11 @@ internal static class ClownFishOptions
     public static readonly bool AutoEnableCors = LocalSettings.GetBool("ClownFish_NHttpApplication_AutoEnableCors", 1);
 
     public static readonly bool ShowOneoffHttpMessageHandlerWarnning = LocalSettings.GetBool("ClownFish_ShowOneoffHttpMessageHandlerWarnning", 0);
+
+    /// <summary>
+    /// ThreadUtils在处理未捕获异常时是否显示到控制台窗口
+    /// </summary>
+    public static readonly bool ThreadUtilsShowErrorToConsole = LocalSettings.GetBool("ClownFish_ThreadUtils_ShowErrorToConsole", 1);
 }
 
 
