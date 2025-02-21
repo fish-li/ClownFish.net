@@ -263,7 +263,10 @@ internal sealed class HttpClient : BaseHttpClient
         else {  // 可能会是 SslStream，长度未知，如果此时不指定长度且直接调用 srcStream.CopyTo(destStream) 会导致超时30秒才能结束
             long length = this.Request.Headers[HttpHeaders.Request.ContentLength].TryToLong();
             if( length > 0 ) {
-                srcStream.CopyToWithLen(destStream, length);
+                long len2 = srcStream.CopyToWithLen(destStream, length);
+                if( len2 != length ) {
+                    throw new IOException($"HttpClient复制流数据出现错误，期望读取长度：{length} 实际读出长度：{len2}");
+                }
             }
             else {
                 throw new NotSupportedException("未知长度的数据流，不支持做为提交数据！");
