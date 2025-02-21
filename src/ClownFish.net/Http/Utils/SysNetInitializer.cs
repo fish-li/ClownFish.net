@@ -14,6 +14,7 @@ public static class SysNetInitializer
 
         // 设置无效证书的处理方式：忽略错误
         ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
+        ServicePointManager.Expect100Continue = false;
 #endif
     }
 
