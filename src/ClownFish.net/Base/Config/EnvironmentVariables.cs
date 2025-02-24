@@ -39,6 +39,18 @@ public static class EnvironmentVariables
             Console2.Info($"已忽略 {count1 - count2} 个K8S注入的环境变量");
         }
 
+
+        // 从文件中加载环境变量
+        // 注意：这里的文件名是固定的，并非像其它框架那样的名字，诸如：.env.development, .env.production
+        // 因为我认为：支持多个名字没有必要，反而会支持错误的配置方法！ 试问：你是要把这些文件签入代码仓库吗？？
+        // 如果不是要签入代码仓库，就没有必要多个文件名，
+        // 事实上，现在生产环境用docker部署时，指定环境变量已经非常方便，根本不需要通过文件来指定
+        // 目前通过文件来指定环境变量仅仅是为了方便开发阶段，因为 app.config 会签入代码仓库，
+        // 但是对于具体的开发人员来说，他有自己的本地配置，这些东西不用签入，在这种场景下，用文件来指定环境变量就会比较方便了
+        string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "_local.env");
+        LoadFromFile(localEnvFilePath, s_dict);
+
+
         // 增加兼容KEY查找项
         List<string> names = s_dict.Where(x => x.Key.Contains('.')).Select(x => x.Key).ToList();
         foreach( var x in names ) {
@@ -56,6 +68,8 @@ public static class EnvironmentVariables
                 yield return new KeyValuePair<string, string>(x.Key, x.Value);
         }
     }
+
+    internal static Dictionary<string, string> GetDictionary() => s_dict;   // 单元测试使用
 
     internal static void Init()
     {
@@ -152,4 +166,40 @@ public static class EnvironmentVariables
         s_dict[name.GetConfName()] = value;
     }
 
+
+    internal static int LoadFromFile(string filePath, Dictionary<string, string> dict)
+    {
+        if( File.Exists(filePath) == false )
+            return -1;
+
+        int count = 0;
+
+        using FileStream fileStream = RetryFile.OpenRead(filePath);
+        using StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, true);
+
+        string line = null;
+        while( true ) {
+            line = reader.ReadLine();
+            if( line == null )
+                break;
+
+            if( line.IsNullOrEmpty() )
+                continue;
+
+            if( line[0] == '#' || line.StartsWith0("//") )   // 注释
+                continue;
+
+            int p = line.IndexOf('=');
+
+            if( p < 1 )   // 无效的数据行
+                continue;
+
+            string name = line.Substring(0, p).Trim();
+            string value = line.Substring(p + 1).Trim();
+
+            dict[name] = value;
+            count++;
+        }
+        return count;
+    }
 }

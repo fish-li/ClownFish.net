@@ -479,6 +479,26 @@ YF_SVC_SERVICE_PORT: 80
 ";
 
 
+    [TestMethod]
+    public void Test_LoadFromFile()
+    {
+        Dictionary<string, string> dict = EnvironmentVariables.GetDictionary();
+        Assert.IsTrue(dict.ContainsKey("env_demo_1"));
+        Assert.IsTrue(dict.ContainsKey("env_demo_2"));
+        Assert.IsFalse(dict.ContainsKey("env_demo_3"));
 
+
+        string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "files/_local2.env");
+        Dictionary<string, string> dict2 = new Dictionary<string, string>();
+
+        int count = EnvironmentVariables.LoadFromFile(localEnvFilePath, dict2);
+        Assert.AreEqual(3, count);
+        Assert.AreEqual(3, dict2.Count);
+
+        Assert.IsTrue(dict2.ContainsKey("env_test_1"));
+        Assert.IsTrue(dict2.ContainsKey("env_test_2"));
+        Assert.IsTrue(dict2.ContainsKey("env_test_3"));
+        Assert.IsFalse(dict2.ContainsKey("env_test_4"));
+    }
 
 }

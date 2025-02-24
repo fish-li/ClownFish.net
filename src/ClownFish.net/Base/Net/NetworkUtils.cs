@@ -46,4 +46,41 @@ public static class NetworkUtils
         //Console2.Info("No active network connection detected.");
         return "127.0.0.1";
     }
+
+
+    /// <summary>
+    /// 判断一个IP地址是不是 局域网IP或者本机IP
+    /// </summary>
+    /// <param name="hostIp"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsLanIP(string hostIp)
+    {
+        if( IPAddress.TryParse(hostIp, out IPAddress ip) ) {
+            return IsLanIP(ip);
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    /// 判断一个IP地址是不是 局域网IP或者本机IP
+    /// </summary>
+    /// <param name="ip"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsLanIP(IPAddress ip)
+    {
+        // 局域网IP地址范围（3段）：
+        // A类：10段，     后三位自由分配， 10.0.0.0 - 10.255.255.255
+        // B类：172.16段， 后两位自由分配， 172.16.0.0 - 172.31.255.255
+        // C类：192.168段，后两位自由分配， 192.168.0.0 - 192.168.255.255
+        byte[] bb = ip.GetAddressBytes();
+        return (bb[0] == 10
+                || (bb[0] == 172 && (bb[1] >= 16 && bb[1] <= 31))
+                || (bb[0] == 192 && bb[1] == 168)
+                || IPAddress.IsLoopback(ip));
+    }
+
 }
