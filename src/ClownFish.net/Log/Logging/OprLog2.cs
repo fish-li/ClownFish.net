@@ -365,18 +365,23 @@ public partial class OprLog
         if( ex == null )
             throw new ArgumentNullException(nameof(ex));
 
+        // Nebula.LogGate 对 OprLog 的数据要求，6个字段不能为空：OprId,AppName,HostName,OprKind,Action,OprName
+
         OprLog log = new OprLog();
-        log.SetBaseInfo();
+        log.SetBaseInfo();  // set OprId,AppName,HostName,Status
 
         log.OprKind = OprKinds.Error;
         log.OprName = "err";
+        log.Action = "err";
+        log.Controller = "None";
+        log.Addition = "OprLog.CreateErrLog";
 
         if( httpContext != null ) {
             log.SetHttpFields(httpContext);
             log.SetRequest(httpContext);
         }
         else {
-            log.Url = "error://" + ex.GetType().FullName;
+            log.Url = "error://" + ex.GetType().Name;
         }
 
         log.SetException(ex);
