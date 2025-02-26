@@ -6,7 +6,7 @@
 public static class ReflectionUtils
 {
     /// <summary>
-    /// 用反射方式读取一个对象的属性值
+    /// 用反射方式读取一个对象的 属性/字段 值
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
@@ -20,11 +20,18 @@ public static class ReflectionUtils
         if( propName.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(propName));
 
-        PropertyInfo p = data.GetType().GetProperty(propName, BindingFlags.Instance | BindingFlags.Public);
-        if( p == null )
-            throw new ArgumentOutOfRangeException(nameof(propName));
+        Type type = data.GetType();
+        PropertyInfo p = type.GetProperty(propName, BindingFlags.Instance | BindingFlags.Public);
+        if( p != null ) {
+            return (T)p.FastGetValue(data);
+        }
 
-        return (T)p.FastGetValue(data);
+        FieldInfo f = type.GetField(propName, BindingFlags.Instance | BindingFlags.Public);
+        if( f != null ) {
+            return (T)f.GetValue(data);
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(propName));
     }
 
 
@@ -51,6 +58,45 @@ public static class ReflectionUtils
 
         method.Invoke(null, null);
         return 1;
+    }
+
+
+    /// <summary>
+    /// 用反射的方式调用一个（同步/异常）方法
+    /// </summary>
+    /// <param name="instance">定义方法的类型实例，如果调用静态方法可以传递null</param>
+    /// <param name="method">要调用的方法</param>
+    /// <param name="args">调用方法所需要的参数</param>
+    /// <returns></returns>
+    public static async Task<object> CallMethod(object instance, MethodInfo method, object[] args)
+    {
+        if( method == null )
+            throw new ArgumentNullException(nameof(method));
+
+        object result = null;
+
+        if( method.IsTaskMethod() ) {
+            bool hasReturn = method.GetTaskMethodResultType() != null;
+            if( hasReturn ) {
+                Task task = (Task)method.FastInvoke(instance, args);
+                await task;
+
+                // 从 Task<T> 中获取返回值
+                PropertyInfo property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
+                result = property.FastGetValue(task);
+            }
+            else {
+                await (Task)method.FastInvoke(instance, args);
+            }
+        }
+        else {
+            if( method.HasReturn() )
+                result = method.FastInvoke(instance, args);
+            else
+                method.FastInvoke(instance, args);
+        }
+
+        return result;
     }
 }
 

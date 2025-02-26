@@ -10,7 +10,6 @@ internal static class ActionExecutor
         if( pipelineContext.RespResult != null )
             return;
 
-
         ActionDescription action = pipelineContext.Action;
         if( action == null )
             return;
@@ -19,16 +18,12 @@ internal static class ActionExecutor
         // 创建 Controller 实例
         ControllerFactory.Instance.CreateController(pipelineContext);
 
-
-        // 尝试按 IHttpHandler 的方式执行
-        IHttpHandler httpHandler = action.Controller as IHttpHandler;
-        if( httpHandler != null ) {
-            httpHandler.ProcessRequest(pipelineContext.HttpContext);
+        if( action.Controller is IAsyncNHttpHandler httpHandler2 ) {
+            await httpHandler2.ProcessRequestAsync(pipelineContext.HttpContext);
             return;
         }
-        else {
-            await ExecuteActionMethod(pipelineContext);
-        }
+
+        await ExecuteActionMethod(pipelineContext);
     }
 
 
@@ -38,36 +33,14 @@ internal static class ActionExecutor
         ActionDescription action = pipelineContext.Action;
 
         // 构造方法的调用参数
-        object[] parameters = ParameterResolver.GetParameters(action.MethodInfo, pipelineContext.HttpContext.Request);
+        object[] parameters = ActionParameterResolver.GetParameters(action.MethodInfo, pipelineContext.HttpContext.Request);
 
-        object result = null;
+        object result = await ReflectionUtils.CallMethod(action.Controller, action.MethodInfo, parameters);
 
-        if( action.MethodInfo.IsTaskMethod() ) {
-            bool hasReturn = action.MethodInfo.GetTaskMethodResultType() != null;
-            if( hasReturn ) {
-                Task task = (Task)action.MethodInfo.FastInvoke(action.Controller, parameters);
-                await task;
-
-                // 从 Task<T> 中获取返回值
-                PropertyInfo property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
-                result = property.FastGetValue(task);
-            }
-            else {
-                await (Task)action.MethodInfo.FastInvoke(action.Controller, parameters);
-            }
-        }
-        else {
-            if( action.MethodInfo.HasReturn() )
-                result = action.MethodInfo.FastInvoke(action.Controller, parameters);
-            else
-                action.MethodInfo.FastInvoke(action.Controller, parameters);
-        }
-
-
-        pipelineContext.RespResult = ResultConverter.Convert(result);
+        pipelineContext.RespResult = ActionResultConverter.Convert(result);
     }
 
-    public static void SendResult(HttpPipelineContext pipelineContext)
+    public static async Task SendResultAsync(HttpPipelineContext pipelineContext)
     {
         object result = pipelineContext.RespResult;
 
@@ -80,13 +53,13 @@ internal static class ActionExecutor
         IActionResult actionResult = result as IActionResult;
         if( actionResult == null ) {
             // 这里再次调用ResultConverter是有必要的，因为有可能在HttpModuel中重新指定ActionResult
-            actionResult = ResultConverter.Convert(result);
+            actionResult = ActionResultConverter.Convert(result);
         }
 
         if( actionResult == null )
             return;
 
-        actionResult.Ouput(pipelineContext.HttpContext);
+        await actionResult.OuputAsync(pipelineContext.HttpContext);
     }
 
 }

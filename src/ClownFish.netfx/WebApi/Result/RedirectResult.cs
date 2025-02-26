@@ -23,9 +23,12 @@ public sealed class RedirectResult : IActionResult
     }
 
 
-    void IActionResult.Ouput(NHttpContext context)
+    Task IActionResult.OuputAsync(NHttpContext httpContext)
     {
-        //context.Response.Redirect(Url);
+        httpContext.Response.StatusCode = 302;
+        httpContext.Response.SetHeader("Location", Url);
+
+        return Task2.CompletedTask;
     }
 
 

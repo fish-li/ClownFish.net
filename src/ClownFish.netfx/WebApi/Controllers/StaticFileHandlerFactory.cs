@@ -1,5 +1,4 @@
-﻿using ClownFish.Base;
-using ClownFish.WebHost.Config;
+﻿using ClownFish.WebHost.Config;
 using ClownFish.WebHost.Utils;
 
 namespace ClownFish.WebApi.Controllers;

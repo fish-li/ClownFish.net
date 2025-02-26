@@ -5,7 +5,7 @@ namespace ClownFish.WebApi.Controllers;
 /// <summary>
 /// 一个简单的静态文件处理器，用于响应静态文件并在输出时设置缓存响应头
 /// </summary>
-internal sealed class StaticFileHandler : IHttpHandler
+internal sealed class StaticFileHandler : IAsyncNHttpHandler
 {
     // 每种扩展名对应诉Mime类型对照表
     private static readonly Hashtable s_mineTable = Hashtable.Synchronized(new Hashtable(10, StringComparer.OrdinalIgnoreCase));
@@ -34,17 +34,14 @@ internal sealed class StaticFileHandler : IHttpHandler
     /// <summary>
     /// 处理请求，输出文件内容以及设置缓存响应头
     /// </summary>
-    /// <param name="context"></param>
-    public void ProcessRequest(NHttpContext context)
+    /// <param name="httpContext"></param>
+    public async Task ProcessRequestAsync(NHttpContext httpContext)
     {
-        _httpContext = context;
+        _httpContext = httpContext;
 
         // 判断是不是可能用 304 来响应
         if( Can304Response() )
             return;
-
-        // 读取文件内容
-        byte[] filebody = File.ReadAllBytes(_fileInfo.FullName);
 
         // 设置响应头
         SetHeaders();
@@ -52,9 +49,14 @@ internal sealed class StaticFileHandler : IHttpHandler
         // 输出文件内容
         //context.Response.EnableGzip();  // TODO:Gzip
 
-        context.Response.WriteAll(filebody);
-    }
+        // 读取文件内容
+        //byte[] filebody = File.ReadAllBytes(_fileInfo.FullName);
+        //context.Response.WriteAll(filebody);
 
+        using FileStream fileStream = RetryFile.OpenRead(_fileInfo.FullName);
+        httpContext.Response.ContentLength = fileStream.Length;
+        await fileStream.CopyToAsync(httpContext.Response.OutputStream);
+    }
 
     /// <summary>
     /// 是否以304做为响应并结束请求
@@ -120,6 +122,8 @@ internal sealed class StaticFileHandler : IHttpHandler
         }
         return option;
     }
+
+   
 
 
     ///// <summary>

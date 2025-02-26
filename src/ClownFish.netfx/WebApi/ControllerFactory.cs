@@ -1,17 +1,18 @@
-﻿namespace ClownFish.WebApi;
+﻿using System.Runtime.InteropServices;
+
+namespace ClownFish.WebApi;
 
 internal class ControllerFactory
 {
     public static readonly ControllerFactory Instance = new ControllerFactory();
 
 
-    internal static ActionDescription CreateHandler(IHttpHandler handler)
+    internal static ActionDescription CreateHandler(IAsyncNHttpHandler handler)
     {
         if( handler == null )
             return null;
 
-        MethodInfo method = handler.GetType().GetInstanceMethod(nameof(IHttpHandler.ProcessRequest));
-
+        MethodInfo method = handler.GetType().GetInstanceMethod(nameof(IAsyncNHttpHandler.ProcessRequestAsync));
         return new ActionDescription(handler, method);
     }
 

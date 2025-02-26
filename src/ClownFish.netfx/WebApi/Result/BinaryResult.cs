@@ -34,9 +34,9 @@ public sealed class BinaryResult : IActionResult
     /// <summary>
     /// 实现IActionResult接口，执行输出
     /// </summary>
-    /// <param name="context"></param>
-    public void Ouput(NHttpContext context)
+    /// <param name="httpContext"></param>
+    public Task OuputAsync(NHttpContext httpContext)
     {
-        _streamResult.Ouput(context);
+        return _streamResult.OuputAsync(httpContext);
     }
 }

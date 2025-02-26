@@ -52,36 +52,36 @@ public sealed class StreamResult : IActionResult
     /// <summary>
     /// 设置浏览器下载对话框中显示的文件名
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="httpContext"></param>
     /// <param name="filename"></param>
-    internal static void SetDownloadFileName(NHttpContext context, string filename)
+    internal static void SetDownloadFileName(NHttpContext httpContext, string filename)
     {
         if( string.IsNullOrEmpty(filename) == false ) {
 
             // 文件名编码这块不知道未来会不会有问题，
             // 为了便于以后可以快速改进编码问题，且不修改这里的代码，这里定义一个类型和虚方法留着未来去重写。
 
-            string headerValue = DownloadFileNameEncoder.Instance.GetFileNameHeader(filename, context.Request.UserAgent);
+            string headerValue = DownloadFileNameEncoder.Instance.GetFileNameHeader(filename, httpContext.Request.UserAgent);
 
             if( string.IsNullOrEmpty(headerValue) == false )
-                context.Response.SetHeader("Content-Disposition", headerValue);
+                httpContext.Response.SetHeader("Content-Disposition", headerValue);
         }
     }
 
     /// <summary>
     /// 实现IActionResult接口，执行输出
     /// </summary>
-    /// <param name="context"></param>
-    public void Ouput(NHttpContext context)
+    /// <param name="httpContext"></param>
+    public async Task OuputAsync(NHttpContext httpContext)
     {
         // 设置当前响应的文档类型
-        context.Response.ContentType = _contentType;
+        httpContext.Response.ContentType = _contentType;
 
         // 设置浏览器下载对话框中的保存文件名称
-        SetDownloadFileName(context, _filename);
+        SetDownloadFileName(httpContext, _filename);
 
         // 将流内容输出到浏览器
-        context.Response.OutputStream.Write(_buffer, 0, _buffer.Length);
+        await httpContext.Response.OutputStream.WriteAsync(_buffer, 0, _buffer.Length);
     }
 
 }

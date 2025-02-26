@@ -37,9 +37,9 @@ public sealed class TextResult : IActionResult
         this.ContentType = contentType;
     }
 
-    void IActionResult.Ouput(NHttpContext context)
+    async Task IActionResult.OuputAsync(NHttpContext httpContext)
     {
-        context.Response.ContentType = this.ContentType;
-        context.Response.WriteAll(this.Model.ToString().GetBytes());
+        httpContext.Response.ContentType = this.ContentType;
+        await httpContext.Response.WriteAllAsync(this.Model.ToString().GetBytes());
     }
 }

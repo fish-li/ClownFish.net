@@ -6,7 +6,7 @@ namespace ClownFish.WebApi;
 /// 用于将一个非IActionResult类型对象转换成IActionResult类型的转换器实现，
 /// 可以继承此类型来实现个性化的定制转换过程。
 /// </summary>
-internal static class ResultConverter
+internal static class ActionResultConverter
 {
     /// <summary>
     /// 将一个对象转换成IActionResult实例

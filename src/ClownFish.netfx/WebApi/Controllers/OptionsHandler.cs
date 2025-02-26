@@ -1,6 +1,7 @@
-﻿namespace ClownFish.WebApi.Controllers;
+﻿
+namespace ClownFish.WebApi.Controllers;
 
-internal sealed class OptionsHandler : IHttpHandler
+internal sealed class OptionsHandler : IAsyncNHttpHandler
 {
     public static readonly OptionsHandler Instance = new OptionsHandler();
 
@@ -8,4 +9,8 @@ internal sealed class OptionsHandler : IHttpHandler
     {
     }
 
+    public Task ProcessRequestAsync(NHttpContext httpContext)
+    {
+        return Task2.CompletedTask;
+    }
 }

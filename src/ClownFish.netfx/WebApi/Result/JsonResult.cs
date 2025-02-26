@@ -24,11 +24,11 @@ public sealed class JsonResult : IActionResult
     }
 
 
-    void IActionResult.Ouput(NHttpContext context)
+    async Task IActionResult.OuputAsync(NHttpContext httpContext)
     {
-        context.Response.ContentType = ResponseContentType.JsonUtf8;
+        httpContext.Response.ContentType = ResponseContentType.JsonUtf8;
         string json = this.Model.ToJson();
-        context.Response.WriteAll(json.GetBytes());
+        await httpContext.Response.WriteAllAsync(json.GetBytes());
     }
 
 }

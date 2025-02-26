@@ -23,10 +23,10 @@ public sealed class XmlResult : IActionResult
     }
 
 
-    void IActionResult.Ouput(NHttpContext context)
+    async Task IActionResult.OuputAsync(NHttpContext httpContext)
     {
-        context.Response.ContentType = ResponseContentType.XmlUtf8;
+        httpContext.Response.ContentType = ResponseContentType.XmlUtf8;
         string xml = this.Model.ToXml();
-        context.Response.WriteAll(xml.GetBytes());
+        await httpContext.Response.WriteAllAsync(xml.GetBytes());
     }
 }

@@ -30,7 +30,7 @@ internal static class ActionLocator
         return action;
     }
 
-    private static IHttpHandler GetDefaultHandler(HttpPipelineContext pipelineContext)
+    private static IAsyncNHttpHandler GetDefaultHandler(HttpPipelineContext pipelineContext)
     {
         return StaticFileHandlerFactory.Instance.GetHandler(pipelineContext.HttpContext)
             ?? DirectoryBrowseHandlerFactory.Instance.GetHandler(pipelineContext.HttpContext)

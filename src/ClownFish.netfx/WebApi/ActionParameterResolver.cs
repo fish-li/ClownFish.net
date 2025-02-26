@@ -3,7 +3,7 @@
 /// <summary>
 /// 用于执行Action时，构造方法参数的解析器
 /// </summary>
-internal static class ParameterResolver
+internal static class ActionParameterResolver
 {
     /// <summary>
     /// 从HttpRequest中构造将要调用的方法的所有参数值

@@ -23,9 +23,9 @@ public sealed class HtmlResult : IActionResult
     }
 
 
-    void IActionResult.Ouput(NHttpContext context)
+    async Task IActionResult.OuputAsync(NHttpContext httpContext)
     {
-        context.Response.ContentType = ResponseContentType.HtmlUtf8;
-        context.Response.WriteAll(Html.GetBytes());
+        httpContext.Response.ContentType = ResponseContentType.HtmlUtf8;
+        await httpContext.Response.WriteAllAsync(Html.GetBytes());
     }
 }

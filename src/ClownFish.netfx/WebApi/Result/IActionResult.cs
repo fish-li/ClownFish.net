@@ -8,6 +8,6 @@ public interface IActionResult
     /// <summary>
     /// 执行输出操作
     /// </summary>
-    /// <param name="context"></param>
-    void Ouput(NHttpContext context);
+    /// <param name="httpContext"></param>
+    Task OuputAsync(NHttpContext httpContext);
 }

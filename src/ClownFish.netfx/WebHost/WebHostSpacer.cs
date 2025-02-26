@@ -4,7 +4,7 @@ using ClownFish.WebHost.Objects;
 
 namespace ClownFish.WebHost;
 
-internal class WebHostSpacer
+internal sealed class WebHostSpacer
 {
     internal async Task ProcessRequest(System.Net.HttpListenerContext context)
     {
@@ -59,7 +59,7 @@ internal class WebHostSpacer
                 
                 app.UpdateRequestCache(httpContext);
 
-                ActionExecutor.SendResult(pipelineContext);
+                await ActionExecutor.SendResultAsync(pipelineContext);
             }
             catch( AbortRequestException ) { /* 这里就是一个标记异常，所以直接吃掉 */ }
 

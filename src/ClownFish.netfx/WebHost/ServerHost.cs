@@ -72,6 +72,8 @@ public sealed class ServerHost : IDisposable
         foreach( var url in urlPrefixes )
             listener.Prefixes.Add(url);
 
+        listener.Start();
+        _listener = listener;
 
         // 用后台线程接收请求，防止阻塞当前线程
         using( ExecutionContext.SuppressFlow() ) {
@@ -79,9 +81,6 @@ public sealed class ServerHost : IDisposable
             _workThread.IsBackground = true;
             _workThread.Start();
         }
-
-        listener.Start();
-        _listener = listener;
     }
 
 
@@ -100,7 +99,7 @@ public sealed class ServerHost : IDisposable
     }
 
 
-    private void ServerProc(object runOptions)
+    private void ServerProc(object xx)
     {
         while( true ) {
 
@@ -113,13 +112,17 @@ public sealed class ServerHost : IDisposable
                 continue;
             }
 
-            if( _listener == null || _listener.IsListening == false ) {
-                continue;
-            }
+            HttpListenerContext context = _listener.GetContext();
+            ProcessRequest(context);
+        }
+    }
 
+
+    private void ProcessRequest(HttpListenerContext context)
+    {
+        Task.Run(async () => {
             try {
-                HttpListenerContext context = _listener.GetContext();
-                ProcessRequest(context);
+                await _webApiSpacer.ProcessRequest(context);
             }
             catch( ObjectDisposedException ) { // 此对象已关闭。 
             }
@@ -128,19 +131,10 @@ public sealed class ServerHost : IDisposable
             catch( HttpListenerException ) {
                 // 暂时先不处理这个异常，以后遇到再说
             }
-        }
-    }
-
-
-    private void ProcessRequest(HttpListenerContext context)
-    {
-        using( ExecutionContext.SuppressFlow() ) {
-            Task.Run(() => _webApiSpacer.ProcessRequest(context));
-        }
-
-
-        // 模拟后台线程崩溃
-        //throw new NotImplementedException("xxxxxxxxxxx模拟后台线程崩溃xxxxxxxxxx");
+            catch( Exception ex ) {
+                Console2.Error("ServerHost.ProcessRequest ERROR:", ex);
+            }
+        });
     }
 
 

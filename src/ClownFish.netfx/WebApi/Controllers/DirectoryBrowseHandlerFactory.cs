@@ -41,7 +41,7 @@ internal sealed class DirectoryBrowseHandlerFactory
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public IHttpHandler GetHandler(NHttpContext context)
+    public IAsyncNHttpHandler GetHandler(NHttpContext context)
     {
         if( _websitePath == null )
             return null;
@@ -76,7 +76,7 @@ internal sealed class DirectoryBrowseHandlerFactory
     }
 
 
-    private IHttpHandler GetDirectoryHandler(NHttpContext context, string physicalPath)
+    private IAsyncNHttpHandler GetDirectoryHandler(NHttpContext context, string physicalPath)
     {
         string curPath = context.Request.Path.TrimEnd('/');     // 这个路径如果包含特殊字符，得到的结果已被 UrlDecode
         string rawPath = context.Request.RawUrl.TrimEnd('/');   // 这个路径如果包含特殊字符，不会做 UrlDecode
@@ -130,7 +130,7 @@ internal sealed class DirectoryBrowseHandlerFactory
                     .Replace("<!--{data-row}-->", html.ToString());
 
 
-        return new HtmlTextOutHandler(result);
+        return new TextOutHandler(result);
     }
 
 
@@ -162,36 +162,21 @@ internal sealed class DirectoryBrowseHandlerFactory
         return sb.ToString();
     }
 
-    internal class HtmlTextOutHandler : IHttpHandler
-    {
-        private readonly string _html;
-
-        public HtmlTextOutHandler(string html)
-        {
-            _html = html;
-        }
-
-        public void ProcessRequest(NHttpContext context)
-        {
-            context.Response.ContentType = "text/html";
-            context.Response.WriteAll(_html.GetBytes());
-        }
-    }
-
-
-    //internal class RedirectHttpHandler : IHttpHandler
-    //{
-    //    private string _url;
-
-    //    public RedirectHttpHandler(string url)
-    //    {
-    //        _url = url;
-    //    }
-
-    //    public void ProcessRequest(HttpContext context)
-    //    {
-    //        IActionResult result = new RedirectResult(_url);
-    //        result.Ouput(context);
-    //    }
-    //}
 }
+
+
+//internal class RedirectHttpHandler : IHttpHandler
+//{
+//    private string _url;
+
+//    public RedirectHttpHandler(string url)
+//    {
+//        _url = url;
+//    }
+
+//    public void ProcessRequest(HttpContext context)
+//    {
+//        IActionResult result = new RedirectResult(_url);
+//        result.Ouput(context);
+//    }
+//}
