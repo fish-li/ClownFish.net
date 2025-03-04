@@ -48,7 +48,10 @@ public static class EnvironmentVariables
         // 目前通过文件来指定环境变量仅仅是为了方便开发阶段，因为 app.config 会签入代码仓库，
         // 但是对于具体的开发人员来说，他有自己的本地配置，这些东西不用签入，在这种场景下，用文件来指定环境变量就会比较方便了
         string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "_local.env");
-        LoadFromFile(localEnvFilePath, s_dict);
+        int count3 = LoadFromFile(localEnvFilePath, s_dict);
+        if( count3 > 0 ) {
+            Console2.Info($"已从文件 {localEnvFilePath} 加载到 {count3} 个环境变量");
+        }
 
 
         // 增加兼容KEY查找项

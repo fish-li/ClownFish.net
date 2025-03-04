@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 
 /// <summary>
@@ -20,11 +18,6 @@ public interface ILocalSettings
 
 internal sealed class DefaultLocalSettingsImpl : ILocalSettings
 {
-#if NET48_OR_GREATER || NET6_0_OR_GREATER
-    internal static readonly string RegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
-#endif
-
-
     public static readonly DefaultLocalSettingsImpl Instance = new DefaultLocalSettingsImpl();
 
     public string GetSetting(string name, bool checkExist)
@@ -52,25 +45,16 @@ internal sealed class DefaultLocalSettingsImpl : ILocalSettings
         if( string.IsNullOrEmpty(value) == false )
             return value;
 
-        // 3，从AppConfig中读取
+        // 3，从Windows注册表中读取配置参数
+        value = WinRegSetting.GetSetting(name);
+        if( string.IsNullOrEmpty(value) == false )
+            return value;
+
+        // 4，从AppConfig中读取
         value = AppConfig.GetSetting(name);
         if( string.IsNullOrEmpty(value) == false )
             return value;
 
-#if NET48_OR_GREATER || NET6_0_OR_GREATER
-
-        // 为了方便开发环境：不想把一些敏感参数
-        // 1，写到 app.config (避免被提交到代码仓库)
-        // 2，或者放在 “本机的环境变量”   (Windows的环境变量配置是全局的，各个程序的参数放在一起太乱了)
-        //  所以就把这些参数放在注册表中，并使用各自的 “AppName” 分开存储
-
-        if( EnvUtils.IsDevEnv && RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ) {
-            value = Microsoft.Win32.Registry.GetValue(RegPath, name, null)?.ToString();
-
-            if( string.IsNullOrEmpty(value) == false )
-                return value;
-        }
-#endif
 
         if( checkExist )
             throw new ConfigurationErrorsException("没有找到参数项，Name：" + name);

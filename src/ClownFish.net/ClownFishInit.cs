@@ -300,4 +300,13 @@ public static class ClownFishInit
         ClownFishInit.InitLog(config);
     }
 
+
+    /// <summary>
+    /// 设置存储当前应用程序配置参数的Windows注册表路径，如果不指定将使用默认值：HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\appname
+    /// </summary>
+    /// <param name="regPath"></param>
+    public static void SetRegPath(string regPath)
+    {
+        WinRegSetting.SetRegPath(regPath);
+    }
 }
