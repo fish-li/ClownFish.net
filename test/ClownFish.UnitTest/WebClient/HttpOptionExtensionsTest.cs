@@ -132,16 +132,39 @@ public class HttpOptionExtensionsTest
         Assert.IsTrue(html2.Contains("<!DOCTYPE html>"));
     }
 
+    [TestMethod]
+    public async Task Test_NULL()
+    {
+        HttpOption option = null;
+
+        option.Send();
+        await option.SendAsync();
+
+        Assert.IsNull(option.GetResult());
+        Assert.IsNull(await option.GetResultAsync());
+
+        Assert.IsNull(option.GetResult<NameValue>());
+        Assert.IsNull(await option.GetResultAsync<NameValue>());
+
+        Assert.IsNull(option.GetResult<HttpResult<string>>());
+        Assert.IsNull(await option.GetResultAsync<HttpResult<string>>());
+    }
 
     [TestMethod]
     public async Task Test_Error()
     {
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = HttpOptionExtensions.GetResult(null);
+        HttpOption option = new HttpOption {
+            Url = "http://www.fish-test.com/test1.aspx"
+        };
+
+        _ = option.GetResult();
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            _ = option.GetResult();
         });
 
-        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
-            _ = await HttpOptionExtensions.GetResultAsync(null);
+        await MyAssert.IsErrorAsync<InvalidOperationException>(async () => {
+            _ = await option.GetResultAsync();
         });
     }
 
@@ -158,7 +181,7 @@ public class HttpOptionExtensionsTest
         try {
             string html = option.GetResult();
         }
-        catch(Exception ex ) {
+        catch( Exception ex ) {
             exception = ex;
         }
 
