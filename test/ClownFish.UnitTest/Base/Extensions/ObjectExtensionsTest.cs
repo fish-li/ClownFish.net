@@ -71,6 +71,19 @@ public class ObjectExtensionsTest
     }
 
 
+    [TestMethod]
+    public void Test_ObjToList()
+    {
+        int a = 3;
+        List<int> b = a.ObjToList();
+        Assert.AreEqual(1, b.Count);
+
+        NameValue nv = null;
+        List<NameValue> list = nv.ObjToList();
+        Assert.IsNotNull(list);
+        Assert.AreEqual(0, list.Count);
+    }
+
 
 
 

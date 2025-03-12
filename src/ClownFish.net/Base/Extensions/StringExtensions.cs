@@ -770,4 +770,57 @@ public static class StringExtensions
         return name.Replace('.', '_');
     }
 
+
+#if NETCOREAPP
+    /// <summary>
+    /// 等效于：string.Join(separator, values)
+    /// </summary>
+    /// <param name="values"></param>
+    /// <param name="separator"></param>
+    /// <returns></returns>
+    public static string JoinBy(this IEnumerable<string> values, char separator)
+    {
+        return string.Join(separator, values);
+    }
+#endif
+
+    /// <summary>
+    /// 等效于：string.Join(separator, values)
+    /// </summary>
+    /// <param name="values"></param>
+    /// <param name="separator"></param>
+    /// <returns></returns>
+    public static string JoinBy(this IEnumerable<string> values, string separator)
+    {
+        return string.Join(separator, values);
+    }
+
+
+    /// <summary>
+    /// 删除字符串中某个字符
+    /// </summary>
+    /// <param name="value">一个字符串对象</param>
+    /// <param name="deleteChar">要删除的字符</param>
+    /// <returns></returns>
+    public static string RemoveChar(this string value, char deleteChar)
+    {
+        if( string.IsNullOrEmpty(value) )
+            return value;
+
+        int count = 0;
+        foreach( char x in value ) {
+            if( x != deleteChar )
+                count++;
+        }
+
+        int p = 0;
+        char[] chars = new char[count];
+        foreach( char x in value ) {
+            if( x != deleteChar )
+                chars[p++] = x;
+        }
+        return new string(chars);
+    }
+
+
 }

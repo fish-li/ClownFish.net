@@ -112,6 +112,10 @@ internal static class MsHttpClientCache
 
         clientHandler.UseCookies = false;    // 为了让HttpClientHandler能重用，在外面处理 Cookie
 
+        // 明确不使用代理
+        clientHandler.UseProxy = false;
+        clientHandler.Proxy = null;
+
         if( HttpClientDefaults.HttpClientCacheSeconds > 0 ) {
             clientHandler.PooledConnectionLifetime = TimeSpan.FromSeconds(HttpClientDefaults.HttpClientCacheSeconds);
         }

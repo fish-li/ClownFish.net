@@ -181,5 +181,41 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.AreEqual("333333333", list2[2]);
         }
 
+
+        [TestMethod]
+        public void Test_JsonBy_string()
+        {
+            string[] values1 = new string[] { "aa", "bb", "cc" };
+            List<string> values2 = new List<string> { "aa", "bb", "cc" };
+
+            Assert.AreEqual("aa--bb--cc", values1.JoinBy("--"));
+            Assert.AreEqual("aa--bb--cc", values2.JoinBy("--"));
+        }
+
+#if NETCOREAPP
+        [TestMethod]
+        public void Test_JsonBy_char()
+        {
+            string[] values1 = new string[] { "aa", "bb", "cc" };
+            List<string> values2 = new List<string> { "aa", "bb", "cc" };
+
+            Assert.AreEqual("aa-bb-cc", values1.JoinBy('-'));
+            Assert.AreEqual("aa-bb-cc", values2.JoinBy('-'));
+        }
+#endif
+
+        [TestMethod]
+        public void Test_RemoveChar()
+        {
+            Assert.AreEqual("aabbcc", "aa--bb--cc".RemoveChar('-'));
+            Assert.AreEqual("aabbcc", "aa-bb-cc".RemoveChar('-'));
+            Assert.AreEqual("aabbcc", "aa-bbcc".RemoveChar('-'));
+            Assert.AreEqual("aabbcc", "aabbcc".RemoveChar('-'));
+            Assert.AreEqual("", "".RemoveChar('-'));
+            Assert.IsNull(((string)null).RemoveChar('-'));
+
+            Assert.AreEqual("aa#bbcc", "aa#bb-cc".RemoveChar('-'));
+        }
+
     }
 }

@@ -94,6 +94,9 @@ public static class Console2
         return filePath;
     }
 
+    private static readonly string s_flag1 = ":";
+    private static readonly string s_flag2 = " :";
+
     /// <summary>
     /// 输出一条消息到控制台
     /// </summary>
@@ -107,10 +110,11 @@ public static class Console2
         ClownFishCounters.Console2.Error.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
+        string separator = threadId.Length == 1 ? s_flag2 : s_flag1;
 
         // 确保 “二行” 文本 **紧挨** 在一起
         lock( s_lock ) {
-            Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+            Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]{separator} {message}");
 
             if( ex != null )
                 Console2.WriteLine(ex.ToString());
@@ -132,7 +136,9 @@ public static class Console2
             ClownFishCounters.Status.OomError.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]: {ex.ToString2()}");
+        string separator = threadId.Length == 1 ? s_flag2 : s_flag1;
+
+        Console2.WriteLine($"\n[EROR] {DateTime.Now.ToTime23String()} [thread={threadId}]{separator} {ex.ToString2()}");
     }
 
     /// <summary>
@@ -161,7 +167,9 @@ public static class Console2
         ClownFishCounters.Console2.Warnning.Increment();
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"\n[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        string separator = threadId.Length == 1 ? s_flag2 : s_flag1;
+
+        Console2.WriteLine($"\n[WARN] {DateTime.Now.ToTime23String()} [thread={threadId}]{separator} {message}");
     }
 
 
@@ -178,7 +186,9 @@ public static class Console2
             return;
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[INFO] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        string separator = threadId.Length == 1 ? s_flag2 : s_flag1;
+
+        Console2.WriteLine($"[INFO] {DateTime.Now.ToTime23String()} [thread={threadId}]{separator} {message}");
     }
 
 
@@ -204,7 +214,9 @@ public static class Console2
             return;
 
         string threadId = System.Threading.Thread.CurrentThread.ManagedThreadId.ToString();
-        Console2.WriteLine($"[DEBUG] {DateTime.Now.ToTime23String()} [thread={threadId}]: {message}");
+        string separator = threadId.Length == 1 ? s_flag2 : s_flag1;
+
+        Console2.WriteLine($"[DBUG] {DateTime.Now.ToTime23String()} [thread={threadId}]{separator} {message}");
     }
 
 

@@ -59,4 +59,23 @@ public static class ObjectExtensions
             p2.FastSetValue(destination, value);
         }
     }
+
+
+    /// <summary>
+    /// 将一个对象包装成List集合
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static List<T> ObjToList<T>(this T obj)
+    {
+        if( obj == null )
+            return new List<T>(0);
+
+        List<T> list = new List<T>(1);
+        list.Add(obj);
+        return list;
+    }
+
 }
