@@ -166,22 +166,15 @@ public partial class OprLog
 
     internal void SetResponse(NHttpContext httpContext)
     {
-        if( this.Response.HasValue() )
+        if( this.Response.HasValue() )  // 如果已经在代码中明确指定了日志内容，就尊重“调用者”的意图，ClownFish不再自动填充
             return;
 
         if( LoggingOptions.Http.MustLogResponse == false )
             return;
 
-        if( httpContext.PipelineContext.RespResult == null )
-            return;
-
         //if( httpContext.Response.GetHeader("Content-Encoding").HasValue() )
         //    return;   // 响应体是压缩格式
 
-        string contentType = httpContext.Response.ContentType;
-        bool bodyIsText = HttpUtils.ResponseBodyIsText(contentType);
-        if( bodyIsText == false )
-            return;
 
         StringBuilder sb = StringBuilderPool.Get();
         try {
@@ -190,23 +183,29 @@ public partial class OprLog
 
             httpContext.Response.AccessHeaders((k, v) => sb.Append(k).Append(": ").AppendLineRN(v));
 
-            if( LoggingOptions.Http.LogResponseBody ) {
+            // 对于 HTTP 302,204 来说，它们可以没有请求体，所以可台忽略下面的过程
 
-                // 说明：这种方式实现记录 ResponseBody 并不是完美的方案，有些请求可能就没办法记录到 !
-                // 如果想记录所有请求的 ResponseBody，那需要修改 HttpResponse.Body，并自行实现一个 Stream，
-                // 但是过早地修改 HttpResponse.Body，有可能收到的是 bin 数据，而且长度未知，假如是下载一个大文件，怎么办？
-                // 所以，目前没有想到很完美的解决方案，先就这样吧~~~
+            if( LoggingOptions.Http.LogResponseBody && httpContext.PipelineContext.RespResult != null ) {
 
-                sb.AppendLineRN();
+                string contentType = httpContext.Response.ContentType;
+                if( HttpUtils.ResponseBodyIsText(contentType) ) {
 
-                if( httpContext.PipelineContext.RespResult is string text1 ) {
-                    sb.Append(text1);
-                }
-                else if( contentType.StartsWith0(ResponseContentType.Json) ) {
-                    sb.Append(httpContext.PipelineContext.RespResult.ToJson());
-                }
-                else if( contentType.StartsWith0(ResponseContentType.Xml) ) {
-                    sb.Append(httpContext.PipelineContext.RespResult.ToXml2());
+                    // 说明：使用 httpContext.PipelineContext.RespResult 这种方式实现记录 ResponseBody 并不是完美的方案，有些请求体可能就没办法记录到 !
+                    // 如果想记录所有请求的 ResponseBody，那需要修改 HttpResponse.Body，并自行实现一个 Stream，
+                    // 但是过早地修改 HttpResponse.Body，有可能收到的是 bin 数据，而且长度未知，假如是下载一个大文件，怎么办？
+                    // 所以，目前没有想到很完美的解决方案，先就这样吧~~~
+
+                    sb.AppendLineRN();
+
+                    if( httpContext.PipelineContext.RespResult is string text1 ) {
+                        sb.Append(text1);
+                    }
+                    else if( contentType.StartsWith0(ResponseContentType.Json) ) {
+                        sb.Append(httpContext.PipelineContext.RespResult.ToJson());
+                    }
+                    else if( contentType.StartsWith0(ResponseContentType.Xml) ) {
+                        sb.Append(httpContext.PipelineContext.RespResult.ToXml2());
+                    }
                 }
             }
         }
