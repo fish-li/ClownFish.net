@@ -77,7 +77,7 @@ public static class AsmHelper
             if( type == null )
                 throw new ArgumentNullException(nameof(type));
 
-            return FileVersionInfo.GetVersionInfo(type.Assembly.Location).FileVersion;
+            return FileHelper.GetFileVersion(type.Assembly.Location);
         }
     }
 

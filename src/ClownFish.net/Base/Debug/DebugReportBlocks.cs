@@ -185,19 +185,33 @@ internal static class DebugReportBlocks
         DebugReportBlock block = new DebugReportBlock { Category = "Load Assembly List", Order = 1004 };
 
         if( AsmHelper.IsSingleFileDeploy == false ) {
-            int i = 1;
-            (from asm in AsmHelper.GetLoadAssemblies()
-             let path = asm.Location
-             let asmVersion = AssemblyName.GetAssemblyName(path).Version
-             let fileVersion = FileVersionInfo.GetVersionInfo(path).FileVersion
-             let line = $"{path}; {asmVersion}; {fileVersion}"
-             orderby path
-             select line
-             ).ToList().ForEach(x => block.AppendLine($"{i++,4}: {x}"));
+            try {
+                int i = 1;
+                (from asm in AsmHelper.GetLoadAssemblies()
+                 let path = asm.Location
+                 let asmVersion = asm.GetName().Version
+                 let fileVersion = FileHelper.GetFileVersion(path)
+                 let line = $"{path}; {asmVersion}; {fileVersion}"
+                 orderby path
+                 select line
+                 ).ToList().ForEach(x => block.AppendLine($"{i++,4}: {x}"));
+            }
+            catch( Exception ex ) {
+                // 曾经偶然出现过异常： 这个异常非常扯淡，因为 exe 启动时调用这段代码，居然说 “自身” 所在文件找不到 ！！！
+                // System.IO.FileNotFoundException: 未能加载文件或程序集“TxClientW.exe”或它的某一个依赖项。系统找不到指定的文件。
+                // 文件名:“TxClientW.exe” ---> System.IO.FileNotFoundException: 系统找不到指定的文件。 (异常来自 HRESULT:0x80070002)
+                // 在 System.Reflection.AssemblyName.nGetFileInformation(String s)
+                // 在 System.Reflection.AssemblyName.GetAssemblyName(String assemblyFile)
+                // .......................
+                // 当时的写法：let asmVersion = AssemblyName.GetAssemblyName(path).Version
+                block.AppendLine(ex.ToString());
+            }
         }
 
         return block;
     }
+
+    
 
 
     public static DebugReportBlock GetDebugReportBlock(this NHttpApplication httpApplication)

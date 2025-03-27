@@ -286,4 +286,22 @@ public static class FileHelper
             }
         }
     }
+
+
+    /// <summary>
+    /// 获取文件的版本号
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
+    public static string GetFileVersion(string filePath)
+    {
+        try {
+            FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(filePath);
+            return fileVersion.FileVersion;
+        }
+        catch {
+            return "0.0.0.0";
+        }
+    }
+
 }
