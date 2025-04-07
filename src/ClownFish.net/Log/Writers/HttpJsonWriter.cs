@@ -3,7 +3,7 @@
 // 使用方法：
 // log.config:  <Writer Name="http" Type="ClownFish.Log.Writers.HttpJsonWriter, ClownFish.net" />
 // app.config:  ClownFish_Log_WritersMap = InvokeLog=null;OprLog=http;*=null
-// app.config:  HttpJsonWriter_Target_Url = http://xxxx.com/api/log/save/{datatype}   // 这里需要有个服务端来接收日志数据
+// app.config:  Nebula_LogGate_Url = http://nebula-loggate-svc   // 这里需要有个服务端来接收日志数据
 
 internal class HttpJsonWriter : ILogWriter
 {
@@ -19,10 +19,10 @@ internal class HttpJsonWriter : ILogWriter
     void ILogWriter.Init(LogConfiguration config, WriterConfig section)
     {
         string configValue = Settings.GetSetting("Nebula_LogGate_Url")   // 优先采用 Nebula.LogGate 做为服务端接收日志数据
-                             ?? Settings.GetSetting("HttpJsonWriter_Target_Url");
+                             ?? Settings.GetSetting("HttpJsonWriter_Target_Url");   // 兼容以前的老参数名称
 
         if( InitUrl(configValue) == 0 ) {
-            Console2.Info("##### 由于没有配置 Nebula_LogGate_Url or HttpJsonWriter_Target_Url 参数，HttpJsonWriter 将忽略所有调用！#####");
+            Console2.Info("##### 由于没有配置 Nebula_LogGate_Url 参数，HttpJsonWriter 将忽略所有调用！#####");
             return;
         }
 

@@ -10,13 +10,17 @@ internal class DaMengClientProvider : BaseClientProvider
 
     internal DaMengClientProvider()
     {
-        Type factoryType = Type.GetType("Dm.DmClientFactory, DmProvider", true, false);
+        // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider
+        string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).ToArray();
+        string asmName = asmList.Contains("DM.DmProvider") ? "DM.DmProvider" : "DmProvider";
+
+        Type factoryType = Type.GetType("Dm.DmClientFactory, " + asmName, true, false);
 
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
 
 
-        _exceptionType = Type.GetType("Dm.DmException, DmProvider", true, false);
+        _exceptionType = Type.GetType("Dm.DmException, " + asmName, true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：Dm.DmException.Number");

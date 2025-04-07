@@ -30,7 +30,7 @@ create table "TestGuid"
 create table "Categories"
 (
 	"CategoryID" INT identity(1, 1) not null ,
-	"CategoryName" VARCHAR(20) not null ,
+	"CategoryName" VARCHAR2(20) not null ,
 	primary key("CategoryID")
 )
 storage(initial 1, next 1, minextents 1, fillfactor 0)
@@ -45,11 +45,11 @@ create unique  index "IX_CategoryName" on "Categories"("CategoryName");
 create table "Customers"
 (
 	"CustomerID" INT identity(1, 1) not null ,
-	"CustomerName" VARCHAR(50) not null ,
-	"ContactName" VARCHAR(50) default ('') not null ,
-	"Address" VARCHAR(50) default ('') not null ,
-	"PostalCode" VARCHAR(10) default ('') not null ,
-	"Tel" VARCHAR(50) default ('') not null ,
+	"CustomerName" VARCHAR2(100) not null ,
+	"ContactName" VARCHAR2(50) default ('') not null ,
+	"Address" VARCHAR2(100) default ('') not null ,
+	"PostalCode" VARCHAR2(10) default ('') not null ,
+	"Tel" VARCHAR2(50) default ('') not null ,
 	primary key("CustomerID")
 )
 ;
@@ -76,10 +76,10 @@ create index "IX_ProductID" on "OrderDetails"("ProductID");
 create table "Orders"
 (
 	"OrderID" INT identity(1, 1) not null ,
-	"CustomerID" INT not null ,
+	"CustomerID" INT ,
 	"OrderDate" DATETIME(6) not null ,
 	"SumMoney" DECIMAL(22, 6) not null ,
-	"Comment" VARCHAR(300) not null ,
+	"Comment" TEXT not null ,
 	"Finished" BIT not null ,
 	primary key("OrderID")
 )
@@ -94,9 +94,9 @@ create index "IX_CustomerID" on "Orders"("CustomerID");
 create table "Products"
 (
 	"ProductID" INT identity(1, 1) not null ,
-	"ProductName" VARCHAR(50) not null ,
+	"ProductName" VARCHAR2(100) not null ,
 	"CategoryID" INT not null ,
-	"Unit" VARCHAR(10) not null ,
+	"Unit" VARCHAR2(10) not null ,
 	"UnitPrice" DECIMAL(22, 6) not null ,
 	"Remark" TEXT not null ,
 	"Quantity" INT not null ,

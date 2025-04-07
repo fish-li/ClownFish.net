@@ -12,8 +12,8 @@
         <LangVersion>10.0</LangVersion>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
-        <DefineConstants>xxTEST_DM</DefineConstants>
+    <PropertyGroup Condition="'$(TargetFramework)'=='net9.0'">
+        <DefineConstants>xx_TEST_DM</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -43,7 +43,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
-        <PackageReference Include="dmdbms.DmProvider" Version="1.1.3" />
+        <PackageReference Include="ClownFish.DmProvider" Version="8.3.1.32690" />
         <PackageReference Include="Quartz" Version="3.8.0" />
     </ItemGroup>
 

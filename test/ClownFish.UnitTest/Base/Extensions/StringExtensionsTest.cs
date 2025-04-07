@@ -322,6 +322,13 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             var list4 = "a=1;b=2;c=3;d=4;".ToKVList(new char[0], '=');
             Assert.AreEqual(0, list4.Count);
+
+            var list5 = "a=1;b=2;c=;d=4;".ToKVList(';', '=');
+            Assert.AreEqual(4, list5.Count);
+
+            MyAssert.IsError<ArgumentException>(() => {
+                _ = "a=1;b=2;=3;d=4;".ToKVList(';', '=');
+            });
         }
 
 

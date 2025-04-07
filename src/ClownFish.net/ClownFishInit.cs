@@ -223,7 +223,8 @@ public static class ClownFishInit
             ClownFish.Data.Initializer.Instance.RegisterPostgreSqlProvider();
         }
 
-        if( asmList.Contains("DmProvider") ) {
+        // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider
+        if( asmList.Contains("DmProvider") || asmList.Contains("DM.DmProvider") ) {
             ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
         }
 
