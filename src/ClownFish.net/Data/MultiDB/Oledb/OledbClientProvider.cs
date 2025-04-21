@@ -6,7 +6,7 @@ internal class OledbClientProvider : BaseClientProvider
 {
     public static readonly BaseClientProvider Instance = new OledbClientProvider();
 
-    public override DatabaseType DatabaseType => DatabaseType.Unknow;
+    public override DatabaseType DatabaseType => DatabaseType.OleDb;
 
     public override DbProviderFactory ProviderFactory => System.Data.OleDb.OleDbFactory.Instance;
 
@@ -25,7 +25,7 @@ internal class OdbcClientProvider : BaseClientProvider
 {
     public static readonly BaseClientProvider Instance = new OdbcClientProvider();
 
-    public override DatabaseType DatabaseType => DatabaseType.Unknow;
+    public override DatabaseType DatabaseType => DatabaseType.Odbc;
 
     public override DbProviderFactory ProviderFactory => System.Data.Odbc.OdbcFactory.Instance;
 

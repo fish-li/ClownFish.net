@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Data;
+﻿using ClownFish.Data.MultiDB.MsSQL;
+
+namespace ClownFish.Data;
 
 /// <summary>
 /// 数据库连接的描述信息
@@ -13,16 +15,12 @@ public sealed class ConnectionInfo
         this.ConnectionString = connectionString;
 
         this.ProviderName = string.IsNullOrEmpty(providerName)
-                                ? "System.Data.SqlClient"   // 默认连接到SQLSERVER
+                                ? MsSqlProviderUtils.SqlServerDefaultProviderName   // 默认连接到SQLSERVER
                                 : providerName;
     }
 
     internal ConnectionInfo(ConnectionStringSetting setting)
         : this(setting.ConnectionString, setting.ProviderName)
-    { }
-
-    internal ConnectionInfo(DbConfig dbConfig)
-        : this(dbConfig.GetConnectionString(true), dbConfig.GetProviderName())
     { }
 
 

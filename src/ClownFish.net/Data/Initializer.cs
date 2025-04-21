@@ -31,9 +31,10 @@ public sealed class Initializer
     public Initializer RegisterClientProvider(string providerName, BaseClientProvider provider)
     {
         DbClientFactory.RegisterProvider(providerName, provider);
-
         return this;
     }
+
+    
 
     /// <summary>
     /// 注册 SQLSERVER 客户端提供者
@@ -42,34 +43,7 @@ public sealed class Initializer
     /// <returns></returns>
     public Initializer RegisterSqlServerProvider(int flag = 0)
     {
-        // 在 .net framework 环境下，System.Data.SqlClient 会自动注册，所以不需要做什么
-#if NETCOREAPP
-
-        if( flag == 0) {
-            string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).OrderBy(x => x).ToArray();
-
-            if( asmList.Contains("Microsoft.Data.SqlClient") ) {
-                DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
-            }
-
-            if( asmList.Contains("System.Data.SqlClient") ) {
-                DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
-            }
-        }
-
-        if( flag == 1 ) {
-            DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
-        }
-
-        if( flag == 2 ) {
-            // 这里注册2个名称，是为了【没办法的兼容性】
-            // 有些场景下，直接使用了【默认值】，所以没办法做到根据这里的注册来切换            
-            DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider2.Instance);
-            DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
-        }
-
-
-#endif
+        MsSqlProviderUtils.RegisterProvider(flag);
         return this;
     }
 
@@ -82,7 +56,6 @@ public sealed class Initializer
     public Initializer RegisterMySqlProvider(int flag = 0)
     {
         MySqlProviderUtils.RegisterProvider(flag);
-
         return this;
     }
 
@@ -100,7 +73,6 @@ public sealed class Initializer
         AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 #endif
         DbClientFactory.RegisterProvider(DatabaseClients.PostgreSQL, PostgreSqlClientProvider.Instance);
-
         return this;
     }
 
@@ -112,7 +84,6 @@ public sealed class Initializer
     public Initializer RegisterSQLiteProvider()
     {
         DbClientFactory.RegisterProvider(DatabaseClients.SQLite, SQLiteClientProvider.Instance);
-
         return this;
     }
 
@@ -124,7 +95,6 @@ public sealed class Initializer
     public Initializer RegisterDamengProvider()
     {
         DbClientFactory.RegisterProvider(DatabaseClients.DaMeng, DaMengClientProvider.Instance);
-
         return this;
     }
 

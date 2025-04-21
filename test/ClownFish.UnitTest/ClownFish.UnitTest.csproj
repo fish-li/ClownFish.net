@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <DefineConstants>xx_TEST_DM</DefineConstants>
+        <DefineConstants>TEST_DM; TEST_VASTBASE; TEST_KINGBASE; TEST_KINGBASE2</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,7 +26,7 @@
         <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
         <PackageReference Include="coverlet.collector" Version="6.0.2" />
         <PackageReference Include="JWT" Version="10.1.1" />
-        
+
         <PackageReference Include="Npgsql" Version="7.0.6" />
         <PackageReference Include="MySql.Data" Version="9.1.0" />
         <PackageReference Include="MySqlConnector" Version="2.2.7" />
@@ -40,11 +40,13 @@
         <Reference Include="System.Web" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' or '$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Quartz" Version="3.8.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
         <PackageReference Include="ClownFish.DmProvider" Version="8.3.1.32690" />
-        <PackageReference Include="Quartz" Version="3.8.0" />
+        <!-- Kdbndp_V9已知问题：新版本 (8.0.1.1209 ~~~~ 8.0.2.408(当前最新)) 有BUG，在执行 Batch 时出现'空引用异常' -->
+        <PackageReference Include="Kdbndp_V9" Version="8.0.1.906" />
     </ItemGroup>
 
     <ItemGroup>
@@ -68,13 +70,13 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="files\ClownFish_AuthX509_RS256.conf">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="files\Databus_request.bin">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="files\Databus_request.txt">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="files\log-base64-soh.txt">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -83,10 +85,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="files\_local2.env">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="_local.env">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

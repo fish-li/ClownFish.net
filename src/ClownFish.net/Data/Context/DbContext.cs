@@ -18,7 +18,7 @@ public sealed class DbContext : IDisposable
     /// <summary>
     /// 当前实例的连接信息
     /// </summary>
-    internal ConnectionInfo ConnectionInfo { get; private set; }
+    public ConnectionInfo ConnectionInfo { get; private set; }
 
     internal BaseClientProvider ClientProvider { get; private set; }
 
@@ -31,6 +31,16 @@ public sealed class DbContext : IDisposable
     /// 获取当前连接对应的数据库类别
     /// </summary>
     public DatabaseType DatabaseType => ClientProvider.DatabaseType;
+
+    /// <summary>
+    /// 获取当前连接对应的数据库提供者类型名称
+    /// </summary>
+    public string ProviderName => ConnectionInfo.ProviderName;
+
+    /// <summary>
+    /// 额外数据，可供项目代码使用
+    /// </summary>
+    public object ExtData { get; set; }
 
 
     private DbConnection _connection;
@@ -138,9 +148,9 @@ public sealed class DbContext : IDisposable
 
     #region 构造函数
 
-    internal DbContext(ConnectionInfo connectionInfo, DbConnection connection = null)
+    internal DbContext(ConnectionInfo connectionInfo, DbConnection connection = null, BaseClientProvider clientProvider = null)
     {
-        this.ClientProvider = DbClientFactory.GetProvider(connectionInfo.ProviderName);
+        this.ClientProvider = clientProvider ?? DbClientFactory.GetProvider(connectionInfo.ProviderName);
         this.ConnectionInfo = connectionInfo;
 
         // connection 采用延迟方式创建，可以尽量减少对底层连接的占用时间
@@ -180,8 +190,8 @@ public sealed class DbContext : IDisposable
         }
 
 
-        DbConfig dbConfig = ConnectionManager.GetDbConfig(connectionName, true);
-        return new DbContext(new ConnectionInfo(dbConfig));
+        DbConfig dbConfig = ConnectionManager.GetDbConfig(connectionName, true);   // 如果查找失败就抛异常
+        return Create(dbConfig);
     }
 
     /// <summary>
@@ -206,7 +216,15 @@ public sealed class DbContext : IDisposable
         if( dbConfig == null)
             throw new ArgumentNullException(nameof(dbConfig));
 
-        return new DbContext(new ConnectionInfo(dbConfig));
+
+        var regInfo = DbClientFactory.GetRegisterInfo(dbConfig.DbType);
+
+        string providerName = regInfo.ProviderName;
+        string connectionString = regInfo.ClientProvider.GetConnectionString(dbConfig, true);
+
+        ConnectionInfo connInfo = new ConnectionInfo(connectionString, providerName);
+
+        return new DbContext(connInfo, null, regInfo.ClientProvider);
     }
 
     /// <summary>

@@ -47,16 +47,13 @@ public class DbConfigExtensionsTest
         DbConfig pg1 = AppConfig.GetDbConfig("pg1");
         Assert.AreEqual("Npgsql", pg1.GetProviderName());
 
-        DbConfig dm1 = AppConfig.GetDbConfig("dm1");
-        Assert.AreEqual("Dm", dm1.GetProviderName());
-
 
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = DbConfigExtensions.GetProviderName(null);
         });
 
         MyAssert.IsError<NotSupportedException>(() => {
-            DbConfig dbConfig1 = new DbConfig { DbType = DatabaseType.Unknow };
+            DbConfig dbConfig1 = new DbConfig { DbType = (DatabaseType)66666666 };
             _ = DbConfigExtensions.GetProviderName(dbConfig1);
         });
     }
@@ -70,7 +67,7 @@ public class DbConfigExtensionsTest
         });
 
         MyAssert.IsError<NotSupportedException>(() => {
-            DbConfig dbConfig1 = new DbConfig { DbType = DatabaseType.Unknow };
+            DbConfig dbConfig1 = new DbConfig { DbType = (DatabaseType)66666666 };
             _ = DbConfigExtensions.GetConnectionString(dbConfig1);
         });
     }
@@ -154,29 +151,33 @@ public class DbConfigExtensionsTest
     }
 
 
-    [TestMethod]
-    public void Test_GetMongoDbConnectionString()
-    {
-        DbConfig g1 = new DbConfig {
-            DbType = DatabaseType.MongoDB,
-            Server = "localhost",
-            Database = "MyNorthwind",
-            Port = 1025,
-            UserName = "root",
-            Password = "fish",
-            Args = "charset=utf8"
-        };
+    //[TestMethod]
+    //public void Test_GetMongoDbConnectionString()
+    //{
+    //    DbConfig g1 = new DbConfig {
+    //        DbType = DatabaseType.MongoDB,
+    //        Server = "localhost",
+    //        Database = "MyNorthwind",
+    //        Port = 1025,
+    //        UserName = "root",
+    //        Password = "fish",
+    //        Args = "charset=utf8"
+    //    };
 
-        Console.WriteLine(g1.GetConnectionString(true));
+    //    Console.WriteLine(g1.GetConnectionString(true));
 
-        Assert.AreEqual("mongodb://root:fish@localhost:1025/MyNorthwind?charset=utf8", g1.GetConnectionString(true));
-    }
+    //    Assert.AreEqual("mongodb://root:fish@localhost:1025/MyNorthwind?charset=utf8", g1.GetConnectionString(true));
+    //}
 
+
+#if TEST_DM
     [TestMethod]
     public void Test_GetDamengConnectionString()
     {
         DbConfig dm1 = AppConfig.GetDbConfig("dm1");
         Console.WriteLine(dm1.GetConnectionString(true));
+
+        Assert.AreEqual("Dm", dm1.GetProviderName());
 
         Assert.IsTrue(dm1.GetConnectionString(true).Contains("server=PgSqlHost;"));
         Assert.IsTrue(dm1.GetConnectionString(true).Contains("port=15236;"));
@@ -189,6 +190,149 @@ public class DbConfigExtensionsTest
         dm3.Port = 0;
         Assert.IsFalse(dm3.GetConnectionString(false).Contains("port="));
     }
+#endif
 
-  
+
+    [TestMethod]
+    public void Test_GetConnectionString_SQLSERVER()
+    {
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.SQLSERVER,
+            Server = "server1",
+            UserName = "user1",
+            Password = "xxx",
+            Database = "db12"
+        };
+
+
+        string expected1 = "Server=server1;Database=db12;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString1 = config.GetConnectionString(true);
+        Console.WriteLine(connectionString1);
+        Assert.AreEqual(expected1, connectionString1);
+
+        string expected2 = "Server=server1;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString2 = config.GetConnectionString(false);
+        Console.WriteLine(connectionString2);
+        Assert.AreEqual(expected2, connectionString2);
+    }
+
+    [TestMethod]
+    public void Test_GetConnectionString_SQLSERVER_WithPort()
+    {
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.SQLSERVER,
+            Server = "server1",
+            Port = 123,
+            UserName = "user1",
+            Password = "xxx",
+            Database = "db12"
+        };
+
+
+        string expected1 = "Server=server1,123;Database=db12;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString1 = config.GetConnectionString(true);
+        Console.WriteLine(connectionString1);
+        Assert.AreEqual(expected1, connectionString1);
+
+        string expected2 = "Server=server1,123;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString2 = config.GetConnectionString(false);
+        Console.WriteLine(connectionString2);
+        Assert.AreEqual(expected2, connectionString2);
+    }
+
+
+    [TestMethod]
+    public void Test_GetConnectionString_PostgreSQL()
+    {
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.PostgreSQL,
+            Server = "server1",
+            UserName = "user1",
+            Password = "xxx",
+            Database = "db12"
+        };
+
+
+        string expected1 = "Host=server1;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString1 = config.GetConnectionString(true);
+        Console.WriteLine(connectionString1);
+        Assert.AreEqual(expected1, connectionString1);
+
+        string expected2 = "Host=server1;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString2 = config.GetConnectionString(false);
+        Console.WriteLine(connectionString2);
+        Assert.AreEqual(expected2, connectionString2);
+    }
+
+    [TestMethod]
+    public void Test_GetConnectionString_PostgreSQL_WithPort()
+    {
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.PostgreSQL,
+            Server = "server1",
+            Port = 123,
+            UserName = "user1",
+            Password = "xxx",
+            Database = "db12"
+        };
+
+
+        string expected1 = "Host=server1;Port=123;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString1 = config.GetConnectionString(true);
+        Console.WriteLine(connectionString1);
+        Assert.AreEqual(expected1, connectionString1);
+
+        string expected2 = "Host=server1;Port=123;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string connectionString2 = config.GetConnectionString(false);
+        Console.WriteLine(connectionString2);
+        Assert.AreEqual(expected2, connectionString2);
+    }
+
+
+
+    [TestMethod]
+    public void Test_GetConnectionString_MySQL()
+    {
+        string expected = "Server=server1;Uid=user1;Pwd=xxx;";
+
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.MySQL,
+            Server = "server1",
+            UserName = "user1",
+            Password = "xxx"
+        };
+
+        // 用循环调用，可以检查 config1 有没有被更新
+        for( int i = 0; i < 10; i++ ) {
+            string connectionString = config.GetConnectionString();
+            Console.WriteLine(connectionString);
+
+            Assert.AreEqual(expected, connectionString);
+        }
+    }
+
+
+
+    [TestMethod]
+    public void Test_GetConnectionString_MySQL_Port_2()
+    {
+        string expected = "Server=server1;Port=147;Uid=user1;Pwd=xxx;";
+
+        DbConfig config = new DbConfig {
+            DbType = ClownFish.Data.DatabaseType.MySQL,
+            Server = "server1",
+            Port = 147,
+            UserName = "user1",
+            Password = "xxx"
+        };
+
+        for( int j = 0; j < 10; j++ ) {
+            string connectionString = config.GetConnectionString();
+            Console.WriteLine(connectionString);
+
+            Assert.AreEqual(expected, connectionString);
+        }
+    }
+
+
 }

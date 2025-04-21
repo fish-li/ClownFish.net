@@ -62,4 +62,38 @@ internal class PostgreSqlClientProvider : BaseClientProvider
     {
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
     }
+
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        return GetPostgreSQLConnectionString0(dbConfig, includeDatabase);
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static string GetPostgreSQLConnectionString0(IDbConfig dbConfig, bool includeDatabase)
+    {
+        // PostgreSQL 连接参数
+        // https://www.npgsql.org/doc/connection-string-parameters.html
+
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            sb.Append("Host=").Append(dbConfig.Server);
+
+            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+                sb.Append(";Port=").Append(dbConfig.Port.Value);
+
+            if( includeDatabase && dbConfig.Database.HasValue() )
+                sb.Append(";Database=").Append(dbConfig.Database);
+
+            sb.Append(";Username=").Append(dbConfig.UserName)
+                .Append(";Password=").Append(dbConfig.Password)
+                .Append(";Application Name=").Append(EnvUtils.GetAppName())
+                .Append(';').Append(dbConfig.Args);
+
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
+    }
 }

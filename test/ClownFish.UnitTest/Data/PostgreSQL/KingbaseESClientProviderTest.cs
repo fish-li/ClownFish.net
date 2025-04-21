@@ -1,21 +1,27 @@
-﻿using ClownFish.Data.MultiDB.PostgreSQL;
-using ClownFish.UnitTest.Data.Models;
-using Npgsql;
+﻿using ClownFish.UnitTest.Data.Models;
 
 namespace ClownFish.UnitTest.Data.PostgreSQL;
+
+using ClownFish.Data.MultiDB.PostgreSQL;
+
+#if TEST_KINGBASE2
+
+using Kdbndp;
+
+
 [TestClass]
-public class PostgreSqlClientProviderTest
+public class KingbaseESClientProviderTest
 {
     [TestMethod]
     public void Test1()
     {
-        PostgreSqlClientProvider provider = new PostgreSqlClientProvider();
+        KingbaseESClientProvider provider = new KingbaseESClientProvider();
 
-        Assert.AreEqual(DatabaseType.PostgreSQL, provider.DatabaseType);
+        Assert.AreEqual((DatabaseType)7777, provider.DatabaseType);
 
-        Assert.AreSame(Npgsql.NpgsqlFactory.Instance, provider.ProviderFactory);
+        Assert.AreSame(Kdbndp.KdbndpFactory.Instance, provider.ProviderFactory);
 
-        using DbContext dbContext = DbContext.Create("postgresql");
+        using DbContext dbContext = DbContext.Create("kingbase2");
 
         Assert.AreEqual("\"Table\"", provider.GetObjectFullName("Table"));
 
@@ -28,7 +34,7 @@ public class PostgreSqlClientProviderTest
     [TestMethod]
     public void Test_GetNewIdQuery()
     {
-        using DbContext dbContext = DbContext.Create("postgresql");
+        using DbContext dbContext = DbContext.Create("kingbase2");
         Category c1 = new Category { CategoryName = "手机" };
 
         string sql = EntityCudUtils.GetInsertSQL(c1, dbContext);
@@ -43,8 +49,8 @@ public class PostgreSqlClientProviderTest
     [TestMethod]
     public void Test_SetPagedQuery()
     {
-        PostgreSqlClientProvider provider = new PostgreSqlClientProvider();
-        using DbContext dbContext = DbContext.Create("postgresql");
+        KingbaseESClientProvider provider = new KingbaseESClientProvider();
+        using DbContext dbContext = DbContext.Create("kingbase2");
 
         var args = new { id = 2 };
         CPQuery query = dbContext.CPQuery.Create("select * from table1 where id = @id", args);
@@ -57,8 +63,8 @@ public class PostgreSqlClientProviderTest
     [TestMethod]
     public void Test_GetPagedCommand()
     {
-        PostgreSqlClientProvider provider = new PostgreSqlClientProvider();
-        using DbContext dbContext = DbContext.Create("postgresql");
+        KingbaseESClientProvider provider = new KingbaseESClientProvider();
+        using DbContext dbContext = DbContext.Create("kingbase2");
 
         var args = new { id = 2 };
         CPQuery query = dbContext.CPQuery.Create("select * from table1 where id = @id order by id", args);
@@ -77,19 +83,20 @@ public class PostgreSqlClientProviderTest
     }
 
 
-
     [TestMethod]
     public void Test_IsDuplicateInsertException()
     {
-        PostgreSqlClientProvider provider = new PostgreSqlClientProvider();
+        KingbaseESClientProvider provider = new KingbaseESClientProvider();
 
-        PostgresException ex = new PostgresException("xx-message", "xx-severity", "xxxx", "23505");
+        KingbaseException ex = new KingbaseException("xx-message", "xx-severity", "xxxx", "23505");
         Assert.IsTrue(provider.IsDuplicateInsertException(ex));
 
-        PostgresException ex2 = new PostgresException("xx-message", "xx-severity", "xxxx", "11111");
+        KingbaseException ex2 = new KingbaseException("xx-message", "xx-severity", "xxxx", "11111");
         Assert.IsFalse(provider.IsDuplicateInsertException(ex2));
 
 
         Assert.IsFalse(provider.IsDuplicateInsertException(ExceptionHelper.CreateException()));
     }
 }
+
+#endif

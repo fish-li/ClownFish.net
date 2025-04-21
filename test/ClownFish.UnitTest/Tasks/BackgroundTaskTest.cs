@@ -8,7 +8,7 @@ namespace ClownFish.UnitTest.Tasks;
 
 #if NETCOREAPP
 using ClownFish.Tasks;
-using NetTaste;
+
 
 [TestClass]
 public class BackgroundTaskTest

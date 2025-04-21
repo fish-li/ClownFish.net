@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ClownFish.Data.MultiDB.MsSQL;
 
-namespace ClownFish.Data.MultiDB.MsSQL;
 internal abstract class BaseMsSqlClientProvider : BaseClientProvider
 {
     public override DatabaseType DatabaseType => DatabaseType.SQLSERVER;
@@ -87,5 +82,34 @@ internal abstract class BaseMsSqlClientProvider : BaseClientProvider
     public override Guid NewSeqGuid()
     {
         return GuidHelper.CreateSeqGuid(SequentialGuidType.AtEnd);
+    }
+
+
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        // SQLSERVER端口号格式： server=192.168.11.100,1433;
+        // https://docs.microsoft.com/zh-cn/dotnet/api/system.data.sqlclient.sqlconnection.connectionstring
+        // format: server=xxx,port;database=xxxx;uid=xxx
+
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            sb.Append("Server=").Append(dbConfig.Server);
+
+            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+                sb.Append(',').Append(dbConfig.Port.Value);
+
+            if( includeDatabase && dbConfig.Database.HasValue() )
+                sb.Append(";Database=").Append(dbConfig.Database);
+
+            sb.Append(";Uid=").Append(dbConfig.UserName)
+                .Append(";Pwd=").Append(dbConfig.Password)
+                .Append(";Application Name=").Append(EnvUtils.GetAppName())
+                .Append(';').Append(dbConfig.Args);
+
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
     }
 }

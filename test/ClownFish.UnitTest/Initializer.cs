@@ -6,6 +6,7 @@ using ClownFish.Hosting;
 using ClownFish.UnitTest.Data.Events;
 using ClownFish.UnitTest.Data.Models;
 using ClownFish.UnitTest.Data.MultiDB;
+using ClownFish.UnitTest.Data.PostgreSQL;
 using ClownFish.UnitTest.Log;
 
 namespace ClownFish.UnitTest;
@@ -86,7 +87,7 @@ public class UnitTestAppStartup : ConsoleAppStartup
                         //.RegisterMySqlProvider()
                         //.RegisterPostgreSqlProvider()
                         //.RegisterSQLiteProvider()
-                        .RegisterClientProvider(XxxBaseClientProvider.Name, XxxBaseClientProvider.Instance)
+                        .RegisterClientProvider(XxxBaseClientProvider.ProviderName, XxxBaseClientProvider.Instance)
                         .SetListInitLength(60)
                         .InitConnection()
                         .AddDataFieldTypeHandler(typeof(System.Drawing.Point), new PointDataFieldTypeHandler())
@@ -99,6 +100,8 @@ public class UnitTestAppStartup : ConsoleAppStartup
 
 #if NETCOREAPP
         ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
+
+        KingbaseESClientProvider.RegisterProvider();
 #endif
 
         // 用于输出所有执行的SQL语句及命令参数（实现项目中不需要这个步骤）

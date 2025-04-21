@@ -92,6 +92,12 @@ public class DbContextTest
         // 检验下面这种构造方式
         using DbContext dbContext = DbContext.Create(connection, setting.ProviderName);
 
+        Assert.AreEqual(DatabaseType.SQLSERVER, dbContext.DatabaseType);
+        Assert.AreEqual("System.Data.SqlClient", dbContext.ProviderName);
+
+        dbContext.ExtData = "abc123";
+        Assert.AreEqual("abc123", dbContext.ExtData.ToString());
+
         // 执行一个只有 SQLSERVER 才能理解的SQL
         string username = dbContext.CPQuery.Create("select SUSER_NAME()").ExecuteScalar<string>();
 
@@ -107,6 +113,7 @@ public class DbContextTest
 
         var db2 = DbContext.Create(connection, "");
         Assert.AreEqual(DatabaseType.SQLSERVER, db2.DatabaseType);
+        Assert.AreEqual("System.Data.SqlClient", db2.ProviderName);
     }
 
 
@@ -119,6 +126,9 @@ public class DbContextTest
 
         // 检验下面这种构造方式
         using DbContext dbContext = DbContext.Create(connection, setting.ProviderName);
+
+        Assert.AreEqual(DatabaseType.MySQL, dbContext.DatabaseType);
+        Assert.AreEqual("MySql.Data.MySqlClient", dbContext.ProviderName);
 
         // 执行一个只有 MySQL 才能理解的SQL
         string username = dbContext.CPQuery.Create("select CURRENT_USER()").ExecuteScalar<string>();   // user1@%

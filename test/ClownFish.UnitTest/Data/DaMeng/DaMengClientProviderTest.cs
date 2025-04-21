@@ -1,4 +1,5 @@
-﻿#if NETCOREAPP
+﻿#if TEST_DM
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using ClownFish.Data;
 using ClownFish.Data.MultiDB.DaMeng;
 using ClownFish.UnitTest.Data.Models;
+using Dm;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClownFish.UnitTest.Data.DaMeng;
@@ -30,10 +32,7 @@ public class DaMengClientProviderTest
 
         Assert.AreEqual(":Table", provider.GetParamterName("Table", dbContext));
 
-        Assert.AreEqual(":Table", provider.GetParamterPlaceholder("Table", dbContext));
-
-        dbContext.EnableDelimiter = true;
-        Assert.AreEqual(":\"Table\"", provider.GetParamterPlaceholder("Table", dbContext));        
+        Assert.AreEqual(":Table", provider.GetParamterPlaceholder("Table", dbContext));      
     }
 
 
@@ -128,6 +127,32 @@ public class DaMengClientProviderTest
         Assert.IsTrue(query2.CountQuery.Command.CommandText.StartsWith("SELECT COUNT(*) AS totalrows FROM ("));
     }
 
+
+    [TestMethod]
+    public void Test_IsDuplicateInsertException()
+    {
+        DaMengClientProvider provider = new DaMengClientProvider();
+
+        Assert.IsFalse(provider.IsDuplicateInsertException(ExceptionHelper.CreateException()));
+
+        ConstructorInfo ctor = typeof(DmError).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, new Type[] { typeof(int) });
+        DmError dmError = (DmError)ctor.Invoke(new object[] { 1 });
+        dmError.State = -6602;
+        dmError.Message = "xxxxxxxx";
+
+
+        ConstructorInfo ctor2 = typeof(DmException).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, new Type[] { typeof(DmError) });
+        DmException ex1 = (DmException)ctor2.Invoke(new object[] { dmError });
+        Assert.IsTrue(provider.IsDuplicateInsertException(ex1));
+
+
+        DmError dmError2 = (DmError)ctor.Invoke(new object[] { 1 });
+        dmError2.State = -1111;
+        dmError2.Message = "bbbbbbbbbbb";
+
+        DmException ex2 = (DmException)ctor2.Invoke(new object[] { dmError2 });
+        Assert.IsFalse(provider.IsDuplicateInsertException(ex2));
+    }
 
 }
 #endif

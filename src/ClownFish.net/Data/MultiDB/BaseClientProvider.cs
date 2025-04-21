@@ -15,6 +15,19 @@ public abstract class BaseClientProvider
     /// </summary>
     public abstract DbProviderFactory ProviderFactory { get; }
 
+
+    /// <summary>
+    /// 根据dbConfig生成连接字符串
+    /// </summary>
+    /// <param name="dbConfig"></param>
+    /// <param name="includeDatabase"></param>
+    /// <returns></returns>
+    public virtual string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        // 这个方法不是“必需的”，所以不定义成 abstract
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// 获取一个标识符的完整形式。用于从实体生成SQL时，且需要支持特殊名称而包含定界符的全名称。
     /// 拿SQLSERVER来说，传入 xxx 则应该返回 [xxx]

@@ -23,4 +23,30 @@ internal abstract class BaseMySqlClientProvider : BaseClientProvider
     {
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
     }
+
+
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        // 参考：https://www.connectionstrings.com/mysql/
+
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            sb.Append("Server=").Append(dbConfig.Server);
+
+            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+                sb.Append(";Port=").Append(dbConfig.Port.Value);
+
+            if( includeDatabase && dbConfig.Database.HasValue() )
+                sb.Append(";Database=").Append(dbConfig.Database);
+
+            sb.Append(";Uid=").Append(dbConfig.UserName)
+                .Append(";Pwd=").Append(dbConfig.Password)
+                .Append(';').Append(dbConfig.Args);
+
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
+    }
 }

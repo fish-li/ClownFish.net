@@ -16,8 +16,27 @@ public class XmlDbConfig
     /// <summary>
     /// 数据库类型，0，SQLSERVER，1，MYSQL，  2，PostgreSQL
     /// </summary>
-    [XmlAttribute("dbType")]
+    [XmlIgnore]
     public DatabaseType DbType { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [XmlAttribute("dbType")]
+    public string DbTypeString {
+        get => DbType.ToString();
+        set {
+            // 尝试解析为数值
+            if( int.TryParse(value, out int intValue) ) {
+                DbType = (DatabaseType)intValue;
+            }
+            else {
+                // 如果无法解析为数值，尝试按枚举名称解析
+                DbType = (DatabaseType)Enum.Parse(typeof(DatabaseType), value);
+            }
+        }
+    }
+
 
     /// <summary>
     /// 数据库服务器地址

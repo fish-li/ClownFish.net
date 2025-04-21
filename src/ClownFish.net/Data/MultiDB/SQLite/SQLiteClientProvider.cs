@@ -63,5 +63,4 @@ internal class SQLiteClientProvider : BaseClientProvider
     {
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
     }
-
 }

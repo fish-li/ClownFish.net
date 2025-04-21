@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using ClownFish.Data.MultiDB.MsSQL;
 
 namespace ClownFish.Data.SqlClient;
 
@@ -263,7 +264,7 @@ ORDER  BY [Schema],
             throw new ArgumentNullException(nameof(connectionString));
 
         if( string.IsNullOrEmpty(database) )
-            return DbContext.Create(connectionString, "System.Data.SqlClient");
+            return DbContext.Create(connectionString, MsSqlProviderUtils.SqlServerDefaultProviderName);
 
 
         //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
@@ -273,7 +274,7 @@ ORDER  BY [Schema],
         builder.ConnectionString = connectionString;
         builder["Initial Catalog"] = database;
 
-        return DbContext.Create(builder.ToString(), "System.Data.SqlClient");
+        return DbContext.Create(builder.ToString(), MsSqlProviderUtils.SqlServerDefaultProviderName);
     }
 
 

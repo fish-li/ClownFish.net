@@ -44,10 +44,7 @@ internal class DaMengClientProvider : BaseClientProvider
 
     public override string GetParamterPlaceholder(string name, DbContext dbContext)
     {
-        if( dbContext.EnableDelimiter )
-            return ":\"" + name + "\"";
-        else
-            return ":" + name;
+        return ":" + name;
     }
 
     public override void ChangeDatabase(DbContext dbContext, string databaseName)
@@ -109,5 +106,28 @@ internal class DaMengClientProvider : BaseClientProvider
     public override Page2Query GetPagedCommand(BaseCommand query, PagingInfo pagingInfo)
     {
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
+    }
+
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            sb.Append("server=").Append(dbConfig.Server);
+
+            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+                sb.Append(";port=").Append(dbConfig.Port.Value);
+
+            if( includeDatabase && dbConfig.Database.HasValue() )
+                sb.Append(";schema=").Append(dbConfig.Database);
+
+            sb.Append(";user=").Append(dbConfig.UserName)
+                .Append(";password=").Append(dbConfig.Password)
+                .Append(';').Append(dbConfig.Args);
+
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
     }
 }

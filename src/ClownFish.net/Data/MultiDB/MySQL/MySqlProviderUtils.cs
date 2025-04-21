@@ -3,9 +3,9 @@
 /// <summary>
 /// MySQL专属工具类
 /// </summary>
-public static class MySqlProviderUtils
+internal static class MySqlProviderUtils
 {
-    //internal static int CurrentProviderFlag { get; private set; }
+    internal static int CurrentProviderFlag { get; private set; }
 
     /// <summary>
     /// 注册 MySQL 客户端提供者
@@ -48,10 +48,10 @@ public static class MySqlProviderUtils
                 }
 
             case 3: {
-                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);
-                    // 注册下面2个用于对比测试
                     DbClientFactory.RegisterProvider("MySql.Data", MySqlDataClientProvider.Instance);
                     DbClientFactory.RegisterProvider("MySqlConnector", MySqlConnectorClientProvider.Instance);
+
+                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);  // 放在“后面”注册
                     break;
                 }
 
@@ -59,7 +59,7 @@ public static class MySqlProviderUtils
                 throw new ArgumentOutOfRangeException(nameof(flag), "参数flag的取值超出有效范围(1~3)，当前值：" + flag.ToString());
         }
 
-        //CurrentProviderFlag = flag;
+        CurrentProviderFlag = flag;
     }
 
 

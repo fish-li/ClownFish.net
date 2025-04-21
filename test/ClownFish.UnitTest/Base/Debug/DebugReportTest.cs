@@ -79,7 +79,7 @@ namespace ClownFish.UnitTest.Base.Debug
             Console.WriteLine(text);
 
             Assert.IsFalse(text.Contains("3f3144a9ff6d4782818ee8d60f0cd09e"));
-            Assert.IsTrue(text.Contains("aaaaaaa_ConnectionString: Server=a72d23afd3b24ef6ac83cd339d5977c9;Database=;Uid=root;Pwd=********;"));
+            Assert.IsTrue(text.Contains("aaaaaaa_ConnectionString: Server=a72d23afd3b24ef6ac83cd339d5977c9;Uid=root;Pwd=********;"));
 
             Assert.IsFalse(text.Contains("9534ea5a3a074b688d94a8e777c6f119"));
             Assert.IsTrue(text.Contains("bbbbbbb_Password: ********"));
