@@ -123,18 +123,29 @@ public sealed class XmlCommandManager
     /// 根据配置文件中的命令名获取对应的命令对象。
     /// </summary>
     /// <param name="name">命令名称，它应该能对应一个XmlCommand</param>
+    /// <param name="databaseType"></param>
     /// <returns>如果找到符合名称的XmlCommand，则返回它，否则返回null</returns>
-    public XmlCommandItem GetCommand(string name)
+    public XmlCommandItem GetCommand(string name, DatabaseType databaseType = DatabaseType.Unknow)
     {
         //if( s_exceptionOnLoad != null )
         //	throw s_exceptionOnLoad;
 
 
-        // 优先加载文件中指定的XmlCommand，这样可以实现文件对程序集资源的覆盖
+        if( ClownFishOptions.XmlCommandSupportMulitDbType && databaseType != DatabaseType.Unknow ) {
 
-        return _dict.TryGet(name)
-               ?? _dictXml.TryGet(name)
-               ;
+            // 优先查找【特定的】数据库种类
+            string name2 = name + "." + databaseType.ToString();
+            XmlCommandItem item = _dict.TryGet(name2) ?? _dictXml.TryGet(name2);
+
+            if( item == null ) {
+                item = _dict.TryGet(name) ?? _dictXml.TryGet(name);
+            }
+
+            return item;
+        }
+        else {
+            return _dict.TryGet(name) ?? _dictXml.TryGet(name);
+        }
 
         //throw new ArgumentOutOfRangeException("name", "不能根据指定的名称找到匹配的XmlCommand，name: " + name);
     }

@@ -9,6 +9,8 @@ public sealed class XmlCommand : BaseCommand
 {
     private XmlCommandItem _item;
 
+    internal XmlCommandItem Item => _item;
+
     // 记录 IN 参数的序号，供SetInArrayParameter方法使用
     // 由于 XmlCommand 不支持嵌套，所以就用实例字段来累加（与CPQuery不同）
     private int _paramIndex = 1;
@@ -240,10 +242,9 @@ public sealed class XmlCommand : BaseCommand
         if( string.IsNullOrEmpty(name) )
             throw new ArgumentNullException("name");
 
-        XmlCommandItem item = XmlCommandManager.Instance.GetCommand(name);
+        XmlCommandItem item = XmlCommandManager.Instance.GetCommand(name, this.Context.DatabaseType);
         if( item == null )
-            throw new ArgumentOutOfRangeException("name",
-                            string.Format("指定的XmlCommand名称 {0} 不存在。", name));
+            throw new ArgumentOutOfRangeException("name", $"指定的XmlCommand名称 {name} 不存在!");
 
         // 填充命令对象
         _command.CommandText = item.CommandText;

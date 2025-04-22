@@ -39,6 +39,11 @@ internal static class ClownFishOptions
     /// ThreadUtils在处理未捕获异常时是否显示到控制台窗口
     /// </summary>
     public static readonly bool ThreadUtilsShowErrorToConsole = LocalSettings.GetBool("ClownFish_ThreadUtils_ShowErrorToConsole", 1);
+
+    /// <summary>
+    /// 查找 XmlCommand 时【优先】支持特定的数据库种类，默认值：false (不损害性能)
+    /// </summary>
+    public static bool XmlCommandSupportMulitDbType = LocalSettings.GetBool("ClownFish_XmlCommand_SupportMulitDbType", 0);
 }
 
 
