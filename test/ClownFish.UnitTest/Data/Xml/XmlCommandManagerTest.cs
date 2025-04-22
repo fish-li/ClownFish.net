@@ -50,42 +50,35 @@ public class XmlCommandManagerTest
     {
         using( DbContext db = DbContext.Create("mysql") ) {
             XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
-            string sql = command.Item.CommandText.Value.Trim();
-
-            Assert.IsTrue(sql.Contains(" limit 1"));
-            Assert.IsFalse(sql.Contains(" top 1"));
+            Assert.AreEqual("RandGetCustomer", command.Item.CommandName);
         }
 
+        // 【优先查找】开关没有打开，此时得到的结果和 "mysql" 一样
         using( DbContext db = DbContext.Create("sqlserver") ) {
             XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
-            string sql = command.Item.CommandText.Value.Trim();
-
-            // 此时得到的结果和 "mysql" 连接的结果一样
-            Assert.IsTrue(sql.Contains(" limit 1"));
-            Assert.IsFalse(sql.Contains(" top 1"));
+            Assert.AreEqual("RandGetCustomer", command.Item.CommandName);
         }
 
-
+        // 开启【优先查找】开关
         ClownFishOptions.XmlCommandSupportMulitDbType = true;
 
         using( DbContext db = DbContext.Create("sqlserver") ) {
             XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
-            string sql = command.Item.CommandText.Value.Trim();
+            Assert.AreEqual("RandGetCustomer.SQLSERVER", command.Item.CommandName);  // 结果有变化！
+        }
 
-            // 结果有变化！
-            Assert.IsTrue(sql.Contains(" top 1"));
-            Assert.IsFalse(sql.Contains(" limit 1"));
+        using( DbContext db = DbContext.Create("kingbase3") ) {   // 使用了自定义的枚举值（数字）
+            XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
+            Assert.AreEqual("RandGetCustomer.7777", command.Item.CommandName);  // 结果有变化！
         }
 
         ClownFishOptions.XmlCommandSupportMulitDbType = false;
 
+
+        // 关闭【优先查找】开关后，此时得到的结果和 "mysql" 连接的结果一样
         using( DbContext db = DbContext.Create("sqlserver") ) {
             XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
-            string sql = command.Item.CommandText.Value.Trim();
-
-            // 此时得到的结果和 "mysql" 连接的结果一样
-            Assert.IsTrue(sql.Contains(" limit 1"));
-            Assert.IsFalse(sql.Contains(" top 1"));
+            Assert.AreEqual("RandGetCustomer", command.Item.CommandName);
         }
     }
 
@@ -94,19 +87,20 @@ public class XmlCommandManagerTest
     {
         ClownFishOptions.XmlCommandSupportMulitDbType = true;
 
-        string sql1, sql2;
+        string name1, name2;
 
         using( DbContext db = DbContext.Create("mysql") ) {
             XmlCommand command = db.XmlCommand.Create("GetCustomerById");
-            sql1 = command.Item.CommandText.Value.Trim();
+            name1 = command.Item.CommandName;
         }
 
         using( DbContext db = DbContext.Create("sqlserver") ) {
             XmlCommand command = db.XmlCommand.Create("GetCustomerById");
-            sql2 = command.Item.CommandText.Value.Trim();
+            name2 = command.Item.CommandName;
         }
 
-        Assert.AreEqual(sql1, sql2);
+        // 即使打开了【优先查找】开关，但是并没有针对特定数据库的XmlCommand，所以二次查找结果相同
+        Assert.AreEqual(name1, name2);
 
         ClownFishOptions.XmlCommandSupportMulitDbType = false;
     }
