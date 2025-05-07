@@ -30,16 +30,17 @@ public static class Console2
     /// </summary>
     /// <param name="outFilePath">一个文件路径，随后程序的所有控制台输出都将写入此文件。 如果指定的文件不存在，程序会自动创建，如果指定的文件存在，文件将清空。</param>
     /// <param name="maxFileLength">文件的最大长度。超过最大长度后，文件内容会清空，然后继续写入。如果此参数小于等于零，则不检查文件长度，此时有可能会把磁盘写爆。</param>
-    /// <param name="useSysConsole">是否同时将输出消息写入 System.Console</param>
+    /// <param name="syncSysConsole">是否同时将输出消息写入 System.Console</param>
+    /// <param name="appendMode">第一次打开文件时，是否使用追加模式，否则会创建一个空文件</param>
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public static void SetOutToFile(string outFilePath, long maxFileLength, bool useSysConsole = false)
+    public static void SetOutToFile(string outFilePath, long maxFileLength, bool syncSysConsole = false, bool appendMode = false)
     {
         if( outFilePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(outFilePath));
 
         s_console.Dispose();
 
-        s_console = new FileConsoleImpl(outFilePath, maxFileLength, useSysConsole);
+        s_console = new FileConsoleImpl(outFilePath, maxFileLength, syncSysConsole, appendMode);
     }
 
     internal static void ResetOut()  // for UnitTest
@@ -89,7 +90,7 @@ public static class Console2
 
         string text = s_listenLines.ToString();
         s_listenLines = null;
-        
+
         RetryFile.WriteAllText(filePath, text);
         return filePath;
     }
@@ -286,24 +287,26 @@ internal sealed class FileConsoleImpl : IConsole
     private readonly string _filePath;
     private readonly long _maxFileLength;
     private FileStream _stream;
-    private readonly bool _useSysConsole;
+    private readonly bool _syncSysConsole;
 
 
-    public FileConsoleImpl(string outFilePath, long maxFileLength, bool useSysConsole)
+    public FileConsoleImpl(string outFilePath, long maxFileLength, bool syncSysConsole, bool appendMode)
     {
         // 确保文件所在的目录是存在的，否则在创建文件时会出现异常
         string parentDirectory = Path.GetDirectoryName(outFilePath);
         Directory.CreateDirectory(parentDirectory);
 
-        _useSysConsole = useSysConsole;
+        _syncSysConsole = syncSysConsole;
         _filePath = outFilePath;
         _maxFileLength = maxFileLength;
-        OpenFile();        
+
+        OpenFile(appendMode);
     }
 
-    private void OpenFile()
+    private void OpenFile(bool appendMode)
     {
-        _stream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan);
+        FileMode fileMode = appendMode ? FileMode.Append : FileMode.Create;
+        _stream = new FileStream(_filePath, fileMode, FileAccess.Write, FileShare.Read, 4096, FileOptions.SequentialScan);
     }
 
     public void WriteLine(string line)
@@ -314,7 +317,7 @@ internal sealed class FileConsoleImpl : IConsole
                 if( _stream.Position > _maxFileLength ) {
                     _stream.Close();
                     Thread.Sleep(50);
-                    OpenFile();
+                    OpenFile(false);  // 文件长度过大，创建新文件，重新开始
                 }
             }
 
@@ -323,7 +326,7 @@ internal sealed class FileConsoleImpl : IConsole
             _stream.Write(s_bytes, 0, s_bytes.Length);
             _stream.Flush();
 
-            if( _useSysConsole ) {
+            if( _syncSysConsole ) {
                 Console.WriteLine(line);
             }
         }
