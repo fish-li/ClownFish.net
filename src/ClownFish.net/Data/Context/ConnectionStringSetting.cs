@@ -7,7 +7,7 @@
 public sealed class ConnectionStringSetting
 {
     /// <summary>
-    /// 连接名称
+    /// 数据库连接名称
     /// </summary>
     [XmlAttribute("name")]
     public string Name { get; set; }

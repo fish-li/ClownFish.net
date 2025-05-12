@@ -11,6 +11,7 @@ public class ConnectionManagerTest : BaseTest
 
         ConnectionInfo connection2 = ConnectionManager.GetConnection("sqlserver");
         Assert.IsNotNull(connection2);
+        Assert.AreEqual("sqlserver", connection2.Name);
 
         Assert.AreEqual(connection1.ConnectionString, connection2.ConnectionString);
         Assert.AreEqual(connection1.ProviderName, connection2.ProviderName);
@@ -36,6 +37,7 @@ public class ConnectionManagerTest : BaseTest
     public void Test_ConnectionScope_Create()
     {
         ConnectionInfo info = ConnectionManager.GetConnection("sqlserver");
+        Assert.AreEqual("sqlserver", info.Name);
 
         using( ConnectionScope
                 scope1 = ConnectionScope.Create(),
@@ -69,6 +71,7 @@ public class ConnectionManagerTest : BaseTest
         Assert.IsNotNull(AppConfig.GetDbConfig("dm1"));
 
         DbConfig s1 = AppConfig.GetDbConfig("s1");
+        Assert.AreEqual("s1", s1.Name);
         Assert.AreEqual(DatabaseType.SQLSERVER, s1.DbType);
         Assert.AreEqual("MsSqlHost", s1.Server);
         Assert.AreEqual(0, s1.Port);
@@ -78,6 +81,7 @@ public class ConnectionManagerTest : BaseTest
 
 
         DbConfig m2 = AppConfig.GetDbConfig("m2");
+        Assert.AreEqual("m2", m2.Name);
         Assert.AreEqual(DatabaseType.MySQL, m2.DbType);
         Assert.AreEqual("MySqlHost", m2.Server);
         Assert.AreEqual(0, m2.Port);
@@ -87,6 +91,7 @@ public class ConnectionManagerTest : BaseTest
         Assert.AreEqual("Allow Zero Datetime=True;Convert Zero Datetime=True;", m2.Args);
 
         DbConfig dm1 = AppConfig.GetDbConfig("dm1");
+        Assert.AreEqual("dm1", dm1.Name);
         Assert.AreEqual(DatabaseType.DaMeng, dm1.DbType);
         Assert.AreEqual("PgSqlHost", dm1.Server);
         Assert.AreEqual(15236, dm1.Port);
@@ -97,7 +102,10 @@ public class ConnectionManagerTest : BaseTest
     public void Test_GetDbConfig()
     {
         ConnectionInfo conn1 = ConnectionManager.GetConnection("sqlserver");
+        Assert.AreEqual("sqlserver", conn1.Name);
+
         DbConfig config1 = ConnectionManager.GetDbConfig("s1");
+        Assert.AreEqual("s1", config1.Name);
 
         Console.WriteLine(conn1.ConnectionString);
         Console.WriteLine(config1.GetConnectionString(true));
@@ -115,5 +123,30 @@ public class ConnectionManagerTest : BaseTest
         Assert.AreEqual(b1.InitialCatalog, b2.InitialCatalog);
         Assert.AreEqual(b1.UserID, b2.UserID);
         Assert.AreEqual(b1.Password, b2.Password);
+    }
+
+    [TestMethod]
+    public void Test_ConnName()
+    {
+        Test_ConnName0("sqlserver2");
+        Test_ConnName0("mysql");
+        Test_ConnName0("postgresql");
+        Test_ConnName0("kingbase");
+        Test_ConnName0("master");
+        Test_ConnName0("s2");
+        Test_ConnName0("m2");
+        Test_ConnName0("pg1");
+        Test_ConnName0("tenant_xsql_my57a04574bf635");
+
+#if NETCOREAPP
+        Test_ConnName0("kingbase3");
+#endif
+    }
+
+    private static void Test_ConnName0(string connName)
+    {
+        using DbContext db = DbContext.Create(connName);
+        Assert.AreEqual(connName, db.ConnectionInfo.Name);
+        Assert.AreEqual(connName, db.ConnName);
     }
 }

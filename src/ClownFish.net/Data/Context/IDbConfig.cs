@@ -6,38 +6,42 @@
 public interface IDbConfig
 {
     /// <summary>
+    /// 数据库连接名称
+    /// </summary>
+    string Name { get; }
+    /// <summary>
     /// 数据库类型
     /// </summary>
-    DatabaseType DbType { get; set; }
+    DatabaseType DbType { get; }
 
     /// <summary>
     /// 数据库服务器地址
     /// </summary>
-    string Server { get; set; }
+    string Server { get; }
 
     /// <summary>
     /// 服务监听端口。【仅当不是默认端口时指定】
     /// SQLSERVER默认端口：1433，MYSQL默认端口：3306
     /// </summary>
-    int? Port { get; set; }
+    int? Port { get; }
 
     /// <summary>
     /// 数据库名称
     /// </summary>
-    string Database { get; set; }
+    string Database { get; }
 
     /// <summary>
     /// 数据库的登录用户名
     /// </summary>
-    string UserName { get; set; }
+    string UserName { get; }
 
     /// <summary>
     /// 登录密码
     /// </summary>
-    string Password { get; set; }
+    string Password { get; }
 
     /// <summary>
     /// 额外的连接字符串参数
     /// </summary>
-    string Args { get; set; }
+    string Args { get; }
 }

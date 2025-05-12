@@ -38,6 +38,11 @@ public sealed class DbContext : IDisposable
     public string ProviderName => ConnectionInfo.ProviderName;
 
     /// <summary>
+    /// 数据库连接名称
+    /// </summary>
+    public string ConnName => ConnectionInfo.Name;
+
+    /// <summary>
     /// 额外数据，可供项目代码使用
     /// </summary>
     public object ExtData { get; set; }
@@ -162,7 +167,7 @@ public sealed class DbContext : IDisposable
     }
 
     /// <summary>
-    /// 【不推荐使用】使用默认的连接字符串创建DbContext实例
+    /// 使用默认的连接字符串创建DbContext实例，【注意】此方法仅用于只连接一个数据库的简单场景
     /// </summary>
     /// <returns></returns>
     public static DbContext Create()
@@ -172,7 +177,7 @@ public sealed class DbContext : IDisposable
     }
 
     /// <summary>
-    /// 根据指定的数据库连接名称创建DbContext实例，连接名称需要在connectionStrings中配置
+    /// 根据指定的数据库连接名称创建DbContext实例，连接名称需要在 connectionStrings或者dbConfigs 中配置
     /// </summary>
     /// <param name="connectionName"></param>
     /// <returns></returns>
@@ -199,15 +204,16 @@ public sealed class DbContext : IDisposable
     /// </summary>
     /// <param name="connectionString"></param>
     /// <param name="providerName"></param>
+    /// <param name="connName"></param>
     /// <returns></returns>
-    public static DbContext Create(string connectionString, string providerName)
+    public static DbContext Create(string connectionString, string providerName, string connName = null)
     {
-        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName);
-        return new DbContext(connectionInfo);
+        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName, connName);
+        return new DbContext(connectionInfo, null, null);
     }
 
     /// <summary>
-    /// 根据连接参数创建DbContext实例
+    /// 根据 DbConfig 参数创建 DbContext 实例
     /// </summary>
     /// <param name="dbConfig"></param>
     /// <returns></returns>
@@ -222,16 +228,16 @@ public sealed class DbContext : IDisposable
         string providerName = regInfo.ProviderName;
         string connectionString = regInfo.ClientProvider.GetConnectionString(dbConfig, true);
 
-        ConnectionInfo connInfo = new ConnectionInfo(connectionString, providerName);
+        ConnectionInfo connInfo = new ConnectionInfo(connectionString, providerName, dbConfig.Name);
 
         return new DbContext(connInfo, null, regInfo.ClientProvider);
     }
 
     /// <summary>
-    /// 根据指定的数据库连接对象和数据库类型创建DbContext实例
+    /// 强制使用指定的数据库连接对象 创建 DbContext 实例
     /// </summary>
-    /// <param name="connection"></param>
-    /// <param name="providerName"></param>
+    /// <param name="connection">强制使用一个现有的数据库连接</param>
+    /// <param name="providerName">用于构造ConnectionInfo对象，只做为标记使用</param>
     /// <returns></returns>
     public static DbContext Create(DbConnection connection, string providerName)
     {
@@ -245,7 +251,7 @@ public sealed class DbContext : IDisposable
         // 注意：这种方式得到的连接字符串有时候是不包含密码部分的，在这里也就无所谓了，反正不用它来打开连接。
         string connectionString = connection.ConnectionString;
 
-        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName);
+        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName, null);
         return new DbContext(connectionInfo, connection);
     }
 

@@ -86,6 +86,8 @@ public class DbContextTest
     public void Test_Ctor_MsSQL()
     {
         ConnectionStringSetting setting = AppConfig.GetConnectionString("sqlserver");
+        Assert.AreEqual("sqlserver", setting.Name);
+
         using System.Data.SqlClient.SqlConnection connection = new (setting.ConnectionString);
         connection.Open();
 

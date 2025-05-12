@@ -7,11 +7,12 @@ namespace ClownFish.Data;
 /// </summary>
 public sealed class ConnectionInfo
 {
-    internal ConnectionInfo(string connectionString, string providerName)
+    internal ConnectionInfo(string connectionString, string providerName, string connName)
     {
         if( string.IsNullOrEmpty(connectionString) )
             throw new ArgumentNullException("connectionString");
 
+        this.Name = connName;
         this.ConnectionString = connectionString;
 
         this.ProviderName = string.IsNullOrEmpty(providerName)
@@ -20,9 +21,14 @@ public sealed class ConnectionInfo
     }
 
     internal ConnectionInfo(ConnectionStringSetting setting)
-        : this(setting.ConnectionString, setting.ProviderName)
+        : this(setting.ConnectionString, setting.ProviderName, setting.Name)
     { }
 
+
+    /// <summary>
+    /// 数据库连接名称
+    /// </summary>
+    public string Name { get; private set; }
 
     /// <summary>
     /// 数据库连接字符串

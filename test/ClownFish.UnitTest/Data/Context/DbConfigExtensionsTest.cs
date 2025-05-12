@@ -8,12 +8,13 @@ public class DbConfigExtensionsTest
         DbConfig s1 = AppConfig.GetDbConfig("s1");
         using DbContext db1 = s1.CreateDbContext(true);
         Assert.AreEqual(DatabaseType.SQLSERVER, db1.DatabaseType);
+        Assert.AreEqual("s1", db1.ConnName);
 
 
         DbConfig m2 = AppConfig.GetDbConfig("m2");
         using DbContext db2 = m2.CreateDbContext(false);
         Assert.AreEqual(DatabaseType.MySQL, db2.DatabaseType);
-
+        Assert.AreEqual("m2", db2.ConnName);
 
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = DbConfigExtensions.CreateDbContext(null);
@@ -29,9 +30,11 @@ public class DbConfigExtensionsTest
 
         using DbContext db1 = m1.CreateDbContext(true, "MySqlConnector");
         Assert.IsInstanceOfType(db1.Connection, typeof(MySqlConnector.MySqlConnection));
+        Assert.AreEqual("m1", db1.ConnName);
 
         using DbContext db2 = m1.CreateDbContext(false, "MySql.Data");
         Assert.IsInstanceOfType(db2.Connection, typeof(MySql.Data.MySqlClient.MySqlConnection));
+        Assert.AreEqual("m1", db2.ConnName);
     }
 
 

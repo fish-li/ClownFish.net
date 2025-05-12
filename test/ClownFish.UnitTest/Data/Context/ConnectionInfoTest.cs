@@ -16,7 +16,7 @@ public  class ConnectionInfoTest
     public void Test_Error()
     {
         MyAssert.IsError<ArgumentNullException>(() => {
-            _= new ConnectionInfo(null, "providerName");
+            _= new ConnectionInfo(null, "providerName", "xxx");
         });
     }
 

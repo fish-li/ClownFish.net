@@ -40,7 +40,7 @@ public static class DbConfigExtensions
             if( providerName.IsNullOrEmpty() )
                 providerName = regInfo.ProviderName;
 
-            return DbContext.Create(connectionString, providerName);
+            return DbContext.Create(connectionString, providerName, dbConfig.Name);
         }
         else {
             string connectionString = regInfo.ClientProvider.GetConnectionString(dbConfig, false);  // 连接字符串【不包含】 “数据库名称”
@@ -48,7 +48,7 @@ public static class DbConfigExtensions
             if( providerName.IsNullOrEmpty() )
                 providerName = regInfo.ProviderName;
 
-            DbContext dbContext = DbContext.Create(connectionString, providerName);
+            DbContext dbContext = DbContext.Create(connectionString, providerName, dbConfig.Name);
             dbContext.ChangeDatabase(dbConfig.Database);
             return dbContext;
         }

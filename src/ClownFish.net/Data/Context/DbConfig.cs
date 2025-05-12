@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.Data;
 
 /// <summary>
-/// 应用库的连接信息
+/// 数据库连接参数
 /// </summary>
 public sealed class DbConfig : IDbConfig
 {
@@ -12,7 +12,7 @@ public sealed class DbConfig : IDbConfig
     public int Id { get; set; }
 
     /// <summary>
-    /// 应用别名
+    /// 数据库连接名称
     /// </summary>
     public string Name { get; set; }
 
