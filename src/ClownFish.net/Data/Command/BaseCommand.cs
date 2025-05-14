@@ -593,7 +593,7 @@ public abstract class BaseCommand
         using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
         using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
 
-        return Execute<int>(nameof(ToSingle),
+        return Execute<int>(nameof(ExportToNdJson),
             cmd => {
                 return ExportToNdJson0(cmd, maxRows, writer);
             });
@@ -611,7 +611,7 @@ public abstract class BaseCommand
         using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
         using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
 
-        return await ExecuteAsync<int>(nameof(ToSingle),
+        return await ExecuteAsync<int>(nameof(ExportToNdJsonAsync),
             async cmd => {
                 return await ExportToNdJson0Async(cmd, maxRows, writer);
             });
@@ -628,7 +628,7 @@ public abstract class BaseCommand
     {
         using StringWriter writer = new StringWriter(sb);
 
-        return Execute<int>(nameof(ToSingle),
+        return Execute<int>(nameof(ExportToNdJson),
             cmd => {
                 return ExportToNdJson0(cmd, maxRows, writer);
             });
@@ -645,7 +645,7 @@ public abstract class BaseCommand
     {
         using StringWriter writer = new StringWriter(sb);
 
-        return await ExecuteAsync<int>(nameof(ToSingle),
+        return await ExecuteAsync<int>(nameof(ExportToNdJsonAsync),
             async cmd => {
                 return await ExportToNdJson0Async(cmd, maxRows, writer);
             });

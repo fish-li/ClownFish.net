@@ -239,7 +239,7 @@ public sealed class DbContext : IDisposable
     /// <param name="connection">强制使用一个现有的数据库连接</param>
     /// <param name="providerName">用于构造ConnectionInfo对象，只做为标记使用</param>
     /// <returns></returns>
-    public static DbContext Create(DbConnection connection, string providerName)
+    public static DbContext Create(DbConnection connection, string providerName = null)
     {
         if( connection == null )
             throw new ArgumentNullException(nameof(connection));
@@ -251,7 +251,7 @@ public sealed class DbContext : IDisposable
         // 注意：这种方式得到的连接字符串有时候是不包含密码部分的，在这里也就无所谓了，反正不用它来打开连接。
         string connectionString = connection.ConnectionString;
 
-        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName, null);
+        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, (providerName ?? "null"), null);
         return new DbContext(connectionInfo, connection);
     }
 
