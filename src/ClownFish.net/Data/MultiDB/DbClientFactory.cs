@@ -83,7 +83,7 @@ public static class DbClientFactory
     {
         // 默认就是使用SQLSERVER
         if( providerName.IsNullOrEmpty() )
-            providerName = MsSqlProviderUtils.SqlServerDefaultProviderName;
+            providerName = MsSqlProviderUtils.CurrentProviderName;
 
 
         // 常用类型就直接返回固定结果，优化性能
@@ -102,7 +102,7 @@ public static class DbClientFactory
             return registerInfo.ClientProvider;
 
 
-        throw new NotSupportedException("不支持的数据提供者类型：" + providerName);
+        throw new NotSupportedException("没有注册的数据提供者类型：" + providerName);
     }
 
 

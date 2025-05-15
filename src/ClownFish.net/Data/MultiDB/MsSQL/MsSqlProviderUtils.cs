@@ -2,7 +2,7 @@
 
 internal static class MsSqlProviderUtils
 {
-    internal static string SqlServerDefaultProviderName { get; private set; } = "System.Data.SqlClient";
+    internal static string CurrentProviderName { get; private set; } = "System.Data.SqlClient";
 
     /// <summary>
     /// 注册 SQLSERVER 客户端提供者
@@ -20,12 +20,12 @@ internal static class MsSqlProviderUtils
 
             if( asmList.Contains("Microsoft.Data.SqlClient") ) {
                 DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
-                SqlServerDefaultProviderName = "Microsoft.Data.SqlClient";
+                CurrentProviderName = "Microsoft.Data.SqlClient";
             }
 
             if( asmList.Contains("System.Data.SqlClient") ) {
                 DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
-                SqlServerDefaultProviderName = "System.Data.SqlClient";
+                CurrentProviderName = "System.Data.SqlClient";
             }
         }
 
@@ -35,7 +35,7 @@ internal static class MsSqlProviderUtils
 
         if( flag == 2 ) {
             DbClientFactory.RegisterProvider(DatabaseClients.SqlClient2, MsSqlClientProvider2.Instance);
-            SqlServerDefaultProviderName = "Microsoft.Data.SqlClient";
+            CurrentProviderName = "Microsoft.Data.SqlClient";
         }
 #endif
     }

@@ -123,18 +123,28 @@ public class DbContextTest
     public void Test_Ctor_MySQL()
     {
         ConnectionStringSetting setting = AppConfig.GetConnectionString("mysql");
-        using MySqlConnector.MySqlConnection connection = new (setting.ConnectionString);
+        MySqlConnector.MySqlConnection connection = new (setting.ConnectionString);
         connection.Open();
 
         // 检验下面这种构造方式
-        using DbContext dbContext = DbContext.Create(connection, setting.ProviderName);
+        using( DbContext dbContext = DbContext.Create(connection, setting.ProviderName, false) ) { 
 
-        Assert.AreEqual(DatabaseType.MySQL, dbContext.DatabaseType);
-        Assert.AreEqual("MySql.Data.MySqlClient", dbContext.ProviderName);
+            Assert.AreEqual(DatabaseType.MySQL, dbContext.DatabaseType);
+            Assert.AreEqual("MySql.Data.MySqlClient", dbContext.ProviderName);   // DbContext.Create 第2个参数指定了ProviderName
 
-        // 执行一个只有 MySQL 才能理解的SQL
-        string username = dbContext.CPQuery.Create("select CURRENT_USER()").ExecuteScalar<string>();   // user1@%
+            // 执行一个只有 MySQL 才能理解的SQL
+            string username = dbContext.CPQuery.Create("select CURRENT_USER()").ExecuteScalar<string>();   // user1@%
 
-        Assert.IsTrue(username.StartsWith0("user1@"));
+            Assert.IsTrue(username.StartsWith0("user1@"));
+        }
+        Assert.IsTrue(connection.State == ConnectionState.Open);
+
+
+        using( DbContext dbContext2 = DbContext.Create(connection) ) {   // auto close connection
+            Assert.AreEqual(DatabaseType.MySQL, dbContext2.DatabaseType);
+            Assert.AreEqual("MySqlConnector", dbContext2.ProviderName);      // 没有指定，所以 ProviderName = “命名空间”
+        }
+        Assert.IsTrue(connection.State == ConnectionState.Closed);
+
     }
 }

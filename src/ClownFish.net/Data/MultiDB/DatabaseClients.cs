@@ -21,6 +21,11 @@ public static class DatabaseClients
     public static readonly string MySqlClient = "MySql.Data.MySqlClient";
 
     /// <summary>
+    /// string "MySqlConnector"
+    /// </summary>
+    public static readonly string MySqlConnector = "MySqlConnector";
+
+    /// <summary>
     /// string "Npgsql"
     /// </summary>
     public static readonly string PostgreSQL = "Npgsql";

@@ -44,14 +44,16 @@ internal static class MySqlProviderUtils
 
             case 2: {
                     DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);
+                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlConnector, MySqlConnectorClientProvider.Instance);
                     break;
                 }
 
             case 3: {
                     DbClientFactory.RegisterProvider("MySql.Data", MySqlDataClientProvider.Instance);
-                    DbClientFactory.RegisterProvider("MySqlConnector", MySqlConnectorClientProvider.Instance);
+                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlConnector, MySqlConnectorClientProvider.Instance);
 
-                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);  // 放在“后面”注册
+                    // 这个为了兼容而保留的名称，放在“后面”注册
+                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);  
                     break;
                 }
 

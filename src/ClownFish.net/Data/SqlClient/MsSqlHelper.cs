@@ -264,7 +264,7 @@ ORDER  BY [Schema],
             throw new ArgumentNullException(nameof(connectionString));
 
         if( string.IsNullOrEmpty(database) )
-            return DbContext.Create(connectionString, MsSqlProviderUtils.SqlServerDefaultProviderName);
+            return DbContext.Create(connectionString, MsSqlProviderUtils.CurrentProviderName);
 
 
         //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
@@ -274,7 +274,7 @@ ORDER  BY [Schema],
         builder.ConnectionString = connectionString;
         builder["Initial Catalog"] = database;
 
-        return DbContext.Create(builder.ToString(), MsSqlProviderUtils.SqlServerDefaultProviderName);
+        return DbContext.Create(builder.ToString(), MsSqlProviderUtils.CurrentProviderName);
     }
 
 

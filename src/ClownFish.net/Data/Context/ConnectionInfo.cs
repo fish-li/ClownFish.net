@@ -16,7 +16,7 @@ public sealed class ConnectionInfo
         this.ConnectionString = connectionString;
 
         this.ProviderName = string.IsNullOrEmpty(providerName)
-                                ? MsSqlProviderUtils.SqlServerDefaultProviderName   // 默认连接到SQLSERVER
+                                ? MsSqlProviderUtils.CurrentProviderName   // 默认连接到SQLSERVER
                                 : providerName;
     }
 

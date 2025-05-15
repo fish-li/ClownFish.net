@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.Data;
 
 /// <summary>
-/// 数据访问的上下文信息
+/// 数据访问的上下文对象
 /// </summary>
 public sealed class DbContext : IDisposable
 {
@@ -153,7 +153,7 @@ public sealed class DbContext : IDisposable
 
     #region 构造函数
 
-    internal DbContext(ConnectionInfo connectionInfo, DbConnection connection = null, BaseClientProvider clientProvider = null)
+    internal DbContext(ConnectionInfo connectionInfo, BaseClientProvider clientProvider = null, DbConnection connection = null, bool autoCloseConnection = true)
     {
         this.ClientProvider = clientProvider ?? DbClientFactory.GetProvider(connectionInfo.ProviderName);
         this.ConnectionInfo = connectionInfo;
@@ -162,7 +162,7 @@ public sealed class DbContext : IDisposable
 
         if( connection != null ) {
             _connection = connection;
-            _autoCloseConnection = false;
+            _autoCloseConnection = autoCloseConnection;
         }
     }
 
@@ -209,7 +209,7 @@ public sealed class DbContext : IDisposable
     public static DbContext Create(string connectionString, string providerName, string connName = null)
     {
         ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName, connName);
-        return new DbContext(connectionInfo, null, null);
+        return new DbContext(connectionInfo);
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public sealed class DbContext : IDisposable
     /// <returns></returns>
     public static DbContext Create(DbConfig dbConfig)
     {
-        if( dbConfig == null)
+        if( dbConfig == null )
             throw new ArgumentNullException(nameof(dbConfig));
 
 
@@ -230,19 +230,25 @@ public sealed class DbContext : IDisposable
 
         ConnectionInfo connInfo = new ConnectionInfo(connectionString, providerName, dbConfig.Name);
 
-        return new DbContext(connInfo, null, regInfo.ClientProvider);
+        return new DbContext(connInfo, regInfo.ClientProvider);
     }
 
     /// <summary>
     /// 强制使用指定的数据库连接对象 创建 DbContext 实例
     /// </summary>
-    /// <param name="connection">强制使用一个现有的数据库连接</param>
-    /// <param name="providerName">用于构造ConnectionInfo对象，只做为标记使用</param>
+    /// <param name="connection">一个现有的数据库连接对象</param>
+    /// <param name="providerName">与connection匹配的providerName，不可以随意指定，并且此名称已调用DbClientFactory.RegisterProvider方法注册过，
+    /// 如果不指定，默认取connection对象的类型所在命名空间名称。</param>
+    /// <param name="autoClose">connection对象是否可以被DbContext自动关闭</param>
     /// <returns></returns>
-    public static DbContext Create(DbConnection connection, string providerName = null)
+    public static DbContext Create(DbConnection connection, string providerName = null, bool autoClose = true)
     {
         if( connection == null )
             throw new ArgumentNullException(nameof(connection));
+
+        // 按照ADO.NET的约定，数据访问驱动都是采用“命名空间”来做providerName
+        if( providerName.IsNullOrEmpty() )
+            providerName = connection.GetType().Namespace;
 
         // 这里就不校验 providerName 是否与 connection 匹配了，
         // 例如：如果 connection is MySqlConnection , providerName == "System.Data.SqlClient" 也不管 ！
@@ -251,8 +257,9 @@ public sealed class DbContext : IDisposable
         // 注意：这种方式得到的连接字符串有时候是不包含密码部分的，在这里也就无所谓了，反正不用它来打开连接。
         string connectionString = connection.ConnectionString;
 
-        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, (providerName ?? "null"), null);
-        return new DbContext(connectionInfo, connection);
+
+        ConnectionInfo connectionInfo = new ConnectionInfo(connectionString, providerName, null);
+        return new DbContext(connectionInfo, null, connection, autoClose);
     }
 
 
