@@ -45,4 +45,27 @@ public class NetworkUtilsTest
         Assert.IsFalse(NetworkUtils.IsLanIP("aa.1.1.1"));
     }
 
+
+    [TestMethod]
+    public void Test_IsLanIP2()
+    {
+        Assert.IsTrue(NetworkUtils.IsLanIP("100.64.0.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("100.65.0.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("100.127.222.255"));
+
+        Assert.IsTrue(NetworkUtils.IsLanIP("127.1.1.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("127.222.111.255"));
+        
+        Assert.IsTrue(NetworkUtils.IsLanIP("169.254.0.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("169.254.222.255"));
+
+        Assert.IsTrue(NetworkUtils.IsLanIP("192.0.2.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("192.0.2.222"));
+
+        Assert.IsTrue(NetworkUtils.IsLanIP("198.51.100.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("198.51.100.222"));
+
+        Assert.IsTrue(NetworkUtils.IsLanIP("203.0.113.1"));
+        Assert.IsTrue(NetworkUtils.IsLanIP("203.0.113.233"));
+    }
 }
