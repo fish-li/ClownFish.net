@@ -53,7 +53,6 @@ public static class NetworkUtils
     /// </summary>
     /// <param name="hostIp"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLanIP(string hostIp)
     {
         if( IPAddress.TryParse(hostIp, out IPAddress ip) ) {
@@ -69,7 +68,6 @@ public static class NetworkUtils
     /// </summary>
     /// <param name="ip"></param>
     /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLanIP(IPAddress ip)
     {
         if( IPAddress.IsLoopback(ip) )
