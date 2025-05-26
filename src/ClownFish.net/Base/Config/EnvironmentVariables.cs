@@ -63,8 +63,11 @@ public static class EnvironmentVariables
         }
     }
 
-
-    internal static IEnumerable<KeyValuePair<string, string>> GetAll()
+    /// <summary>
+    /// 获取当前进程已加载的所有环境变量
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<KeyValuePair<string, string>> GetAll()
     {
         foreach( var x in s_dict ) {
             if( x.Key.Contains('.') == false )

@@ -139,7 +139,7 @@ internal static class DebugReportBlocks
         DebugReportBlock block = new DebugReportBlock { Category = "Environment Variables", Order = 100 };
 
         (from x in EnvironmentVariables.GetAll()
-         let line = GetEnvironmentVariableLine(x.Key, x.Value)
+         let line = SecurityLogUtils.GetEnvironmentVariableLine(x.Key, x.Value)
          orderby x.Key
          select line
          ).ToList().ForEach(x => block.AppendLine(x));
@@ -147,19 +147,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-    private static readonly HashSet<string> s_hideEnvNames = LocalSettings.GetSetting("DebugReport_HideEnvNames").SplitToHashSet();
-
-    private static string GetEnvironmentVariableLine(string key, string value)
-    {
-        if( key.EndsWithIgnoreCase("ConnectionString") )
-            return $"{key}: {ConnectionStringUtils.HidePwd(value)}";
-        else if( key.EndsWithIgnoreCase("Password") )
-            return $"{key}: ********";
-        else if( s_hideEnvNames.Contains(key) )
-            return $"{key}: ********";
-        else
-            return $"{key}: {value}";
-    }
+    
 
 
 

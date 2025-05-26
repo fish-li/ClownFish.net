@@ -104,7 +104,7 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
         }
 
         DbConnection connection = eventData.Get<DbConnection>("Connection");
-        step.Detail = "ConnectionString: " + ConnectionStringUtils.HidePwd(connection.ConnectionString);
+        step.Detail = "ConnectionString: " + SecurityLogUtils.HideConnectionStringPwd(connection.ConnectionString);
 
         step.End(startTime.Add(eventData.Get<TimeSpan>("Duration")));
         scope.AddStep(step);
