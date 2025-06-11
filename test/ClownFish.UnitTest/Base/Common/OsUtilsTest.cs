@@ -44,6 +44,9 @@ BUG_REPORT_URL=""https://bugs.debian.org/""
     {
         string name = OsUtils.GetOsName();
         Console.WriteLine(name);  // Microsoft Windows NT 10.0.19045.0
+
+        Console.WriteLine(Environment.OSVersion.ToString());
+        Console.WriteLine(RuntimeInformation.OSDescription);
     }
 
     [TestMethod]

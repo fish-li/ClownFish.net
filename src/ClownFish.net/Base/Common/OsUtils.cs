@@ -38,7 +38,18 @@ public static class OsUtils
             return s_linuxOsName;
         }
 
+        // 说明：低版本的.NET（例如： net45） 中 Environment.OSVersion.ToString() 得到的结果不正确，
+        //      它在面对 Windows 8.1 或更高版本时，一律返回 Microsoft Windows NT 6.2.9200.0
+        // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/compatibility/core-libraries/5.0/environment-osversion-returns-correct-version
+        //      https://learn.microsoft.com/zh-cn/windows/win32/sysinfo/targeting-your-application-at-windows-8-1
+
+        // 另一个类似的属性 RuntimeInformation.OSDescription 直到 net471 才被支持
+
+#if NET471_OR_GREATER
+        return RuntimeInformation.OSDescription;
+#else
         return Environment.OSVersion.ToString();
+#endif
     }
 
     private static string s_linuxOsName = null;
