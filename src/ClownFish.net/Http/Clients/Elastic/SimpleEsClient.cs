@@ -99,6 +99,27 @@ public sealed class SimpleEsClient
         return data.GetId();
     }
 
+
+    private readonly ValueCounter _counter = new ValueCounter();
+
+    private bool NeedCheckResponse()
+    {
+        if( ClownFishOptions.SimpleEsClient_CheckResponseFrequency <= 0 )
+            return false;
+
+        long count = _counter.Increment();
+
+        if( count < 10 )
+            return true;
+
+        if( count % ClownFishOptions.SimpleEsClient_CheckResponseFrequency == 1 )
+            return true;
+
+        return false;
+    }
+
+
+
     #endregion
 
     #region 写数据 One
@@ -115,8 +136,14 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
-        string response = httpOption.GetResult();
-        CheckCreateResponse(response);
+
+        if( NeedCheckResponse() ) {
+            string response = httpOption.GetResult();
+            CheckCreateResponse(response);
+        }
+        else {
+            httpOption.Send();
+        }
     }
 
     /// <summary>
@@ -131,8 +158,14 @@ public sealed class SimpleEsClient
             return;
 
         HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
-        string response = await httpOption.GetResultAsync();
-        CheckCreateResponse(response);
+
+        if( NeedCheckResponse() ) {
+            string response = await httpOption.GetResultAsync();
+            CheckCreateResponse(response);
+        }
+        else {
+            await httpOption.SendAsync();
+        }
 
         //HttpResult<string> result = await httpOption.GetResultAsync<HttpResult<string>>();
         //Console2.WriteLine("====================== Write Elasticsearch Request =====================================");
@@ -188,7 +221,6 @@ public sealed class SimpleEsClient
 
     #region 写数据 List/Bulk
 
-    private readonly ValueCounter _counter = new ValueCounter();
 
     /// <summary>
     /// Write list
@@ -205,8 +237,8 @@ public sealed class SimpleEsClient
 
         // 写ES出现错误的概率极低，除非是数据本身有问题，或者是ES服务端的资源出现问题，
         // 所以为了最大限度的提升性能，这里采用抽样策略来检查ES的返回结果
-        long count = _counter.Increment();
-        if( count < 10 || count % 10 == 1 ) {
+
+        if( NeedCheckResponse() ) {
             string response = httpOption.GetResult();
             CheckBulkResponse(response);
         }
@@ -235,8 +267,7 @@ public sealed class SimpleEsClient
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName);
 
-        long count = _counter.Increment();
-        if( count < 10 || count % 10 == 1 ) {
+        if( NeedCheckResponse() ) {
             string response = await httpOption.GetResultAsync();
             CheckBulkResponse(response);
         }

@@ -44,6 +44,11 @@ internal static class ClownFishOptions
     /// 查找 XmlCommand 时【优先】支持特定的数据库种类，默认值：false (不损害性能)
     /// </summary>
     public static bool XmlCommandSupportMulitDbType = LocalSettings.GetBool("ClownFish_XmlCommand_SupportMulitDbType", 0);
+
+    /// <summary>
+    /// SimpleEsClient写日志时多久检查一次响应体来判断是否写入成功，默认值：0，表示永远不检查响应体。 如果设置为 100 表示 每执行 100 次写入动作，检查 1 次是否写入成功！
+    /// </summary>
+    public static readonly int SimpleEsClient_CheckResponseFrequency = LocalSettings.GetInt("SimpleEsClient_CheckResponseFrequency", 0);
 }
 
 
