@@ -323,6 +323,9 @@ public class CPQueryTest : BaseTest
         StringBuilder sb1 = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
 
+        StringWriter writer1 = new StringWriter(sb1);
+        StringWriter writer2 = new StringWriter(sb2);
+
         int count1,count2,count3,count4;
         int maxRows = 100;
 
@@ -330,8 +333,8 @@ public class CPQueryTest : BaseTest
             count1 = db.CPQuery.Create(sql, args).ExportToNdJson(maxRows, outFilePath1);
             count2 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(maxRows, outFilePath2);
 
-            count3 = db.CPQuery.Create(sql, args).ExportToNdJson(maxRows, sb1);
-            count4 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(maxRows, sb2);
+            count3 = db.CPQuery.Create(sql, args).ExportToNdJson(maxRows, writer1);
+            count4 = await db.CPQuery.Create(sql, args).ExportToNdJsonAsync(maxRows, writer2);
         }
 
         Assert.IsTrue(count1 > 0);
@@ -352,10 +355,11 @@ public class CPQueryTest : BaseTest
         // 下面验证 “空查询” 场景
         int count5 = -1, count6 = -1;
         StringBuilder sb3 = new StringBuilder();
+        StringWriter writer3 = new StringWriter(sb3);
         string outFilePath3 = "temp/Test_CPQuery_ExportToNdJson3.txt";
 
         using( DbContext db = DbContext.Create("mysql") ) {
-            count5 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(maxRows, sb1);
+            count5 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(maxRows, writer3);
             count6 = db.CPQuery.Create("select * from products where ProductID < 0").ExportToNdJson(maxRows, outFilePath3);
         }
         Assert.IsTrue(count5 == 0);

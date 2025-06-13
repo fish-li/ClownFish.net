@@ -13,7 +13,22 @@ public sealed class TempFile : IDisposable
     private TempFile() { }
 
     /// <summary>
-    /// 创建临时文件
+    /// 创建一个TempFile实例，它包含一个临时文件路径，此时临时文件还没有创建，可用于后续执行写入操作
+    /// </summary>
+    /// <param name="extName"></param>
+    /// <returns></returns>
+    public static TempFile CreateFile(string extName = ".tmp")
+    {
+        // 临时目录有可能会被删除，所以创建临时文件前先创建临时目录
+        Directory.CreateDirectory(EnvUtils.GetTempPath());
+
+        string filePath = GenTempFileFullName(extName);
+        return new TempFile { FilePath = filePath };
+    }
+
+
+    /// <summary>
+    /// 用指定的二进制数据 创建一个临时文件
     /// </summary>
     /// <param name="body"></param>
     /// <param name="extName">文件扩展名</param>
@@ -24,6 +39,9 @@ public sealed class TempFile : IDisposable
             throw new ArgumentNullException(nameof(body));
 
         string filePath = GenTempFileFullName(extName);
+
+        // 临时目录有可能会被删除，所以创建临时文件前先创建临时目录
+        Directory.CreateDirectory(EnvUtils.GetTempPath());
 
         RetryFile.WriteAllBytes(filePath, body);
 
@@ -53,7 +71,7 @@ public sealed class TempFile : IDisposable
     }
 
     /// <summary>
-    /// 创建临时文件
+    /// 用指定的二进制数据 创建一个临时文件
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="extName">文件扩展名</param>

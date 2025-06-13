@@ -48,7 +48,7 @@ public abstract class BaseCommand
     {
         if( context == null )
             throw new ArgumentNullException(nameof(context));
-    
+
         _context = context;
         _command = context.Connection.CreateCommand();
     }
@@ -619,14 +619,15 @@ public abstract class BaseCommand
 
 
     /// <summary>
-    /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到 TextWriter
     /// </summary>
     /// <param name="maxRows">最大导出行数，正数时有效</param>
-    /// <param name="sb"></param>
+    /// <param name="writer"></param>
     /// <returns>查询的数据结果行数</returns>
-    public int ExportToNdJson(int maxRows, StringBuilder sb)
+    public int ExportToNdJson(int maxRows, TextWriter writer)
     {
-        using StringWriter writer = new StringWriter(sb);
+        if( writer == null )
+            throw new ArgumentNullException(nameof(writer));
 
         return Execute<int>(nameof(ExportToNdJson),
             cmd => {
@@ -636,14 +637,15 @@ public abstract class BaseCommand
 
 
     /// <summary>
-    /// 执行查询命令，将结果以 Multi-Json 格式写入到StringBuilder
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到 TextWriter
     /// </summary>
     /// <param name="maxRows">最大导出行数，正数时有效</param>
-    /// <param name="sb"></param>
+    /// <param name="writer"></param>
     /// <returns>查询的数据结果行数</returns>
-    public async Task<int> ExportToNdJsonAsync(int maxRows, StringBuilder sb)
+    public async Task<int> ExportToNdJsonAsync(int maxRows, TextWriter writer)
     {
-        using StringWriter writer = new StringWriter(sb);
+        if( writer == null )
+            throw new ArgumentNullException(nameof(writer));
 
         return await ExecuteAsync<int>(nameof(ExportToNdJsonAsync),
             async cmd => {

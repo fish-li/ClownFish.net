@@ -151,7 +151,8 @@ public class DataTypeTest
 
             // 下面只是检验下在【可空字段】情况下ExportToNdJson能正常运行
             StringBuilder sb1 = new StringBuilder();
-            dbContext.CPQuery.Create("select * from TestType").ExportToNdJson(0, sb1);
+            StringWriter writer1 = new StringWriter(sb1);
+            dbContext.CPQuery.Create("select * from TestType").ExportToNdJson(0, writer1);
             string text1 = sb1.ToString();
             Console.WriteLine(text1);
             Assert.IsTrue(text1.Length > 0);
