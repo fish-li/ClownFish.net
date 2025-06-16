@@ -11,4 +11,9 @@ public sealed class BatchWritableAttribute : Attribute
     /// 每个批次的大小
     /// </summary>
     public int BatchSize { get; set; } = 10;
+
+    /// <summary>
+    /// 列表序列化时是否采用 ndjson 格式
+    /// </summary>
+    public bool Ndjson { get; set; }
 }

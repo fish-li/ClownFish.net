@@ -45,6 +45,11 @@ public sealed class InvokeLog : IMsgObject
     public int IsLongTask { get; set; }
 
     /// <summary>
+    /// 指示当前操作是否出现异常
+    /// </summary>
+    public int HasError { get; set; }
+
+    /// <summary>
     /// 服务端响应状态码
     /// </summary>
     public int Status { get; set; }
@@ -52,13 +57,7 @@ public sealed class InvokeLog : IMsgObject
     /// <summary>
     /// 操作的简要描述，例如可以是URL
     /// </summary>
-    public string Title { get; set; }
-
-
-    /// <summary>
-    /// 指示当前操作是否出现异常
-    /// </summary>
-    public int HasError { get; set; }
+    public string Title { get; set; }    
 
 
     string IMsgObject.GetId() => this.ProcessId;
