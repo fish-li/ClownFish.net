@@ -107,4 +107,22 @@ public class JsonExtensionsTest
 
 #endif
 
+
+    //[TestMethod]
+    //public void Test_DbNull()
+    //{
+    //    JsonSerializerSettings settings = ClownFish.Base.Json.JsonSerializerSettingsUtils.Get(JsonStyle.None);
+    //    settings.NullValueHandling = NullValueHandling.Ignore;
+
+    //    Dictionary<string, object> dict = new Dictionary<string, object>();
+    //    dict["aa"] = 1;
+    //    dict["bb"] = DBNull.Value;
+    //    dict["cc"] = null;
+
+    //    string json = dict.ToJson(settings);
+    //    Console.WriteLine(json);
+
+    //    // output: {"aa":1,"bb":null,"cc":null}
+    //}
+
 }

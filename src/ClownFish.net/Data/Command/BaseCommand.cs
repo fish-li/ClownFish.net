@@ -664,10 +664,17 @@ public abstract class BaseCommand
 
             while( reader.Read() ) {
                 count++;
+
                 for( int i = 0; i < columnCount; i++ ) {
                     string name = reader.GetName(i);
                     object value = reader.GetValue(i);
-                    row[name] = value;
+
+                    if( value == null || value == DBNull.Value ) {
+                        // ignore
+                    }
+                    else {
+                        row[name] = value;
+                    }
                 }
 
                 string json = row.ToJson();
@@ -694,10 +701,17 @@ public abstract class BaseCommand
 
             while( await reader.ReadAsync() ) {
                 count++;
+
                 for( int i = 0; i < columnCount; i++ ) {
                     string name = reader.GetName(i);
                     object value = reader.GetValue(i);
-                    row[name] = value;
+
+                    if( value == null || value == DBNull.Value ) {
+                        // ignore
+                    }
+                    else {
+                        row[name] = value;
+                    }
                 }
 
                 string json = row.ToJson();
