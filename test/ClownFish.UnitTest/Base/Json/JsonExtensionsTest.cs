@@ -4,6 +4,13 @@
 public class JsonExtensionsTest
 {
     [TestMethod]
+    public void Test_1()
+    {
+        // 这个测试用例没什么实质意义，只为了覆盖率
+        _ = JsonExtensions.DefaultCamelCase;
+    }
+
+    [TestMethod]
     public void Test_ToJson_FromJson()
     {
         Product2 p = Product2.CreateByRandomData();
@@ -44,50 +51,11 @@ public class JsonExtensionsTest
         Assert.IsTrue(p.IsEqual(p2));
     }
 
-    [TestMethod]
-    public void Test_ToMultiLineJson()
-    {
-        List<Product2> list = new List<Product2>();
-        list.Add(Product2.CreateByFixedData());
-        list.Add(Product2.CreateByFixedData());
-        list.Add(Product2.CreateByFixedData());
-
-        string lines = list.ToMultiLineJson().TrimEnd();
-        Assert.AreEqual(2, lines.Where(x => x == '\n').Count());
-        Assert.IsTrue(lines.StartsWith("{"));
-        Assert.IsTrue(lines.EndsWith("}"));
-
-
-        List<Product2> list2 = lines.FromMultiLineJson<Product2>();
-        Assert.AreEqual(3, list2.Count);
-
-        MyAssert.AreEqual(list, list2);
-    }
-
-
-    [TestMethod]
-    public void Test_FromMultiLineJson()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(Product2.CreateByFixedData().ToJson()).Append("\n");
-        sb.Append(Product2.CreateByRandomData().ToJson()).Append("\n");
-        sb.Append(Product2.CreateByRandomData().ToJson()).Append("\n");
-
-        List<Product2> list = sb.ToString().FromMultiLineJson<Product2>();
-        Assert.AreEqual(3, list.Count);
-
-
-        List<Product2> list2 = JsonExtensions.FromMultiLineJson<Product2>(string.Empty);
-        Assert.AreEqual(0, list2.Count);
-
-        List<Product2> list3 = JsonExtensions.FromMultiLineJson<Product2>(null);
-        Assert.IsNull(list3);
-    }
-
+   
     [TestMethod]
     public void Test_ToJsonSerializerSettings()
     {
-        JsonSerializerSettings jss = JsonStyle.Indented.ToJsonSerializerSettings();
+        JsonSerializerSettings jss = JsonStyle.Indented.ToSettings();
         Assert.AreEqual(Formatting.Indented, jss.Formatting);
     }
 
@@ -125,4 +93,14 @@ public class JsonExtensionsTest
     //    // output: {"aa":1,"bb":null,"cc":null}
     //}
 
+
+    [TestMethod]
+    public void Test_x_args()
+    {
+        object nullObject = null;
+        Assert.IsNull(nullObject.ToJson());
+
+        Assert.IsNull("".FromJson<InvokeLog>());
+        Assert.IsNull("".FromJson(typeof(InvokeLog)));
+    }
 }

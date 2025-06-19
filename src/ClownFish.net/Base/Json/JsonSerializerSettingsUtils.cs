@@ -11,7 +11,6 @@ internal static class JsonSerializerSettingsUtils
     private static readonly JsonSerializerSettings s_jsonSettingsNone = Get0(JsonStyle.None);
     private static readonly JsonSerializerSettings s_jsonSettingsIndented = Get0(JsonStyle.Indented);
     private static readonly JsonSerializerSettings s_jsonSettingsCamelCase = Get0(JsonStyle.CamelCase);
-    private static readonly JsonSerializerSettings s_jsonSettingsElasticsearch = Get0(SimpleEsClient.EsJsonStyle);
 
     internal static bool EnableCache = true;  // 单元测试可修改
 
@@ -22,7 +21,6 @@ internal static class JsonSerializerSettingsUtils
                 JsonStyle.None => s_jsonSettingsNone,
                 JsonStyle.Indented => s_jsonSettingsIndented,
                 JsonStyle.CamelCase => s_jsonSettingsCamelCase,
-                SimpleEsClient.EsJsonStyle => s_jsonSettingsElasticsearch,
 
                 _ => s_dict.GetOrAdd(style, Get0)
             };

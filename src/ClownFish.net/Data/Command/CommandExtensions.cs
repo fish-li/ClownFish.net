@@ -84,4 +84,81 @@ public static class CommandExtensions
     }
 
 
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
+    /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
+    /// <returns>查询的数据结果行数</returns>
+    public static int ExportToNdJson(this BaseCommand command, int maxRows, string outFilePath)
+    {
+        if( command == null )
+            throw new ArgumentNullException(nameof(command));
+
+        using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
+        using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
+
+        using( DbDataReader reader = command.ExecuteReader() ) {
+            return reader.DbReaderToNdJson(maxRows, writer);
+        }
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到文件
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
+    /// <param name="outFilePath">一个文件路径，用于数据的写入</param>
+    /// <returns>查询的数据结果行数</returns>
+    public static async Task<int> ExportToNdJsonAsync(this BaseCommand command, int maxRows, string outFilePath)
+    {
+        if( command == null )
+            throw new ArgumentNullException(nameof(command));
+
+        using FileStream file = new FileStream(outFilePath, FileMode.Create, FileAccess.Write);
+        using StreamWriter writer = new StreamWriter(file, Encoding.UTF8);
+
+        using( DbDataReader reader = await command.ExecuteReaderAsync() ) {
+            return reader.DbReaderToNdJson(maxRows, writer);
+        }
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到 TextWriter
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
+    /// <param name="writer"></param>
+    /// <returns>查询的数据结果行数</returns>
+    public static int ExportToNdJson(this BaseCommand command, int maxRows, TextWriter writer)
+    {
+        if( command == null )
+            throw new ArgumentNullException(nameof(command));
+
+        using( DbDataReader reader = command.ExecuteReader() ) {
+            return reader.DbReaderToNdJson(maxRows, writer);
+        }
+    }
+
+
+    /// <summary>
+    /// 执行查询命令，将结果以 Multi-Json 格式写入到 TextWriter
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="maxRows">最大导出行数，正数时有效</param>
+    /// <param name="writer"></param>
+    /// <returns>查询的数据结果行数</returns>
+    public static async Task<int> ExportToNdJsonAsync(this BaseCommand command, int maxRows, TextWriter writer)
+    {
+        if( command == null )
+            throw new ArgumentNullException(nameof(command));
+
+        using( DbDataReader reader = await command.ExecuteReaderAsync() ) {
+            return reader.DbReaderToNdJson(maxRows, writer);
+        }
+    }
+
 }

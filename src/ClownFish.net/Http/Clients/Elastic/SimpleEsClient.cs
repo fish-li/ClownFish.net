@@ -13,7 +13,7 @@ namespace ClownFish.Http.Clients.Elastic;
 /// </summary>
 public sealed class SimpleEsClient
 {
-    internal const JsonStyle EsJsonStyle = JsonStyle.UtcTime | JsonStyle.CamelCase;
+    internal static readonly JsonSerializerSettings EsJsonStyle = (JsonStyle.UtcTime | JsonStyle.CamelCase).ToSettings();
 
     private readonly EsConnOption _option;
 

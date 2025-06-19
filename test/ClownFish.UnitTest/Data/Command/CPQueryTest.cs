@@ -1,6 +1,5 @@
 ﻿using ClownFish.UnitTest.Data.Models;
 using ClownFish.UnitTest.Data.MultiDB;
-using MySqlX.XDevAPI.Relational;
 
 namespace ClownFish.UnitTest.Data.Command;
 
@@ -346,6 +345,8 @@ public class CPQueryTest : BaseTest
         string text2 = RetryFile.ReadAllText(outFilePath2);
         string text3 = sb1.ToString();
         string text4 = sb2.ToString();
+
+        Console.WriteLine(text1);
 
         Assert.IsTrue(text1.HasValue());
         Assert.AreEqual(text1, text2);
