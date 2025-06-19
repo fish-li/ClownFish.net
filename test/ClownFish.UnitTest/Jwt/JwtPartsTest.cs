@@ -37,5 +37,15 @@ public class JwtPartsTest
         MyAssert.IsError<InvalidTokenPartsException>(() => {
             _ = new JwtParts("aa.bb.cc.dd");
         });
+
+        MyAssert.IsError<InvalidTokenPartsException>(() => {
+            _ = new JwtParts("aa..bb");
+        });
+        MyAssert.IsError<InvalidTokenPartsException>(() => {
+            _ = new JwtParts(".aa.bb");
+        });
+        MyAssert.IsError<InvalidTokenPartsException>(() => {
+            _ = new JwtParts("aa.bb.");
+        });
     }
 }

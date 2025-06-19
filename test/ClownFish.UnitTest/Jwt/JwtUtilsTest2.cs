@@ -140,6 +140,14 @@ public class JwtUtilsTest2
         string body = JwtUtils.Decode2(token, x509, "RS256");
 
         Assert.AreEqual(body, payload);
+
+
+        string header = new { typ = "JWT", alg = "HS256", a = 2, b = "xx" }.ToJson();
+        string token2 = JwtUtils.Encode2(header, payload, x509, "RS256");
+        Console.WriteLine(token2);
+
+        string body2 = JwtUtils.Decode2(token2, x509, "RS256");
+        Assert.AreEqual(body2, payload);
     }
 
     [TestMethod]

@@ -79,5 +79,25 @@ namespace ClownFish.UnitTest.Base.Extensions
             string text4 = Empty.Array<byte>().ToUtf8String();
             Assert.AreEqual("", text4);
         }
+
+        [TestMethod]
+        public void Test_ToUrlBase64()
+        {
+            byte[] bb = "将byte[]做BASE64编码".GetBytes();
+
+            byte[] b2 = bb.ToUrlBase64().FromUrlBase64();
+
+            MyAssert.AreEqual(bb, b2);
+
+#if NETCOREAPP
+            ReadOnlySpan<byte> b3 = bb;
+            byte[] b4 = b3.ToUrlBase64().FromUrlBase64();
+            MyAssert.AreEqual(bb, b4);
+
+            ReadOnlySpan<byte> b5 = Empty.Array<byte>();
+            string s5 = b5.ToUrlBase64();
+            Assert.AreEqual(string.Empty, s5);
+#endif
+        }
     }
 }

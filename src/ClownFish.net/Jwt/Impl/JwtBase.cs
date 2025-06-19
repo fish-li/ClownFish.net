@@ -15,9 +15,29 @@ internal abstract class JwtBase
     {
         if( payload.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(payload));
+        if( secret == null )
+            throw new ArgumentNullException(nameof(secret));
 
 
-        string text1 = GetHeader();
+        string text1 = GetHeader();  // 各实现类的返回结果已做过 Base64UrlEncode
+        string text2 = payload.Base64UrlEncode();
+        string text3 = text1 + "." + text2;
+
+        string signature = GetSignature(secret, text3.ToUtf8Bytes());
+        return text3 + "." + signature;
+    }
+
+    public string Encode(string header, string payload, object secret)
+    {
+        if( header.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(header));
+        if( payload.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(payload));
+        if( secret == null )
+            throw new ArgumentNullException(nameof(secret));
+
+
+        string text1 = header.Base64UrlEncode();
         string text2 = payload.Base64UrlEncode();
         string text3 = text1 + "." + text2;
 
@@ -28,6 +48,9 @@ internal abstract class JwtBase
 
     public string Decode(string token, object secret)
     {
+        if( token.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(token));
+
         JwtParts jwt = new JwtParts(token);
 
         if( secret != null ) {

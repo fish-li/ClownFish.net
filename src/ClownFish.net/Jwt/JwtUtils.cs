@@ -36,37 +36,57 @@ public static class JwtUtils
     /// <summary>
     /// 创建一个 JWT Token 字符串
     /// </summary>
-    /// <param name="payload">Token中包含的数据对象</param>
+    /// <param name="payloadJson"></param>
     /// <param name="secretKey">密钥</param>
-    /// <param name="algorithmName"></param>
+    /// <param name="algorithmName">算法名称</param>
     /// <returns></returns>
-    public static string Encode(string payload, byte[] secretKey, string algorithmName)
+    public static string Encode(string payloadJson, byte[] secretKey, string algorithmName)
     {
-        if( payload.IsNullOrEmpty())
-            throw new ArgumentNullException(nameof(payload));
-        if( secretKey.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(secretKey));
-
         JwtBase jwtImpl = CreateImpl(algorithmName);
-        return jwtImpl.Encode(payload, secretKey);
+        return jwtImpl.Encode(payloadJson, secretKey);
     }
 
     /// <summary>
     /// 创建一个 JWT Token 字符串
     /// </summary>
-    /// <param name="payload">Token中包含的数据对象</param>
-    /// <param name="x509">x509证书</param>
-    /// <param name="algorithmName"></param>
+    /// <param name="headerJson"></param>
+    /// <param name="payloadJson"></param>
+    /// <param name="secretKey">密钥</param>
+    /// <param name="algorithmName">算法名称</param>
     /// <returns></returns>
-    public static string Encode2(string payload, X509Certificate2 x509, string algorithmName)
+    public static string Encode(string headerJson, string payloadJson, byte[] secretKey, string algorithmName)
     {
-        if( payload.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(payload));
-        if( x509 == null)
-            throw new ArgumentNullException(nameof(x509));
-
         JwtBase jwtImpl = CreateImpl(algorithmName);
-        return jwtImpl.Encode(payload, x509);
+        return jwtImpl.Encode(headerJson, payloadJson, secretKey);
+    }
+
+    /// <summary>
+    /// 创建一个 JWT Token 字符串
+    /// </summary>
+    /// <param name="payloadJson"></param>
+    /// <param name="x509">x509证书</param>
+    /// <param name="algorithmName">算法名称</param>
+    /// <returns></returns>
+    public static string Encode2(string payloadJson, X509Certificate2 x509, string algorithmName)
+    {
+        JwtBase jwtImpl = CreateImpl(algorithmName);
+        return jwtImpl.Encode(payloadJson, x509);
+    }
+
+
+    /// <summary>
+    /// 创建一个 JWT Token 字符串
+    /// </summary>
+    /// <param name="headerJson"></param>
+    /// <param name="payloadJson"></param>
+    /// <param name="x509">x509证书</param>
+    /// <param name="algorithmName">算法名称</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static string Encode2(string headerJson, string payloadJson, X509Certificate2 x509, string algorithmName)
+    {
+        JwtBase jwtImpl = CreateImpl(algorithmName);
+        return jwtImpl.Encode(headerJson, payloadJson, x509);
     }
 
 
@@ -106,6 +126,9 @@ public static class JwtUtils
     /// <returns></returns>
     public static string Base64UrlEncode(this byte[] input)
     {
+        if( input.IsNullOrEmpty() )
+            return string.Empty;
+
         return NbJwtBase64UrlEncoder.Encode(input);
     }
 
@@ -118,7 +141,7 @@ public static class JwtUtils
     public static string Base64UrlEncode(this string input)
     {
         if( input.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(input));
+            return string.Empty;
 
         byte[] bytes = Encoding.UTF8.GetBytes(input);
         return NbJwtBase64UrlEncoder.Encode(bytes);

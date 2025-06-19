@@ -1,4 +1,5 @@
 ﻿using ClownFish.Jwt;
+using ClownFish.Jwt.Impl;
 
 namespace ClownFish.UnitTest.Jwt;
 [TestClass]
@@ -73,5 +74,49 @@ public class JwtUtilsTest
         
     }
 
+
+    [TestMethod]
+    public void Test3()
+    {
+        string header = new { typ = "JWT", alg = "HS256", a =2, b = "xx" }.ToJson();
+        string payload = new { ab = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }.ToJson();
+
+        string token1 = JwtUtils.Encode(header, payload, JwtKey, "HS256");
+        Console.WriteLine(token1);
+    }
+
+    [TestMethod]
+    public void Test4()
+    {
+        string s1 = Guid.NewGuid().ToString() + "大明王朝-1566";
+        string s2 = s1.Base64UrlEncode().Base64UrlDecode();
+        Assert.AreEqual(s1, s2);
+
+        Assert.AreEqual(string.Empty, JwtUtils.Base64UrlEncode(Empty.Array<byte>()));
+        Assert.AreEqual(string.Empty, JwtUtils.Base64UrlEncode(""));
+
+        Assert.AreEqual(string.Empty, JwtUtils.Base64UrlDecode(""));
+        Assert.IsNull(JwtUtils.Base64UrlDecode(null));
+    }
+
+    [TestMethod]
+    public void Test5()
+    {
+        Assert.AreEqual("HS512", JwtUtils.CreateImpl(null).Name);
+        Assert.AreEqual("HS256", JwtUtils.CreateImpl("HS256").Name);
+        Assert.AreEqual("HS512", JwtUtils.CreateImpl("HS512").Name);
+
+#if NETCOREAPP
+        Assert.AreEqual("RS256", JwtUtils.CreateImpl("RS256").Name);
+        Assert.AreEqual("RS512", JwtUtils.CreateImpl("RS512").Name);
+
+        Assert.AreEqual("ES256", JwtUtils.CreateImpl("ES256").Name);
+        Assert.AreEqual("ES512", JwtUtils.CreateImpl("ES512").Name);
+#endif
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            _ = JwtUtils.CreateImpl("aaaaaaa");
+        });
+    }
 
 }

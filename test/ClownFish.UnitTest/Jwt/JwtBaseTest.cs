@@ -31,8 +31,40 @@ public class JwtBaseTest
         JwtBase jwt = JwtUtils.CreateImpl(null);
 
         MyAssert.IsError<ArgumentException>(() => {
-            _ = jwt.Encode(null, JwtUtilsTest.JwtKey);
+            string payload = null;
+            _ = jwt.Encode(payload, JwtUtilsTest.JwtKey);
         });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            string payload = "json_xxxxxxxxxxxxxx";
+            _ = jwt.Encode(payload, null);
+        });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            string header = null;
+            string payload = "json_xxxxxxxxxxxxxx";
+            _ = jwt.Encode(header, payload, JwtUtilsTest.JwtKey);
+        });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            string header = "json_xxxxxxxxxxxxxx";
+            string payload = null;
+            _ = jwt.Encode(header, payload, JwtUtilsTest.JwtKey);
+        });
+
+        MyAssert.IsError<ArgumentException>(() => {
+            string header = "json_xxxxxxxxxxxxxx";
+            string payload = "json_xxxxxxxxxxxxxx";
+            _ = jwt.Encode(header, payload, null);
+        });
+
+
+
+        MyAssert.IsError<ArgumentException>(() => {
+            string payload = null;
+            _ = jwt.Decode(payload, JwtUtilsTest.JwtKey);
+        });
+
 
 
 
