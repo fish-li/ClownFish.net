@@ -482,25 +482,13 @@ YF_SVC_SERVICE_PORT: 80
     [TestMethod]
     public void Test_LoadFromFile()
     {
+        // 下面几个参数定义在 _local.env 中
+
         Dictionary<string, string> dict = EnvironmentVariables.GetDictionary();
         Assert.IsTrue(dict.ContainsKey("env_demo_0"));
         Assert.IsTrue(dict.ContainsKey("env_demo_1"));
         Assert.IsTrue(dict.ContainsKey("env_demo_2"));
         Assert.IsFalse(dict.ContainsKey("env_demo_3"));
-
-
-        string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "files/_local2.env");
-        Dictionary<string, string> dict2 = new Dictionary<string, string>();
-
-        int count = EnvironmentVariables.LoadFromFile(localEnvFilePath, dict2);
-        Assert.AreEqual(4, count);
-        Assert.AreEqual(4, dict2.Count);
-
-        Assert.IsTrue(dict2.ContainsKey("env_test_0"));
-        Assert.IsTrue(dict2.ContainsKey("env_test_1"));
-        Assert.IsTrue(dict2.ContainsKey("env_test_2"));
-        Assert.IsTrue(dict2.ContainsKey("env_test_3"));
-        Assert.IsFalse(dict2.ContainsKey("env_test_4"));
     }
 
 }

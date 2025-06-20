@@ -41,14 +41,21 @@ public static class EnvironmentVariables
 
 
         // 从文件中加载环境变量
-        // 注意：这里的文件名是固定的，并非像其它框架那样的名字，诸如：.env.development, .env.production
+        // 注意：这里的文件名是固定的，并非像其它框架那样的名字，诸如： .env , .env.development , .env.production
         // 因为我认为：支持多个名字没有必要，反而会支持错误的配置方法！ 试问：你是要把这些文件签入代码仓库吗？？
         // 如果不是要签入代码仓库，就没有必要多个文件名，
-        // 事实上，现在生产环境用docker部署时，指定环境变量已经非常方便，根本不需要通过文件来指定
-        // 目前通过文件来指定环境变量仅仅是为了方便开发阶段，因为 app.config 会签入代码仓库，
-        // 但是对于具体的开发人员来说，他有自己的本地配置，这些东西不用签入，在这种场景下，用文件来指定环境变量就会比较方便了
+        // 如果把 .env.production 这种文件签入代码仓库，那就非常非常SB了！！ 各种密钥全部都泄露了~~~
+
+        // 事实上，生产环境用docker部署时，指定环境变量已经非常方便，根本不需要通过文件来指定
+        // 目前通过文件来指定环境变量仅仅是为了方便开发阶段，因为有些与自己相关的敏感信息不适合放在【常规配置文件】中，
+        // 此时可以把这些与自己相关的敏感参数放在 bin/_local.env，这样就不会签入仓库
+
+        // 为什么要使用 _local.env 这件文件名，而不是  .env  ??
+        // 回答：虽然有很多Linux下的程序都采用 .env 这个文件名，但是我认为这个文件名【不规范】！   所以不想跟风~~
+        // app.evn 这个名字想过，但是想到或许未来会被MS采用，所以还是尽早避开了吧~~·
+
         string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "_local.env");
-        int count3 = LoadFromFile(localEnvFilePath, s_dict);
+        int count3 = KvConfigFile.LoadFromFile(localEnvFilePath, s_dict);
         if( count3 > 0 ) {
             Console2.Info($"已从文件 {localEnvFilePath} 加载到 {count3} 个环境变量");
         }
@@ -172,40 +179,4 @@ public static class EnvironmentVariables
         s_dict[name.GetConfName()] = value;
     }
 
-
-    internal static int LoadFromFile(string filePath, Dictionary<string, string> dict)
-    {
-        if( File.Exists(filePath) == false )
-            return -1;
-
-        int count = 0;
-
-        using FileStream fileStream = RetryFile.OpenRead(filePath);
-        using StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, true);
-
-        string line = null;
-        while( true ) {
-            line = reader.ReadLine();
-            if( line == null )
-                break;
-
-            if( line.IsNullOrEmpty() )
-                continue;
-
-            if( line[0] == '#' || line.StartsWith0("//") )   // 注释
-                continue;
-
-            int p = line.IndexOf('=');
-
-            if( p < 1 )   // 无效的数据行
-                continue;
-
-            string name = line.Substring(0, p).Trim();
-            string value = line.Substring(p + 1).Trim();
-
-            dict[name] = value;
-            count++;
-        }
-        return count;
-    }
 }
