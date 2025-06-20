@@ -13,7 +13,7 @@ public static class JwtUtils
     public static readonly string DefaultAlgorithm = JwtHMACSHA512.AlgorithmName;
 
 
-    internal static JwtBase CreateImpl(string algorithmName)
+    internal static JwtBase GetImpl(string algorithmName)
     {
         if( algorithmName.IsNullOrEmpty() )
             algorithmName = DefaultAlgorithm;
@@ -29,8 +29,19 @@ public static class JwtUtils
             JwtECD256.AlgorithmName => JwtECD256.Instance,
             JwtECD512.AlgorithmName => JwtECD512.Instance,
 #endif
-            _ => throw new NotSupportedException("不支持的JWT签名算法：" + algorithmName)
+            _ => JwtExtMananger.GetImpl(algorithmName) ?? throw new NotSupportedException("不支持的JWT签名算法：" + algorithmName)
         };
+    }
+
+
+    /// <summary>
+    /// 注册扩展的JWT实现
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public static void RegisterAlgorithmImpl<T>() where T : IJwtAlgorithm2, new()
+    {
+        IJwtAlgorithm2 impl = new T();
+        JwtExtMananger.RegisterAlgorithmImpl(impl);
     }
 
     /// <summary>
@@ -42,7 +53,7 @@ public static class JwtUtils
     /// <returns></returns>
     public static string Encode(string payloadJson, byte[] secretKey, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Encode(payloadJson, secretKey);
     }
 
@@ -56,7 +67,7 @@ public static class JwtUtils
     /// <returns></returns>
     public static string Encode(string headerJson, string payloadJson, byte[] secretKey, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Encode(headerJson, payloadJson, secretKey);
     }
 
@@ -69,7 +80,7 @@ public static class JwtUtils
     /// <returns></returns>
     public static string Encode2(string payloadJson, X509Certificate2 x509, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Encode(payloadJson, x509);
     }
 
@@ -85,7 +96,7 @@ public static class JwtUtils
     /// <exception cref="ArgumentNullException"></exception>
     public static string Encode2(string headerJson, string payloadJson, X509Certificate2 x509, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Encode(headerJson, payloadJson, x509);
     }
 
@@ -100,7 +111,7 @@ public static class JwtUtils
     /// <returns>返回 payload 部分，是一个JSON字符串</returns>
     public static string Decode(string token, byte[] secretKey, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Decode(token, secretKey);
     }
 
@@ -114,7 +125,7 @@ public static class JwtUtils
     /// <returns>返回 payload 部分，是一个JSON字符串</returns>
     public static string Decode2(string token, X509Certificate2 x509, string algorithmName)
     {
-        JwtBase jwtImpl = CreateImpl(algorithmName);
+        JwtBase jwtImpl = GetImpl(algorithmName);
         return jwtImpl.Decode(token, x509);
     }
 

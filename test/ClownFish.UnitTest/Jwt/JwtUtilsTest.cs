@@ -102,20 +102,20 @@ public class JwtUtilsTest
     [TestMethod]
     public void Test5()
     {
-        Assert.AreEqual("HS512", JwtUtils.CreateImpl(null).Name);
-        Assert.AreEqual("HS256", JwtUtils.CreateImpl("HS256").Name);
-        Assert.AreEqual("HS512", JwtUtils.CreateImpl("HS512").Name);
+        Assert.AreEqual("HS512", JwtUtils.GetImpl(null).Name);
+        Assert.AreEqual("HS256", JwtUtils.GetImpl("HS256").Name);
+        Assert.AreEqual("HS512", JwtUtils.GetImpl("HS512").Name);
 
 #if NETCOREAPP
-        Assert.AreEqual("RS256", JwtUtils.CreateImpl("RS256").Name);
-        Assert.AreEqual("RS512", JwtUtils.CreateImpl("RS512").Name);
+        Assert.AreEqual("RS256", JwtUtils.GetImpl("RS256").Name);
+        Assert.AreEqual("RS512", JwtUtils.GetImpl("RS512").Name);
 
-        Assert.AreEqual("ES256", JwtUtils.CreateImpl("ES256").Name);
-        Assert.AreEqual("ES512", JwtUtils.CreateImpl("ES512").Name);
+        Assert.AreEqual("ES256", JwtUtils.GetImpl("ES256").Name);
+        Assert.AreEqual("ES512", JwtUtils.GetImpl("ES512").Name);
 #endif
 
         MyAssert.IsError<NotSupportedException>(() => {
-            _ = JwtUtils.CreateImpl("aaaaaaa");
+            _ = JwtUtils.GetImpl("aaaaaaa");
         });
     }
 

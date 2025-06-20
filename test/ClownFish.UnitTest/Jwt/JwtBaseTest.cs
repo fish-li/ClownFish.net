@@ -15,7 +15,7 @@ public class JwtBaseTest
     [TestMethod]
     public void Test_1()
     {
-        JwtBase jwt = JwtUtils.CreateImpl(null);
+        JwtBase jwt = JwtUtils.GetImpl(null);
 
         string json1 = s_user.ToJson();
         string token = jwt.Encode(json1, JwtUtilsTest.JwtKey);
@@ -28,7 +28,7 @@ public class JwtBaseTest
     [TestMethod]
     public void Test_Error()
     {
-        JwtBase jwt = JwtUtils.CreateImpl(null);
+        JwtBase jwt = JwtUtils.GetImpl(null);
 
         MyAssert.IsError<ArgumentException>(() => {
             string payload = null;

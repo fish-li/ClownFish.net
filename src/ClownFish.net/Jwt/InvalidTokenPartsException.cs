@@ -11,8 +11,10 @@ internal sealed class InvalidTokenPartsException : Exception
     }
 }
 
-
-internal sealed class SignatureVerificationException : Exception
+/// <summary>
+/// JWT签名验证异常
+/// </summary>
+public sealed class SignatureVerificationException : Exception
 {
     /// <summary>
     /// 构造方法

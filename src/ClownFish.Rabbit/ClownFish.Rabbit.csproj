@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish.Rabbit</RootNamespace>
         <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>9.25.619.1</Version>
-        <FileVersion>9.25.619.1</FileVersion>
+        <Version>9.25.620.1</Version>
+        <FileVersion>9.25.620.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
