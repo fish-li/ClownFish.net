@@ -134,12 +134,24 @@ internal static class DebugReportBlocks
 #endif
 
 
-    public static DebugReportBlock GetEnvironmentVariables()
+    public static DebugReportBlock GetEnvironmentVariables(bool autoFormat = true)
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Environment Variables", Order = 100 };
 
+        int formatWidth = 0;
+
+        if( autoFormat ) {
+            foreach( var kv in EnvironmentVariables.GetAll() ) {
+                if( kv.Key.Length > formatWidth )
+                    formatWidth = kv.Key.Length;
+            }
+
+            formatWidth += 2;  // 多加2个空格
+            formatWidth = 0 - formatWidth;   // 左对齐
+        }
+
         (from x in EnvironmentVariables.GetAll()
-         let line = SecurityLogUtils.GetEnvironmentVariableLine(x.Key, x.Value)
+         let line = SecurityLogUtils.GetEnvironmentVariableLine(x.Key, x.Value, formatWidth)
          orderby x.Key
          select line
          ).ToList().ForEach(x => block.AppendLine(x));

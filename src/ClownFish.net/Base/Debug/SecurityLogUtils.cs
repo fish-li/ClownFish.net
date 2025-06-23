@@ -26,21 +26,32 @@ public static class SecurityLogUtils
     /// <summary>
     /// 返回一个环境变量定义的字符串，它会隐藏部分敏感信息
     /// </summary>
-    /// <param name="key"></param>
+    /// <param name="name"></param>
     /// <param name="value"></param>
+    /// <param name="nameFormatWidth"></param>
     /// <returns></returns>
-    public static string GetEnvironmentVariableLine(string key, string value)
+    public static string GetEnvironmentVariableLine(string name, string value, int nameFormatWidth = 0)
     {
-        if( key.EndsWithIgnoreCase("ConnectionString") )
-            return $"{key}: {SecurityLogUtils.HideConnectionStringPwd(value)}";
-        else if( key.EndsWithIgnoreCase("Password") )
-            return $"{key}: ********";
-        else if( key.EndsWithIgnoreCase("_key") )
-            return $"{key}: ********";
-        else if( s_hideEnvNames.Contains(key) )
-            return $"{key}: ********";
+        string label = name;
+        if( nameFormatWidth != 0 && nameFormatWidth != name.Length ) {
+            // 这里的对齐方式和 .net 框架保持一致：  如果值为正，则字符串表示形式为右对齐；如果值为负，则为左对齐。
+            // https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/tokens/interpolated#structure-of-an-interpolated-string
+            if( nameFormatWidth > name.Length )
+                label = name.PadLeft(nameFormatWidth, ' ');
+            else if( nameFormatWidth < 0 )
+                label = name.PadRight((0 - nameFormatWidth), ' ');
+        }
+
+        if( name.EndsWithIgnoreCase("ConnectionString") )
+            return $"{label}: {SecurityLogUtils.HideConnectionStringPwd(value)}";
+        else if( name.EndsWithIgnoreCase("Password") )
+            return $"{label}: ********";
+        else if( name.EndsWithIgnoreCase("_key") )
+            return $"{label}: ********";
+        else if( s_hideEnvNames.Contains(name) )
+            return $"{label}: ********";
         else
-            return $"{key}: {value}";
+            return $"{label}: {value}";
     }
 
 }

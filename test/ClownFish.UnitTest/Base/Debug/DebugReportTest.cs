@@ -74,7 +74,7 @@ namespace ClownFish.UnitTest.Base.Debug
             EnvironmentVariables.Set("api-key", "b094ac7875414ecca20297f71000a033");
             EnvironmentVariables.Set("xx-SecretKey", "f631c032b2d0425f877e15e298ea7031");
 
-            DebugReportBlock block = DebugReportBlocks.GetEnvironmentVariables();
+            DebugReportBlock block = DebugReportBlocks.GetEnvironmentVariables(false);
             string text = block.ToString2();
             Console.WriteLine(text);
 
