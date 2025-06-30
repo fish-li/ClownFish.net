@@ -578,6 +578,7 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
         return httpOption;
     }
 
+    private static readonly char[] s_trimChars = new char[] { '\r', '\n' };
     private static void FillFromRawText(HttpOption httpOption, string text)
     {
         if( string.IsNullOrEmpty(text) )
@@ -586,7 +587,9 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
         // 放弃构造方法中的默认值格式，因为请求头中可能会指定
         httpOption.Format = SerializeFormat.None;
 
-        using( StringReader reader = new StringReader(text.Trim()) ) {
+        // 注意：这里不能调用 text.Trim() 它会去掉一些空格，导致在个别特殊场景下出现问题，可参考测试用例 Test_EmptyValueHeader
+        // 补充：按理说，根本就不需要调用 Trim 方法，主要是为了兼容一些测试用例，那些测试用例为了排版清爽，头尾都加了空格，可搜索 “根据Raw文本发送请求”
+        using( StringReader reader = new StringReader(text.Trim(s_trimChars)) ) {
 
             // 设置请求方法和URL
             PopulateRequestLine(httpOption, reader.ReadLine());
@@ -653,7 +656,9 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
                         continue;
                     }
 #endif
-                    httpOption.Headers.Add(name, value);
+                    if( value.HasValue() ) {
+                        httpOption.Headers.Add(name, value);
+                    }
                 }
                 else {
                     throw new ArgumentException($"不能识别的请求文本格式，请求头：[{line}]");

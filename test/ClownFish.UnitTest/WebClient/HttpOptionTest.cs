@@ -735,4 +735,24 @@ Host=www.fish-test.com
     }
 #endif
 
+
+    [TestMethod]
+    public void Test_EmptyValueHeader()
+    {
+        HttpOption httpOption = new HttpOption {
+            Url = "http://www.abc.com/aa/bb"
+        };
+
+        httpOption.Headers.Add("x-bb", "  ");
+        httpOption.Headers.Add("x-aa", "");  // 注意：value 是一个 “空字符串”，它将会被丢弃
+
+        string requestText = httpOption.ToRawText(1);
+        Console.WriteLine(requestText);
+
+        HttpOption httpOption2 = HttpOption.FromRawText(requestText);
+
+        Assert.AreEqual(1, httpOption2.Headers.Count);
+        Assert.AreEqual("x-bb", httpOption2.Headers[0].Name);
+    }
+
 }
