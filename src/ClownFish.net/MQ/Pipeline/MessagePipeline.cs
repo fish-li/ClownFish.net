@@ -87,11 +87,8 @@ public sealed class MessagePipeline<T> where T : class
     {
         try {
             _handler.ValidateMessage(context);
-            _handler.PrepareMessage(context);
-            _handler.SaveMessage(context);
             _handler.ProcessMessage(context);
             _handler.AfterProcess(context);
-            _handler.SaveState(context);
         }
         catch( AbortRequestException ) {
             // 提前结束请求

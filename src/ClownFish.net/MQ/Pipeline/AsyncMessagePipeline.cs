@@ -86,11 +86,8 @@ public sealed class AsyncMessagePipeline<T> where T : class
     {
         try {
             await _handler.ValidateMessage(context);
-            await _handler.PrepareMessage(context);
-            await _handler.SaveMessage(context);
             await _handler.ProcessMessage(context);
             await _handler.AfterProcess(context);
-            await _handler.SaveState(context);
         }
         catch( AbortRequestException ) {
             // 提前结束请求

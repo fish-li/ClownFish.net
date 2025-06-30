@@ -22,23 +22,6 @@ public abstract class BaseMessageHandler<T> : BaseMessageHandlerObject<T> where 
         // do nothing
     }
 
-    /// <summary>
-    /// 完善消息，可以做一些字段的补充
-    /// </summary>
-    /// <param name="context"></param>
-    public virtual void PrepareMessage(PipelineContext<T> context)
-    {
-        // do nothing
-    }
-
-    /// <summary>
-    /// 保存消息
-    /// </summary>
-    /// <param name="context"></param>
-    public virtual void SaveMessage(PipelineContext<T> context)
-    {
-        // do nothing
-    }
 
     /// <summary>
     /// 处理消息，例如做告警分析
@@ -59,14 +42,6 @@ public abstract class BaseMessageHandler<T> : BaseMessageHandlerObject<T> where 
         // do nothing
     }
 
-    /// <summary>
-    /// 在调用  AfterProcess(...) 【后】执行， 用于保存一些中间状态
-    /// </summary>
-    /// <param name="context"></param>
-    public virtual void SaveState(PipelineContext<T> context)
-    {
-        // do nothing
-    }
 
     /// <summary>
     /// 在结束管道时调用。
