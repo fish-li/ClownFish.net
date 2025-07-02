@@ -6,19 +6,6 @@
 public static class CPQueryExtensions
 {
     /// <summary>
-    /// 将指定的字符串（T-SQL的片段）转成CPQuery对象
-    /// </summary>
-    /// <param name="sql">T-SQL的片段的字符串</param>
-    /// <returns>包含T-SQL的片段的CPQuery对象</returns>
-    public static CPQuery AsCPQuery(this string sql)
-    {
-        return CPQuery.Create(sql);
-    }
-
-
-
-
-    /// <summary>
     /// 将string转换成QueryParameter对象
     /// </summary>
     /// <param name="value">要转换成QueryParameter的原对象</param>

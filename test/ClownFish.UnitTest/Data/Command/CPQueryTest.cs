@@ -469,10 +469,10 @@ public class CPQueryTest : BaseTest
     [TestMethod]
     public void Test_CPQuery嵌套使用()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = "P2 = ".AsCPQuery() + 2;
-            CPQuery query2 = "P3 = ".AsCPQuery() + DateTime.Now;
-            CPQuery query = CPQuery.Create("select * from t1 where id=@id and {subquery1} and {subquery2}",
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create(null) + "P2 = " + 2;
+            CPQuery query2 = dbContext.CPQuery.Create(null) + dbContext.CPQuery.Create(null) + "P3 = " + DateTime.Now;
+            CPQuery query = dbContext.CPQuery.Create("select * from t1 where id=@id and {subquery1} and {subquery2}",
                     new { id = 3, subquery1 = query1, subquery2 = query2 }
                 );
 
@@ -488,8 +488,8 @@ public class CPQueryTest : BaseTest
     [TestMethod]
     public void Test_CPQuery占位符参数()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query = CPQuery.Create("select * from {table} where id=@id",
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query = dbContext.CPQuery.Create("select * from {table} where id=@id",
             new { id = 2, table = "t1".AsSql() });
 
             string commmandText = query.ToString();
@@ -503,9 +503,9 @@ public class CPQueryTest : BaseTest
     [TestMethod]
     public void Test_CPQuery与CPQuery相加()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = CPQuery.Create("select * from t1 where id=@id", new { id = 2 });
-            CPQuery query2 = CPQuery.Create(";select * from t2 where name=@name", new { name = "abc" });
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create("select * from t1 where id=@id", new { id = 2 });
+            CPQuery query2 = dbContext.CPQuery.Create(";select * from t2 where name=@name", new { name = "abc" });
             CPQuery query3 = query1 + query2;
 
             string commmandText = query3.ToString();
@@ -520,12 +520,12 @@ public class CPQueryTest : BaseTest
     [TestMethod]
     public void Test_CPQuery设置命令超时时间()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = CPQuery.Create("select * from t1").SetCommand(x => x.CommandTimeout = 2);
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create("select * from t1").SetCommand(x => x.CommandTimeout = 2);
             Assert.AreEqual(2, query1.Command.CommandTimeout);
 
 
-            CPQuery query2 = CPQuery.Create("select * from t1").SetTimeout(2);
+            CPQuery query2 = dbContext.CPQuery.Create("select * from t1").SetTimeout(2);
             Assert.AreEqual(2, query2.Command.CommandTimeout);
         }
     }
@@ -552,8 +552,8 @@ public class CPQueryTest : BaseTest
     {
         int id1 = -1, id2 = -2;
 
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = CPQuery.Create("select * from Categories");
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create("select * from Categories");
             using( DbDataReader reader1 = query1.ExecuteReader() ) {
                 if( reader1.Read() )
                     id1 = reader1.GetInt32(0);
@@ -653,8 +653,8 @@ on a.object_id = b.object_id;
             Tel = "123456789"
         };
 
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            XmlCommand command = XmlCommand.Create("InsertCustomer", newCustomer);
+        using( DbContext dbContext = DbContext.Create() ) {
+            XmlCommand command = dbContext.XmlCommand.Create("InsertCustomer", newCustomer);
 
             DbParameter[] parameters1 = command.Command.Parameters.Cast<DbParameter>().ToArray();
             DbParameter[] parameters2 = command.Command.CloneParameters();
@@ -702,9 +702,9 @@ on a.object_id = b.object_id;
         table["key3"] = now;
         table["key4"] = guid;
 
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = CPQuery.Create("select ............", dict);
-            CPQuery query2 = CPQuery.Create("select ............", table);
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create("select ............", dict);
+            CPQuery query2 = dbContext.CPQuery.Create("select ............", table);
 
             DbParameter[] parameters1 = (from x in query1.Command.Parameters.Cast<DbParameter>()
                                          orderby x.ParameterName
@@ -728,11 +728,11 @@ on a.object_id = b.object_id;
         dict["key3"] = DateTime.Now;
         dict["key4"] = Guid.NewGuid();
 
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
-            CPQuery query1 = CPQuery.Create("select ............", dict);
+        using( DbContext dbContext = DbContext.Create() ) {
+            CPQuery query1 = dbContext.CPQuery.Create("select ............", dict);
 
             DbParameter[] parameters = query1.Command.CloneParameters();
-            CPQuery query2 = CPQuery.Create("select ............", parameters);
+            CPQuery query2 = dbContext.CPQuery.Create("select ............", parameters);
 
 
             DbParameter[] parameters1 = (from x in query1.Command.Parameters.Cast<DbParameter>()
@@ -744,31 +744,6 @@ on a.object_id = b.object_id;
                                          select x).ToArray();
             AssertAreEqual_DbParameterArray(parameters1, parameters2);
         }
-    }
-
-
-    [TestMethod]
-    public void Test_Error()
-    {
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = new CPQuery(null);
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = CPQuery.Create(null, new object());
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = CPQuery.Create(null, new Hashtable());
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = CPQuery.Create(null, new Dictionary<string, object>());
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = CPQuery.Create(null, Empty.Array<DbParameter>());
-        });
     }
 
 
@@ -794,29 +769,29 @@ on a.object_id = b.object_id;
     [TestMethod]
     public void Test_Init()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
-            CPQuery q1 = CPQuery.Create("select 1", (object)null);
+            CPQuery q1 = dbContext.CPQuery.Create("select 1", (object)null);
             Assert.AreEqual(0, q1.Command.Parameters.Count);
 
 
-            CPQuery q2 = CPQuery.Create("select 1", (Hashtable)null);
+            CPQuery q2 = dbContext.CPQuery.Create("select 1", (Hashtable)null);
             Assert.AreEqual(0, q2.Command.Parameters.Count);
 
-            CPQuery q3 = CPQuery.Create("select 1", new Hashtable());
+            CPQuery q3 = dbContext.CPQuery.Create("select 1", new Hashtable());
             Assert.AreEqual(0, q3.Command.Parameters.Count);
 
 
-            CPQuery q4 = CPQuery.Create("select 1", (Dictionary<string, object>)null);
+            CPQuery q4 = dbContext.CPQuery.Create("select 1", (Dictionary<string, object>)null);
             Assert.AreEqual(0, q4.Command.Parameters.Count);
 
-            CPQuery q5 = CPQuery.Create("select 1", new Dictionary<string, object>());
+            CPQuery q5 = dbContext.CPQuery.Create("select 1", new Dictionary<string, object>());
             Assert.AreEqual(0, q5.Command.Parameters.Count);
 
-            CPQuery q6 = CPQuery.Create("select 1", (DbParameter[])null);
+            CPQuery q6 = dbContext.CPQuery.Create("select 1", (DbParameter[])null);
             Assert.AreEqual(0, q6.Command.Parameters.Count);
 
-            CPQuery q7 = CPQuery.Create("select 1", Empty.Array<DbParameter>());
+            CPQuery q7 = dbContext.CPQuery.Create("select 1", Empty.Array<DbParameter>());
             Assert.AreEqual(0, q7.Command.Parameters.Count);
         }
     }
@@ -825,9 +800,9 @@ on a.object_id = b.object_id;
     [TestMethod]
     public void Test_Parameter()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
-            CPQuery query = CPQuery.Create("select 1;");
+            CPQuery query = dbContext.CPQuery.Create("select 1;");
 
             query.AddQueryParameter(Empty.Array<int>());
 
@@ -918,9 +893,9 @@ on a.object_id = b.object_id;
     [TestMethod]
     public void Test_InitSQL()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
-            CPQuery query = CPQuery.Create("select 1;");
+            CPQuery query = dbContext.CPQuery.Create("select 1;");
 
             DbCommand command = query.Command;
 

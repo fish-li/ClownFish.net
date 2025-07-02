@@ -232,13 +232,13 @@ public class StoreProcedureTest : BaseTest
     [TestMethod]
     public void Test_Create()
     {
-        using( ConnectionScope db = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
             MyAssert.IsError<ArgumentNullException>(() => {
-                db.Context.StoreProcedure.Create("");
+                dbContext.StoreProcedure.Create("");
             });
 
-            var sp = StoreProcedure.Create("xxxxxxxxxxxxx", (DbParameter[])null);
+            var sp = dbContext.StoreProcedure.Create("xxxxxxxxxxxxx", (DbParameter[])null);
             Assert.AreEqual(0, sp.Command.Parameters.Count);
         }
     }
@@ -246,7 +246,7 @@ public class StoreProcedureTest : BaseTest
     [TestMethod]
     public void Test_ParameterNull()
     {
-        using( ConnectionScope db = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
             var args = new {
                 text1 = (string)null,
@@ -254,7 +254,7 @@ public class StoreProcedureTest : BaseTest
                 val1 = 5
             };
 
-            var sp = StoreProcedure.Create("sp53b19041a2774268b0e6041f1ca031b9", args);
+            var sp = dbContext.StoreProcedure.Create("sp53b19041a2774268b0e6041f1ca031b9", args);
             Assert.AreEqual("sp53b19041a2774268b0e6041f1ca031b9", sp.Command.CommandText);
             Assert.AreEqual(3, sp.Command.Parameters.Count);
 

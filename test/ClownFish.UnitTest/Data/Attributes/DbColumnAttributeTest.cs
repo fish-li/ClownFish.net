@@ -10,9 +10,9 @@ public class DbColumnAttributeTest : BaseTest
     {
         string sql = "select top 1 * from dbo.Products";
 
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
-            Product2 product = CPQuery.Create(sql).ToSingle<Product2>();
+            Product2 product = dbContext.CPQuery.Create(sql).ToSingle<Product2>();
 
             Assert.IsNotNull(product);
 

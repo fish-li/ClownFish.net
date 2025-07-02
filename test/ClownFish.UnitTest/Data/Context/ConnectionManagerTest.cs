@@ -39,15 +39,15 @@ public class ConnectionManagerTest : BaseTest
         ConnectionInfo info = ConnectionManager.GetConnection("sqlserver");
         Assert.AreEqual("sqlserver", info.Name);
 
-        using( ConnectionScope
-                scope1 = ConnectionScope.Create(),
-                scope2 = ConnectionScope.Create("sqlserver"),
-                scope3 = ConnectionScope.Create(info.ConnectionString, info.ProviderName)
+        using( DbContext
+                db1 = DbContext.Create(),
+                db2 = DbContext.Create("sqlserver"),
+                db3 = DbContext.Create(info.ConnectionString, info.ProviderName)
             ) {
 
-            ConnectionInfo connection1 = scope1.Context.ConnectionInfo;
-            ConnectionInfo connection2 = scope2.Context.ConnectionInfo;
-            ConnectionInfo connection3 = scope3.Context.ConnectionInfo;
+            ConnectionInfo connection1 = db1.ConnectionInfo;
+            ConnectionInfo connection2 = db2.ConnectionInfo;
+            ConnectionInfo connection3 = db3.ConnectionInfo;
 
 
             Assert.AreEqual(connection1.ConnectionString, connection2.ConnectionString);

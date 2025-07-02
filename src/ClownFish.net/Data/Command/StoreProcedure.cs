@@ -42,34 +42,6 @@ public sealed class StoreProcedure : BaseCommand
     }
 
 
-    /// <summary>
-    /// 创建StoreProcedure对象的实例
-    /// </summary>
-    /// <param name="spName">存储过程名称</param>
-    /// <param name="argsObject">匿名对象参数</param>
-    /// <returns>StoreProcedure对象实例</returns>
-    public static StoreProcedure Create(string spName, object argsObject = null)
-    {
-        StoreProcedure sp = new StoreProcedure(ConnectionScope.GetCurrentDbConext());
-        sp.Init(spName, argsObject);
-        return sp;
-    }
-
-    /// <summary>
-    /// 创建StoreProcedure对象的实例
-    /// </summary>
-    /// <param name="spName">存储过程名称</param>
-    /// <param name="parameters">匿名对象</param>
-    /// <returns>StoreProcedure对象实例</returns>
-    public static StoreProcedure Create(string spName, DbParameter[] parameters)
-    {
-        StoreProcedure sp = new StoreProcedure(ConnectionScope.GetCurrentDbConext());
-        sp.Init(spName, parameters);
-        return sp;
-    }
-
-
-
     private DbParameter[] GetParameters(object parameterObject)
     {
         if( parameterObject == null )

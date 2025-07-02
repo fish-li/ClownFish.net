@@ -153,20 +153,20 @@ public class XmlCommandTest : BaseTest
     [TestMethod]
     public void Test_Create()
     {
-        using( ConnectionScope scope = ConnectionScope.Create() ) {
+        using( DbContext dbContext = DbContext.Create() ) {
 
-            var query1 = XmlCommand.Create("DeleteCustomer");
+            var query1 = dbContext.XmlCommand.Create("DeleteCustomer");
 
             var args2 = new { ProductID = 2 };
-            var query2 = XmlCommand.Create("DeleteCustomer", args2);
+            var query2 = dbContext.XmlCommand.Create("DeleteCustomer", args2);
 
             Hashtable table = new Hashtable();
             table["CustomerID"] = 2;
-            var query3 = XmlCommand.Create("DeleteCustomer", table);
+            var query3 = dbContext.XmlCommand.Create("DeleteCustomer", table);
 
             Dictionary<string, object> dictionary = new Dictionary<string, object>();
             dictionary["CustomerID"] = 2;
-            var query4 = XmlCommand.Create("DeleteCustomer", dictionary);
+            var query4 = dbContext.XmlCommand.Create("DeleteCustomer", dictionary);
 
 
             string expected = "delete from Customers where CustomerID = @CustomerID";

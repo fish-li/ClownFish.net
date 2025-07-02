@@ -263,7 +263,7 @@ namespace ClownFish.UnitTest.Base.Files
             string ver2 = FileHelper.GetFileVersion(Path.Combine(AppContext.BaseDirectory, "ClownFish.net.pdb"));
             string ver3 = FileHelper.GetFileVersion(Path.Combine(AppContext.BaseDirectory, "xxxxxxxxxx.dll"));
 
-            Assert.AreEqual("9.25.630.1", ver1);
+            Assert.AreEqual("9.25.702.1", ver1);
             Assert.IsNull(ver2);
             Assert.AreEqual("0.0.0.0", ver3);
         }

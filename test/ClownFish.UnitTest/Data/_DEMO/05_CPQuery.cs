@@ -24,9 +24,11 @@ class DEMO_5_CPQuery
         // 准备一条【参数化】SQL
         string sql = "select * from table1 where [time] >= @start and [time] < @end ";
 
+        using DbContext dbContext = DbContext.Create();
+
         // 执行命令，获取实体列表
         var args = new { start = DateTime.Now.AddDays(-1), end = DateTime.Now };
-        var list = CPQuery.Create(sql, args).ToList<Product>();
+        var list = dbContext.CPQuery.Create(sql, args).ToList<Product>();
     }
 
 
@@ -34,19 +36,20 @@ class DEMO_5_CPQuery
     {
         Product p = null;       //  来自于界面输入结果
 
+        using DbContext dbContext = DbContext.Create();
+
         // 构造动态查询
-        CPQuery query = BuildDynamicQuery(p);
+        CPQuery query = BuildDynamicQuery(dbContext, p);
 
         // 执行查询
         var list = query.ToList<Product>();
     }
 
 
-    static CPQuery BuildDynamicQuery(Product p)
+    static CPQuery BuildDynamicQuery(DbContext dbContext, Product p)
     {
         // 下面二行代码是等价的，可根据喜好选择。
-        var query = "select ProductID, ProductName from Products where (1=1) ".AsCPQuery();
-        //var query = CPQuery.New() + "select ProductID, ProductName from Products where (1=1) ";
+        var query = dbContext.CPQuery.Create("select ProductID, ProductName from Products where (1=1) ");
 
         // 注意：下面的拼接代码中不能写成: query += .....
 

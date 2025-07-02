@@ -22,53 +22,6 @@ public sealed class XmlCommand : BaseCommand
     }
 
 
-    /// <summary>
-    /// 创建一个XmlCommand对象实例。
-    /// </summary>
-    /// <param name="name">命令名字</param>
-    /// <param name="argsObject">匿名对象表示的参数</param>
-    /// <returns></returns>
-    public static XmlCommand Create(string name, object argsObject = null)
-    {
-        XmlCommand command = new XmlCommand(ConnectionScope.GetCurrentDbConext());
-        command.Init(name, argsObject);
-        return command;
-    }
-
-    /// <summary>
-    /// 创建一个XmlCommand对象实例。
-    /// </summary>
-    /// <param name="name">命令名字</param>
-    /// <param name="dictionary">要传递的参数字典</param>
-    /// <returns></returns>
-    public static XmlCommand Create(string name, Hashtable dictionary)
-    {
-        // 说明：保留这个重载，而不是用匿名对象来代替是因为：
-        // 匿名对象是只读的，需要一次性构造，而Dictionary可以在不同的代码段中分开构造。
-        // 所以，不要删除这个重载方法。
-
-        XmlCommand command = new XmlCommand(ConnectionScope.GetCurrentDbConext());
-        command.Init(name, dictionary);
-        return command;
-    }
-
-    /// <summary>
-    /// 创建一个XmlCommand对象实例。
-    /// </summary>
-    /// <param name="name">命令名字</param>
-    /// <param name="dictionary">要传递的参数字典</param>
-    /// <returns></returns>
-    public static XmlCommand Create(string name, IDictionary<string, object> dictionary)
-    {
-        // 说明：保留这个重载，而不是用匿名对象来代替是因为：
-        // 匿名对象是只读的，需要一次性构造，而Dictionary可以在不同的代码段中分开构造。
-        // 所以，不要删除这个重载方法。
-
-        XmlCommand command = new XmlCommand(ConnectionScope.GetCurrentDbConext());
-        command.Init(name, dictionary);
-        return command;
-    }
-
     internal void Init(string name, object argsObject)
     {
         SetCommand(name);
