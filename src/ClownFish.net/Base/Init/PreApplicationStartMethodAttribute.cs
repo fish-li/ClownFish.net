@@ -81,7 +81,7 @@ public sealed class PreApplicationStartMethodAttribute : Attribute
         try {
             method.InvokeAndLog(null, null);
         }
-        catch( TargetInvocationException ex ) {
+        catch( TargetInvocationException ex ) when( ex.InnerException != null ) {
             throw ex.InnerException;   // 将原始异常抛出来
         }
     }

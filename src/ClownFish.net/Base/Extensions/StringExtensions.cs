@@ -685,7 +685,7 @@ public static class StringExtensions
         if( value is System.Security.Cryptography.X509Certificates.X509Certificate2 x509 )
             return x509.Subject;
 
-        if( value is System.Reflection.TargetInvocationException ex2 )
+        if( value is System.Reflection.TargetInvocationException ex2 && ex2.InnerException != null )
             return ex2.InnerException.ToString2();
 
         // 以后再完善

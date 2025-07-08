@@ -18,7 +18,12 @@ public static class MethodInfoExtensions
             throw new ArgumentNullException(nameof(methodInfo));
 
         IInvokeMethod method = MethodInvokerFactory.GetMethodInvokerWrapper(methodInfo);
-        return method.Invoke(instance, parameters);
+        try {
+            return method.Invoke(instance, parameters);
+        }
+        catch( TargetInvocationException ex1 ) when( ex1.InnerException != null ) {
+            throw ex1.InnerException;
+        }
     }
 
 
@@ -49,8 +54,14 @@ public static class MethodInfoExtensions
             throw new ArgumentNullException(nameof(method));
 
         OprLogScope scope = OprLogScope.Get();
-        if( scope.IsNull )
-            return method.Invoke(instance, parameters);
+        if( scope.IsNull ) {
+            try {
+                return method.Invoke(instance, parameters);
+            }
+            catch( TargetInvocationException ex1 ) when( ex1.InnerException != null ) {
+                throw ex1.InnerException;
+            }
+        }
 
 
 
@@ -60,11 +71,11 @@ public static class MethodInfoExtensions
         try {
             return method.Invoke(instance, parameters);
         }
-        catch( TargetInvocationException ex ) {
+        catch( TargetInvocationException ex ) when( ex.InnerException != null ) {
             lastError = ex.InnerException;
-            throw;
+            throw lastError;
         }
-        catch(Exception ex2 ) {
+        catch( Exception ex2 ) {
             lastError = ex2;
             throw;
         }
