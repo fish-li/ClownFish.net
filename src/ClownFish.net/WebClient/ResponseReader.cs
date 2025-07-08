@@ -1,4 +1,6 @@
-﻿namespace ClownFish.WebClient;
+﻿using ClownFish.Base.Json;
+
+namespace ClownFish.WebClient;
 
 /// <summary>
 /// 读取HttpWebResponse的工具类
@@ -13,8 +15,6 @@ public sealed class ResponseReader : IDisposable
 
     private Stream _responseStream;
 
-    private string _contentType;
-
     /// <summary>
     /// 是否需要自动关闭Response流
     /// </summary>
@@ -23,18 +23,19 @@ public sealed class ResponseReader : IDisposable
     /// <summary>
     /// 构造方法
     /// </summary>
-    /// <param name="response"></param>
-    /// <param name="autoDecompress"></param>
+    /// <param name="response">HTTP响应对象</param>
+    /// <param name="autoDecompress">是否需要在读取响应时自动解压缩，目前仅用于单元测试时使用</param>
     /// <param name="maxLimitLen">最大允许的响应体长度，可以不指定</param>
-    public ResponseReader(HttpWebResponse response, bool autoDecompress = false, long? maxLimitLen = null)
+    public ResponseReader(HttpWebResponse response, bool autoDecompress = false, long maxLimitLen = 0)
     {
         if( response == null )
-            throw new ArgumentNullException("response");
+            throw new ArgumentNullException(nameof(response));
 
         _response = response;
         _autoDecompress = autoDecompress;
-        _maxLimitLen = maxLimitLen.GetValueOrDefault();
+        _maxLimitLen = maxLimitLen;
     }
+
 
     /// <summary>
     /// 获取指定类型的结果
@@ -45,8 +46,6 @@ public sealed class ResponseReader : IDisposable
     {
         _responseStream = GetResponseStream();
 
-        _contentType = _response.ContentType;
-
         Type resultType = typeof(T);
 
         // 先判断是不是 HttpResult<T> 的子类型
@@ -55,19 +54,60 @@ public sealed class ResponseReader : IDisposable
             MethodInfo method = this.GetType()
                                     .GetMethod(nameof(GetHttpResult), BindingFlags.Instance | BindingFlags.NonPublic)
                                     .MakeGenericMethod(argType);
-            try {
-                return (T)method.FastInvoke(this, null);
-            }
-            catch( TargetInvocationException ex1 ) {
-                throw ex1.InnerException;
-            }
+            return (T)method.FastInvoke(this, null);
         }
         else {
             return GetResult<T>();
         }
     }
 
-    internal long CheckMaxAllowLen()
+    private HttpResult<T> GetHttpResult<T>()
+    {
+        int statusCode = (int)_response.StatusCode;
+        var header = _response.GetAllHeaders();
+        var body = GetResult<T>();
+
+        return new HttpResult<T>(statusCode, header, body);
+    }
+
+    private Stream GetResponseStream()
+    {
+        Stream responseStream = _response.GetResponseStream();
+
+        if( _autoDecompress ) {
+
+            // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Encoding
+            string contentEncoding = _response.ContentEncoding;
+            if( contentEncoding.HasValue() ) {
+                return HttpStreamReader.WrapperCompressionStream(responseStream, contentEncoding, CompressionMode.Decompress);
+            }
+            // else 没有指定 “Content-Encoding”，也就是没有使用压缩格式
+        }
+
+        return responseStream;
+    }
+
+
+    private T GetResult<T>()
+    {
+        if( typeof(T) == typeof(byte[]) ) {
+            long maxLimitLen = CheckMaxLimitLen();
+            // 二进制，就直接读取，忽略字符编码
+            return (T)(object)ReadResponseAsBytes(_responseStream, maxLimitLen);
+        }
+
+        if( typeof(T) == typeof(Stream) ) {
+            // 二进制，就直接返回
+            return (T)(object)ReadResponseAsStream();   // 这里不读取响应流内容
+        }
+
+        // 按文本方式读取流，并根据contentType执行相关的转换
+        string contentType = _response.ContentType ?? string.Empty;
+        return ReturnResultFromTextStream<T>(_responseStream, contentType);
+    }
+
+
+    internal long CheckMaxLimitLen()
     {
         if( _maxLimitLen <= 0 )
             return 0;
@@ -88,59 +128,9 @@ public sealed class ResponseReader : IDisposable
         return _maxLimitLen;
     }
 
-
-    private T GetResult<T>()
+    internal static byte[] ReadResponseAsBytes(Stream responseStream, long maxLimitLen = 0)
     {
-        CheckMaxAllowLen();
-
-        if( typeof(T) == typeof(byte[]) ) {
-            // 二进制，就直接读取，忽略字符编码
-            return (T)(object)ReadResponseAsBytes(_responseStream, _maxLimitLen);
-        }
-        else if( typeof(T) == typeof(Stream) ) {
-            // 二进制，就直接返回
-            return (T)(object)ReadResponseAsStream();   // 这里不读取响应流内容，就不做长度检查了~~
-        }
-        else {
-            // 其它类型的结果，先得到字符串，再做反序列化处理
-            string responseText = ReadResponseAsText(_responseStream, _contentType, _maxLimitLen);
-
-            // 转换结果
-            return ConvertResult<T>(responseText, _contentType);
-        }
-    }
-
-
-    private HttpResult<T> GetHttpResult<T>()
-    {
-        int statusCode = (int)_response.StatusCode;
-        var header = _response.GetAllHeaders();
-        var body = GetResult<T>();
-
-        return new HttpResult<T>(statusCode, header, body);
-    }
-
-
-    private Stream GetResponseStream()
-    {
-        Stream responseStream = _response.GetResponseStream();
-
-        if( _autoDecompress ) {
-
-            // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Encoding
-            string contentEncoding = _response.ContentEncoding;
-            if( contentEncoding.HasValue() ) {
-                return HttpStreamReader.WrapperCompressionStream(responseStream, contentEncoding, CompressionMode.Decompress);
-            }
-            // else 没有指定 “Content-Encoding”，也就是没有使用压缩格式
-        }
-
-        return responseStream;
-    }
-
-    internal static byte[] ReadResponseAsBytes(Stream responseStream, long maxAllowLen = 0)
-    {
-        if( maxAllowLen <= 0 ) {   // 不检查长度
+        if( maxLimitLen <= 0 ) {   // 不检查长度
             return responseStream.ToArray();
         }
 
@@ -154,8 +144,8 @@ public sealed class ResponseReader : IDisposable
 
                 while( (len = responseStream.Read(buffer, 0, buffer.Length)) > 0 ) {
                     sumLen += len;
-                    if( sumLen > maxAllowLen ) {
-                        throw new ResponseBodyTooLargeException(maxAllowLen);
+                    if( sumLen > maxLimitLen ) {
+                        throw new ResponseBodyTooLargeException(maxLimitLen);
                     }
                     ms2.Write(buffer, 0, len);
                 }
@@ -171,9 +161,98 @@ public sealed class ResponseReader : IDisposable
         return _responseStream;
     }
 
-    internal static T ConvertResult<T>(string responseText, string contentType)
+
+    internal static T ReturnResultFromTextStream<T>(Stream responseStream, string contentType)
     {
-        if( typeof(T) == typeof(string) )
+        HttpUtils.ParseContentType(contentType, out string mediaType, out Encoding encoding);
+
+        // 1, 优先选择直接用“流”做反序列化
+
+        if( mediaType.Is(ResponseContentType.Json) && ReturnTypeIsObject<T>() ) {
+            // json => object 比较常用，提前做特殊处理（直接读流做反序列化，不需要先生成responseText），可优化性能
+            return ReturnObjectFromJsonStream<T>(responseStream, encoding);
+        }
+
+        if( mediaType.Is(ResponseContentType.JsonLines) && ReturnTypeIsList<T>() ) {
+            // ndjson 用于大数据量返回，提前做特殊处理（直接读流做反序列化，不需要先生成responseText），可优化性能
+            return ReturnListFromNdjsonStream<T>(responseStream, encoding);
+        }
+
+        if( mediaType.Is(ResponseContentType.Xml) && ReturnTypeIsObject<T>() ) {
+            return ReturnObjectFromXmlStream<T>(responseStream, encoding);
+        }
+
+        // 2, 其它类型的结果，先得到字符串，再做判断处理
+        string responseText = ReadResponseAsText(responseStream, mediaType, encoding);
+        return ConvertResult<T>(responseText, mediaType, contentType);
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static T ReturnObjectFromJsonStream<T>(Stream responseStream, Encoding encoding)
+    {
+        JsonSerializerSettings settings = JsonSerializerSettingsUtils.Get(JsonStyle.None);
+        JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
+
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+
+        using( JsonTextReader reader2 = new JsonTextReader(reader) ) {
+            return (T)jsonSerializer.Deserialize(reader, typeof(T));
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static T ReturnListFromNdjsonStream<T>(Stream responseStream, Encoding encoding)
+    {
+        Type elementType = typeof(T).GetGenericArguments()[0];
+
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+
+        MethodInfo method = typeof(NdJsonExtensions).GetMethod("FromMultiLineJson", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(TextReader), typeof(int), typeof(JsonSerializerSettings) }, null);
+        MethodInfo method2 = method.MakeGenericMethod(elementType);
+
+        return (T)method2.FastInvoke(null, new object[] { reader, 64, null });
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool ReturnTypeIsList<T>()
+    {
+        return typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(List<>);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool ReturnTypeIsObject<T>()
+    {
+        // 此方法用于判断 “返回值T” 是不是用于“反序列化”的类型
+        // 有些2B 站点/服务，会一直设置响应头 Content-Type: application/json，但是 response-body 就是 "普通字符串"，并不是JSON字符串
+        // 所以，最终以“返回值T” 为准来判断要不要做反序列化
+
+        Type type = typeof(T);
+
+        if( type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string) || type == typeof(object) )
+            return false;
+
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static T ReturnObjectFromXmlStream<T>(Stream responseStream, Encoding encoding)
+    {
+        XmlSerializer mySerializer = new XmlSerializer(typeof(T));
+
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+
+        return (T)mySerializer.Deserialize(reader);
+    }
+        
+
+    internal static T ConvertResult<T>(string responseText, string mediaType, string contentType)
+    {
+        // 优先判断 “返回值类型” 可以起到【纠错】的作用
+        // 有些2B 站点/服务，会一直设置响应头 Content-Type: application/json，但是 response-body 就是 "普通字符串"，并不是JSON字符串
+        // 所以，最终以“返回值T” 为准来判断要不要做反序列化
+
+        if( typeof(T) == typeof(string) )   // 忽略 contentType，永远按字符串返回
             return (T)(object)responseText;
 
 
@@ -181,20 +260,26 @@ public sealed class ResponseReader : IDisposable
         if( string.IsNullOrEmpty(responseText) )
             return default(T);
 
+        if( string.IsNullOrEmpty(mediaType) )    // 响应头没有指定 Content-Type 按 text/plain 处理
+            return (T)StringConverter.ChangeType(responseText, typeof(T));
 
-        if( contentType.IndexOfIgnoreCase(ResponseContentType.Json) >= 0 )
+
+        if( mediaType.Is(ResponseContentType.Json) )
             return JsonExtensions.FromJson<T>(responseText);
 
-        else if( contentType.IndexOfIgnoreCase(ResponseContentType.Xml) >= 0 )
+
+        if( mediaType.Is(ResponseContentType.Xml) )
             return XmlHelper.XmlDeserialize<T>(responseText);
 
-        else
-            //return (T)Convert.ChangeType(responseText, typeof(T));
+
+        if( mediaType.Is(ResponseContentType.Text) )
             return (T)StringConverter.ChangeType(responseText, typeof(T));
+
+        throw new NotSupportedException($"不支持将 Content-Type: {contentType} 的响应流转成 {typeof(T).FullName} 类型！");
     }
 
 
-    internal static string ReadResponseAsText(Stream responseStream, string contentType, long maxAllowLen = 0)
+    internal static string ReadResponseAsText(Stream responseStream, string mediaType, Encoding encoding, long maxLimitLen = 0)
     {
         // 共有 4 种场景
         // 1，contentType is null  , 按 UTF-8 方式读取
@@ -204,22 +289,52 @@ public sealed class ResponseReader : IDisposable
         // 说明：如果响应内容是文本，场景2是规范的，其它都是不规范的！
 
 
-        if( contentType.IsNullOrEmpty() )    // 场景 1
-            return ReadText(responseStream, Encoding.UTF8, maxAllowLen);
+        if( mediaType.IsNullOrEmpty() )    // 场景 1
+            return ReadText(responseStream, Encoding.UTF8, maxLimitLen);
 
 
-        Encoding encoding = GetEncodingFromContentType(contentType);
         if( encoding != null )  // 场景 2
-            return ReadText(responseStream, encoding, maxAllowLen);
+            return ReadText(responseStream, encoding, maxLimitLen);
 
 
-        bool isHtml = contentType.StartsWithIgnoreCase(ResponseContentType.Html);
+        bool isHtml = mediaType.Is(ResponseContentType.Html);
         if( isHtml == false )     // 场景 3
-            return ReadText(responseStream, Encoding.UTF8, maxAllowLen);
+            return ReadText(responseStream, Encoding.UTF8, maxLimitLen);
         else
             return ReadHtml(responseStream, Encoding.UTF8, out Encoding htmlEncoding);    // 场景 4, html
     }
 
+
+    internal static string ReadText(Stream stream, Encoding encoding, long maxLimitLen = 0)
+    {
+        if( stream.CanSeek )
+            stream.Position = 0;
+
+        if( stream.CanRead == false )
+            return string.Empty;
+
+        if( maxLimitLen <= 0 ) {   // 不检查长度
+            using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+                return reader.ReadToEnd();
+            }
+        }
+
+        // 读取流，并检查最大了限制长度
+        StringBuilder sb = new StringBuilder();
+        using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+            string line = null;
+            while( (line = reader.ReadLine()) != null ) {
+                if( sb.Length + line.Length + 2 > maxLimitLen ) {  // 2 = 换行符 \r\n 长度
+                    throw new ResponseBodyTooLargeException(maxLimitLen);
+                }
+                if( sb.Length > 0 )
+                    sb.AppendLineRN();
+
+                sb.Append(line);
+            }
+        }
+        return sb.ToString();
+    }
 
     /// <summary>
     /// 按 tryEncoding 的编码读取流，并在读取的过程中检查 【HTML头部】有没有指定 charset，
@@ -280,39 +395,6 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
-
-    internal static string ReadText(Stream stream, Encoding encoding, long maxAllowLen = 0)
-    {
-        if( stream.CanSeek )
-            stream.Position = 0;
-
-        if( stream.CanRead == false )
-            return string.Empty;
-
-        if( maxAllowLen <= 0 ) {   // 不检查长度
-            using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
-                return reader.ReadToEnd();
-            }
-        }
-
-        // 读取流，并检查最大了限制长度
-        StringBuilder sb = new StringBuilder();
-        using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
-            string line = null;
-            while( (line = reader.ReadLine()) != null ) {
-                if( sb.Length + line.Length + 2 > maxAllowLen ) {  // 2 = 换行符 \r\n 长度
-                    throw new ResponseBodyTooLargeException(maxAllowLen);
-                }
-                if( sb.Length > 0 )
-                    sb.AppendLineRN();
-
-                sb.Append(line);
-            }
-        }
-        return sb.ToString();
-    }
-
-
     // <meta http-equiv="charset"  content="iso-8859-1">
     private static readonly Regex s_htmlCharsetRegex = new Regex(
                 @"<meta\s+http-equiv=[\'\#]charset[\'\#]\s+content=[\'\#](?<chartset>[\w-]+)[\'\#]\s*\/?>".Replace('#', '\"'),
@@ -327,11 +409,6 @@ public sealed class ResponseReader : IDisposable
     private static readonly Regex s_htmlContentTypeRegex = new Regex(
                 @"<meta\s+http-equiv=[\'\#]content-Type[\'\#]\s+content=[\'\#][\w\/]+;\s*charset=(?<chartset>[\w-]+)[\'\#]\s*\/?>".Replace('#', '\"'),
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-    // Content-Type: text/html; charset=utf-8
-    private static readonly Regex s_httpHeaderContentTypeRegex = new Regex(
-                @"^[\w\/]+;\s*charset=\""?(?<chartset>[\w-]+)\""?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
 
 
     internal static Encoding GetEncodingFromHtmlHeader(string text)
@@ -350,41 +427,9 @@ public sealed class ResponseReader : IDisposable
 
         if( m.Success ) {
             string charset = m.Groups["chartset"].Value;
-            return GetEncodingFromString(charset);
+            return EncodingUtils.GetEncodingFromString(charset);
         }
         return null;
-    }
-
-
-    internal static Encoding GetEncodingFromContentType(string contentType)
-    {
-        // 说明：直接使用 response.CharacterSet 不靠谱！
-        //      因为如果响应头不指定编码，它就默认返回 "ISO-8859-1"，最后也不知道是不是真的是"ISO-8859-1"编码，所以干脆不用这个属性。
-
-        if( string.IsNullOrEmpty(contentType) )
-            return null;
-
-        Match m = s_httpHeaderContentTypeRegex.Match(contentType);
-        if( m.Success ) {
-            string charset = m.Groups["chartset"].Value;
-            return GetEncodingFromString(charset);
-        }
-        return null;
-    }
-
-
-    internal static Encoding GetEncodingFromString(string encodingName)
-    {
-        if( string.IsNullOrEmpty(encodingName) )
-            return null;
-
-        try {
-            return Encoding.GetEncoding(encodingName);
-        }
-        catch {
-            /* 忽略无效的 charset 值 */
-            return null;
-        }
     }
 
 

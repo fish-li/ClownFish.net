@@ -42,7 +42,7 @@ public class MethodInfoExtensionsTest
         }
 
         using( CodeSnippetContext ctx2 = new CodeSnippetContext(typeof(MethodInfoExtensionsTest), nameof(Test_InvokeAndLog), 1) ) {
-            MyAssert.IsError<TargetInvocationException>(() => {
+            MyAssert.IsError<ArgumentOutOfRangeException>(() => {
                 int a3 = (int)method.InvokeAndLog(null, new object[] { 300000, 4 });
             });
 

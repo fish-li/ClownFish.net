@@ -35,9 +35,16 @@ public sealed partial class HttpOption
     public object MockResult { get; set; }
 
     /// <summary>
-    /// 最大允许的响应体长度，仅当大于零时执行检查
+    /// 最大允许的响应体长度，仅当: 设置值大于零 且以 byte[] 方式读取响应流 时执行检查。
     /// </summary>
     public long MaxResponseBodySize { get; set; }
+
+    // 目前用于TxClientX的ExecuteHttp2/ExecuteHttp3命令中，防止用代理通道去下载一个大文件，出现OOM，相关代码如下：
+    // http.CheckSuccessStatusCode = false;
+    // http.IsProxyRequest = true;
+    // http.MaxResponseBodySize = TxOptions.HttpProxy_MaxResponseBodySize;   // <<<######################
+    // HttpResult<byte[]> httpResult = await http.GetResultAsync<HttpResult<byte[]>>();
+    // uploadArgs.ResponseResult = (httpResult as IBinarySerializer).ToBytes().ToGzip().ToBase64();
 
 #if NETCOREAPP
 

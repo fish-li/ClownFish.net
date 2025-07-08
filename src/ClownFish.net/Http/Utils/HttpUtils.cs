@@ -177,5 +177,69 @@ public static class HttpUtils
     }
 
 
+    /// <summary>
+    /// 解析 Content-Type 标头
+    /// </summary>
+    /// <param name="contentType"></param>
+    /// <param name="mediaType"></param>
+    /// <param name="encoding"></param>
+    /// <returns>解析出来多少个数据，0：contentType参数为空，1：只解析出 mediaType，2：已解析 mediaType 和 encoding </returns>
+    internal static int ParseContentType(string contentType, out string mediaType, out Encoding encoding)
+    {
+        // 参考链接：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Reference/Headers/Content-Type
+        // Content-Type 通常有以下2种用法：
+        // 1, text/html; charset=utf-8
+        // 2, multipart/form-data; boundary=something
+        // 实际使用时，“用法1” 也可以不指定charset简写为：  text/html
+
+        // 规范 https://httpwg.org/specs/rfc9110.html#field.content-type 列出几种用法：不区分大小写，空格可有可无，甚至charset值还允许用双引号
+        /*    text/html;charset=utf-8
+              Text/HTML;Charset="utf-8"
+              text/html; charset="utf-8"
+              text/html;charset=UTF-8
+         */
+
+        mediaType = null;
+        encoding = null;
+
+        if( contentType.IsNullOrEmpty() )
+            return 0;
+
+
+        int p = contentType.IndexOf(';');   // 示例 Content-Type: application/json; charset=xxxxx
+        if( p > 2 ) {
+
+            mediaType = contentType.Substring(0, p);  // 这里不检查 media 的格式是否符合 type/subtype
+
+            if( p == contentType.Length - 1 ) {
+                return 1;      // 能到这里，参数contentType的格式就不规范了，这里先忽略这个错误～～～
+            }
+
+            string part2 = contentType.Substring(p + 1).Trim();
+
+            int p2 = part2.IndexOf('=');
+            if( p2 > 1 && p2 < part2.Length - 1 ) {
+                string p2name = part2.Substring(0, p2);
+
+                if( p2name.Is("charset") == false ) {
+                    return 1;   // 后部分参数不是 charset，忽略～～～
+                }
+
+                string p2value = part2.Substring(p2 + 1);
+                if( p2value.Length > 3 && p2value[0] == '"' && p2value[p2value.Length - 1] == '"' )
+                    p2value = p2value.Substring(1, p2value.Length - 2);
+
+                encoding = EncodingUtils.GetEncodingFromString(p2value);
+                return 2;
+            }
+            else {
+                return 1;  // 后部分的格式未知，忽略～～～
+            }
+        }
+        else {   // 示例 Content-Type: application/json
+            mediaType = contentType;
+            return 1;
+        }
+    }
 
 }

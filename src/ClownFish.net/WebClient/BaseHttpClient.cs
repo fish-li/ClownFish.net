@@ -75,6 +75,7 @@ internal abstract class BaseHttpClient
             return (T)(object)ClownFish.Base.Void.Value;
 
         // 这里不使用 ResponseReader 的 “自动解压缩” 功能，因为可以在 SocketsHttpHandler 中设置解决
+        // 例如：clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Brotli;
 
         using( ResponseReader reader = new ResponseReader(response, false, this.HttpOption.MaxResponseBodySize) ) {
             return reader.Read<T>();

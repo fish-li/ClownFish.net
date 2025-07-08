@@ -1,5 +1,6 @@
 ﻿#pragma warning disable SYSLIB0014 // 类型或成员已过时
 using System.Net.Http;
+using System.Numerics;
 using ClownFish.UnitTest.Base;
 
 #if NETCOREAPP
@@ -48,7 +49,7 @@ public class ResponseReaderTest
             }
         }
     }
-
+    
 
     [TestMethod]
     public void Test_As_Stream()
@@ -101,50 +102,8 @@ public class ResponseReaderTest
     }
 
 
-    [TestMethod]
-    public void Test_GetEncodingFromString()
-    {
-        Assert.IsNull(ResponseReader.GetEncodingFromString(null));
-        Assert.IsNull(ResponseReader.GetEncodingFromString("xxx"));
-
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromString("utf-8"));
-        Assert.AreEqual(Encoding.Unicode, ResponseReader.GetEncodingFromString("utf-16"));
-        Assert.AreEqual(Encoding.GetEncoding("GB2312"), ResponseReader.GetEncodingFromString("GB2312"));
-    }
-
-    [TestMethod]
-    public void Test_GetEncodingFromContentType()
-    {
-        // 规范参考：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type
-        // Content-Type: text/html; charset=utf-8
-        // Content-Type: multipart/form-data; boundary=something
-
-        /* 规范中的示例，https://tools.ietf.org/html/rfc7231#section-3.1.1.1
-            text/html; charset=utf-8
-            text/html;charset=utf-8
-            text/html;charset=UTF-8
-            Text/HTML;Charset="utf-8"
-            text/html; charset="utf-8"
-         */
-
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType(null));
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType("xxxxxx"));
-
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType("text/html"));
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType("multipart/form-data; boundary=something"));
-
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType("text/html: charset=utf-8"));
-        Assert.IsNull(ResponseReader.GetEncodingFromContentType("text/html; charset=utf-8;"));
-
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html; charset=utf-8"));
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html;charset=utf-8"));
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html;charset=UTF-8"));
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html;CHARset=utf-8"));
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html;Charset=\"utf-8\""));
-        Assert.AreEqual(Encoding.UTF8, ResponseReader.GetEncodingFromContentType("text/html; charset=\"utf-8\""));
-
-        Assert.AreEqual(Encoding.GetEncoding("GB2312"), ResponseReader.GetEncodingFromContentType("text/html; charset=gb2312"));
-    }
+    
+   
 
 
     [TestMethod]
@@ -471,6 +430,13 @@ public class ResponseReaderTest
         }
     }
 
+
+    internal static string ResponseReaderReadResponseAsText(Stream responseStream, string contentType, long maxLimitLen = 0)
+    {
+        HttpUtils.ParseContentType(contentType, out string mediaType, out Encoding encoding);
+        return ResponseReader.ReadResponseAsText(responseStream, mediaType, encoding, maxLimitLen);
+    }
+
     [TestMethod]
     public void Test_GetResponseText_use_http_header()
     {
@@ -486,16 +452,16 @@ public class ResponseReaderTest
         byte[] b1 = Encoding.UTF8.GetBytes(text);
 
         using( MemoryStream ms1 = new MemoryStream(b1) ) {
-            string result1 = ResponseReader.ReadResponseAsText(ms1, "text/html; charset=utf8");
+            string result1 = ResponseReaderReadResponseAsText(ms1, "text/html; charset=utf8");
             Assert.IsTrue(result1.Contains("中文汉字"));
 
-            string result2 = ResponseReader.ReadResponseAsText(ms1, "text/html");
+            string result2 = ResponseReaderReadResponseAsText(ms1, "text/html");
             Assert.IsTrue(result2.Contains("中文汉字"));
 
-            string result3 = ResponseReader.ReadResponseAsText(ms1, "text/xxx");
+            string result3 = ResponseReaderReadResponseAsText(ms1, "text/xxx");
             Assert.IsTrue(result3.Contains("中文汉字"));
 
-            string result4 = ResponseReader.ReadResponseAsText(ms1, null);
+            string result4 = ResponseReaderReadResponseAsText(ms1, null);
             Assert.IsTrue(result4.Contains("中文汉字"));
         }
     }
@@ -518,13 +484,13 @@ public class ResponseReaderTest
         byte[] b1 = Encoding.UTF8.GetBytes(text);
 
         using( MemoryStream ms1 = new MemoryStream(b1) ) {
-            string result1 = ResponseReader.ReadResponseAsText(ms1, "text/html");
+            string result1 = ResponseReaderReadResponseAsText(ms1, "text/html");
             Assert.IsTrue(result1.Contains("中文汉字"));
 
-            string result2 = ResponseReader.ReadResponseAsText(ms1, "text/plain");
+            string result2 = ResponseReaderReadResponseAsText(ms1, "text/plain");
             Assert.IsTrue(result2.Contains("中文汉字"));
 
-            string result4 = ResponseReader.ReadResponseAsText(ms1, null);
+            string result4 = ResponseReaderReadResponseAsText(ms1, null);
             Assert.IsTrue(result4.Contains("中文汉字"));
         }
     }
@@ -547,13 +513,13 @@ public class ResponseReaderTest
         byte[] b1 = Encoding.GetEncoding("GB2312").GetBytes(text);
 
         using( MemoryStream ms1 = new MemoryStream(b1) ) {
-            string result1 = ResponseReader.ReadResponseAsText(ms1, "text/html; charset=gb2312");
+            string result1 = ResponseReaderReadResponseAsText(ms1, "text/html; charset=gb2312");
             Assert.IsTrue(result1.Contains("中文汉字"));
 
-            string result2 = ResponseReader.ReadResponseAsText(ms1, "text/html; charset=utf-8");  // 这种情况下会返回乱码
+            string result2 = ResponseReaderReadResponseAsText(ms1, "text/html; charset=utf-8");  // 这种情况下会返回乱码
             Assert.IsFalse(result2.Contains("中文汉字"));
 
-            string result4 = ResponseReader.ReadResponseAsText(ms1, null);
+            string result4 = ResponseReaderReadResponseAsText(ms1, null);
             Assert.IsFalse(result4.Contains("中文汉字"));
         }
     }
@@ -568,25 +534,57 @@ public class ResponseReaderTest
     }
 
 
+    internal static T ResponseReaderConvertResult<T>(string responseText, string contentType)
+    {
+        HttpUtils.ParseContentType(contentType, out string mediaType, out Encoding encoding);
+        return ResponseReader.ConvertResult<T>(responseText, mediaType, contentType);
+    }
+
     [TestMethod]
     public void Test_ConvertResult()
     {
-        Assert.AreEqual("abc", ResponseReader.ConvertResult<string>("abc", "xxxxxxx"));
-        Assert.AreEqual(null, ResponseReader.ConvertResult<Product2>("", "xxxxxxx"));
+        Assert.AreEqual("abc", ResponseReaderConvertResult<string>("abc", "xxxxxxx"));
+        Assert.AreEqual(null, ResponseReaderConvertResult<Product2>("", "xxxxxxx"));
 
         Product2 p0 = Product2.CreateByFixedData();
 
         string json = p0.ToJson();
-        Product2 p1 = ResponseReader.ConvertResult<Product2>(json, "application/json; charset=utf-8");
+        Product2 p1 = ResponseReaderConvertResult<Product2>(json, "application/json; charset=utf-8");
         Assert.IsTrue(p0.IsEqual(p1));
 
 
         string xml = p0.ToXml();
-        Product2 p2 = ResponseReader.ConvertResult<Product2>(xml, "application/xml; charset=utf-8");
+        Product2 p2 = ResponseReaderConvertResult<Product2>(xml, "application/xml; charset=utf-8");
         Assert.IsTrue(p0.IsEqual(p2));
 
-        Assert.AreEqual(123, ResponseReader.ConvertResult<int>("123", "text/plain; charset=utf-8"));
+        Assert.AreEqual(123, ResponseReaderConvertResult<int>("123", "text/plain; charset=utf-8"));
+
+        Assert.AreEqual(123, ResponseReaderConvertResult<int>("123", ""));
     }
+
+    [TestMethod]
+    public void Test_ConvertResult_Error()
+    {
+        string json = Product2.CreateByFixedData().ToJson();
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            ResponseReaderConvertResult<Product2>(json, "x; charset=utf-8");
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            ResponseReaderConvertResult<Product2>(json, "application/json-seq");   // 没有被【标准化】，暂不支持
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            ResponseReaderConvertResult<Product2>(json, "application/jsonl");   // 没有被【标准化】，暂不支持
+        });
+
+        MyAssert.IsError<NotSupportedException>(() => {
+            ResponseReaderConvertResult<Product2>(json, "application/jsonl ; charset=xxx");
+        });
+    }
+
+    
 
 #if NETCOREAPP
     [TestMethod]
@@ -598,14 +596,14 @@ public class ResponseReaderTest
 
         ResponseReader reader1 = new ResponseReader(response, false, 10);
         MyAssert.IsError<ResponseBodyTooLargeException>(() => {
-            reader1.CheckMaxAllowLen();
+            reader1.CheckMaxLimitLen();
         });
 
         ResponseReader reader2 = new ResponseReader(response, false, -10);  // 不检查长度
-        Assert.AreEqual(0, reader2.CheckMaxAllowLen());
+        Assert.AreEqual(0, reader2.CheckMaxLimitLen());
 
         ResponseReader reader3 = new ResponseReader(response, false, int.MaxValue);
-        Assert.AreEqual(-1L, reader3.CheckMaxAllowLen());    // 长度已检查，然后直接修改内部变量
+        Assert.AreEqual(-1L, reader3.CheckMaxLimitLen());    // 长度已检查，然后直接修改内部变量
     }
 
     [TestMethod]
@@ -619,7 +617,7 @@ public class ResponseReaderTest
         HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
 
         ResponseReader reader1 = new ResponseReader(response, false, 10);
-        Assert.AreEqual(10, reader1.CheckMaxAllowLen());
+        Assert.AreEqual(10, reader1.CheckMaxLimitLen());
     }
 
 
@@ -710,5 +708,166 @@ public class ResponseReaderTest
 
 #endif
 
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_Text()
+    {
+        string text = Guid.NewGuid().ToString();
+        MemoryStream ms = new MemoryStream(text.GetBytes());
+
+        string result = ResponseReader.ReturnResultFromTextStream<string>(ms, "text/plain; charset=utf-8");
+        Assert.AreEqual(text, result);
+    }
+
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_Text_Empty()
+    {
+        string text = "";
+        MemoryStream ms = new MemoryStream(text.GetBytes());
+
+        Product2 p = ResponseReader.ReturnResultFromTextStream<Product2>(ms, "application/json; charset=utf-8");
+        Assert.IsNull(p);
+    }
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_Media_Empty()
+    {
+        string text = "123";
+        MemoryStream ms = new MemoryStream(text.GetBytes());
+
+        int value = ResponseReader.ReturnResultFromTextStream<int>(ms, "");
+        Assert.AreEqual(123, value);
+    }
+
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_Json()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/json; charset=utf-8");
+        Assert.AreEqual(9, list.Count);
+    }
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_NdJson()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/x-ndjson; charset=utf-8");
+        Assert.AreEqual(9, list.Count);
+    }
+
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_xml()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToXml().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/xml; charset=utf-8");
+        Assert.AreEqual(9, list.Count);
+    }
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_Enum()
+    {
+        string text = "MySQL";
+        MemoryStream ms = new MemoryStream(text.GetBytes());
+
+        DatabaseType result = ResponseReader.ReturnResultFromTextStream<DatabaseType>(ms, "text/plain");
+        Assert.AreEqual(DatabaseType.MySQL, result);
+    }
+
+    [TestMethod]
+    public void Test_ReturnResultFromTextStream_NotSupportedException()
+    {
+        string text = "MySQL";
+        MemoryStream ms = new MemoryStream(text.GetBytes());
+
+        string contentType = "text/abc; charset=utf-8";
+
+        NotSupportedException ex = MyAssert.IsError<NotSupportedException>(() => {
+            DatabaseType result = ResponseReader.ReturnResultFromTextStream<DatabaseType>(ms, contentType);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(contentType));
+        Console.WriteLine(ex.Message);
+    }
+
+
+    private static List<Product2> CreateTestDataList(int count)
+    {
+        List<Product2> list1 = new List<Product2>();
+        for( int i = 0; i < count; i++ ) {
+            list1.Add(Product2.CreateByRandomData());
+        }
+        return list1;
+    }
+
+    [TestMethod]
+    public void Test_ReturnObjectFromJsonStream()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnObjectFromJsonStream<List<Product2>>(ms, null);
+        Assert.AreEqual(9, list.Count);
+    }
+
+
+    [TestMethod]
+    public void Test_ReturnListFromNdjsonStream()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(10).ToMultiLineJson().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnListFromNdjsonStream<List<Product2>>(ms, null);
+        Assert.AreEqual(10, list.Count);
+    }
+
+    [TestMethod]
+    public void Test_ReturnObjectFromXmlStream()
+    {
+        MemoryStream ms = new MemoryStream(CreateTestDataList(11).ToXml().GetBytes());
+
+        List<Product2> list = ResponseReader.ReturnObjectFromXmlStream<List<Product2>>(ms, null);
+        Assert.AreEqual(11, list.Count);
+    }
+
+
+    [TestMethod]
+    public void Test_ReturnTypeIsList()
+    {
+        Assert.IsTrue(ResponseReader.ReturnTypeIsList<List<Product2>>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsList<List<int>>());
+
+        Assert.IsFalse(ResponseReader.ReturnTypeIsList<int>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product2>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product2[]>());
+    }
+
+    [TestMethod]
+    public void Test_ReturnTypeIsObject()
+    {
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<List<Product2>>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product2[]>());
+
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<List<int>>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<int[]>());
+
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product2>());
+
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<object>());
+
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<bool>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<int>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<long>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<string>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<DatabaseType>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<Guid>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<DateTime>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<decimal>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<TimeSpan>());
+
+        Assert.IsFalse(ResponseReader.ReturnTypeIsObject<int?>());
+    }
 }
 #pragma warning restore SYSLIB0014 // 类型或成员已过时
