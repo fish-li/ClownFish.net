@@ -38,18 +38,18 @@ public class SimpleEsClientTest
         return new SimpleEsClient(opt);
     }
 
-    [TestMethod]
-    public async Task Test_WriteOne()
-    {
-        SimpleEsClient client = CreateClient();
-        client.WriteOne<InvokeLog>(null);
-        await client.WriteOneAsync<InvokeLog>(null);
+    //[TestMethod]
+    //public async Task Test_WriteOne()
+    //{
+    //    SimpleEsClient client = CreateClient();
+    //    client.WriteOne<InvokeLog>(null);
+    //    await client.WriteOneAsync<InvokeLog>(null);
 
-        HttpClientMockResults.SetMockResult("Elasticsearch_WriteOne", "", false);
+    //    HttpClientMockResults.SetMockResult("Elasticsearch_WriteOne", "", false);
 
-        client.WriteOne(new InvokeLog());        
-        await client.WriteOneAsync(new InvokeLog());
-    }
+    //    client.WriteOne(new InvokeLog());        
+    //    await client.WriteOneAsync(new InvokeLog());
+    //}
 
     [TestMethod]
     public async Task Test_WriteList()

@@ -10,7 +10,7 @@ public sealed class DataSpliter<T> where T : class
     private readonly Func<T, string> _serializer;
     private readonly int _partSize;
     private readonly string _separator;
-    private readonly StringBuilder _sb;
+    private StringBuilder _sb;
 
     private int _index = 0;
     private string _lastLine = null;
@@ -21,8 +21,7 @@ public sealed class DataSpliter<T> where T : class
     /// </summary>
     /// <param name="list">数据列表，它的元素将用于序列化，并切割成期望大小的数据块</param>
     /// <param name="partSize">希望得到的每个序列化后的数据块长度</param>
-    /// <param name="buffer">做为缓冲区使用的StringBuilder实例</param>
-    public DataSpliter(List<T> list, int partSize, StringBuilder buffer = null) : this(list, DefaultSerializer, partSize, "\n", buffer)
+    public DataSpliter(List<T> list, int partSize) : this(list, DefaultSerializer, partSize, "\n")
     {
     }
 
@@ -33,8 +32,7 @@ public sealed class DataSpliter<T> where T : class
     /// <param name="serializer">列表中单个元素的序列化方法</param>
     /// <param name="partSize">希望得到的每个序列化后的数据块长度</param>
     /// <param name="separator">每个元素序列化后的拼接分隔符</param>
-    /// <param name="buffer">做为缓冲区使用的StringBuilder实例</param>
-    public DataSpliter(List<T> list, Func<T, string> serializer, int partSize, string separator, StringBuilder buffer = null)
+    public DataSpliter(List<T> list, Func<T, string> serializer, int partSize, string separator)
     {
         if( list == null )
             throw new ArgumentNullException(nameof(list));
@@ -46,7 +44,6 @@ public sealed class DataSpliter<T> where T : class
         _list = list;
         _partSize = partSize;
         _serializer = serializer;
-        _sb = buffer ?? new StringBuilder(partSize);
         _separator = separator ?? "\n";
     }
 
@@ -64,20 +61,51 @@ public sealed class DataSpliter<T> where T : class
     /// <returns></returns>
     public string GetNextPart()
     {
-        _sb.Clear();
+        if( _sb == null )
+            _sb = new StringBuilder(_partSize);
+
+        int count = 0;
+        using( StringWriter writer = new StringWriter(_sb) ) {
+            count = GetNextPart(writer);
+        }
+
+        if( count == 0 ) {
+            return null;
+        }
+        else {
+            string result = _sb.ToString();
+            _sb.Clear();
+
+            if( result.Length != count )
+                throw new ApplicationException("DataSpliter.GetNextPart inner error!");
+
+            return result;
+        }
+    }
+
+
+    /// <summary>
+    /// 按照构造方法的参数来获取数据块
+    /// </summary>
+    /// <param name="writer"></param>
+    /// <returns></returns>
+    public int GetNextPart(TextWriter writer)
+    {
+        int count = 0;
 
         // 上一次已读出，但由于超过分块长度而没有“合并”的部分
         if( string.IsNullOrEmpty(_lastLine) == false ) {
-            _sb.Append(_lastLine);
+            writer.Write(_lastLine);
+            count += _lastLine.Length;
             _lastLine = null;
         }
 
         // 上一次读了一个“大”块头，只能单独返回
-        if( _sb.Length >= _partSize )
-            return _sb.ToString();
+        if( count >= _partSize )
+            return count;
 
         if( _index >= _list.Count )
-            return _sb.Length > 0 ? _sb.ToString() : null;
+            return count;
 
 
 
@@ -87,10 +115,11 @@ public sealed class DataSpliter<T> where T : class
             _index++;
 
             if( string.IsNullOrEmpty(_lastLine) == false ) {
-                if( _sb.Length + _separator.Length + _lastLine.Length > _partSize ) {
+                if( count + _separator.Length + _lastLine.Length > _partSize ) {
 
-                    if( _sb.Length == 0 ) {
-                        _sb.Append(_lastLine);
+                    if( count == 0 ) {
+                        writer.Write(_lastLine);
+                        count += _lastLine.Length;
                         _lastLine = null;
                     }
                     else {
@@ -98,18 +127,22 @@ public sealed class DataSpliter<T> where T : class
                     }
                 }
                 else {
-                    if( _sb.Length > 0 )
-                        _sb.Append(_separator);
+                    if( count > 0 ) {
+                        writer.Write(_separator);
+                        count += _separator.Length;
+                    }
 
-                    _sb.Append(_lastLine);
+                    writer.Write(_lastLine);
+                    count += _lastLine.Length;
                     _lastLine = null;
                 }
             }
 
             if( _index >= _list.Count )
                 break;
+
         }
 
-        return _sb.ToString();
+        return count;
     }
 }

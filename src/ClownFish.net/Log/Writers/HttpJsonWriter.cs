@@ -14,8 +14,6 @@ internal class HttpJsonWriter : ILogWriter
     private static readonly int s_batchSize = Settings.GetUInt("ClownFish_Log_HttpJsonWriter_BatchSize", 3 * 1024 * 1024);
     private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_HttpJsonWriter_ShowError", 1);
 
-    private readonly StringBuilder _buffer = new StringBuilder(s_batchSize);
-
     void ILogWriter.Init(LogConfiguration config, WriterConfig section)
     {
         string configValue = Settings.GetSetting("Nebula_LogGate_Url")   // 优先采用 Nebula.LogGate 做为服务端接收日志数据
@@ -61,25 +59,36 @@ internal class HttpJsonWriter : ILogWriter
         };
     }
 
+
     void ILogWriter.WriteList<T>(List<T> list)
     {
         if( _url.IsNullOrEmpty() || list.IsNullOrEmpty() )
             return;
 
-        string url = GetInvokeUrl(typeof(T).Name);        
+        string url = GetInvokeUrl(typeof(T).Name);
 
         // 如果网络中断，或者服务端挂了，整个数据包就一起丢弃，避免无用的重试。
         try {
             // 按照指定大小，将列表中的元素先做JSON序列化，然后再拼接成一个字符串
-            DataSpliter<T> spliter = new DataSpliter<T>(list, s_batchSize, _buffer);
+            DataSpliter<T> spliter = new DataSpliter<T>(list, s_batchSize);
 
             while( true ) {
-                string jsonlPart = spliter.GetNextPart();
-                if( jsonlPart.IsNullOrEmpty() ) {
-                    break;
-                }
+                using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
 
-                SendBatch<T>(jsonlPart, url);
+                    int count = 0;
+                    using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
+                        using( StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+
+                            count = spliter.GetNextPart(writer);
+                        }
+                    }
+
+                    if( count <= 0 ) {
+                        break;
+                    }
+
+                    SendBatch<T>(url, stream);
+                }
             }
 
             ClownFishCounters.Logging.HttpJsonWriteCount.Add(list.Count);
@@ -89,20 +98,15 @@ internal class HttpJsonWriter : ILogWriter
                 Console2.Warnning("HttpJsonWriter.WriteList ERROR: " + ex.ToString());
             }
         }
-        finally {
-            _buffer.Clear();
-        }
     }
 
-    private void SendBatch<T>(string jsonlPart, string url)
+    private void SendBatch<T>(string url, MemoryStream ms)
     {
-        byte[] jsonGzip = jsonlPart.ToGzip();
-
         HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = url,
             Format = SerializeFormat.None,
-            Data = jsonGzip,
+            Data = ms,
             Timeout = HttpClientDefaults.HttpJsonWriterTimeout
         };
 

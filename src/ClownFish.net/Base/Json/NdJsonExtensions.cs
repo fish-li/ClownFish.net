@@ -50,28 +50,22 @@ public static class NdJsonExtensions
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
         int count = 0;
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
-                jsonTextWriter.Formatting = jsonSerializer.Formatting;
+        using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
+            jsonTextWriter.Formatting = jsonSerializer.Formatting;
 
-                foreach( var x in list ) {
-                    count++;
-                    jsonSerializer.Serialize(jsonTextWriter, x);
-                    jsonTextWriter.Flush();
-                    writer.Write('\n');
+            foreach( var x in list ) {
+                count++;
+                jsonSerializer.Serialize(jsonTextWriter, x);
+                jsonTextWriter.Flush();
+                writer.Write('\n');
 
-                    // 最后以“换行符”结束，这里参考了 elasticsearch 的要求
-                    // The final line of data must end with a newline character \n
-                    // https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk-api-desc
-                }
+                // 最后以“换行符”结束，这里参考了 elasticsearch 的要求
+                // The final line of data must end with a newline character \n
+                // https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk-api-desc
             }
-            writer.Flush();
-            return count;
         }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
+        writer.Flush();
+        return count;
     }
 
 
