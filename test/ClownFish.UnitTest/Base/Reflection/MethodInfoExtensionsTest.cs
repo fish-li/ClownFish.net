@@ -9,7 +9,7 @@ public class MethodInfoExtensionsTest
             _ = ClownFish.Base.Reflection.MethodInfoExtensions.GetMethodFullName((MethodInfo)null);
         });
 
-        MethodInfo method = typeof(MethodInfoExtensionsTest).GetMethod("Add"); ;
+        MethodInfo method = typeof(MethodInfoExtensionsTest).GetMethod("Add");
         Assert.AreEqual("ClownFish.UnitTest.Base.Reflection.MethodInfoExtensionsTest/Add", method.GetMethodFullName());
     }
 
@@ -19,6 +19,36 @@ public class MethodInfoExtensionsTest
             throw new ArgumentOutOfRangeException();
 
         return a + b;
+    }
+
+    [TestMethod]
+    public void Test_FastInvoke()
+    {
+        MethodInfo method = typeof(MethodInfoExtensionsTest).GetMethod("Add");
+
+        MyAssert.IsError<ArgumentOutOfRangeException>(() => {  // 确认能得到“真正”的异常，没有用TargetInvocationException包装
+            _ = method.FastInvoke(null, 20000, 2);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            MethodInfo method2 = null;
+            _ = method2.FastInvoke(null, 20000, 2);
+        });
+    }
+
+    [TestMethod]
+    public void Test_FastInvoke2()
+    {
+        MethodInfo method = typeof(MethodInfoExtensionsTest).GetMethod("Add");
+
+        MyAssert.IsError<ArgumentOutOfRangeException>(() => {  // 确认能得到“真正”的异常，没有用TargetInvocationException包装
+            _ = method.FastInvoke2(null, 20000, 2);
+        });
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            MethodInfo method2 = null;
+            _ = method2.FastInvoke2(null, 20000, 2);
+        });
     }
 
     [TestMethod]

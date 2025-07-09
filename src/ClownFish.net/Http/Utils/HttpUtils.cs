@@ -5,6 +5,10 @@
 /// </summary>
 public static class HttpUtils
 {
+    static HttpUtils()
+    {
+        InitContentTypeCache();
+    }
 
     /// <summary>
     /// 根据一个请求的提交方法，判断是否包含请求体
@@ -177,6 +181,64 @@ public static class HttpUtils
     }
 
 
+    private class ContentTypeInfo
+    {
+        public string MediaType { get; set; }
+        public Encoding Encoding { get; set; }
+
+        //public override string ToString()
+        //{
+        //    return $"MediaType={MediaType};     Encoding={Encoding?.WebName ?? "NULL"}";
+        //}
+    }
+
+    private static readonly Dictionary<string, ContentTypeInfo> s_contentTypeCache = new Dictionary<string, ContentTypeInfo>(30, StringComparer.Ordinal);
+
+    private static void InitContentTypeCache()
+    {
+        // 缓存一些常见的Content-Type对应的解析结果，避免每次解析时产生新对象
+        // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/MIME_types
+
+        AddContentTypeCache(ResponseContentType.Text);
+        AddContentTypeCache(ResponseContentType.TextUtf8);
+        AddContentTypeCache(ResponseContentType.Json);
+        AddContentTypeCache(ResponseContentType.JsonUtf8);
+        AddContentTypeCache(ResponseContentType.JsonLines);
+        AddContentTypeCache(ResponseContentType.Xml);
+        AddContentTypeCache(ResponseContentType.XmlUtf8);
+        AddContentTypeCache(ResponseContentType.Html);
+        AddContentTypeCache(ResponseContentType.HtmlUtf8);
+        AddContentTypeCache(ResponseContentType.OctetStream);
+        AddContentTypeCache(RequestContentType.Form);
+        AddContentTypeCache(RequestContentType.FormUtf8);
+        AddContentTypeCache("application/problem+json");
+        AddContentTypeCache("application/json-seq");
+        AddContentTypeCache("text/csv");
+        AddContentTypeCache("text/css");
+        AddContentTypeCache("text/javascript");
+        AddContentTypeCache("application/javascript");
+        AddContentTypeCache("image/png");
+        AddContentTypeCache("image/jpeg");
+        AddContentTypeCache("image/gif");
+        AddContentTypeCache("image/svg+xml");
+        AddContentTypeCache("image/ico");
+        AddContentTypeCache("font/woff");
+        AddContentTypeCache("font/ttf");
+        AddContentTypeCache("font/otf");
+    }
+
+    private static void AddContentTypeCache(string contentType)
+    {
+        if( ParseContentType(contentType, out string mediaType, out Encoding encoding) > 0 ) {
+
+            ContentTypeInfo contentTypeInfo = new ContentTypeInfo {
+                MediaType = mediaType,
+                Encoding = encoding
+            };
+            s_contentTypeCache[contentType] = contentTypeInfo;
+        }
+    }
+
     /// <summary>
     /// 解析 Content-Type 标头
     /// </summary>
@@ -204,6 +266,14 @@ public static class HttpUtils
 
         if( contentType.IsNullOrEmpty() )
             return 0;
+
+
+        ContentTypeInfo contentTypeInfo = s_contentTypeCache.TryGet(contentType);
+        if( contentTypeInfo != null ) {
+            mediaType = contentTypeInfo.MediaType;
+            encoding = contentTypeInfo.Encoding;
+            return encoding == null ? 1 : 2;
+        }
 
 
         int p = contentType.IndexOf(';');   // 示例 Content-Type: application/json; charset=xxxxx
@@ -239,6 +309,28 @@ public static class HttpUtils
         else {   // 示例 Content-Type: application/json
             mediaType = contentType;
             return 1;
+        }
+    }
+
+
+    internal static string ParseMediaType(string contentType)
+    {
+        if( contentType.IsNullOrEmpty() )
+            return string.Empty;
+
+
+        ContentTypeInfo contentTypeInfo = s_contentTypeCache.TryGet(contentType);
+        if( contentTypeInfo != null ) {
+            return contentTypeInfo.MediaType;
+        }
+
+        int p = contentType.IndexOf(';');   // 示例 Content-Type: application/json; charset=xxxxx
+        if( p > 2 ) {
+
+            return contentType.Substring(0, p);
+        }
+        else {   // 示例 Content-Type: application/json
+            return contentType;
         }
     }
 

@@ -752,7 +752,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnResultFromTextStream_NdJson()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToMultiLineJson().GetBytes());
 
         List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/x-ndjson; charset=utf-8");
         Assert.AreEqual(9, list.Count);
@@ -795,7 +795,7 @@ public class ResponseReaderTest
     }
 
 
-    private static List<Product2> CreateTestDataList(int count)
+    internal static List<Product2> CreateTestDataList(int count)
     {
         List<Product2> list1 = new List<Product2>();
         for( int i = 0; i < count; i++ ) {

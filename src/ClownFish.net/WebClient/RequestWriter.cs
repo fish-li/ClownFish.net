@@ -2,8 +2,6 @@
 
 internal struct RequestWriter
 {
-    private static readonly Encoding s_defaultEncoding = Encoding.UTF8;
-
     public string ContentType { get; private set; }
 
     public bool IsGzip { get; private set; }
@@ -29,13 +27,17 @@ internal struct RequestWriter
                 WriteAsJson2Format(stream, data, autoGzip);
                 break;
 
+            case SerializeFormat.JsonLines:
+                WriteAsJsonLinesFormat(stream, data, autoGzip);
+                break;
+
             case SerializeFormat.Xml:
                 WriteAsXmlFormat(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Form:
             case SerializeFormat.Multipart:
-                WriteAsFormFormat(stream, data);
+                WriteAsWebFormFormat(stream, data);
                 break;
 
             case SerializeFormat.Binary:
@@ -51,8 +53,7 @@ internal struct RequestWriter
     private void WriteText2(Stream stream, string text, bool autoGzip)
     {
         if( autoGzip && text.Length > ClownFishOptions.HttpClient_GzipThreshold ) {
-            byte[] gzipData = text.ToGzip();
-            WriteBinary(stream, gzipData);    // WriteText2
+            WriteGzipBinary(stream, text);    // WriteText2
             IsGzip = true;
             IsBinaryData = true;
         }
@@ -64,11 +65,22 @@ internal struct RequestWriter
     private static void WriteText(Stream stream, string text)
     {
         if( text != null && text.Length > 0 ) {
-            byte[] bb = s_defaultEncoding.GetBytes(text);
+            byte[] bb = text.ToUtf8Bytes();
 
             if( bb != null && bb.Length > 0 ) {
                 stream.Write(bb, 0, bb.Length);
             }
+        }
+    }
+
+    private static void WriteGzipBinary(Stream stream, string text)
+    {
+        byte[] bb = text.ToUtf8Bytes();
+
+        using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
+
+            gZipStream.Write(bb, 0, bb.Length);
+            gZipStream.Close();
         }
     }
 
@@ -115,6 +127,55 @@ internal struct RequestWriter
         WriteText2(stream, text, autoGzip);    // json2
     }
 
+    private void WriteAsJsonLinesFormat(Stream stream, object data, bool autoGzip)
+    {
+        this.ContentType = ResponseContentType.JsonLines;
+
+        Type dataType = data.GetType();
+        if( dataType == typeof(string) ) {
+            string text = (string)data;
+            WriteText2(stream, text, autoGzip);
+        }
+        else {
+            bool isList = dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(List<>);
+            if( isList == false )
+                throw new ArgumentException("HttpOption.Data is not List<T>");
+
+
+            Type elementType = dataType.GetGenericArguments()[0];
+
+            MethodInfo method = typeof(RequestWriter).GetMethod("WriteNdjsonToStream", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo method2 = method.MakeGenericMethod(elementType);
+
+            int count = (int)method2.FastInvoke(null, new object[] { stream, data, autoGzip });
+
+            if( autoGzip && count > 0 ) {
+                IsGzip = true;
+                IsBinaryData = true;
+            }
+        }
+    }
+
+    private static int WriteNdjsonToStream<T>(Stream stream, object data, bool autoGzip)
+    {
+        List<T> list = (List<T>)data;
+        if( list.IsNullOrEmpty() )
+            return 0;
+
+        if( autoGzip ) {   // 这里不做长度判断，直接Gzip压缩
+            using GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true);
+
+            using StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024, true);
+            list.ToMultiLineJson(writer);
+        }
+        else {
+            using StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true);
+            list.ToMultiLineJson(writer);
+        }
+
+        return list.Count;
+    }
+
     private void WriteAsXmlFormat(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = ResponseContentType.XmlUtf8;
@@ -124,7 +185,7 @@ internal struct RequestWriter
         WriteText2(stream, text, autoGzip);    // xml
     }
 
-    private void WriteAsFormFormat(Stream stream, object data)
+    private void WriteAsWebFormFormat(Stream stream, object data)
     {
         if( data.GetType() == typeof(string) ) {
             this.ContentType = RequestContentType.FormUtf8;

@@ -92,6 +92,7 @@
         string contentEncoding = this.Request.Headers["Content-Encoding"];
         bool bodyIsText = contentType.StartsWith("text/")
                         || contentType.StartsWith("application/json")
+                        || contentType.StartsWith("application/x-ndjson")
                         || contentType.StartsWith("application/xml")
                         || contentType.StartsWith("application/x-www-form-urlencoded");
 

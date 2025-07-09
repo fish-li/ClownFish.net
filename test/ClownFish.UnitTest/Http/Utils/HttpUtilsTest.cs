@@ -111,7 +111,7 @@ public class HttpUtilsTest
     }
 
     [TestMethod]
-    public void Test_GetEncodingFromContentType()
+    public void Test_ParseContentType()
     {
         // 规范参考：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type
         // Content-Type: text/html; charset=utf-8
@@ -202,4 +202,24 @@ public class HttpUtilsTest
 
     }
 
+
+    [TestMethod]
+    public void Test_ParseContentType_performance()
+    {
+        int count = 100_0000;
+
+        Stopwatch watch = Stopwatch.StartNew();
+        for( int i = 0; i < count; i++ ) {
+            HttpUtils.ParseContentType("application/json; charset=utf-8", out string media, out Encoding encoding);
+        }
+        watch.Stop();
+        Console.WriteLine(watch.Elapsed.ToString());
+
+        watch.Restart();
+        for( int i = 0; i < count; i++ ) {
+            HttpUtils.ParseContentType("application/xxxxxxx; charset=utf-8", out string media, out Encoding encoding);
+        }
+        watch.Stop();
+        Console.WriteLine(watch.Elapsed.ToString());
+    }
 }

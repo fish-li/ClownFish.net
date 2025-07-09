@@ -1,4 +1,5 @@
 ﻿using ClownFish.UnitTest.Base;
+using ClownFish.UnitTest.WebClient;
 
 namespace ClownFish.Base.DEMO;
 
@@ -106,6 +107,23 @@ public class HttpClient_DEMO
 
         Assert.IsTrue(text.Contains("Content-Type: application/json"));
     }
+
+    [TestMethod]
+    public void POST_Ndjson_方式提交数据()
+    {
+        List<Product2> list = ResponseReaderTest.CreateTestDataList(20);
+
+        string text = new HttpOption {
+            Method = "POST",
+            Url = "http://www.fish-test.com/show-body.aspx",
+            Data = list,
+            Format = SerializeFormat.JsonLines     // 注意这里
+        }.GetResult();
+        Console.WriteLine(text);
+
+        Assert.IsTrue(text.Contains("Content-Type: application/x-ndjson"));
+    }
+
 
     [TestMethod]
     public void POST_以XML方式提交数据()

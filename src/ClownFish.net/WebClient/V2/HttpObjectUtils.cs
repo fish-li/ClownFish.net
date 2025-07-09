@@ -116,15 +116,15 @@ internal static class HttpObjectUtils
 
     internal static HttpContent CreateRequestMessageBody3(SerializeFormat format, object postData, bool autoGzip = false)
     {
+        // 为了能记录日志，这里还不能使用 MemoryStreamPool
+        // 因为 HttpContent 会“及时” dispose，但是日志不会立即记录
         MemoryStream ms = new MemoryStream();
-        HttpContent content = new StreamContent(ms);
 
         var writer = new ClownFish.WebClient.RequestWriter();
         writer.Write(ms, postData, format, autoGzip);
         ms.Position = 0;
 
-        //byte[] buffer = ms.ToArray();
-        //HttpContent content = new ByteArrayContent(buffer);
+        HttpContent content = new StreamContent(ms);   // StreamContent 会在 dispose 时调用 ms.dispose
 
         if( writer.ContentType.IsNullOrEmpty() == false ) {
             //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(writer.ContentType);

@@ -11,7 +11,9 @@ public static class ContenTypeUtils
     /// <returns></returns>
     public static SerializeFormat GetFormat(string contentType)
     {
-        if( string.IsNullOrEmpty(contentType) )
+        string mediaType = HttpUtils.ParseMediaType(contentType);
+
+        if( string.IsNullOrEmpty(mediaType) )
             return SerializeFormat.None;
 
         // MIME types are case-insensitive but are traditionally written in lowercase, 
@@ -20,34 +22,37 @@ public static class ContenTypeUtils
         // 虽然 MIME 类型是不区分大小写的，但是传统都习惯使用小写，因此下面的判断就直接使用小写
         // 例如：https://www.iana.org/assignments/media-types/media-types.xhtml
 
-        if( contentType[0] == 'a' ) {
+        if( mediaType[0] == 'a' ) {
 
-            if( contentType.StartsWith(RequestContentType.Json, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.Json )
                 return SerializeFormat.Json;
 
-            if( contentType.StartsWith(RequestContentType.Xml, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.JsonLines )
+                return SerializeFormat.JsonLines;
+
+            if( mediaType == RequestContentType.Xml )
                 return SerializeFormat.Xml;
 
-            if( contentType.StartsWith(RequestContentType.Form, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.Form )
                 return SerializeFormat.Form;
 
-            if( contentType.StartsWith(RequestContentType.Binary, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.Binary )
                 return SerializeFormat.Binary;
 
             return SerializeFormat.Unknown;
         }
 
-        if( contentType[0] == 'm' ) {
+        if( mediaType[0] == 'm' ) {
 
-            if( contentType.StartsWith(RequestContentType.Multipart, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.Multipart )
                 return SerializeFormat.Multipart;
 
             return SerializeFormat.Unknown;
         }
 
-        if( contentType[0] == 't' ) {
+        if( mediaType[0] == 't' ) {
 
-            if( contentType.StartsWith(RequestContentType.Text, StringComparison.Ordinal) )
+            if( mediaType == RequestContentType.Text )
                 return SerializeFormat.Text;
 
             return SerializeFormat.Unknown;
@@ -65,29 +70,17 @@ public static class ContenTypeUtils
     /// <returns></returns>
     internal static string GetByFormat(SerializeFormat format)
     {
-        switch( format ) {
-            case SerializeFormat.Text:
-                return ResponseContentType.TextUtf8;   // 固定采用 utf-8
-
-            case SerializeFormat.Json:
-            case SerializeFormat.Json2:
-                return ResponseContentType.JsonUtf8;   // 固定采用 utf-8
-
-            case SerializeFormat.Xml:
-                return ResponseContentType.XmlUtf8;   // 固定采用 utf-8
-
-            case SerializeFormat.Form:
-                return RequestContentType.FormUtf8;   // 固定采用 utf-8
-
-            case SerializeFormat.Multipart:
-                return RequestContentType.Multipart;
-
-            case SerializeFormat.Binary:
-                return RequestContentType.Binary;
-
-            default:
-                return string.Empty;
-        }
+        return format switch {
+            SerializeFormat.Text => ResponseContentType.TextUtf8,
+            SerializeFormat.Json => ResponseContentType.JsonUtf8,
+            SerializeFormat.Json2 => ResponseContentType.JsonUtf8,
+            SerializeFormat.JsonLines => RequestContentType.JsonLines,
+            SerializeFormat.Xml => ResponseContentType.XmlUtf8,
+            SerializeFormat.Form => RequestContentType.FormUtf8,
+            SerializeFormat.Multipart => RequestContentType.Multipart,
+            SerializeFormat.Binary => RequestContentType.Binary,
+            _ => string.Empty
+        };
     }
 
 }
