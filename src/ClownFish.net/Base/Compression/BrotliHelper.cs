@@ -16,9 +16,7 @@ public static class BrotliHelper
         if( string.IsNullOrEmpty(input) )
             return input;
 
-        byte[] bb = Encoding.UTF8.GetBytes(input);
-        byte[] b2 = ToBrotli(bb);
-        return Convert.ToBase64String(b2);
+        return input.ToBrotli().ToBase64();
     }
 
     /// <summary>
@@ -31,9 +29,7 @@ public static class BrotliHelper
         if( string.IsNullOrEmpty(base64) )
             return base64;
 
-        byte[] bb = Convert.FromBase64String(base64);
-        byte[] b2 = UnBrotli(bb);
-        return Encoding.UTF8.GetString(b2);
+        return base64.UnBase64().UnBrotli().ToUtf8String();
     }
 
 
@@ -122,6 +118,7 @@ public static class BrotliHelper
     /// <param name="input"></param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Usage", "CA2202")]
+    [Obsolete("请使用 ToBrotli 方法代替当前方法")]
     public static byte[] Compress(byte[] input)
     {
         return ToBrotli(input);
@@ -134,6 +131,7 @@ public static class BrotliHelper
     /// <param name="input"></param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Usage", "CA2202")]
+    [Obsolete("请使用 UnBrotli 方法代替当前方法")]
     public static byte[] Decompress(byte[] input)
     {
         return UnBrotli(input);

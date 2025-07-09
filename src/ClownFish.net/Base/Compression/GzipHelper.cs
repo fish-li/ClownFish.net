@@ -15,9 +15,7 @@ public static class GzipHelper
         if( string.IsNullOrEmpty(input) )
             return input;
 
-        byte[] bb = Encoding.UTF8.GetBytes(input);
-        byte[] gzipBB = ToGzip(bb);
-        return Convert.ToBase64String(gzipBB);
+        return input.ToGzip().ToBase64();
     }
 
     /// <summary>
@@ -30,9 +28,7 @@ public static class GzipHelper
         if( string.IsNullOrEmpty(base64) )
             return base64;
 
-        byte[] bb = Convert.FromBase64String(base64);
-        byte[] gzipBB = UnGzip(bb);
-        return Encoding.UTF8.GetString(gzipBB);
+        return base64.UnBase64().UnGzip().ToUtf8String();
     }
 
 
@@ -116,6 +112,7 @@ public static class GzipHelper
     /// <param name="input"></param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Usage", "CA2202")]
+    [Obsolete("请使用 ToGzip 方法代替当前方法")]
     public static byte[] Compress(byte[] input)
     {
         return ToGzip(input);
@@ -128,6 +125,7 @@ public static class GzipHelper
     /// <param name="input"></param>
     /// <returns></returns>
     [SuppressMessage("Microsoft.Usage", "CA2202")]
+    [Obsolete("请使用 UnGzip 方法代替当前方法")]
     public static byte[] Decompress(byte[] input)
     {
         return UnGzip(input);
