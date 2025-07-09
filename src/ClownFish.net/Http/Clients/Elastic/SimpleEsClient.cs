@@ -122,102 +122,95 @@ public sealed class SimpleEsClient
 
     #endregion
 
-    //#region 写数据 One
+    #region 写数据 One
 
-    ///// <summary>
-    ///// Write one
-    ///// </summary>
-    ///// <typeparam name="T"></typeparam>
-    ///// <param name="data"></param>
-    ///// <param name="indexName"></param>
-    //public void WriteOne<T>(T data, string indexName = null) where T : class, IMsgObject
-    //{
-    //    if( data == null )
-    //        return;
+    /// <summary>
+    /// Write one
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <param name="indexName"></param>
+    public void WriteOne<T>(T data, string indexName = null) where T : class, IMsgObject
+    {
+        if( data == null )
+            return;
 
-    //    HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
+        HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
 
-    //    if( NeedCheckResponse() ) {
-    //        string response = httpOption.GetResult();
-    //        CheckCreateResponse(response);
-    //    }
-    //    else {
-    //        httpOption.Send();
-    //    }
-    //}
+        if( NeedCheckResponse() ) {
+            string response = httpOption.GetResult();
+            CheckCreateResponse(response);
+        }
+        else {
+            httpOption.Send();
+        }
+    }
 
-    ///// <summary>
-    ///// Write one
-    ///// </summary>
-    ///// <typeparam name="T"></typeparam>
-    ///// <param name="data"></param>
-    ///// <param name="indexName"></param>
-    //public async Task WriteOneAsync<T>(T data, string indexName = null) where T : class, IMsgObject
-    //{
-    //    if( data == null )
-    //        return;
+    /// <summary>
+    /// Write one
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <param name="indexName"></param>
+    public async Task WriteOneAsync<T>(T data, string indexName = null) where T : class, IMsgObject
+    {
+        if( data == null )
+            return;
 
-    //    HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
+        HttpOption httpOption = GetWriteOneHttpOption(data, indexName);
 
-    //    if( NeedCheckResponse() ) {
-    //        string response = await httpOption.GetResultAsync();
-    //        CheckCreateResponse(response);
-    //    }
-    //    else {
-    //        await httpOption.SendAsync();
-    //    }
+        if( NeedCheckResponse() ) {
+            string response = await httpOption.GetResultAsync();
+            CheckCreateResponse(response);
+        }
+        else {
+            await httpOption.SendAsync();
+        }
+    }
 
-    //    //HttpResult<string> result = await httpOption.GetResultAsync<HttpResult<string>>();
-    //    //Console2.WriteLine("====================== Write Elasticsearch Request =====================================");
-    //    //Console.WriteLine(httpOption.ToAllText());
-    //    //Console2.WriteLine("====================== Write Elasticsearch Response =====================================");
-    //    //Console.WriteLine(result.ToAllText());
-    //    //Console2.WriteLine("====================== Write Elasticsearch Response END =====================================");
-    //}
+    private HttpOption GetWriteOneHttpOption<T>(T info, string indexName) where T : class, IMsgObject
+    {
+        string index = indexName ?? GetIndexName(typeof(T));
+        string id = GetDocumentId(info);
 
-    //private HttpOption GetWriteOneHttpOption<T>(T info, string indexName) where T : class, IMsgObject
-    //{
-    //    string index = indexName ?? GetIndexName(typeof(T));
-    //    string id = GetDocumentId(info);
+        // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-index_.html
 
-    //    // https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-index_.html
+        HttpOption httpOption = new HttpOption {
+            Id = "Elasticsearch_WriteOne",
+            Method = "POST",
+            Url = _option.Url + $"/{index}/_create/{id}",
+            Data = info.ToJson(EsJsonStyle),
+            Format = SerializeFormat.Json,
+            Timeout = GetTimeout()
+        };
 
-    //    HttpOption httpOption = new HttpOption {
-    //        Id = "Elasticsearch_WriteOne",
-    //        Method = "POST",
-    //        Url = _option.Url + $"/{index}/_create/{id}",
-    //        Data = info.ToJson(EsJsonStyle),
-    //        Format = SerializeFormat.Json,
-    //        Timeout = GetTimeout()
-    //    };
+        return SetAuth(httpOption);
+    }
 
-    //    return SetAuth(httpOption);
-    //}
+    private void CheckCreateResponse(string response)
+    {
+        if( response.HasValue() ) {
+            CreateResponse resp = response.FromJson<CreateResponse>();
+            if( resp != null && resp.Shards != null ) {
+                if( resp.Shards.Failed > 0 )
+                    throw new EsHttpException("写Elasticsearch失败！", response);
+            }
+        }
+    }
 
-    //private void CheckCreateResponse(string response)
-    //{
-    //    if( response.HasValue() ) {
-    //        CreateResponse resp = response.FromJson<CreateResponse>();
-    //        if( resp != null && resp.Shards != null ) {
-    //            if( resp.Shards.Failed > 0 )
-    //                throw new EsHttpException("写Elasticsearch失败！", response);
-    //        }
-    //    }
-    //}
+    internal class CreateResponse
+    {
+        public CreateResponseShards Shards { get; set; }
+    }
 
-    //internal class CreateResponse
-    //{
-    //    public CreateResponseShards Shards { get; set; }
-    //}
+    internal class CreateResponseShards
+    {
+        //public long Total {  get; set; }
+        //public long Successful { get; set; }
+        public long Failed { get; set; }
+    }
 
-    //internal class CreateResponseShards
-    //{
-    //    //public long Total {  get; set; }
-    //    //public long Successful { get; set; }
-    //    public long Failed { get; set; }
-    //}
-
-    //#endregion
+    #endregion
 
     #region 写数据 List/Bulk
 
