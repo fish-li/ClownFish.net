@@ -45,6 +45,15 @@ public sealed class HttpRequestAlone : NHttpRequest, IDisposable
     }
 
 
+    internal static HttpRequestAlone Create(ReadOnlyMemory<byte> buffer)
+    {
+        RequestData data = new RequestData();
+        (data as IBinarySerializer).LoadData(buffer);
+
+        return new HttpRequestAlone(data);
+    }
+
+
     /// <summary>
     /// 不支持访问此属性。
     /// </summary>

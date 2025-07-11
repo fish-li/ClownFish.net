@@ -679,8 +679,11 @@ public static class StringExtensions
         if( value is IEnumerable<int> x6 )
             return string.Join(";", x6);
 
+        if( value is IEnumerable<long> x7 )
+            return string.Join(";", x7);
+
         if( value is byte[] bb )
-            return "byte[], len=" + bb.Length;
+            return $"byte[{bb.Length}]:" + bb.ToBase64();
 
         if( value is System.Security.Cryptography.X509Certificates.X509Certificate2 x509 )
             return x509.Subject;

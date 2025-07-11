@@ -202,7 +202,7 @@ public class HttpUtilsTest
 
     }
 
-
+#if NET8_0_OR_GREATER
     [TestMethod]
     public void Test_ParseContentType_performance()
     {
@@ -222,4 +222,6 @@ public class HttpUtilsTest
         watch.Stop();
         Console.WriteLine(watch.Elapsed.ToString());
     }
+#endif
+
 }

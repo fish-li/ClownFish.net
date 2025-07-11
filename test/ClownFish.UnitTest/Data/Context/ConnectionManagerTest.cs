@@ -138,7 +138,7 @@ public class ConnectionManagerTest : BaseTest
         Test_ConnName0("pg1");
         Test_ConnName0("tenant_xsql_my57a04574bf635");
 
-#if NETCOREAPP
+#if NET8_0_OR_GREATER
         Test_ConnName0("kingbase3");
 #endif
     }

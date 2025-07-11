@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP
+﻿#if NET8_0_OR_GREATER
 
 namespace ClownFish.UnitTest.Data.PostgreSQL;
 

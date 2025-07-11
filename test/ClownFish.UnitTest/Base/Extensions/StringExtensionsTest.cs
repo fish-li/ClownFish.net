@@ -548,6 +548,11 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             Assert.AreEqual("11;22;33", (new int[] { 11, 22, 33 }).ToList().ToString2());
             Assert.AreEqual("aa;bb;cc", (new string[] { "aa", "bb", "cc" }).ToList().ToString2());
+
+            Assert.AreEqual("11;22;33", (new int[] { 11, 22, 33 }).ToHashSet().ToString2());
+            Assert.AreEqual("aa;bb;cc", (new string[] { "aa", "bb", "cc" }).ToHashSet().ToString2());
+
+            Assert.IsTrue(Guid.NewGuid().ToByteArray().ToString2().StartsWith0("byte[16]:"));
         }
 
 

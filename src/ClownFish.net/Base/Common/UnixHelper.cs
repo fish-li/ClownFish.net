@@ -43,7 +43,7 @@ public static class UnixHelper
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            using( MemoryStream ms = new MemoryStream(logBytes) ) {
+            using( MemoryStream ms = new MemoryStream(logBytes, false) ) {
                 using( BinaryReader reader = new BinaryReader(ms) ) {
 
                     while( true ) {

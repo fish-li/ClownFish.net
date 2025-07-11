@@ -187,7 +187,7 @@ public sealed class SimpleEsClient
         return SetAuth(httpOption);
     }
 
-    private void CheckCreateResponse(string response)
+    internal static void CheckCreateResponse(string response)
     {
         if( response.HasValue() ) {
             CreateResponse resp = response.FromJson<CreateResponse>();
@@ -294,14 +294,14 @@ public sealed class SimpleEsClient
         return SetAuth(httpOption);
     }
 
-    private void CheckBulkResponse(string response)
+    internal static void CheckBulkResponse(string response)
     {
         // ES 这个傻屌不使用状态码，只能JSON反序列化 ResponseBody 读取里面的内容才能知道是否调用成功，
         // 但是Bulk的 ResponseBody 会比较大，所以这样做的成本太高…………
         // 绝大多数情况下，写入都会成功，除非 ES 挂了，磁盘空间不够这，网络不通，这些特殊情况发生。
 
         // 这里为了简单且减少不必要的性能损耗，就直接判断“特征字符串”
-        if( response != null && response.Contains("\"errors\":true,") ) {
+        if( response != null && response.Contains("\"errors\":true") ) {
             throw new EsHttpException("写Elasticsearch失败！", response);
         }
     }

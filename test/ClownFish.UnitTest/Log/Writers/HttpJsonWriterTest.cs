@@ -74,6 +74,34 @@ public class HttpJsonWriterTest
 
         // 确认异常不会抛出
     }
+
+    [TestMethod]
+    public void Test_CheckResponse()
+    {
+        HttpResult<string> result = new HttpResult<string>(200, null, "-22");
+        Assert.AreEqual(-22, HttpJsonWriter.CheckResponse(result, "xxx"));
+
+
+        string returnId = Guid.NewGuid().ToString("N");
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            HttpResult<string> result2 = new HttpResult<string>(200, null, "123");
+            HttpJsonWriter.CheckResponse(result2, returnId);
+        });
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            NameValueCollection headers = new NameValueCollection();
+            headers.Add("x-returnid", "xxxxxxxxxxx");
+            HttpResult<string> result3 = new HttpResult<string>(200, headers, "123");
+            HttpJsonWriter.CheckResponse(result3, returnId);
+        });
+
+
+        NameValueCollection headers = new NameValueCollection();
+        headers.Add("x-returnid", returnId);
+        HttpResult<string> result4 = new HttpResult<string>(200, headers, "123");
+        Assert.AreEqual(1, HttpJsonWriter.CheckResponse(result4, returnId));
+    }
 }
 
 

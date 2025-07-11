@@ -27,7 +27,7 @@ public class BaseClientProviderTest
         }
     }
 
-#if NETCOREAPP
+#if NET8_0_OR_GREATER
     [TestMethod]
     public void Test_2() 
     {

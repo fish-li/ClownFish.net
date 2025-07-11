@@ -227,12 +227,7 @@ public sealed class ResponseReader : IDisposable
         // 有些2B 站点/服务，会一直设置响应头 Content-Type: application/json，但是 response-body 就是 "普通字符串"，并不是JSON字符串
         // 所以，最终以“返回值T” 为准来判断要不要做反序列化
 
-        Type type = typeof(T);
-
-        if( type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string) || type == typeof(object) )
-            return false;
-
-        return true;
+        return typeof(T).IsSuitableDeserialize();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

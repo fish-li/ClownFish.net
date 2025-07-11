@@ -211,4 +211,19 @@ public static class TypeExtensionsCF
         return LocalSettings.GetBool(configName, 1);
     }
 
+
+    /// <summary>
+    /// 判断某个类型是不是可用于反序列化。
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool IsSuitableDeserialize(this Type type)
+    {
+        if( type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string) || type == typeof(object) )
+            return false;
+
+        return true;
+    }
+
 }

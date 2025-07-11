@@ -45,10 +45,10 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
 
     DateTime IMsgObject.GetTime() => DateTime.Parse(this.Headers[ComplexMessage.CreateTime]);
 
-    string IMsgObject.GetId() => this.Headers[ComplexMessage.MessageId] ?? string.Empty;
+    string IMsgObject.GetId() => this.Headers[ComplexMessage.MessageId];
 
     /// <summary>
-    /// 构造方法，给反序列化使用。
+    /// 构造方法，给反序列化使用。【一定不要直接使用！】
     /// </summary>
     public ComplexMessage()
     {

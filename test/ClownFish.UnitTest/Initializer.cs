@@ -98,7 +98,7 @@ public class UnitTestAppStartup : ConsoleAppStartup
 
         ClownFishInit.InitDAL();
 
-#if NETCOREAPP
+#if NET8_0_OR_GREATER
         ClownFish.Data.Initializer.Instance.RegisterDamengProvider();
 
         KingbaseESClientProvider.RegisterProvider();

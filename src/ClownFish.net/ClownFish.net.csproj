@@ -4,8 +4,8 @@
         <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>9.25.709.2</Version>
-        <FileVersion>9.25.709.2</FileVersion>
+        <Version>9.25.710.1</Version>
+        <FileVersion>9.25.710.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -29,7 +29,7 @@
         <Reference Include="System.IO.Compression" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-        <PackageReference Include="Cronos" Version="0.8.4" />
+        <PackageReference Include="Cronos" Version="0.8.4" />        
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">

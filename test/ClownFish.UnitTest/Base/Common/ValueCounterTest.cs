@@ -51,5 +51,10 @@ public class ValueCounterTest
         Assert.AreEqual(0L, count4);
 
         Assert.AreEqual(0L, counter.Get());
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            ValueCounter counter = null;
+            long x = counter;
+        });
     }
 }

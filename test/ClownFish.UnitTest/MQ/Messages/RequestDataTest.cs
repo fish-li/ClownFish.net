@@ -38,13 +38,19 @@ public class RequestDataTest
         Assert.AreEqual(data1.Headers, data2.Headers);
         Assert.IsTrue(data1.Body.IsEqual(data2.Body));
 
+        RequestData data4 = MessageBinSerializer.Instance.Deserialize2<RequestData>(b1);
+
+        Assert.AreEqual(data1.RequestLine, data4.RequestLine);
+        Assert.AreEqual(data1.Headers, data4.Headers);
+        Assert.IsTrue(data1.Body.IsEqual(data4.Body));
+
 
         string text = MessageTextSerializer.Instance.Serialize(data1);
-        data2 = MessageTextSerializer.Instance.Deserialize<RequestData>(text);
+        RequestData data3 = MessageTextSerializer.Instance.Deserialize<RequestData>(text);
 
-        Assert.AreEqual(data1.RequestLine, data2.RequestLine);
-        Assert.AreEqual(data1.Headers, data2.Headers);
-        Assert.IsTrue(data1.Body.IsEqual(data2.Body));
+        Assert.AreEqual(data1.RequestLine, data3.RequestLine);
+        Assert.AreEqual(data1.Headers, data3.Headers);
+        Assert.IsTrue(data1.Body.IsEqual(data3.Body));
     }
 
 

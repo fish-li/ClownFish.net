@@ -67,7 +67,7 @@ public class XmlCommandManagerTest
             Assert.AreEqual("RandGetCustomer.SQLSERVER", command.Item.CommandName);  // 结果有变化！
         }
 
-#if NETCOREAPP
+#if NET8_0_OR_GREATER
         using( DbContext db = DbContext.Create("kingbase3") ) {   // 使用了自定义的枚举值（数字）
             XmlCommand command = db.XmlCommand.Create("RandGetCustomer");
             Assert.AreEqual("RandGetCustomer.7777", command.Item.CommandName);  // 结果有变化！

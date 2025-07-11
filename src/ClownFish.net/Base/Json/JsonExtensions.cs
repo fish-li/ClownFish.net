@@ -54,7 +54,7 @@ public static class JsonExtensions
     /// 将一个对象序列化为JSON字符串。
     /// </summary>
     /// <param name="obj">要序列化的对象</param>
-    /// <param name="settings">JsonSerializerSettings instance</param>
+    /// <param name="settings">反序列化参数</param>
     /// <returns>序列化得到的JSON字符串</returns>
     public static string ToJson(this object obj, JsonSerializerSettings settings = null)
     {
@@ -88,7 +88,7 @@ public static class JsonExtensions
     /// </summary>
     /// <typeparam name="T">反序列的对象类型参数</typeparam>
     /// <param name="json">JSON字符串</param>
-    /// <param name="settings"></param>
+    /// <param name="settings">反序列化参数</param>
     /// <returns>反序列化得到的结果</returns>
     public static T FromJson<T>(this string json, JsonSerializerSettings settings = null)
     {
@@ -105,7 +105,7 @@ public static class JsonExtensions
     /// </summary>
     /// <param name="json">JSON字符串</param>
     /// <param name="destType">反序列的对象类型参数</param>
-    /// <param name="settings"></param>
+    /// <param name="settings">反序列化参数</param>
     /// <returns>反序列化得到的结果</returns>
     public static object FromJson(this string json, Type destType, JsonSerializerSettings settings = null)
     {
@@ -114,6 +114,27 @@ public static class JsonExtensions
 
         JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
         return JsonConvert.DeserializeObject(json, destType, settings2);
+    }
+
+
+    /// <summary>
+    /// 将一个JSON字符串反序列化为对象
+    /// </summary>
+    /// <param name="stream">包含JSON字符串的二进制数据流</param>
+    /// <param name="destType">反序列的对象类型参数</param>
+    /// <param name="settings">反序列化参数</param>
+    /// <returns></returns>
+    public static object FromJson(this Stream stream, Type destType, JsonSerializerSettings settings = null)
+    {
+        if( stream == null )
+            throw new ArgumentNullException(nameof(stream));
+
+        JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
+        JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
+
+        using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
+        
+        return jsonSerializer.Deserialize(reader, destType);
     }
 
 

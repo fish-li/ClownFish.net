@@ -139,13 +139,7 @@ internal class HttpJsonWriter : ILogWriter
 
             HttpResult<string> result = httpOption.GetResult<HttpResult<string>>(HttpRetry.Create(2, 500));
 
-            if( result.Result.TryToInt() < 1 ) {    // 上传日志失败了
-                Console2.Info("HttpJsonWriter上传日志时，服务端返回: " + result.Result);
-            }
-
-            string[] values = result.Headers.GetValues("x-returnid");
-            if( values.IsNullOrEmpty() || values.FirstOrDefault() != returnId )
-                throw new InvalidOperationException("日志服务端没有按照约定的方式返回，或者请求没有到达日志服务端(被防火墙拦截)！");
+            CheckResponse(result, returnId);
         }
         catch( Exception ex ) {
             if( s_showError ) {
@@ -153,6 +147,22 @@ internal class HttpJsonWriter : ILogWriter
                 Console2.Warnning("HttpJsonWriter.SendRequest ERROR: " + ex.Message);
             }
         }
+    }
+
+
+    internal static int CheckResponse(HttpResult<string> result, string returnId)
+    {
+        int number = result.Result.TryToInt();
+        if( number < 1 ) {    // 上传日志失败了
+            Console2.Info("HttpJsonWriter上传日志时，服务端返回: " + result.Result);
+            return number;
+        }
+
+        string[] values = result.Headers.GetValues("x-returnid");
+        if( values.IsNullOrEmpty() || values.FirstOrDefault() != returnId )
+            throw new InvalidOperationException("日志服务端没有按照约定的方式返回，或者请求没有到达日志服务端(被防火墙拦截)！");
+
+        return 1;
     }
 }
 

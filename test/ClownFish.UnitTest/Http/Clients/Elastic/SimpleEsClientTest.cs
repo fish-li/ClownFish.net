@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ClownFish.Http.Clients.Elastic;
+﻿using ClownFish.Http.Clients.Elastic;
 
 namespace ClownFish.UnitTest.Http.Clients.Elastic;
 [TestClass]
@@ -114,4 +109,39 @@ public class SimpleEsClientTest
         string s1 = (string)client.InvokeMethod("GetIndexName", typeof(OprLog));
         Assert.AreEqual("oprlog-" + postfix, s1);
     }
+
+    [TestMethod]
+    public void Test_CheckCreateResponse()
+    {
+        SimpleEsClient.CreateResponse resp = new SimpleEsClient.CreateResponse {
+            Shards = new SimpleEsClient.CreateResponseShards {
+                Failed = 3
+            }
+        };
+
+        string json = resp.ToJson();
+
+        MyAssert.IsError<EsHttpException>(() => {
+            SimpleEsClient.CheckCreateResponse(json);
+        });
+    }
+
+
+    [TestMethod]
+    public void Test_CheckBulkResponse()
+    {
+        object resp = new {
+            took = 486,
+            errors = true,
+            items = "xxxxxx",
+        };
+
+        string json = resp.ToJson();
+        Console.WriteLine(json);
+
+        MyAssert.IsError<EsHttpException>(() => {
+            SimpleEsClient.CheckBulkResponse(json);
+        });
+    }
+
 }

@@ -41,26 +41,54 @@ public class MessageBinSerializerTest
     public void Test_Deserialize()
     {
         Assert.IsNull(MessageBinSerializer.Instance.Deserialize<string>(Empty.Array<byte>()));
+        Assert.IsNull(MessageBinSerializer.Instance.Deserialize2<string>(Empty.Array<byte>()));
 
         string s1 = "中文汉字最优秀！";
-        ReadOnlyMemory<byte> mem = s1.ToUtf8Bytes();
+        byte[] bb = s1.ToUtf8Bytes();
+        ReadOnlyMemory<byte> mem = bb;
         ReadOnlyMemory<byte> mem2 = MessageBinSerializer.Instance.Deserialize<ReadOnlyMemory<byte>>(mem);
         Assert.AreEqual(mem, mem2);
 
+        ReadOnlyMemory<byte> mem3 = MessageBinSerializer.Instance.Deserialize2<ReadOnlyMemory<byte>>(bb);
+        Assert.AreEqual(mem, mem3);
+
         byte[] b1 = MessageBinSerializer.Instance.Deserialize<byte[]>(mem);
         Assert.AreEqual(s1, b1.ToUtf8String());
+
+        byte[] b2 = MessageBinSerializer.Instance.Deserialize2<byte[]>(bb);
+        Assert.AreEqual(s1, b2.ToUtf8String());
 
 
         string s2 = MessageBinSerializer.Instance.Deserialize<string>(mem);
         Assert.AreEqual(s1, s2);
 
-        NameInt64 x1 = new NameInt64("x1", 123);
-        ReadOnlyMemory<byte> mem4 = x1.ToJson().ToUtf8Bytes();
+        string s3 = MessageBinSerializer.Instance.Deserialize2<string>(bb);
+        Assert.AreEqual(s1, s3);
+
+
+        byte[] bb2 = new NameInt64("x1", 123).ToJson().ToUtf8Bytes();
+        ReadOnlyMemory<byte> mem4 = bb2;
         NameInt64 x2 = MessageBinSerializer.Instance.Deserialize<NameInt64>(mem4);
         Assert.AreEqual("x1", x2.Name);
         Assert.AreEqual(123, x2.Value);
 
+        NameInt64 x3 = MessageBinSerializer.Instance.Deserialize2<NameInt64>(bb2);
+        Assert.AreEqual("x1", x3.Name);
+        Assert.AreEqual(123, x3.Value);
+
         // 还有一些场景，例如：NHttpRequest,  IBinarySerializer 在其它测试用例中已覆盖，这里忽略
     }
+
+    [TestMethod]
+    public void Test_SimpleType()
+    {
+        byte[] b1 = MessageBinSerializer.Instance.Serialize(53L);
+        long x1 = MessageBinSerializer.Instance.Deserialize<long>(b1);
+        long x2 = MessageBinSerializer.Instance.Deserialize2<long>(b1);
+        Assert.AreEqual(53L, x1);
+        Assert.AreEqual(53L, x2);
+    }
 }
+
+
 #endif
