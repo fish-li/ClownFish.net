@@ -44,7 +44,7 @@ public class PipelineLoggerTest
             Assert.IsFalse(context2.OprLogScope.IsNull);
             Assert.IsFalse(context2.IsAsync);
             Assert.AreEqual(3, context2.RetryN);
-            Assert.IsTrue(object.ReferenceEquals(s1, context2.GetRequest()));
+            Assert.IsTrue(object.ReferenceEquals(s1, (context2.GetRequest() as MqRequest).MessageObject));
             Console.WriteLine(context2.GetTitle());
         }
         long logCount3 = ClownFishCounters.Logging.WriteCount.Get();

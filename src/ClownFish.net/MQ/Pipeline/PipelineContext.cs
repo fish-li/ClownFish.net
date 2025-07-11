@@ -34,7 +34,7 @@ public class PipelineContext<T> : BasePipelineContext, IDisposable where T : cla
     /// <returns></returns>
     public override object GetRequest()
     {
-        return this.Request.MessageObject;
+        return this.Request;
     }
 
 

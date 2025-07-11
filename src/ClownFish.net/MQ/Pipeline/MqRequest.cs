@@ -4,7 +4,7 @@
 /// <summary>
 /// 表示一个消息处理请求
 /// </summary>
-public sealed class MqRequest
+public sealed class MqRequest : ILoggingObject
 {
     /// <summary>
     /// MessageId
@@ -36,6 +36,24 @@ public sealed class MqRequest
     /// 经过反序列化得到的消息对象，它是一个实体或者DTO
     /// </summary>
     public object MessageObject { get; init; }
+
+    string ILoggingObject.ToLoggingText()
+    {
+        // 此方法由 OprLogScope 调用： this.OprLog.Request = context.GetRequest()?.GetLogText();
+        // 一般来说，队列中的消息通常是 JSON 数据，所以只需要将它还原成字符串就可以了
+        // 如果消息确实是二 进制数据，可以在 MessageHandler 中设置 this.OprLog.Request = "xxxx" 就可以避免这个调用
+
+        if( this.BodyLen > 0 ) {
+            try {
+                return Encoding.UTF8.GetString(this.Body.Value.Span);
+            }
+            catch {
+                //return this.MessageObject?.ToJson();
+            }
+        }
+
+        return "null";
+    }
 }
 
 
