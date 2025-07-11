@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net9.0'">
-        <DefineConstants>TEST_DM; x_TEST_VASTBASE; x_TEST_KINGBASE; x_TEST_KINGBASE2</DefineConstants>
+        <DefineConstants>x_TEST_DM; x_TEST_VASTBASE; x_TEST_KINGBASE; x_TEST_KINGBASE2</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

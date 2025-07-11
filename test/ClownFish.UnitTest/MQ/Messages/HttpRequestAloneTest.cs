@@ -120,17 +120,9 @@ GET http://localhost:8206/v20/api/WebSiteApp/test/Databus.aspx HTTP/1.1
         Assert.AreEqual(req.ContentType, req2.ContentType);
         Assert.AreEqual(req.ReadBodyAsText(), req2.ReadBodyAsText());
 
-        HttpRequestAlone req5 = MessageBinSerializer.Instance.Deserialize2<HttpRequestAlone>(b1);
-        Assert.AreEqual(req.HttpMethod, req5.HttpMethod);
-        Assert.AreEqual(req.FullUrl, req5.FullUrl);
-        Assert.AreEqual(req.ContentType, req5.ContentType);
-        Assert.AreEqual(req.ReadBodyAsText(), req5.ReadBodyAsText());
-
         NHttpRequest req6 = MessageBinSerializer.Instance.Deserialize<NHttpRequest>(b1);
         Assert.IsTrue(req6 is HttpRequestAlone);
 
-        NHttpRequest req7 = MessageBinSerializer.Instance.Deserialize2<NHttpRequest>(b1);
-        Assert.IsTrue(req7 is HttpRequestAlone);
 
         // 文本序列化/反序列化
         string text = MessageTextSerializer.Instance.Serialize(req);

@@ -103,9 +103,9 @@ public class JsonExtensionsTest
         Assert.IsNull("".FromJson<InvokeLog>());
         Assert.IsNull("".FromJson(typeof(InvokeLog)));
 
-        Stream stream = null;
+        TextReader writer = null;
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = stream.FromJson(typeof(InvokeLog));
+            _ = writer.FromJson(typeof(InvokeLog));
         });
     }
 }

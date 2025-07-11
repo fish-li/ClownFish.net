@@ -1,4 +1,6 @@
-﻿namespace ClownFish.MQ.Messages;
+﻿using Void = ClownFish.Base.Void;
+
+namespace ClownFish.MQ.Messages;
 
 #if NETCOREAPP
 
@@ -62,12 +64,12 @@ public sealed class MessageBinSerializer
 
         Type targetType = typeof(T);
 
-        if( targetType == typeof(ReadOnlyMemory<byte>) ) {
-            return (T)(object)body;
+        if( targetType == typeof(Void) ) {
+            return (T)(object)Void.Value;   // 其实就是不需要做反序列化，MessageHandler可以直接访问原始数据流
         }
 
-        if( targetType == typeof(byte[]) ) {
-            return (T)(object)body.ToArray();  // 这个操作太低效了~~~~
+        if( targetType == typeof(ReadOnlyMemory<byte>) || targetType == typeof(byte[]) ) {
+            throw new NotSupportedException();
         }
 
         if( targetType == typeof(NHttpRequest) || targetType == typeof(HttpRequestAlone) ) {
@@ -80,10 +82,10 @@ public sealed class MessageBinSerializer
 
         if( targetType.IsSuitableDeserialize() ) {   // 如果 “返回值类型” 适合做反序列化，就直接做JSON反序列化
             //using( Stream stream = body.AsStream() ) {  //using CommunityToolkit.HighPerformance;
-            //    return (T)stream.FromJson(targetType);
-            //}
+
             using( Stream stream = body.AsReadonlyStream() ) {
-                return (T)stream.FromJson(targetType);
+                using StreamReader reader = new StreamReader(stream);
+                return (T)reader.FromJson(targetType);
             }
         }
 
@@ -104,49 +106,6 @@ public sealed class MessageBinSerializer
         return (T)obj;
     }
 
-    /// <summary>
-    /// 将二进制消息转换指定的对象实例
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="body"></param>
-    /// <returns></returns>
-    public T Deserialize2<T>(byte[] body)
-    {
-        if( body.IsNullOrEmpty() )
-            return default(T);
-
-        Type targetType = typeof(T);
-
-        if( targetType == typeof(ReadOnlyMemory<byte>) ) {
-            return (T)(object)(new ReadOnlyMemory<byte>(body));
-        }
-
-        if( targetType == typeof(byte[]) ) {
-            return (T)(object)body;   // 注意这里，这是与上面方法(Deserialize)最大的差别：不需要复制一份数据
-        }
-
-        if( targetType == typeof(NHttpRequest) || targetType == typeof(HttpRequestAlone) ) {
-            return (T)(object)HttpRequestAlone.Create(body);
-        }
-
-        if( typeof(IBinarySerializer).IsAssignableFrom(targetType) ) {
-            return CreateObjectFromBinary<T>(body);
-        }
-
-        if( targetType.IsSuitableDeserialize() ) {   // 如果 “返回值类型” 适合做反序列化，就直接做JSON反序列化
-            using( MemoryStream stream = new MemoryStream(body, false) ) {
-                return (T)stream.FromJson(targetType);
-            }
-        }
-
-        string text = Encoding.UTF8.GetString(body);
-
-        if( targetType == typeof(string) ) {
-            return (T)(object)text;
-        }
-
-        return text.FromJson<T>();
-    }
 
 }
 

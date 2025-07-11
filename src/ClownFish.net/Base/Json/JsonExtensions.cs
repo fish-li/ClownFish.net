@@ -120,19 +120,19 @@ public static class JsonExtensions
     /// <summary>
     /// 将一个JSON字符串反序列化为对象
     /// </summary>
-    /// <param name="stream">包含JSON字符串的二进制数据流</param>
+    /// <param name="reader">可以读取到包含JSON字符串的读取器</param>
     /// <param name="destType">反序列的对象类型参数</param>
     /// <param name="settings">反序列化参数</param>
     /// <returns></returns>
-    public static object FromJson(this Stream stream, Type destType, JsonSerializerSettings settings = null)
+    public static object FromJson(this TextReader reader, Type destType, JsonSerializerSettings settings = null)
     {
-        if( stream == null )
-            throw new ArgumentNullException(nameof(stream));
+        if( reader == null )
+            throw new ArgumentNullException(nameof(reader));
 
         JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
-        using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
+        //using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
         
         return jsonSerializer.Deserialize(reader, destType);
     }

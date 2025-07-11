@@ -27,9 +27,6 @@ public class ComplexMessageTest
         ComplexMessage<Product> msg2 = MessageBinSerializer.Instance.Deserialize<ComplexMessage<Product>>(b1);
         Assert.AreEqual(json, msg2.Body.ToJson());
 
-        ComplexMessage<Product> msg4 = MessageBinSerializer.Instance.Deserialize2<ComplexMessage<Product>>(b1);
-        Assert.AreEqual(json, msg4.Body.ToJson());
-
 
         string text = MessageTextSerializer.Instance.Serialize(msg);
         ComplexMessage<Product> msg3 = MessageTextSerializer.Instance.Deserialize<ComplexMessage<Product>>(text);
@@ -49,8 +46,6 @@ public class ComplexMessageTest
         ComplexMessage<string> msg2 = MessageBinSerializer.Instance.Deserialize<ComplexMessage<string>>(b1);
         Assert.AreEqual(data, msg2.Body);
 
-        ComplexMessage<string> msg4 = MessageBinSerializer.Instance.Deserialize2<ComplexMessage<string>>(b1);
-        Assert.AreEqual(data, msg4.Body);
 
         string text = MessageTextSerializer.Instance.Serialize(msg);
         ComplexMessage<string> msg3 = MessageTextSerializer.Instance.Deserialize<ComplexMessage<string>>(text);
@@ -69,9 +64,6 @@ public class ComplexMessageTest
         byte[] b1 = MessageBinSerializer.Instance.Serialize(msg);
         ComplexMessage<byte[]> msg2 = MessageBinSerializer.Instance.Deserialize<ComplexMessage<byte[]>>(b1);
         Assert.IsTrue(bb.IsEqual(msg2.Body));
-
-        ComplexMessage<byte[]> msg4 = MessageBinSerializer.Instance.Deserialize2<ComplexMessage<byte[]>>(b1);
-        Assert.IsTrue(bb.IsEqual(msg4.Body));
 
         string text = MessageTextSerializer.Instance.Serialize(msg);
         ComplexMessage<byte[]> msg3 = MessageTextSerializer.Instance.Deserialize<ComplexMessage<byte[]>>(text);

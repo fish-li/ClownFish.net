@@ -14,13 +14,13 @@ internal static class PipelineLogger
         OprLog log = scope.OprLog;
         log.RootId = context.ProcessId;
         log.OprKind = OprKinds.Msg;
-        log.InSize = context.Request.BodyLen;
+        log.InSize = context.Request.Body.Length;
 
         Type handlerType = context.Handler.GetType();
         log.Module = handlerType.Namespace;
         log.Controller = handlerType.Name;
         log.Action = "m";
-        log.OprName = handlerType.Name;
+        log.OprName = "MessageHandler";
         log.Url = context.GetTitle();
 
         log.RetryCount = context.RetryN;

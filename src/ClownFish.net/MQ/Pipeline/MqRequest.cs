@@ -24,13 +24,8 @@ public sealed class MqRequest : ILoggingObject
     /// <summary>
     /// 消息的二进制形式
     /// </summary>
-    public ReadOnlyMemory<byte>? Body { get; init; }
+    public ReadOnlyMemory<byte> Body { get; init; }
 
-
-    /// <summary>
-    /// 消息的二进制长度
-    /// </summary>
-    public long BodyLen => this.Body.HasValue ? this.Body.Value.Length : 0;
 
     /// <summary>
     /// 经过反序列化得到的消息对象，它是一个实体或者DTO
@@ -43,16 +38,20 @@ public sealed class MqRequest : ILoggingObject
         // 一般来说，队列中的消息通常是 JSON 数据，所以只需要将它还原成字符串就可以了
         // 如果消息确实是二 进制数据，可以在 MessageHandler 中设置 this.OprLog.Request = "xxxx" 就可以避免这个调用
 
-        if( this.BodyLen > 0 ) {
+        if( this.Body.IsEmpty == false ) {
             try {
-                return Encoding.UTF8.GetString(this.Body.Value.Span);
+                if( this.Body.Length <= LoggingLimit.HttpBodyMaxLen )
+                    return Encoding.UTF8.GetString(this.Body.Span);
+                else
+                    return Encoding.UTF8.GetString(this.Body.Span.Slice(0, LoggingLimit.HttpBodyMaxLen));
             }
             catch {
-                //return this.MessageObject?.ToJson();
+                //忽略异常
             }
         }
 
-        return "null";
+        // MMQ队列时 Body 没有指定，只能使用 MessageObject
+        return this.MessageObject?.ToJson();
     }
 }
 
