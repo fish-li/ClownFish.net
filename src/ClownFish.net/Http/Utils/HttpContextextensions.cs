@@ -108,14 +108,18 @@ public static partial class HttpContextExtensions
 
         if( stream.CanSeek && stream.Length == 0 ) {
             httpContext.Response.StatusCode = 204;
+            return;
         }
-        else {
-            NHttpResponse response = httpContext.Response;
-            response.StatusCode = statusCode;
-            response.ContentType = contentType ?? ResponseContentType.OctetStream;
 
-            await stream.CopyToAsync(response.OutputStream);
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = statusCode;
+        response.ContentType = contentType ?? ResponseContentType.OctetStream;
+
+        if( stream.CanSeek ) {
+            response.ContentLength = stream.Length;
         }
+
+        await stream.CopyToAsync(response.OutputStream);
     }
 
 
