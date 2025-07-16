@@ -36,6 +36,11 @@ public static class DbClientFactory
 #endif
     }
 
+    internal static void Init0()
+    {
+        // 触发静态构造方法
+    }
+
     /// <summary>
     /// 注册数据客户端提供者实例
     /// </summary>

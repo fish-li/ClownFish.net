@@ -174,4 +174,17 @@ public static class DebugReport
     }
 
 
+    /// <summary>
+    /// Write all info to DebugReport.txt
+    /// </summary>
+    public static void WriteAllToFile()
+    {
+        if( LocalSettings.GetBool("ClownFish_CreateDebugReport_AtAppStartup") ) {
+
+            // 获取所有的诊断信息，并写入到临时文件中
+            string text = DebugReport.GetReport("ALL");
+            string filePath = Path.Combine(EnvUtils.GetTempPath(), "DebugReport.txt");
+            RetryFile.WriteAllText(filePath, text);
+        }
+    }
 }

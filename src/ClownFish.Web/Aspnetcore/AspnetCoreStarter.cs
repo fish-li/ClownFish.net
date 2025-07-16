@@ -53,7 +53,7 @@ public static class AspnetCoreStarter
         ApplicationInitializer.Execute();
         startup.AppInit();
 
-        WriteDebugReport();
+        DebugReport.WriteAllToFile();
 
         startup.BeforeRun();
         RunAspnetcore();
@@ -265,18 +265,4 @@ public static class AspnetCoreStarter
         }
     }
 
-
-
-
-    private static void WriteDebugReport()
-    {
-        if( LocalSettings.GetBool("CreateDebugReport_AtAppStartup", 1) == false )
-            return;
-
-
-        // 获取所有的诊断信息，并写入到临时文件中
-        string text = DebugReport.GetReport("ALL");
-        string filePath = Path.Combine(EnvUtils.GetTempPath(), "DebugReport.txt");
-        RetryFile.WriteAllText(filePath, text);
-    }
 }

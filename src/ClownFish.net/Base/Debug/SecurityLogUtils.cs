@@ -21,7 +21,7 @@ public static class SecurityLogUtils
     }
 
 
-    private static readonly HashSet<string> s_hideEnvNames = LocalSettings.GetSetting("DebugReport_HideEnvNames").SplitToHashSet();
+    private static readonly HashSet<string> s_hideEnvNames = LocalSettings.GetSetting("ClownFish_DebugReport_HideEnvNames").SplitToHashSet();
 
     /// <summary>
     /// 返回一个环境变量定义的字符串，它会隐藏部分敏感信息

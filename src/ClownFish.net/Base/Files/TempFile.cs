@@ -104,13 +104,24 @@ public sealed class TempFile : IDisposable
     [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
     void IDisposable.Dispose()
     {
-        // 删除临时文件
-        if( File.Exists(this.FilePath) ) {
+        DeleteFile(this.FilePath);
+    }
 
-            for( int i = 0; i < 10; i++ ) {
+
+    /// <summary>
+    /// 删除一个文件，如果一次失败会继续重试
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <param name="tryCount"></param>
+    /// <returns></returns>
+    public static int DeleteFile(string filePath, int tryCount = 10)
+    {
+        if( File.Exists(filePath) ) {
+
+            for( int i = 0; i < tryCount; i++ ) {
                 try {
-                    File.Delete(this.FilePath);
-                    return;
+                    File.Delete(filePath);
+                    return 1;
                 }
                 catch {
                     // 文件有可能没有及时关闭
@@ -119,6 +130,8 @@ public sealed class TempFile : IDisposable
                 }
             }
         }
+
+        return 0;
     }
 
 

@@ -77,7 +77,7 @@ public static class LoggingOptions
     /// <summary>
     /// OprLog.AppKind 的默认值
     /// </summary>
-    public static int AppKindDefaultValue = LocalSettings.GetInt("Default_Oprlog_AppKind", 0);
+    public static int AppKindDefaultValue = LocalSettings.GetInt("ClownFish_Default_Oprlog_AppKind", 0);
 
     /// <summary>
     /// 是否记录 UserAgent

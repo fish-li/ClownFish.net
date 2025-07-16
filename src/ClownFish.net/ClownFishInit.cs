@@ -208,6 +208,9 @@ public static class ClownFishInit
 
     private static void AutoRegisterDbProviders()
     {
+#if NETFRAMEWORK
+        DbClientFactory.Init0();
+#endif
         ClownFish.Data.Initializer.Instance.RegisterSqlServerProvider();
 
         ClownFish.Data.Initializer.Instance.RegisterMySqlProvider();

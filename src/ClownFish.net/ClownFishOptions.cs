@@ -48,7 +48,7 @@ internal static class ClownFishOptions
     /// <summary>
     /// SimpleEsClient写日志时多久检查一次响应体来判断是否写入成功，默认值：0，表示永远不检查响应体。 如果设置为 100 表示 每执行 100 次写入动作，检查 1 次是否写入成功！
     /// </summary>
-    public static readonly int SimpleEsClient_CheckResponseFrequency = LocalSettings.GetInt("SimpleEsClient_CheckResponseFrequency", 0);
+    public static readonly int SimpleEsClient_CheckResponseFrequency = LocalSettings.GetInt("ClownFish_SimpleEsClient_CheckResponseFrequency", 0);
 }
 
 

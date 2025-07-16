@@ -19,7 +19,7 @@ public sealed class ProxyRuleManager
         if( rule == null )
             return false;
 
-        if( LocalSettings.GetBool("ProxyRuleManager_ShowConfig") ) {
+        if( LocalSettings.GetBool("ClownFish_ProxyRuleManager_ShowConfig") ) {
             string title = $"----------------------- {filename} ----------------------------";
             Console2.WriteLine(title);
             Console2.WriteLine(rule.ToXml2());

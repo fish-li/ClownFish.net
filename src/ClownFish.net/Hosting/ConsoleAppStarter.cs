@@ -52,7 +52,7 @@ public static class ConsoleAppStarter
         ApplicationInitializer.Execute();
         startup.AppInit();
 
-        WriteDebugReport();
+        DebugReport.WriteAllToFile();
 
         startup.BeforeRun();
         BeforeRun();
@@ -204,17 +204,5 @@ public static class ConsoleAppStarter
         Console2.EndListen("_app_startup.log");        
     }
 
-
-    private static void WriteDebugReport()
-    {
-        if( LocalSettings.GetBool("CreateDebugReport_AtAppStartup", 1) == false )
-            return;
-
-
-        // 获取所有的诊断信息，并写入到临时文件中
-        string text = DebugReport.GetReport("ALL");
-        string filePath = Path.Combine(EnvUtils.GetTempPath(), "DebugReport.txt");
-        RetryFile.WriteAllText(filePath, text);
-    }
 }
 
