@@ -111,10 +111,10 @@ public class NdJsonExtensionsTest
         Console.WriteLine(lastJson2);
 
         // output:  (count = 1_0000)
-        // ToJson:             00:00:01.1186832
-        // ToMultiLineJson:    00:00:00.1640246
-        // FromJson:           00:00:00.3482613
-        // FromMultiLineJson:  00:00:00.4122237
+        //ToJson:             00:00:00.7952054
+        //ToMultiLineJson:    00:00:00.1526433
+        //FromJson:           00:00:00.2956272
+        //FromMultiLineJson:  00:00:00.4294308
     }
 
 

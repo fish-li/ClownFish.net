@@ -1,9 +1,21 @@
 ﻿namespace ClownFish.Base;
-internal static class EncodingUtils
+
+/// <summary>
+/// Encoding相关工具类
+/// </summary>
+public static class EncodingUtils
 {
+    /// <summary>
+    /// UTF8 without BOM header
+    /// </summary>
     public static readonly Encoding UTF8NoBOM = new UTF8Encoding(false);
 
-    public static Encoding GetEncodingFromString(string encodingName)
+    /// <summary>
+    /// 根据名称返回对应的Encoding实例，如果失败返回null
+    /// </summary>
+    /// <param name="encodingName"></param>
+    /// <returns></returns>
+    public static Encoding GetEncoding(string encodingName)
     {
         if( string.IsNullOrEmpty(encodingName) )
             return null;

@@ -422,7 +422,7 @@ public sealed class ResponseReader : IDisposable
 
         if( m.Success ) {
             string charset = m.Groups["chartset"].Value;
-            return EncodingUtils.GetEncodingFromString(charset);
+            return EncodingUtils.GetEncoding(charset);
         }
         return null;
     }

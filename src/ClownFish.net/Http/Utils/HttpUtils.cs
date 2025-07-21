@@ -299,7 +299,7 @@ public static class HttpUtils
                 if( p2value.Length > 3 && p2value[0] == '"' && p2value[p2value.Length - 1] == '"' )
                     p2value = p2value.Substring(1, p2value.Length - 2);
 
-                encoding = EncodingUtils.GetEncodingFromString(p2value);
+                encoding = EncodingUtils.GetEncoding(p2value);
                 return 2;
             }
             else {

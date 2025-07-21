@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 /// <summary>
 /// 统一封装 HttpContext.Items 的 “包壳” 类型
@@ -28,7 +21,7 @@ public sealed class XDictionary : IDictionary<object, object>
     /// 构造方法
     /// </summary>
     /// <param name="dict"></param>
-    public XDictionary(IDictionary dict)
+    public XDictionary(IDictionary dict)  // .NET Framework System.Web
     {
         _dict1 = dict;
         _dict2 = null;
@@ -38,7 +31,7 @@ public sealed class XDictionary : IDictionary<object, object>
     /// 构造方法
     /// </summary>
     /// <param name="dict"></param>
-    public XDictionary(IDictionary<object, object> dict)
+    public XDictionary(IDictionary<object, object> dict)  // asp.net core
     {
         _dict1 = null;
         _dict2 = dict;

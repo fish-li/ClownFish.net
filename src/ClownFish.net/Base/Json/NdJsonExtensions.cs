@@ -1,6 +1,4 @@
-﻿using ClownFish.Base.Json;
-
-namespace ClownFish.Base;
+﻿namespace ClownFish.Base;
 
 /// <summary>
 /// NdJSON序列化的工具类
@@ -105,10 +103,10 @@ public static class NdJsonExtensions
         if( reader == null )
             return new List<T>(0);
 
-
-        JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
+        JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
         List<T> list = new List<T>(capacity);
+        Type destType = typeof(T);
 
         while( true ) {
             string line = reader.ReadLine();
@@ -116,8 +114,11 @@ public static class NdJsonExtensions
                 break;
 
             if( line.Length > 0 ) {
-                T log = JsonConvert.DeserializeObject<T>(line, settings2);
-                list.Add(log);
+
+                using( JsonTextReader reader2 = new JsonTextReader(new StringReader(line)) ) {
+                    T log = (T)jsonSerializer.Deserialize(reader2, destType);
+                    list.Add(log);
+                }
             }
         }
 

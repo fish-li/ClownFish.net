@@ -80,16 +80,19 @@ public partial class OprLog
 
     internal void SetSomeFields(NHttpContext httpContext)
     {
-        this.OutSize = httpContext.Response.ContentLength;
-        this.Status = httpContext.Response.StatusCode;
+        if( this.OutSize == 0 )
+            this.OutSize = httpContext.Response.ContentLength;
+
+        if( this.Status == 0 )
+            this.Status = httpContext.Response.StatusCode;
 
         if( this.OprKind.IsNullOrEmpty() ) {
             this.OprKind = OprKinds.Http;
         }
 
 
-        if( httpContext.IsTransfer == false 
-            && this.Module == null && this.Controller == null && this.Action == null 
+        if( httpContext.IsTransfer == false
+            && this.Module == null && this.Controller == null && this.Action == null
             && httpContext.PipelineContext.Action != null ) {
 
             ActionDescription action = httpContext.PipelineContext.Action;

@@ -1,6 +1,4 @@
-﻿using ClownFish.Http.Proxy;
-
-namespace ClownFish.Http.Utils;
+﻿namespace ClownFish.Http.Utils;
 
 /// <summary>
 /// HttpContext 相关的扩展方法工具类
@@ -116,6 +114,7 @@ public static partial class HttpContextExtensions
         response.ContentType = contentType ?? ResponseContentType.OctetStream;
 
         if( stream.CanSeek ) {
+            stream.Position = 0;
             response.ContentLength = stream.Length;
         }
 
@@ -175,11 +174,18 @@ public static partial class HttpContextExtensions
 
             response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
-            byte[] data = Encoding.UTF8.GetBytes(body);
+            using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+                using( GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true) ) {
+                    using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+                        writer.Write(body);
+                        writer.Close();
+                    }
+                }
 
-            using( GZipStream gZipStream = new GZipStream(response.OutputStream, CompressionMode.Compress, true) ) {
-                await gZipStream.WriteAsync(data, 0, data.Length);
-                gZipStream.Close();
+                ms.Position = 0;
+                response.ContentLength = ms.Length;
+
+                await ms.CopyToAsync(response.OutputStream);
             }
         }
     }
