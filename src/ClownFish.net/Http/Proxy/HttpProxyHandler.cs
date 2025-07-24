@@ -290,7 +290,7 @@ public class HttpProxyHandler : IAsyncNHttpHandler
 
     private void CopyResponseBody(Stream src, Stream dest)
     {
-        using( ByteBuffer byteBuffer = new ByteBuffer(1024 * 4) ) {
+        using( ByteBuffer byteBuffer = new ByteBuffer(1024) ) {
             byte[] buffer = byteBuffer.Buffer;
 
             using( BinaryReader reader = new BinaryReader(src) ) {

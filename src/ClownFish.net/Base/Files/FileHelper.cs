@@ -5,10 +5,7 @@
 /// </summary>
 public static class FileHelper
 {
-#pragma warning disable IDE1006 // 命名样式
-    private static readonly int BufferSize = 64 * 1024;
-#pragma warning restore IDE1006 // 命名样式
-
+    private static readonly int s_bufferSize = 4 * 1024;
 
     /// <summary>
     /// 将一个流写入到文件
@@ -28,7 +25,7 @@ public static class FileHelper
 
         using( FileStream file = RetryFile.Create(savePath) ) {
 
-            using( ByteBuffer byteBuffer = new ByteBuffer(BufferSize) ) {
+            using( ByteBuffer byteBuffer = new ByteBuffer(s_bufferSize) ) {
                 byte[] buffer = byteBuffer.Buffer;
                 int len = 0;
                 while( (len = stream.Read(buffer, 0, buffer.Length)) > 0 ) {
@@ -73,7 +70,7 @@ public static class FileHelper
                     using( CryptoStream cryptSteam = new CryptoStream(fileOut, encryptor, CryptoStreamMode.Write) ) {
 
                         int num = 0;
-                        using( ByteBuffer byteBuffer = new ByteBuffer(BufferSize) ) {
+                        using( ByteBuffer byteBuffer = new ByteBuffer(s_bufferSize) ) {
                             byte[] buffer = byteBuffer.Buffer;
 
                             do {
@@ -125,7 +122,7 @@ public static class FileHelper
                     using( FileStream fileOut = RetryFile.Create(destFilePath) ) {
 
                         int num = 0;
-                        using( ByteBuffer byteBuffer = new ByteBuffer(BufferSize) ) {
+                        using( ByteBuffer byteBuffer = new ByteBuffer(s_bufferSize) ) {
                             byte[] buffer = byteBuffer.Buffer;
 
                             do {
