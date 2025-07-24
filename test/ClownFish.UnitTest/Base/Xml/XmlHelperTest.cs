@@ -89,16 +89,16 @@ public class XmlHelperTest
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = XmlHelper.XmlDeserialize(string.Empty, typeof(TXmlObject), Encoding.UTF8);
+            _ = XmlHelper.XmlDeserialize(string.Empty, typeof(TXmlObject));
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = XmlHelper.XmlDeserialize("xx", (Type)null, Encoding.UTF8);
+            _ = XmlHelper.XmlDeserialize("xx", (Type)null);
         });
 
-        MyAssert.IsError<ArgumentNullException>(() => {
-            _ = XmlHelper.XmlDeserialize("xx", typeof(TXmlObject), (Encoding)null);
-        });
+        //MyAssert.IsError<DeserializeException>(() => {
+        //    _ = XmlHelper.XmlDeserialize("xx", typeof(TXmlObject));
+        //});
 
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = XmlHelper.XmlDeserializeFromFile<TXmlObject>(string.Empty);

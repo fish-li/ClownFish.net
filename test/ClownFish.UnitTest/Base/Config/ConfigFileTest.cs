@@ -8,10 +8,11 @@ public class ConfigFileTest
         Assert.IsNull(DefaultConfigFileImpl.GetLocalFile("file1.txt"));
         Assert.IsNotNull(DefaultConfigFileImpl.GetLocalFile("ClownFish.App.config"));
 
-        RetryFile.WriteAllText(Path.Combine(AppContext.BaseDirectory, "_config/file2.txt"), "aaaaa");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "_config/file2.txt");
+        RetryFile.WriteAllText(filePath, "aaaaa");
         Assert.IsNotNull(DefaultConfigFileImpl.GetLocalFile("file2.txt"));
 
-        RetryDirectory.Delete(Path.Combine(AppContext.BaseDirectory, "_config"), true);
+        RetryFile.Delete(filePath);
         Assert.IsNull(DefaultConfigFileImpl.GetLocalFile("file2.txt"));
     }
 

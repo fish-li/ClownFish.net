@@ -43,12 +43,12 @@ public static class XmlExtensions
     /// <summary>
     ///  从XML字符串中反序列化对象（使用UTF-8编码）
     /// </summary>
-    /// <param name="s"></param>
+    /// <param name="xml"></param>
     /// <param name="type">反序列化的结果类型</param>
     /// <returns></returns>
-    public static object FromXml(this string s, Type type)
+    public static object FromXml(this string xml, Type type)
     {
-        return XmlHelper.XmlDeserialize(s, type, Encoding.UTF8);
+        return XmlHelper.XmlDeserialize(xml, type);
     }
 
 

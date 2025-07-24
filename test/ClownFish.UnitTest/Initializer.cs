@@ -25,6 +25,7 @@ public class Initializer
         EnvironmentVariables.Set("ClownFish_DebugReport_HideEnvNames", "api-key;xx-SecretKey;test_hide");
         EnvironmentVariables.Set("xxx_url", "");   // 它将屏蔽 App.config 中的同名配置项
 
+        System.Environment.CurrentDirectory = Path.GetDirectoryName(typeof(Initializer).Assembly.Location);
 
         ConsoleAppStarter.Run(new UnitTestAppStartup());
     }
@@ -46,35 +47,44 @@ public class Initializer
 
 public class UnitTestAppStartup : ConsoleAppStartup
 {
+#if NET6_0_OR_GREATER
     internal override bool WaitToEnd => false;
+#endif
 
-    public override void BeforeFrameworkInit()
+    public override void BeforeClownFishInit()
     {
-        base.BeforeFrameworkInit();
-
         ThreadPool.SetMinThreads(100, 1000);
 
         // 设置重试次数
         ClownFish.Base.Retry.Default.Count = 2;
         ClownFish.Base.Retry.Default.WaitMillisecond = 100;
 
-        InitClownFishData();
 
-        ClownFish.Log.LogHelper.RegisterFilter(LogHelperTest.Filter);
-        ClownFishInit.InitLog("ClownFish.Log.config");
+#if NETCOREAPP
+        // support Encoding.GetEncoding("GB2312")
+        //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
+    }
 
+
+    public override void ConfigTracing()
+    {
         DbContextEventTest.Init();
         ClownFish.Log.Logging.DbLogger.Init();
         ClownFish.Log.Logging.HttpClientLogger.Init();
 
 #if NETCOREAPP
         ClownFish.Log.Logging.HttpClientLogger2.Init();
-        // support Encoding.GetEncoding("GB2312")
-        //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
     }
 
-    private static void InitClownFishData()
+    public override void ConfigLog()
+    {
+        ClownFish.Log.LogHelper.RegisterFilter(LogHelperTest.Filter);
+        ClownFishInit.InitLog("ClownFish.Log.config");
+    }
+
+    public override void ConfigDAL()
     {
         LoadDatabaseClientDlls();
 

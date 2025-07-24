@@ -4,14 +4,11 @@ namespace ClownFish.Web;
 
 public static class ClownFishWebInit
 {
-    public static void Init(bool initAuth)
+    public static void InitOptions()
     {
         AuthOptions.Init();
         DebugReport.OptionList.Add(typeof(ClownFish.Web.Security.Auth.AuthOptions));
         DebugReport.OptionList.Add(typeof(ClownFish.Web.ClownFishWebOptions));
-
-        if( initAuth )
-            InitAuth();
     }
 
     internal static void InitAuth()

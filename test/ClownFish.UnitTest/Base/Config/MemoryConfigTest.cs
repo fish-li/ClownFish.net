@@ -92,6 +92,9 @@ public class MemoryConfigTest
 
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.App.Config"));
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.Log.Config"));
+
+        MemoryConfig.RemoveFile(ConfigFile.AppConfigFileName);
+        MemoryConfig.RemoveFile(ConfigFile.LogConfigFileName);
     }
 
     [TestMethod]

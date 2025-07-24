@@ -127,9 +127,14 @@ public class LogHelperTest
         LogHelper.Write(new XMessage("a443b55f10424ef4b279b8edd4970bda"));
         Thread.Sleep(10);
 
-        while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get() 
-            || count2 == ClownFishCounters.Logging.WriteCount.Get() )
+        int count = 0;
+        while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get()
+            || count2 == ClownFishCounters.Logging.WriteCount.Get() ) {
             Thread.Sleep(200);
+
+            if( ++count > 100 )
+                break;
+        }
 
         Thread.Sleep(200);
         List<XMessage> list = memoryWriter.PullALL().Cast<XMessage>().ToList();
@@ -148,10 +153,14 @@ public class LogHelperTest
         LogHelper.Write(ExceptionHelper.CreateException("33333333"));
         LogHelper.Write(ExceptionHelper.CreateException("444444444"));
 
+        int count = 0;
         // 用死循环的方式等待后台线程执行成功
         while( count1 == ClownFishCounters.Logging.QueueFlushCount.Get()
             || count2 == ClownFishCounters.Logging.XmlWriteCount.Get() ) {
             Thread.Sleep(200);
+
+            if( ++count > 100 )
+                break;
         }
 
         Thread.Sleep(200);

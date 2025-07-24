@@ -20,33 +20,19 @@ public static class ConsoleAppStarter
         if( startup == null )
             startup = new ConsoleAppStartup();
 
-        startup.BeforeFrameworkInit();
+        startup.BeforeClownFishInit();
 
         ClownFishInit.InitBase();
         TypeHelper.Init();
 
         ShowSysEnvInfo();
 
-        if( startup.AutoInitDAL )
-            ClownFishInit.InitDAL();
-
-        if( startup.AutoInitTracing )
-            CheckLogConfig();
-
-        // 监控必须使用日志组件
-        if( startup.AutoInitLog || startup.AutoInitTracing )
-            ClownFishInit.InitLogAsDefault();
-
+        startup.ConfigDAL0();
+        startup.ConfigLog0();
+        startup.ConfigTracing0();
+        startup.AfterClownFishInit();
 
         //CreateAppHost(startup);
-
-        // 开启性能监控
-        // 放在这里调用，可以监控 ApplicationInit 的执行过程（需要配合 CodeSnippetContext 来实现）
-        // 但是这样做也有一个【隐患】：如果在那里 开启后台线程（3种方式），【默认】会导致 OprLogScope 传递到那些后台线程
-        if( startup.AutoInitTracing )
-            InitTracing();
-
-        startup.AfterFrameworkInit();
 
         Console2.WriteLine("----------------------- Application Initializer ----------------------------");
         ApplicationInitializer.Execute();
@@ -73,19 +59,13 @@ public static class ConsoleAppStarter
 #endif
     }
 
-    private static void CheckLogConfig()
-    {
-        string writesMap = Settings.GetSetting("ClownFish_Log_WritersMap");
-        if( writesMap.IsNullOrEmpty() ) {
-            Console2.Info("force set: ClownFish_Log_WritersMap => OprLog=http");
-            MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=http");
-        }
-    }
 
-    private static void InitTracing()
+    internal static void InitTracing()
     {
-        if( LoggingOptions.TracingEnabled == false )
+        if( LoggingOptions.TracingEnabled == false ) {
+            Console2.Info("########### 由于 LoggingOptions.TracingEnabled == false ，ClownFish.Tracing 性能监控将不会启用！");
             return;
+        }
 
         DbLogger.Init();
 
@@ -201,7 +181,7 @@ public static class ConsoleAppStarter
         Console2.WriteLine("Application started. Press Ctrl+C to shut down.");
         Console2.WriteSeparatedLine();
 
-        Console2.EndListen("_app_startup.log");        
+        Console2.EndListen("_app_startup.log");
     }
 
 }

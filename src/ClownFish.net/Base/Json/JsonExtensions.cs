@@ -95,8 +95,7 @@ public static class JsonExtensions
         if( string.IsNullOrEmpty(json) )
             return default(T);
 
-        JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
-        return JsonConvert.DeserializeObject<T>(json, settings2);
+        return (T)FromJson(json, typeof(T), settings);
     }
 
 
@@ -113,7 +112,15 @@ public static class JsonExtensions
             return default(object);
 
         JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
+
+        //try {
         return JsonConvert.DeserializeObject(json, destType, settings2);
+        //}
+        //catch( Exception ex ) {
+        //    throw new DeserializeException("JSON反序列化异常，原始 json-base64：" + json.ToBase64(), ex);
+        //}
+        // 1，改变异常类型会导致 “其他” 代码捕获失败，例如：catch( JsonSerializationException ex )
+        // 2，可能会泄露敏感信息
     }
 
 
@@ -133,7 +140,7 @@ public static class JsonExtensions
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
         //using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
-        
+
         return jsonSerializer.Deserialize(reader, destType);
     }
 

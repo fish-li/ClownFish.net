@@ -16,7 +16,7 @@ public static class AspnetCoreStarter
         if( startup == null )
             startup = new WebApplicationStartup();
 
-        startup.BeforeFrameworkInit();
+        startup.BeforeClownFishInit();
 
         ClownFishInit.InitBase();
         ConfigClownFish();
@@ -24,30 +24,22 @@ public static class AspnetCoreStarter
 
         ShowSysEnvInfo();
 
-        if( startup.AutoInitDAL )
-            ClownFishInit.InitDAL();
+        startup.ConfigDAL0();
+        startup.ConfigLog0();
+        startup.ConfigAuth0();
+        startup.ConfigTracing0();
+        startup.AfterClownFishInit();
 
-        if( startup.AutoInitTracing )
-            TracingUtils.CheckLogConfig();
 
-        // 监控必须使用日志组件
-        if( startup.AutoInitLog || startup.AutoInitTracing )
-            ClownFishInit.InitLogAsDefault();
-
-        ClownFishWebInit.Init(startup.AutoInitAuth);
-
+        startup.BeforeAspnetInit();
         CreateWebApp(startup);
+        startup.AfterAspnetInit();
 
-        // 初始化经典风格的ASP.NET管道
-        InitNHttpApplication();
+        
+        startup.BeforeClownFishWebInit();
+        InitNHttpApplication();   // 初始化经典风格的ASP.NET管道
+        startup.AfterClownFishWebInit();
 
-        // 开启性能监控
-        // 放在这里调用，可以监控 ApplicationInit 的执行过程（需要配合 CodeSnippetContext 来实现）
-        // 但是这样做也有一个【隐患】：如果在那里 开启后台线程（3种方式），【默认】会导致 OprLogScope 传递到那些后台线程
-        if( startup.AutoInitTracing )
-            TracingUtils.Init();
-
-        startup.AfterFrameworkInit();
 
         Console2.WriteLine("----------------------- Application Initializer ----------------------------");
         ApplicationInitializer.Execute();
@@ -132,7 +124,7 @@ public static class AspnetCoreStarter
         Console2.WriteLine("BaseDirectory            : " + AppContext.BaseDirectory);
         Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
         Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
-        
+
         Console2.WriteSeparatedLine();
     }
 

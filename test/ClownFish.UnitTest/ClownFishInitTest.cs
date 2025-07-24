@@ -10,7 +10,7 @@ namespace ClownFish.UnitTest.Base;
     //[TestMethod]
     //public void Test_SetDefaultCulture()
     //{
-    //    typeof(ClownFishInit).InvokeMethod("SetDefaultCulture0", null);
+    //    typeof(BaseInitUtils).InvokeMethod("SetDefaultCulture0", null);
     //}
 
 
@@ -19,13 +19,12 @@ namespace ClownFish.UnitTest.Base;
     {
         EnvironmentVariables.Set("ClownFish_LogError_ToConsole", "1");
         EnvironmentVariables.Set("ClownFish_ShowHttpClientEvent", "1");
-        typeof(ClownFishInit).InvokeMethod("ConfigMisc", null);
-
+        typeof(BaseInitUtils).InvokeMethod("ConfigMisc", null);
 
 
         Exception ex = ExceptionHelper.CreateException();
         ExceptionEventArgs e = new ExceptionEventArgs(ex);
-        typeof(ClownFishInit).InvokeMethod("LogHelperOnError", new object[] { null, e });
+        typeof(BaseInitUtils).InvokeMethod("LogHelperOnError", new object[] { null, e });
 
 
 
@@ -35,41 +34,18 @@ namespace ClownFish.UnitTest.Base;
                 Url = "http://www.abc.com/aa/bb.aspx"
             }
         };
-        typeof(ClownFishInit).InvokeMethod("HttpClientEventOnBeforeSendRequest", new object[] { null, e2 });
+        typeof(BaseInitUtils).InvokeMethod("HttpClientEventOnBeforeSendRequest", new object[] { null, e2 });
     }
 
 
     [TestMethod]
-    public void Test_InitLog()
+    public void Test_ShowClownFishAppConfig()
     {
-        MyAssert.IsError<ArgumentNullException>(() => {
-            ClownFishInit.InitLog((string)null);
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
-            ClownFishInit.InitLog((LogConfiguration)null);
-        });
-
-        EnvironmentVariables.Set("ClownFish_Log_WritersMap", "*=NULL");
-        EnvironmentVariables.Set("Show_ClownFish_Log_Config", "1");
-
-        typeof(LogConfig).SetFieldValue("s_inited", false);
-        ClownFishInit.InitLogAsDefault();
-        ClownFishInit.InitLogAsDefault();
-
-
-        typeof(LogConfig).SetFieldValue("s_inited", false);
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
-        ClownFishInit.InitLog(config);
-        ClownFishInit.InitLog(config);
-
-
-        EnvironmentVariables.Set("ClownFish_Log_WritersMap", "");
-        EnvironmentVariables.Set("Show_ClownFish_Log_Config", "1");
-        typeof(LogConfig).SetFieldValue("s_inited", false);
-        ClownFishInit.InitLog("ClownFish.Log.config");
-        ClownFishInit.InitLog("ClownFish.Log.config");
+        EnvironmentVariables.Set("Show_ClownFish_App_Config", "1");
+        BaseInitUtils.ShowClownFishAppConfig();
     }
+
+
 
 
 }

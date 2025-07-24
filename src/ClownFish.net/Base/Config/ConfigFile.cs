@@ -26,28 +26,34 @@ internal sealed class DefaultConfigFileImpl : IConfigFile
 
         // 先从内存中读取
         string fileBody = MemoryConfig.GetFile(filename);
-        if( fileBody.HasValue() )
+        if( fileBody.HasValue() ) {
             return fileBody;
+        }
 
         // 从配置服务中读取
         fileBody = ConfigClient.Instance.GetConfigFile(filename);
-        if( fileBody.HasValue() )
+        if( fileBody.HasValue() ) {
             return fileBody;
+        }
 
         // 再尝试从本地目录中读取配置文件
         fileBody = GetLocalFile(filename);
-        if( fileBody.HasValue() )
+        if( fileBody.HasValue() ) {
             return fileBody;
+        }
 
-        // 按简化的文件名再查找一次
-        // 注意：由于ApplicationName允许用环境变量重新指定，那么在开发服务时，不可能指定一个完整的文件名，此时的查找会非常有用
+        // 按简化的文件名再查找一次，主要是为了兼顾配置服务和本地文件名称不同的情况
+        // 例如：ApplicationName = "Nebula.Venus"   ，本地配置文件名：MonitorConfig.xml
+        // 在配置服务中的文件名，为了方便识别，就会注册成：Nebula.Venus.MonitorConfig.xml
+        // 程序代码调用时，会写成：string xmlBody = ConfigFile.GetFile("Nebula.Venus.MonitorConfig.xml", false);
         string prefix = EnvUtils.GetAppName() + ".";
         if( filename.StartsWithIgnoreCase(prefix) ) {
             string filename2 = filename.Substring(prefix.Length);
 
             fileBody = GetLocalFile(filename2);
-            if( fileBody.HasValue() )
+            if( fileBody.HasValue() ) {
                 return fileBody;
+            }
         }
 
         if( checkExist ) {
@@ -60,6 +66,11 @@ internal sealed class DefaultConfigFileImpl : IConfigFile
 
 
     internal static string GetLocalFile(string filename)
+    {
+        return GetLocalFile2(filename, out string _);
+    }
+
+    internal static string GetLocalFile2(string filename, out string readFilePath)
     {
         string fileBody = null;
 
@@ -79,6 +90,7 @@ internal sealed class DefaultConfigFileImpl : IConfigFile
                 fileBody = RetryFile.ReadAllText(filePath, Encoding.UTF8);
         }
 
+        readFilePath = fileBody.HasValue() ? filePath : null;
         return fileBody;
     }
 }

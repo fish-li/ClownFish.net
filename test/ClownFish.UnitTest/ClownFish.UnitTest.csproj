@@ -91,6 +91,9 @@
         <None Update="files\_local2.env">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="_config\ClownFish.UnitTest.Log.config">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <None Update="_local.env">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

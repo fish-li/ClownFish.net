@@ -28,16 +28,6 @@ internal static class TracingUtils
     }
 
 
-    public static void CheckLogConfig()
-    {
-        string writesMap = Settings.GetSetting("ClownFish_Log_WritersMap");
-        if( writesMap.IsNullOrEmpty() ) {
-            Console2.Info("force set: ClownFish_Log_WritersMap => OprLog=http");
-            MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=http");
-        }
-    }
-
-
     public static void SetResponseResult(this HttpPipelineContext pipelineContext, object mvcResult)
     {
         if( pipelineContext == null || mvcResult == null )

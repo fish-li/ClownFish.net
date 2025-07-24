@@ -81,11 +81,23 @@ public static class LogConfig
                      select d).Count();
 
         if( count == 0 ) {
-            Console2.WriteLine("### 所有日志数据类型没有配置写入器，日志组件将不会执行写入动作！可尝试配置ClownFish_Log_WritersMap参数。");
+            Console2.Info("### 所有日志数据类型没有配置写入器，日志组件将不会执行写入动作！可尝试配置ClownFish_Log_WritersMap参数。");
             config.Enable = false;
         }
     }
 
+
+    ///// <summary>
+    ///// 框架内部使用
+    ///// </summary>
+    //public static void CheckLogWritersMapIsSet()
+    //{
+    //    string writesMap = Settings.GetSetting("ClownFish_Log_WritersMap");
+    //    if( writesMap.IsNullOrEmpty() ) {
+    //        Console2.Info("force set: ClownFish_Log_WritersMap => OprLog=http");
+    //        MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=http");
+    //    }
+    //}
 
 
     internal static DebugReportBlock GetDebugReportBlock()

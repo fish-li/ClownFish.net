@@ -32,7 +32,7 @@ public class WebApplicationStartup
     /// <summary>
     /// 在 ClownFish 执行初始化之前的事件阶段。 默认行为：什么也不做。
     /// </summary>
-    public virtual void BeforeFrameworkInit()
+    public virtual void BeforeClownFishInit()
     {
         // 什么也不做。
     }
@@ -40,10 +40,84 @@ public class WebApplicationStartup
     /// <summary>
     /// 在 ClownFish 执行初始化之后的事件阶段。 默认行为：什么也不做。
     /// </summary>
-    public virtual void AfterFrameworkInit()
+    public virtual void AfterClownFishInit()
     {
         // 什么也不做。
     }
+
+    internal void ConfigDAL0()
+    {
+        if( this.AutoInitDAL )
+            ClownFishInit.InitDAL();
+        else
+            this.ConfigDAL();
+    }
+
+    /// <summary>
+    /// 设置 数据访问 组件，仅当 AutoInitDAL == false 时调用。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void ConfigDAL()
+    {
+        // 什么也不做。
+    }
+
+    internal void ConfigLog0()
+    {
+        if( this.AutoInitLog )
+            ClownFishInit.InitLogAsDefault();
+        else
+            this.ConfigLog();
+    }
+
+    /// <summary>
+    /// 设置 日志 组件，仅当 AutoInitLog == false 时调用。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void ConfigLog()
+    {
+        // 什么也不做。
+    }
+
+    internal void ConfigTracing0()
+    {
+        if( this.AutoInitTracing )
+            TracingUtils.Init();
+        else
+            this.ConfigTracing();
+
+
+        if( LogConfig.IsInited == false ) {
+            Console2.Info("##### 注意 ClownFish.Log 组件没有初始化，性能监控产生的日志将被丢弃！");
+        }
+    }
+
+    /// <summary>
+    /// 设置 监控 组件，仅当 AutoInitTracing == false 时调用。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void ConfigTracing()
+    {
+        // 什么也不做。
+    }
+
+
+    internal void ConfigAuth0()
+    {
+        ClownFishWebInit.InitOptions();
+
+        if( this.AutoInitAuth )
+            ClownFishWebInit.InitAuth();
+        else
+            this.ConfigAuth();
+    }
+
+    /// <summary>
+    /// 设置 身份认证模块，仅当 AutoInitAuth == false 时调用。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void ConfigAuth()
+    {
+        // 什么也不做。
+    }
+
+
 
     /// <summary>
     /// 调用appBuilder.Build()之前触发。 默认行为：什么也不做。
@@ -69,6 +143,9 @@ public class WebApplicationStartup
     /// <param name="services"></param>
     public virtual void ConfigureServices(IServiceCollection services)
     {
+        // 注意：这里并没有调用 IMvcBuilder mvcBuilder = services.AddControllers(this.RegisterInnerMvcFilters);
+        // 因此，不使用 asp.net core mvc/webapi 功能
+
         services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerOptions>(options => {
             // https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
             options.AllowSynchronousIO = true;
@@ -89,6 +166,38 @@ public class WebApplicationStartup
     /// </summary>
     /// <param name="app"></param>
     public virtual void ConfigureWeb(WebApplication app)
+    {
+        // 什么也不做。
+    }
+
+    /// <summary>
+    /// 在 Aspnet 执行初始化之前的事件阶段。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void BeforeAspnetInit()
+    {
+        // 什么也不做。
+    }
+
+    /// <summary>
+    /// 在 Aspnet 执行初始化之后的事件阶段。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void AfterAspnetInit()
+    {
+        // 什么也不做。
+    }
+
+    /// <summary>
+    /// 在 ClownFish.Web 执行初始化之前的事件阶段。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void BeforeClownFishWebInit()
+    {
+        // 什么也不做。
+    }
+
+    /// <summary>
+    /// 在 ClownFish.Web 执行初始化之后的事件阶段。 默认行为：什么也不做。
+    /// </summary>
+    public virtual void AfterClownFishWebInit()
     {
         // 什么也不做。
     }
@@ -114,6 +223,21 @@ public class WebApplicationStartup
         x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.SimpleResultFilter), order++);
         x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.StatusCodeFilter), order++);
     }
+
+    /* RegisterInnerMvcFilters 方法给派生类使用，例如下面的示例代码
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        IMvcBuilder mvcBuilder = services.AddControllers(this.RegisterInnerMvcFilters);
+        mvcBuilder.AddNewtonsoftJson(SetMvcJsonOptions);
+
+        base.ConfigureServices(services);
+    }
+    private static void SetMvcJsonOptions(MvcNewtonsoftJsonOptions x)
+    {
+        x.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+        x.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+    }
+    */
 
     /// <summary>
     /// 在启动HOST之前的最后动作。

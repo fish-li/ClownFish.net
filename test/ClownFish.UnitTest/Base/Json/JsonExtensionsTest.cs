@@ -107,5 +107,11 @@ public class JsonExtensionsTest
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = writer.FromJson(typeof(InvokeLog));
         });
+
+        //MyAssert.IsError<DeserializeException>(() => {
+        //    "xxxxx".FromJson<InvokeLog>();
+        //});
+
+       
     }
 }

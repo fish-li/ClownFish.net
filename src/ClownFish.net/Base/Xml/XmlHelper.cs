@@ -13,16 +13,16 @@ public static class XmlHelper
     /// <summary>
     /// 将一个对象序列化为XML字符串。这个方法将不生成XML文档声明头。
     /// </summary>
-    /// <param name="o">要序列化的对象</param>
+    /// <param name="obj">要序列化的对象</param>
     /// <returns>序列化产生的XML字符串</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
-    public static string XmlSerializerObject(object o)
+    public static string XmlSerializerObject(object obj)
     {
-        if( o == null )
-            throw new ArgumentNullException("o");
+        if( obj == null )
+            throw new ArgumentNullException(nameof(obj));
 
         Encoding encoding = Encoding.UTF8;
-        XmlSerializer serializer = new XmlSerializer(o.GetType());
+        XmlSerializer serializer = new XmlSerializer(obj.GetType());
         using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -35,7 +35,7 @@ public static class XmlHelper
             ns.Add("", "");
 
             using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
-                serializer.Serialize(writer, o, ns);
+                serializer.Serialize(writer, obj, ns);
                 writer.Close();
             }
             //return Encoding.UTF8.GetString(stream.ToArray());
@@ -47,14 +47,14 @@ public static class XmlHelper
         }
     }
 
-    private static void XmlSerializeInternal(Stream stream, object o, Encoding encoding)
+    private static void XmlSerializeInternal(Stream stream, object obj, Encoding encoding)
     {
-        if( o == null )
-            throw new ArgumentNullException("o");
+        if( obj == null )
+            throw new ArgumentNullException(nameof(obj));
         if( encoding == null )
-            throw new ArgumentNullException("encoding");
+            throw new ArgumentNullException(nameof(encoding));
 
-        XmlSerializer serializer = new XmlSerializer(o.GetType());
+        XmlSerializer serializer = new XmlSerializer(obj.GetType());
 
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
@@ -63,7 +63,7 @@ public static class XmlHelper
         settings.IndentChars = "    ";
 
         using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
-            serializer.Serialize(writer, o);
+            serializer.Serialize(writer, obj);
         }
     }
 
@@ -71,14 +71,14 @@ public static class XmlHelper
     /// <summary>
     /// 将一个对象序列化为XML字符串
     /// </summary>
-    /// <param name="o">要序列化的对象</param>
+    /// <param name="obj">要序列化的对象</param>
     /// <param name="encoding">编码方式</param>
     /// <returns>序列化产生的XML字符串</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
-    public static string XmlSerialize(object o, Encoding encoding)
+    public static string XmlSerialize(object obj, Encoding encoding)
     {
         using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
-            XmlSerializeInternal(stream, o, encoding);
+            XmlSerializeInternal(stream, obj, encoding);
 
             stream.Position = 0;
             using( StreamReader reader = new StreamReader(stream, encoding) ) {
@@ -91,26 +91,26 @@ public static class XmlHelper
     /// <summary>
     /// 将一个对象按XML序列化的方式写入到一个文件（采用UTF8编码）
     /// </summary>
-    /// <param name="o">要序列化的对象</param>
-    /// <param name="path">保存文件路径</param>
-    public static void XmlSerializeToFile(object o, string path)
+    /// <param name="obj">要序列化的对象</param>
+    /// <param name="filePath">保存文件路径</param>
+    public static void XmlSerializeToFile(object obj, string filePath)
     {
-        XmlSerializeToFile(o, path, Encoding.UTF8);
+        XmlSerializeToFile(obj, filePath, Encoding.UTF8);
     }
 
     /// <summary>
     /// 将一个对象按XML序列化的方式写入到一个文件
     /// </summary>
-    /// <param name="o">要序列化的对象</param>
-    /// <param name="path">保存文件路径</param>
+    /// <param name="obj">要序列化的对象</param>
+    /// <param name="filePath">保存文件路径</param>
     /// <param name="encoding">编码方式</param>
-    public static void XmlSerializeToFile(object o, string path, Encoding encoding)
+    public static void XmlSerializeToFile(object obj, string filePath, Encoding encoding)
     {
-        if( string.IsNullOrEmpty(path) )
-            throw new ArgumentNullException("path");
+        if( string.IsNullOrEmpty(filePath) )
+            throw new ArgumentNullException(nameof(filePath));
 
-        using( FileStream file = RetryFile.Create(path) ) {
-            XmlSerializeInternal(file, o, encoding);
+        using( FileStream file = RetryFile.Create(filePath) ) {
+            XmlSerializeInternal(file, obj, encoding);
         }
     }
 
@@ -125,36 +125,39 @@ public static class XmlHelper
     public static object XmlDeserialize(Stream stream, Type destType)
     {
         if( stream == null )
-            throw new ArgumentNullException("stream");
+            throw new ArgumentNullException(nameof(stream));
         if( destType == null )
-            throw new ArgumentNullException("destType");
+            throw new ArgumentNullException(nameof(destType));
 
         XmlSerializer mySerializer = new XmlSerializer(destType);
 
-        using( StreamReader sr = new StreamReader(stream) ) {
-            return mySerializer.Deserialize(sr);
+        using( StreamReader reader = new StreamReader(stream) ) {
+            return mySerializer.Deserialize(reader);
         }
     }
 
     /// <summary>
     /// 从XML字符串中反序列化对象
     /// </summary>
-    /// <param name="s">包含对象的XML字符串</param>
+    /// <param name="xmlString">包含对象的XML字符串</param>
     /// <param name="destType">要序列化的目标类型</param>
-    /// <param name="encoding">编码方式</param>
     /// <returns>反序列化得到的对象</returns>
-    public static object XmlDeserialize(string s, Type destType, Encoding encoding)
+    public static object XmlDeserialize(string xmlString, Type destType)
     {
-        if( string.IsNullOrEmpty(s) )
-            throw new ArgumentNullException("s");
+        if( string.IsNullOrEmpty(xmlString) )
+            throw new ArgumentNullException(nameof(xmlString));
         if( destType == null )
-            throw new ArgumentNullException("destType");
-        if( encoding == null )
-            throw new ArgumentNullException("encoding");
+            throw new ArgumentNullException(nameof(destType));
 
-        using( MemoryStream ms = new MemoryStream(encoding.GetBytes(s), false) ) {
-            return XmlDeserialize(ms, destType);
-        }
+        XmlSerializer mySerializer = new XmlSerializer(destType);
+        using StringReader reader = new StringReader(xmlString);
+
+        //try {
+        return mySerializer.Deserialize(reader);
+        //}
+        //catch( Exception ex ) {
+        //    throw new DeserializeException("XML反序列化异常，原始 XML-base64：" + xmlString.ToBase64(), ex);
+        //}
     }
 
 
@@ -162,11 +165,11 @@ public static class XmlHelper
     /// 从XML字符串中反序列化对象
     /// </summary>
     /// <typeparam name="T">结果对象类型</typeparam>
-    /// <param name="s">包含对象的XML字符串</param>
+    /// <param name="xmlString">包含对象的XML字符串</param>
     /// <returns>反序列化得到的对象</returns>
-    public static T XmlDeserialize<T>(string s)
+    public static T XmlDeserialize<T>(string xmlString)
     {
-        return (T)XmlDeserialize(s, typeof(T), Encoding.UTF8);
+        return (T)XmlDeserialize(xmlString, typeof(T));
     }
 
 
@@ -176,20 +179,20 @@ public static class XmlHelper
     /// 读入一个文件，并按XML的方式反序列化对象。
     /// </summary>
     /// <typeparam name="T">结果对象类型</typeparam>
-    /// <param name="path">文件路径</param>
+    /// <param name="filePath">文件路径</param>
     /// <returns>反序列化得到的对象</returns>
-    public static T XmlDeserializeFromFile<T>(string path)
+    public static T XmlDeserializeFromFile<T>(string filePath)
     {
-        if( string.IsNullOrEmpty(path) )
-            throw new ArgumentNullException("path");
+        if( string.IsNullOrEmpty(filePath) )
+            throw new ArgumentNullException(nameof(filePath));
 
         try {
-            using( FileStream fs = RetryFile.OpenRead(path) ) {
+            using( FileStream fs = RetryFile.OpenRead(filePath) ) {
                 return (T)XmlDeserialize(fs, typeof(T));
             }
         }
         catch( Exception ex ) {
-            throw new InvalidDataException("XML反序列失败，当前文件：" + path, ex);
+            throw new InvalidDataException("XML反序列失败，当前文件：" + filePath, ex);
         }
     }
 }

@@ -131,6 +131,11 @@ public static class MemoryConfig
     }
 
 
+    internal static void RemoveFile(string filename)
+    {
+        s_files.TryRemove(filename, out string _);
+    }
+
     internal static DebugReportBlock GetDebugReportBlock()
     {
         DebugReportBlock block = new DebugReportBlock { Category = nameof(MemoryConfig), Order = 100 };
