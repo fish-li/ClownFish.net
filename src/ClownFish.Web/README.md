@@ -1,7 +1,8 @@
 ﻿
 
 ClownFish.Web 基于ClownFish.net，对asp.net core的封装，用于开发单体Web应用程序。
-<br />与直接使用asp.net core相比：
+
+与直接使用asp.net core相比：
 - 包含了ClownFish.net所有功能(直接可用)：
     - [数据库访问](https://dev.fdcyun.com/3data/index.html)
     - [HttpClient](https://dev.fdcyun.com/8client/http.html)
@@ -14,8 +15,6 @@ ClownFish.Web 基于ClownFish.net，对asp.net core的封装，用于开发单�
 - 提供经典的[HTTP管道开发模式](https://dev.fdcyun.com/10extension/http-pipeline.html)
 
 
-<br />
 
 
-<br />
 [更多介绍可参考](https://dev.fdcyun.com/)

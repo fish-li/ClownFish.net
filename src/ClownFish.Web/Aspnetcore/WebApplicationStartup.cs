@@ -67,6 +67,10 @@ public class WebApplicationStartup
             ClownFishInit.InitLogAsDefault();
         else
             this.ConfigLog();
+
+        if( LogConfig.IsInited == false ) {
+            Console2.Info("##### 注意 ClownFish.Log 组件没有初始化！");
+        }
     }
 
     /// <summary>
@@ -83,11 +87,6 @@ public class WebApplicationStartup
             TracingUtils.Init();
         else
             this.ConfigTracing();
-
-
-        if( LogConfig.IsInited == false ) {
-            Console2.Info("##### 注意 ClownFish.Log 组件没有初始化，性能监控产生的日志将被丢弃！");
-        }
     }
 
     /// <summary>

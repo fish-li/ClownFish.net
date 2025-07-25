@@ -108,6 +108,8 @@ internal static class BaseInitUtils
 
     private static void ConfigMisc()
     {
+        // 下面2个事件订阅，和 Base 模块确实没有关系，它们太零散了，单独为它们搞2个方法也太麻烦了，所以就勉强放在这里吧~~~
+
         if( LocalSettings.GetBool("ClownFish_LogError_ToConsole") ) {
             LogHelper.OnError += LogHelperOnError;
         }

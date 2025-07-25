@@ -65,6 +65,10 @@ public class ConsoleAppStartup
             ClownFishInit.InitLogAsDefault();
         else
             this.ConfigLog();
+
+        if( LogConfig.IsInited == false ) {
+            Console2.Info("##### 注意 ClownFish.Log 组件没有初始化！");
+        }
     }
 
     /// <summary>
@@ -81,11 +85,6 @@ public class ConsoleAppStartup
             ConsoleAppStarter.InitTracing();
         else
             this.ConfigTracing();
-
-
-        if( LogConfig.IsInited == false ) {
-            Console2.Info("##### 注意 ClownFish.Log 组件没有初始化，性能监控产生的日志将被丢弃！");
-        }
     }
 
     /// <summary>

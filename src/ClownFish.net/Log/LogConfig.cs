@@ -87,19 +87,6 @@ public static class LogConfig
     }
 
 
-    ///// <summary>
-    ///// 框架内部使用
-    ///// </summary>
-    //public static void CheckLogWritersMapIsSet()
-    //{
-    //    string writesMap = Settings.GetSetting("ClownFish_Log_WritersMap");
-    //    if( writesMap.IsNullOrEmpty() ) {
-    //        Console2.Info("force set: ClownFish_Log_WritersMap => OprLog=http");
-    //        MemoryConfig.AddSetting("ClownFish_Log_WritersMap", "OprLog=http");
-    //    }
-    //}
-
-
     internal static DebugReportBlock GetDebugReportBlock()
     {
         if( s_inited == false )
