@@ -75,7 +75,7 @@ internal struct RequestWriter
 
     private static void WriteGzipBinary(Stream stream, string text)
     {
-        byte[] bb = text.ToUtf8Bytes();
+        byte[] bb = text.ToUtf8Bytes();   // 一次性转成二进制，大字符串时会多浪费点内存~~~  好处是压缩率更高！
 
         using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
 
@@ -164,8 +164,7 @@ internal struct RequestWriter
 
         if( autoGzip ) {   // 这里不做长度判断，直接Gzip压缩
             using GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true);
-
-            using StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024, true);
+            using StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024 * 4, true); // 增加数据窗口大小可以提高压缩率
             list.ToMultiLineJson(writer);
         }
         else {

@@ -226,7 +226,7 @@ public class RequestWriterTest
     public void Test_Gzip_Text_2048()
     {
         using MemoryStream ms = new MemoryStream();
-        string text = new string('中', 2048);
+        string text = new string('中', 5000);
 
         RequestWriter writer = new RequestWriter();
         writer.Write(ms, text, SerializeFormat.Text, true);

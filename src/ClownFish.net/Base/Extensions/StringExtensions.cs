@@ -477,19 +477,6 @@ public static class StringExtensions
     }
 
 
-    /// <summary>
-    /// 将字符串转成byte[]，等效于：Encoding.UTF8.GetBytes(text);
-    /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    public static byte[] GetBytes(this string text)
-    {
-        if( text == null )
-            return null;
-
-        return Encoding.UTF8.GetBytes(text);
-    }
-
 
     /// <summary>
     /// 截取一个字符串，只保留部分长度，再显示原字符串的长度。

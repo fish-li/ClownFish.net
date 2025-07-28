@@ -176,7 +176,7 @@ public static partial class HttpContextExtensions
 
             using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
                 using( GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true) ) {
-                    using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+                    using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
                         writer.Write(body);
                         writer.Close();
                     }

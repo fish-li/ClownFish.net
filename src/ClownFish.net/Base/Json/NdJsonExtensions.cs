@@ -54,7 +54,7 @@ public static class NdJsonExtensions
             foreach( var x in list ) {
                 count++;
                 jsonSerializer.Serialize(jsonTextWriter, x);
-                jsonTextWriter.Flush();
+                //jsonTextWriter.Flush();   // ##### 注意是：这行代码不能启用，它会导致 writer 的缓冲区失效，如果外层是一个GZIP流，它会影响压缩率！
                 writer.Write('\n');
 
                 // 最后以“换行符”结束，这里参考了 elasticsearch 的要求

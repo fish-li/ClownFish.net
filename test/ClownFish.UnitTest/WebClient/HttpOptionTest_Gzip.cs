@@ -12,7 +12,7 @@ public class HttpOptionTest_Gzip
     [TestMethod]
     public void Test_Gzip_Text_2048()
     {
-        string text = new string('中', 2048);
+        string text = new string('中', 5000);
 
         HttpOption http = new HttpOption {
             Method = "POST",
@@ -43,7 +43,7 @@ public class HttpOptionTest_Gzip
         Assert.IsTrue(response2.Contains("Content-Encoding: gzip"));
 
         Console.WriteLine("------------------------------------------------");
-        Console.WriteLine(response2);
+        //Console.WriteLine(response2);
 
         Assert.IsFalse(response2.Contains(text));
 

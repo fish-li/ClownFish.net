@@ -77,7 +77,7 @@ internal class HttpJsonWriter : ILogWriter
 
                     int count = 0;
                     using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
-                        using( StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+                        using( StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
 
                             count = spliter.GetNextPart(writer);
                         }

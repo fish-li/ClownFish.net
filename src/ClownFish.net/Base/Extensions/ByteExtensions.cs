@@ -105,6 +105,26 @@ public static class ByteExtensions
         return Encoding.UTF8.GetBytes(text);
     }
 
+    // 由于历史原因，GetBytes 原先定义在 StringExtensions 类型中，
+    // 后来， ToUtf8Bytes/ToUtf8String 成对添加，就出现了2个功能相同的方法。
+    // 现在(GetBytes/ToUtf8Bytes)很难去掉其中一个，所以保留吧，而且放在一起，实现逻辑也要一模一样~~~
+
+    /// <summary>
+    /// 将字符串转成byte[]，等效于：Encoding.UTF8.GetBytes(text);
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static byte[] GetBytes(this string text)
+    {
+        //if( text == null )
+        //    return null;     // 这是原先的行为，现在保持和 ToUtf8Bytes 一致
+
+        if( text.IsNullOrEmpty() )
+            return Empty.Array<byte>();
+
+        return Encoding.UTF8.GetBytes(text);
+    }
+
     /// <summary>
     /// 将二进制数据做 Base64 + UrlEncode 编码
     /// </summary>

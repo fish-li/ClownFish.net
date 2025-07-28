@@ -359,7 +359,7 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             Assert.IsTrue(b1.IsEqual(b2));
 
-            Assert.IsNull(((string)null).GetBytes());
+            Assert.IsTrue(((string)null).GetBytes().Length == 0);
         }
 
         [TestMethod]

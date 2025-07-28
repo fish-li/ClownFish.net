@@ -29,7 +29,7 @@ internal static class ClownFishOptions
 
     public static readonly int GCCollectPeriodSec = LocalSettings.GetInt("ClownFish_GCCollect_PeriodSec", 60);
 
-    public static readonly int HttpClient_GzipThreshold = LocalSettings.GetUInt("ClownFish_HttpClient_GzipThreshold", 1024);
+    public static readonly int HttpClient_GzipThreshold = LocalSettings.GetUInt("ClownFish_HttpClient_GzipThreshold", 2 * 1024);
 
     public static readonly bool AutoEnableCors = LocalSettings.GetBool("ClownFish_NHttpApplication_AutoEnableCors", 1);
 
