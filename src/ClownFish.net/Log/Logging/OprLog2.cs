@@ -80,11 +80,8 @@ public partial class OprLog
 
     internal void SetSomeFields(NHttpContext httpContext)
     {
-        if( this.OutSize == 0 )
-            this.OutSize = httpContext.Response.ContentLength;
-
-        if( this.Status == 0 )
-            this.Status = httpContext.Response.StatusCode;
+        this.OutSize = httpContext.Response.ContentLength;
+        this.Status = httpContext.Response.StatusCode;
 
         if( this.OprKind.IsNullOrEmpty() ) {
             this.OprKind = OprKinds.Http;
