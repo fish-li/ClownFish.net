@@ -5,9 +5,15 @@ namespace ClownFish;
 internal static class ClownFishOptions
 {
 #if NETCOREAPP
+    public static readonly bool MemoryStreamPool_Enable = LocalSettings.GetBool("ClownFish_MemoryStreamPool_Enable", 1);
+    public static readonly bool MemoryStreamPool_UseExponentialLargeBuffer = LocalSettings.GetBool("ClownFish_MemoryStreamPool_UseExponentialLargeBuffer", 0);
+
     public static readonly int MemoryStreamPool_BlockSize = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultBlockSize", 32 * 1024);
-    public static readonly int MemoryStreamPool_LargeBufferMultiple = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultLargeBufferMultiple", 64 * 1024);
-    public static readonly int MemoryStreamPool_MaximumBufferSize = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultMaximumBufferSize", 256 * 1024);
+    public static readonly int MemoryStreamPool_LargeBufferMultiple = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultLargeBufferMultiple", 128 * 1024);
+    public static readonly int MemoryStreamPool_MaximumBufferSize = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_DefaultMaximumBufferSize", 1024 * 1024);
+    public static readonly int MemoryStreamPool_MaximumSmallPoolFreeBytes = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_MaximumSmallPoolFreeBytes", 102 * 1024 * 2);
+    public static readonly int MemoryStreamPool_MaximumLargePoolFreeBytes = LocalSettings.GetUInt("ClownFish_MemoryStreamPool_MaximumLargePoolFreeBytes", 1024 * 1024 * 32);
+
 
     public static readonly int StringBuilderPool_InitialCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_InitialCapacity", 32 * 1024);
     public static readonly int StringBuilderPool_MaximumRetainedCapacity = LocalSettings.GetUInt("ClownFish_StringBuilderPool_MaximumRetainedCapacity", 256 * 1024);

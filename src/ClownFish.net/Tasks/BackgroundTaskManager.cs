@@ -80,19 +80,19 @@ public static class BackgroundTaskManager
         ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);        
     }
 
-    internal static DebugReportBlock GetReportBlock()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = "BackgroundTask Information" };
+    //internal static DebugReportBlock GetReportBlock()
+    //{
+    //    DebugReportBlock block = new DebugReportBlock { Category = "BackgroundTask Information" };
 
-        foreach( var task in s_taskList ) {
-            string name = task.GetType().FullName;
-            long count = task.ExecuteCount.Get();
-            long error = task.ErrorCount.Get();
-            block.AppendLine($"{name}: {count.ToWString()},  {error.ToWString()}");
-        }
+    //    foreach( var task in s_taskList ) {
+    //        string name = task.GetType().FullName;
+    //        long count = task.ExecuteCount.Get();
+    //        long error = task.ErrorCount.Get();
+    //        block.AppendLine($"{name}: {count.ToWString()},  {error.ToWString()}");
+    //    }
 
-        return block;
-    }
+    //    return block;
+    //}
 
 
     /// <summary>

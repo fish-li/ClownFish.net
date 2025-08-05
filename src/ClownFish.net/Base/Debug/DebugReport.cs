@@ -14,7 +14,7 @@ public static class DebugReport
     private static readonly object s_lock = new object();
 #endif
     private static bool s_inited = false;
-    
+
     /// <summary>
     /// 系统环境信息
     /// </summary>
@@ -78,7 +78,6 @@ public static class DebugReport
                     OptionList.Add(typeof(CacheOption));
                     OptionList.Add(typeof(ClownFishOptions));
                     OptionList.Add(typeof(ClownFishPubOptions));
-
                     s_inited = true;
                 }
             }
@@ -113,7 +112,8 @@ public static class DebugReport
 #if NETCOREAPP
         blocks.Add(DebugReportBlocks.GetThreadPoolInfo());
         blocks.Add(DebugReportBlocks.GetGCInfo());
-        blocks.Add(BackgroundTaskManager.GetReportBlock());
+        blocks.Add(MemoryStreamPool.GetStatus());
+        //blocks.Add(BackgroundTaskManager.GetReportBlock());
 #endif
 
         blocks.Add(DebugReportBlocks.GetLoggingCounters());
