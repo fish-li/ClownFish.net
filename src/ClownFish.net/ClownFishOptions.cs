@@ -31,6 +31,8 @@ internal static class ClownFishOptions
 
     public static readonly int HttpClient_GzipThreshold = LocalSettings.GetUInt("ClownFish_HttpClient_GzipThreshold", 2 * 1024);
 
+    public static readonly bool HttpClient_EnableSystemWebProxy = LocalSettings.GetBool("ClownFish_HttpClient_EnableSystemWebProxy", 1);
+
     public static readonly bool AutoEnableCors = LocalSettings.GetBool("ClownFish_NHttpApplication_AutoEnableCors", 1);
 
     public static readonly bool ShowOneoffHttpMessageHandlerWarnning = LocalSettings.GetBool("ClownFish_ShowOneoffHttpMessageHandlerWarnning", 0);

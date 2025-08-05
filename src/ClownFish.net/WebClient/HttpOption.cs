@@ -246,6 +246,8 @@ public sealed partial class HttpOption
     /// </summary>
     public Action<System.Net.HttpWebRequest> OnSetRequest { get; set; }
 #else
+    // Linux   .NET CORE/5/9  环境下设置 Proxy 需要通过指定 HttpMessageHandler 来实现，可参考 CreateClientHandler 方法
+
     /// <summary>
     /// Request对象创建完成后的回调委托
     /// </summary>

@@ -50,7 +50,11 @@ internal static class ProxyHttpClientCache
     internal static SocketsHttpHandler CreateClientHandler()
     {
         SocketsHttpHandler clientHandler = new SocketsHttpHandler();
-        clientHandler.UseProxy = false;
+
+        if( ClownFishOptions.HttpClient_EnableSystemWebProxy == false ) {
+            clientHandler.UseProxy = false;   // 默认值是 true，程序运行时会获取系统默认的代理
+            clientHandler.Proxy = null;
+        }
         clientHandler.AutomaticDecompression = DecompressionMethods.None;    // 对于代理来说，肯定不需要自动解压缩
         clientHandler.UseCookies = false;
         clientHandler.AllowAutoRedirect = false;

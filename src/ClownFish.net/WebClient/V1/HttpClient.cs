@@ -195,8 +195,15 @@ internal sealed class HttpClient : BaseHttpClient
                 request.UserAgent = ConstValues.HttpClientUserAgent;
         }
 
-        if( option.Proxy != null )
+        // request.Proxy 如果不赋值，会有一个默认值：WebRequest.InternalDefaultWebProxy
+        if( option.Proxy != null ) {
             request.Proxy = option.Proxy;
+        }
+        else {
+            if( ClownFishOptions.HttpClient_EnableSystemWebProxy == false ) {
+                request.Proxy = null;  // 强制不使用系统默认的代理
+            }
+        }
 
         return request;
     }
