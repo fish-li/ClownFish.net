@@ -106,14 +106,20 @@ public struct BytesList
     /// 将内部数据压缩并返回
     /// </summary>
     /// <returns></returns>
-    public byte[] ToGzip()
+    public byte[] ToGzip()   // 调用方：TxClient，Nebula.FoxFairy
     {
         int sumLen = GetSumLength();
         if( sumLen == 0 )
             return Empty.Array<byte>();
 
+#if NET6_0_OR_GREATER
+        CompressionLevel level = CompressionLevel.SmallestSize;
+#else
+        CompressionMode level = CompressionMode.Compress;
+#endif
+
         using( MemoryStream resultStream = MemoryStreamPool.GetStream() ) {
-            using( GZipStream gZipStream = new GZipStream(resultStream, CompressionMode.Compress, true) ) {
+            using( GZipStream gZipStream = new GZipStream(resultStream, level, true) ) {
                 this.CopyToStream(gZipStream);
             }
 
