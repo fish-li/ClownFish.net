@@ -107,16 +107,13 @@ public static class ZipHelper
 
 
             // 读取某个文件内容
-            // 由于读取过程涉及解压缩，所以不能一次到 byte[]，只好引入一个内存流
-            using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
-                using( Stream steam = entry.Open() ) {
-                    steam.CopyTo(ms);
-                }
-                ms.Position = 0;
-
-                ZipItem item = new ZipItem { FullName = entry.FullName, Body = ms.ToArray() };
-                result.Add(item);
+            byte[] buffer = new byte[entry.Length];
+            using( Stream steam = entry.Open() ) {
+                _ = steam.Read(buffer, 0, buffer.Length);
             }
+
+            ZipItem item = new ZipItem { FullName = entry.FullName, Body = buffer };
+            result.Add(item);
         }
 
         return result;

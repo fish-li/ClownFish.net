@@ -147,44 +147,47 @@ public sealed class RequestData : IBinarySerializer, ITextSerializer
         return data;
     }
 
+    /// <summary>
+    /// 将当前对象序列化为 BytesList 实例
+    /// </summary>
+    /// <returns></returns>
+    public BytesList ToBytesList()
+    {
+        BytesList buffer = new BytesList();
+        // 在将数据转成二进制时，为了方便后面反向读取，将会写入2个长度到数据流中
+
+        // 写请求行，先写长度，再写内容
+        byte[] b1 = Encoding.UTF8.GetBytes(this.RequestLine);
+        buffer.Write(b1.Length);
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b1);
+
+        // 写请求头
+        byte[] b2 = Encoding.UTF8.GetBytes(this.Headers);
+        buffer.Write(b2.Length);
+
+        if( b2.Length > 0 ) { /* 请求头有可能没有 */
+            buffer.WriteLn();  // 在文本情况下方便阅读
+            buffer.Write(b2);
+        }
+
+        // 写请求体
+        int bodyLen = (this.Body != null) ? this.Body.Length : 0;
+        buffer.Write(bodyLen);
+
+        if( bodyLen > 0 ) {
+            buffer.WriteLn();
+            buffer.Write(this.Body);
+        }
+
+        return buffer;
+    }
+
     byte[] IBinarySerializer.ToBytes()
     {
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+        BytesList buffer = ToBytesList();
 
-            // 在将数据转成二进制时，为了方便后面反向读取，将会写入2个长度到数据流中
-
-            // 写请求行，先写长度，再写内容
-            byte[] b1 = Encoding.UTF8.GetBytes(this.RequestLine);
-            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b1, 0, b1.Length);
-
-
-            // 写请求头
-            byte[] b2 = Encoding.UTF8.GetBytes(this.Headers);
-            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            if( b2.Length > 0 ) { // 请求头有可能没有
-                ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-                ms.Write(b2, 0, b2.Length);
-            }
-
-            // 写请求体
-            if( this.Body != null && this.Body.Length > 0 ) {
-                lenBytes = BitConverter.GetBytes(this.Body.Length);
-                ms.Write(lenBytes, 0, lenBytes.Length);
-                ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-                ms.Write(this.Body, 0, this.Body.Length);
-            }
-            else {
-                // 没有请求体也写入一个“零”标记
-                lenBytes = BitConverter.GetBytes(0);
-                ms.Write(lenBytes, 0, lenBytes.Length);
-            }
-
-            return ms.ToArray();
-        }
+        return buffer.ToArray();
     }
 
     void IBinarySerializer.LoadData(ReadOnlyMemory<byte> body)
@@ -199,7 +202,7 @@ public sealed class RequestData : IBinarySerializer, ITextSerializer
 
         int start = 0;
         ReadOnlySpan<byte> span = body.Span;
-        
+
 
         // 读取“请求行”的长度
         int len = BitConverter.ToInt32(span.Slice(start, 4));
@@ -234,7 +237,7 @@ public sealed class RequestData : IBinarySerializer, ITextSerializer
         len = BitConverter.ToInt32(span.Slice(start, 4));
         start += 4;
 
-        if(len > 0 ) {
+        if( len > 0 ) {
             start++; // 跳过 \n 符号
             data = span.Slice(start, len);
             this.Body = data.ToArray();
@@ -247,7 +250,7 @@ public sealed class RequestData : IBinarySerializer, ITextSerializer
     string ITextSerializer.ToText()
     {
         return this.RequestLine + "\n"
-                + (this.Headers.IsNullOrEmpty() ? "" :  this.Headers + "\n")
+                + (this.Headers.IsNullOrEmpty() ? "" : this.Headers + "\n")
                 + "\n"
                 + this.Body.ToBase64();
     }

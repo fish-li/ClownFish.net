@@ -229,7 +229,7 @@ public sealed partial class HttpOption
     public int? Timeout { get; set; }
 
 
-     /// <summary>
+    /// <summary>
     /// 上传数据时，是否【尽量】采用gzip压缩，仅对文本类数据尝试启用gzip，包含：text, json, xml
     /// </summary>
     public bool AutoGzipUpload { get; set; }
@@ -818,37 +818,44 @@ public sealed partial class HttpOption : IBinarySerializer  // 二进制序列�
         }
     }
 
-    byte[] IBinarySerializer.ToBytes()
+
+    /// <summary>
+    /// 将当前对象序列化为 BytesList 实例
+    /// </summary>
+    /// <returns></returns>
+    public BytesList ToBytesList()
     {
         byte[] body = GetPostBodyBytes(out bool bodyIsBinData, out string contentType);
 
         string startLineAndHeaders = GetStartLineAndHeaders(contentType);
 
+        BytesList buffer = new BytesList();
 
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+        // 写入 "开始行和请求头"
+        byte[] b1 = Encoding.UTF8.GetBytes(startLineAndHeaders);
+        buffer.Write(b1.Length);
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b1);
 
-            // 写入 "开始行和请求头"
-            byte[] b1 = Encoding.UTF8.GetBytes(startLineAndHeaders);
-            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b1, 0, b1.Length);
+        // 写入 "数据类型标志"
+        int bodyDataType = bodyIsBinData ? 1 : 0;
+        buffer.Write(bodyDataType);
+        buffer.WriteLn();  // 在文本情况下方便阅读
 
-            // 写入 "数据类型标志"
-            int bodyDataType = bodyIsBinData ? 1 : 0;
-            byte[] dataTypeBytes = BitConverter.GetBytes(bodyDataType);  // 长度固定为 4
-            ms.Write(dataTypeBytes, 0, dataTypeBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
+        // 写入 "请求体"
+        byte[] b2 = body;
+        buffer.Write(b2.Length);
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b2);
 
-            // 写入 "请求体"
-            byte[] b2 = body;
-            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b2, 0, b2.Length);
+        return buffer;
+    }
 
-            return ms.ToArray();
-        }
+    byte[] IBinarySerializer.ToBytes()
+    {
+        BytesList buffer = ToBytesList();
+
+        return buffer.ToArray();
     }
 
 

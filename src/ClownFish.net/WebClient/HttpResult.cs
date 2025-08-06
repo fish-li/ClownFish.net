@@ -234,7 +234,11 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
         }
     }
 
-    byte[] IBinarySerializer.ToBytes()
+    /// <summary>
+    /// 将当前对象序列化为 BytesList 实例
+    /// </summary>
+    /// <returns></returns>
+    public BytesList ToBytesList()
     {
         CheckStreamNotSupportSerialize();
 
@@ -242,31 +246,37 @@ public sealed partial class HttpResult<T> : ITextSerializer, IBinarySerializer
 
         byte[] body = GetResultAsBytes();
 
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+        BytesList buffer = new BytesList();
 
-            // 写入 StatusCode
-            byte[] statusBytes = BitConverter.GetBytes(this.StatusCode);
-            ms.Write(statusBytes, 0, statusBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-
-
-            // 写响应头，先写长度，再写内容
-            byte[] b1 = Encoding.UTF8.GetBytes(headers);
-            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b1, 0, b1.Length);
+        // 写入 StatusCode
+        buffer.Write(this.StatusCode);
+        buffer.WriteLn();  // 在文本情况下方便阅读
 
 
-            // 写消息体
-            byte[] b2 = body;
-            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b2, 0, b2.Length);
+        // 写响应头，先写长度，再写内容
+        byte[] b1 = Encoding.UTF8.GetBytes(headers);
+        buffer.Write(b1.Length);
 
-            return ms.ToArray();
-        }
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b1);
+
+
+        // 写消息体
+        byte[] b2 = body;
+
+        buffer.Write(b2.Length);
+
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b2);
+
+        return buffer;
+    }
+
+    byte[] IBinarySerializer.ToBytes()
+    {
+        BytesList buffer = ToBytesList();
+
+        return buffer.ToArray();
     }
 
     void IBinarySerializer.LoadData(ReadOnlyMemory<byte> body)

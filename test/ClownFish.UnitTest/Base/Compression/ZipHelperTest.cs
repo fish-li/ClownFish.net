@@ -9,10 +9,16 @@ public class ZipHelperTest
         string path = Path.Combine(Environment.CurrentDirectory, "temp");        
 
         // 添加一个子目录，并包含一个文件
-        string newFile = Path.Combine(Environment.CurrentDirectory, @"temp\aa\bb.txt");
-        RetryFile.WriteAllText(newFile, "aaaaaaaaaaaa");
+        string bbTxt = Path.Combine(Environment.CurrentDirectory, @"temp\aa\bb.txt");
+        RetryFile.WriteAllText(bbTxt, "中文汉字-123456789");
 
-        // 添加一个空目录
+        string ccTxt = Path.Combine(Environment.CurrentDirectory, @"temp\aa\cc.txt");
+        RetryFile.WriteAllText(ccTxt, "中华文明#123456789");
+
+        string ddTxt = Path.Combine(Environment.CurrentDirectory, @"temp\aa\dd.txt");
+        RetryFile.WriteAllText(ddTxt, "大明王朝@1566");
+
+        // 添加一个空目录，测试压缩时如何处理
         RetryDirectory.CreateDirectory(Path.Combine(path, "empty"));
 
         string tempPath2 = Path.Combine(Environment.CurrentDirectory, "temp2");
@@ -33,14 +39,14 @@ public class ZipHelperTest
 
         Assert.AreEqual(files1.Length, files2.Length);
 
-        long length1 = (from x in files1
-                           let len = (new FileInfo(x)).Length
-                           select len).Sum();
+        string sumText1 = string.Join("\n", (from x in files1
+                                             let text = RetryFile.ReadAllText(x)
+                                             select text));
 
-        long length2 = (from x in files2
-                        let len = (new FileInfo(x)).Length
-                        select len).Sum();
-        Assert.AreEqual(length1, length2);
+        string sumText2 = string.Join("\n", (from x in files2
+                                             let text = RetryFile.ReadAllText(x)
+                                             select text));
+        Assert.AreEqual(sumText1, sumText2);
 
         
 
@@ -48,8 +54,14 @@ public class ZipHelperTest
         List<ZipItem> list = ZipHelper.Read(zipFile);
         //File.Delete(zipFile);
 
-        var item = list.Find(x => x.FullName == @"aa/bb.txt");
-        Assert.IsNotNull(item);
+        var filebb = list.Find(x => x.FullName == @"aa/bb.txt");
+        Assert.IsNotNull(filebb);
+
+        var filecc = list.Find(x => x.FullName == @"aa/cc.txt");
+        Assert.IsNotNull(filecc);
+
+        var filedd = list.Find(x => x.FullName == @"aa/dd.txt");
+        Assert.IsNotNull(filedd);
 
         list.Add(new ZipItem {  // 这个节点不是必需的
             FullName = "aa/",
