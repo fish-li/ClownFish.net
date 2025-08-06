@@ -22,7 +22,7 @@ public static class ComplexMessage
     /// <summary>
     /// TenantId
     /// </summary>
-    public static readonly string TenantId = "TenantId";        
+    public static readonly string TenantId = "TenantId";
 }
 
 /// <summary>
@@ -147,7 +147,11 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
         this.Body = StringToBodyObject(body);
     }
 
-    byte[] IBinarySerializer.ToBytes()
+    /// <summary>
+    /// 将当前对象序列化为 BytesList 实例
+    /// </summary>
+    /// <returns></returns>
+    public BytesList ToBytesList()
     {
         Validate();
 
@@ -163,29 +167,30 @@ public sealed class ComplexMessage<T> : ITextSerializer, IBinarySerializer, IMsg
             return ToBytes0(header, bodyBytes);
         }
     }
-
-
-    private static byte[] ToBytes0(string header, byte[] bodyBytes)
+    byte[] IBinarySerializer.ToBytes()
     {
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
-
-            // 写消息头，先写长度，再写内容
-            byte[] b1 = Encoding.UTF8.GetBytes(header);
-            byte[] lenBytes = BitConverter.GetBytes(b1.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b1, 0, b1.Length);
+        BytesList buffer = ToBytesList();
+        return buffer.ToArray();
+    }
 
 
-            // 写消息体
-            byte[] b2 = bodyBytes;
-            lenBytes = BitConverter.GetBytes(b2.Length);  // 长度固定为 4
-            ms.Write(lenBytes, 0, lenBytes.Length);
-            ms.WriteByte((byte)'\n');  // 在文本情况下方便阅读
-            ms.Write(b2, 0, b2.Length);
+    private static BytesList ToBytes0(string header, byte[] bodyBytes)
+    {
+        BytesList buffer = new BytesList();
 
-            return ms.ToArray();
-        }
+        // 写消息头，先写长度，再写内容
+        byte[] b1 = Encoding.UTF8.GetBytes(header);
+        buffer.Write(b1.Length);
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b1);
+
+        // 写消息体
+        byte[] b2 = bodyBytes;
+        buffer.Write(b2.Length);
+        buffer.WriteLn();  // 在文本情况下方便阅读
+        buffer.Write(b2);
+
+        return buffer;
     }
 
 
