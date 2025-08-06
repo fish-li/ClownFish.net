@@ -79,13 +79,10 @@ public static class BrotliHelper
 
         using( MemoryStream resultStream = MemoryStreamPool.GetStream() ) {
             using( BrotliStream zipStream = new BrotliStream(resultStream, level, true) ) {
-
                 zipStream.Write(input, 0, input.Length);
-                zipStream.Close();
-
-                resultStream.Position = 0;
-                return resultStream.ToArray();
             }
+            resultStream.Position = 0;
+            return resultStream.ToArray();
         }
     }
 

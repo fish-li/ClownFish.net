@@ -91,7 +91,7 @@ public static class RetryFile
 
     internal static string FileReadAllText0(string filePath, Encoding encoding)
     {
-        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.SequentialScan);
+        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1024, FileOptions.SequentialScan);
         using StreamReader sr = new StreamReader(file, encoding, true);
         return sr.ReadToEnd();
     }
@@ -114,7 +114,7 @@ public static class RetryFile
 
     internal static string[] FileReadAllLines0(string filePath, Encoding encoding)
     {
-        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096, FileOptions.SequentialScan);
+        using FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1024, FileOptions.SequentialScan);
         using StreamReader sr = new StreamReader(file, encoding, true);
 
         string line;

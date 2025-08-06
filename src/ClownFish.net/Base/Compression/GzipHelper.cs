@@ -72,14 +72,10 @@ public static class GzipHelper
 
         using( MemoryStream resultStream = MemoryStreamPool.GetStream() ) {
             using( GZipStream gZipStream = new GZipStream(resultStream, CompressionMode.Compress, true) ) {
-
                 gZipStream.Write(input, 0, input.Length);
-                gZipStream.Close();
-
-                resultStream.Position = 0;
-                return resultStream.ToArray();
-
             }
+            resultStream.Position = 0;
+            return resultStream.ToArray();
         }
     }
 

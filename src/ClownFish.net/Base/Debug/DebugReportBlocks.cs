@@ -106,18 +106,19 @@ internal static class DebugReportBlocks
         return block;
     }
 
+    
 
     public static DebugReportBlock GetGCInfo()
     {
-        DebugReportBlock block = new DebugReportBlock { Category = "GC Information" };
+        DebugReportBlock block = new DebugReportBlock { Category = "GC Memory Information" };
 
         GCMemoryInfo info = GC.GetGCMemoryInfo();
-        block.AppendLine($"TotalMemory（当前认为要分配的字节数）: " + GC.GetTotalMemory(false).ToKString());
-        block.AppendLine($"FragmentedBytes（上次垃圾收集发生时的总碎片）: " + info.FragmentedBytes.ToKString());
-        block.AppendLine($"HeapSizeBytes（上次垃圾收集发生时的堆总大小）: " + info.HeapSizeBytes.ToKString());
-        block.AppendLine($"MemoryLoadBytes（上次垃圾收集发生时的内存负载）: " + info.MemoryLoadBytes.ToKString());
-        block.AppendLine($"HighMemoryLoadThresholdBytes（上次垃圾收集发生时的高内存负载阈值）: " + info.HighMemoryLoadThresholdBytes.ToKString());
-        block.AppendLine($"TotalAvailableMemoryBytes（上次垃圾收集发生时垃圾收集器要使用的可用内存总数）: " + info.TotalAvailableMemoryBytes.ToKString());
+        block.AppendLine($"TotalMemory: " + GC.GetTotalMemory(false).ToKString());
+        block.AppendLine($"FragmentedBytes: " + info.FragmentedBytes.ToKString());
+        block.AppendLine($"HeapSizeBytes: " + info.HeapSizeBytes.ToKString());
+        block.AppendLine($"MemoryLoadBytes: " + info.MemoryLoadBytes.ToKString());
+        block.AppendLine($"HighMemoryLoadThresholdBytes: " + info.HighMemoryLoadThresholdBytes.ToKString());
+        block.AppendLine($"TotalAvailableMemoryBytes: " + info.TotalAvailableMemoryBytes.ToKString());
 
         // 获取进程的内存占用，目前有3个方法：MemoryLoadBytes, WorkingSet, docker stats
         // 以下是实际的数据（来自一个测试程序）

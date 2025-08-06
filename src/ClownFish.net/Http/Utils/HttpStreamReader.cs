@@ -105,15 +105,13 @@ internal struct HttpStreamReader
 
     private static string ReadStream(Stream stream, Encoding encoding)
     {
-        // 不需要自动关闭流，所以不使用 using 用法
-        StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
+        using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
         return reader.ReadToEnd();
     }
 
     private static async Task<string> ReadStreamAsync(Stream stream, Encoding encoding)
     {
-        // 不需要自动关闭流，所以不使用 using 用法
-        StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
+        using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
         return await reader.ReadToEndAsync();
     }
 

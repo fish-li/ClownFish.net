@@ -139,8 +139,6 @@ public static class JsonExtensions
         JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
-        //using StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
-
         return jsonSerializer.Deserialize(reader, destType);
     }
 
