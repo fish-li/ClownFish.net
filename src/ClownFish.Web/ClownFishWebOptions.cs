@@ -18,5 +18,8 @@ internal static class ClownFishWebOptions
 
     public static readonly bool ShowAuthFailedMsg = LocalSettings.GetBool("ClownFish_ShowAuthFailedMsg");
 
+    public static readonly HashSet<string> IpBlackList = LocalSettings.GetSetting("ClownFishWeb_IpBlackList", "").SplitToHashSet();
 
+    public static readonly int BlockIpMinWaitMs = LocalSettings.GetInt("ClownFishWeb_BlockIp_MinWaitMs", 3000);
+    public static readonly int BlockIpMaxWaitMs = LocalSettings.GetInt("ClownFishWeb_BlockIp_MaxWaitMs", 9999);
 }

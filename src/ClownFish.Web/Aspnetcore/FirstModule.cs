@@ -11,6 +11,12 @@ public class FirstModule
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
+        if( IpBlackList.Check(httpContext, true) ) {
+            int waitMs = Random.Shared.Next(ClownFishWebOptions.BlockIpMinWaitMs, ClownFishWebOptions.BlockIpMaxWaitMs);
+            await Task.Delay(waitMs);
+            return;
+        }
+
         if( ClownFishWebOptions.LogExecutTime ) {
             HttpContextUtils.LogExecutTime(httpContext);
         }
