@@ -97,12 +97,12 @@ namespace ClownFish.UnitTest.Base.Debug
         {
             DbConfig config = DbConfig.Parse("Id=123;Name=db1;DbType=MySQL;Server=localpc;Database=MyNorthwind;Port=1025;UserName=admin;Password=fish;");
 
-            DebugReport.OptionList.Add(config);
-            DebugReport.OptionList.Add((object)GetXxxOptions);
-            DebugReport.OptionList.Add(new XxxOptions1());
-            DebugReport.OptionList.Add(typeof(XxxOptions2));
+            DebugReport.RegisterOptionsObject(config);
+            DebugReport.RegisterOptionsCallback(GetXxxOptions);
+            DebugReport.RegisterOptionsObject(new XxxOptions1());
+            DebugReport.RegisterOptionsType(typeof(XxxOptions2));
 
-            DebugReportBlock block = DebugReportBlocks.GetStaticVariablesReportBlock();
+            DebugReportBlock block = DebugReport.GetStaticVariables().First();
             string text = block.ToString2();
             Console.WriteLine(text);
 

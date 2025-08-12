@@ -22,7 +22,7 @@ public static class AuthenticationManager
             AuthorizeAttribute.SetCheckRightsImpl(checkRights);
         }
 
-        DebugReport.OptionList.Add(AuthenticationManager.GetJwtOptions());
+        DebugReport.RegisterOptionsObject(AuthenticationManager.GetJwtOptions());
     }
 
 

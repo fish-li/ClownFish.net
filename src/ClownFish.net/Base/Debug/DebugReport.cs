@@ -4,37 +4,127 @@ using ClownFish.Tasks;
 namespace ClownFish.Base;
 
 /// <summary>
-/// 运行时诊断报告
+/// 运行时诊断报告，由Venus提供页面支持
 /// </summary>
 public static class DebugReport
 {
-#if NET9_0_OR_GREATER
-    private static readonly Lock s_lock = new Lock();
-#else
-    private static readonly object s_lock = new object();
-#endif
-    private static bool s_inited = false;
+    /// <summary>
+    /// 查看状态数据
+    /// </summary>
+    private static readonly List<Func<DebugReportBlock>> s_statusInfoCbList = new List<Func<DebugReportBlock>>(32);
 
     /// <summary>
-    /// 系统环境信息
+    /// 查看系统信息
     /// </summary>
-    internal static readonly List<DebugReportBlock> SysInfoList = new List<DebugReportBlock>(5);
+    private static readonly List<DebugReportBlock> s_sysInfoList = new List<DebugReportBlock>(5);
 
     /// <summary>
-    /// 配置参数
+    /// 查看配置参数
     /// </summary>
-    internal static readonly List<DebugReportBlock> ConfigList = new List<DebugReportBlock>(5);
+    private static readonly List<DebugReportBlock> s_configList = new List<DebugReportBlock>(5);
 
     /// <summary>
-    /// 类型相关信息
+    /// 查看参数变量
     /// </summary>
-    internal static readonly List<DebugReportBlock> TypeInfoList = new List<DebugReportBlock>(5);
+    private static readonly List<object> s_optionList = new(20);
+
+    /// <summary>
+    /// 查看程序集信息
+    /// </summary>
+    private static readonly List<DebugReportBlock> s_asmInfoList = new List<DebugReportBlock>(5);
 
 
     /// <summary>
-    /// 配置参数对象清单，允许：Type, object
+    /// 注册一个包含“配置参数”定义的类型，用于在 “查看参数变量” 时展示其中的属性和字段
     /// </summary>
-    public static readonly List<object> OptionList = new(20);
+    /// <param name="optionType"></param>
+    public static void RegisterOptionsType(Type optionType)
+    {
+        if( optionType != null ) {
+            lock( s_optionList ) {
+                s_optionList.Add(optionType);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册一个包含“配置参数”定义的对象实例，用于在 “查看参数变量” 时展示其中的属性和字段
+    /// </summary>
+    /// <param name="optionObject"></param>
+    public static void RegisterOptionsObject(object optionObject)
+    {
+        if( optionObject != null ) {
+            lock( s_optionList ) {
+                s_optionList.Add(optionObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册回调委托，用于在 “查看参数变量” 时执行
+    /// </summary>
+    /// <param name="cb"></param>
+    public static void RegisterOptionsCallback(Func<NameValue> cb)
+    {
+        if( cb != null ) {
+            lock( s_optionList ) {
+                s_optionList.Add(cb);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 注册回调委托，用于在 “查看状态数据” 时执行
+    /// </summary>
+    /// <param name="callback"></param>
+    public static void RegisterStatusInfoCallback(Func<DebugReportBlock> callback)
+    {
+        if( callback != null ) {
+            lock( s_statusInfoCbList ) {
+                s_statusInfoCbList.Add(callback);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册一个报告片段，用于在 “查看系统信息” 时展示
+    /// </summary>
+    /// <param name="block"></param>
+    public static void RegisterSysInfoBlock(DebugReportBlock block)
+    {
+        if( block != null ) {
+            lock( s_sysInfoList ) {
+                s_sysInfoList.Add(block);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册一个报告片段，用于在 “查看配置参数” 时展示
+    /// </summary>
+    /// <param name="block"></param>
+    public static void RegisterConfigDataBlock(DebugReportBlock block)
+    {
+        if( block != null ) {
+            lock( s_configList ) {
+                s_configList.Add(block);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 注册一个报告片段，用于在 “查看程序集信息” 时展示
+    /// </summary>
+    /// <param name="block"></param>
+    public static void RegisterAssemblyInfoBlock(DebugReportBlock block)
+    {
+        if( block != null ) {
+            lock( s_asmInfoList ) {
+                s_asmInfoList.Add(block);
+            }
+        }
+    }
 
 
     /// <summary>
@@ -46,6 +136,14 @@ public static class DebugReport
 =============================================================
 ".TrimStart();
 
+#if NET9_0_OR_GREATER
+    private static readonly Lock s_lock = new Lock();
+#else
+    private static readonly object s_lock = new object();
+#endif
+    private static bool s_inited = false;
+
+
     /// <summary>
     /// Init
     /// </summary>
@@ -55,29 +153,38 @@ public static class DebugReport
             lock( s_lock ) {
                 if( s_inited == false ) {
 
-                    SysInfoList.Add(DebugReportBlocks.GetSystemInfo());
-                    SysInfoList.Add(NHttpApplication.Instance.GetDebugReportBlock());
+                    RegisterSysInfoBlock(DebugReportBlocks.GetSystemInfo());
+                    RegisterSysInfoBlock(NHttpApplication.Instance.GetDebugReportBlock());
 
-                    ConfigList.Add(DebugReportBlocks.GetEnvironmentVariables());
-                    ConfigList.Add(MemoryConfig.GetDebugReportBlock());
-                    ConfigList.Add(AppConfig.GetDebugReportBlock());
-                    ConfigList.Add(LogConfig.GetDebugReportBlock());
+                    RegisterConfigDataBlock(DebugReportBlocks.GetEnvironmentVariables());
+                    RegisterConfigDataBlock(MemoryConfig.GetDebugReportBlock());
+                    RegisterConfigDataBlock(AppConfig.GetDebugReportBlock());
+                    RegisterConfigDataBlock(LogConfig.GetDebugReportBlock());
 
-                    TypeInfoList.Add(ProxyLoader.EntityProxyAssemblyListReportBlock);
-                    TypeInfoList.Add(ProxyBuilder.CompileEntityListReportBlock);
-                    TypeInfoList.Add(DebugReportBlocks.GetEntityProxyLoaderList());
-                    TypeInfoList.Add(DebugReportBlocks.GetAssemblyListInfo());
+                    RegisterAssemblyInfoBlock(ProxyLoader.EntityProxyAssemblyListReportBlock);
+                    RegisterAssemblyInfoBlock(ProxyBuilder.CompileEntityListReportBlock);
+                    RegisterAssemblyInfoBlock(DebugReportBlocks.GetEntityProxyLoaderList());
+                    RegisterAssemblyInfoBlock(DebugReportBlocks.GetAssemblyListInfo());
 
-                    OptionList.Add(typeof(LoggingOptions));
-                    OptionList.Add(typeof(LoggingOptions.Http));
-                    OptionList.Add(typeof(LoggingOptions.HttpClient));
-                    OptionList.Add(typeof(LoggingLimit));
-                    OptionList.Add(typeof(LoggingLimit.OprLog));
-                    OptionList.Add(typeof(LoggingLimit.SQL));
-                    OptionList.Add(typeof(HttpClientDefaults));
-                    OptionList.Add(typeof(CacheOption));
-                    OptionList.Add(typeof(ClownFishOptions));
-                    OptionList.Add(typeof(ClownFishPubOptions));
+                    RegisterOptionsType(typeof(LoggingOptions));
+                    RegisterOptionsType(typeof(LoggingOptions.Http));
+                    RegisterOptionsType(typeof(LoggingOptions.HttpClient));
+                    RegisterOptionsType(typeof(LoggingLimit));
+                    RegisterOptionsType(typeof(LoggingLimit.OprLog));
+                    RegisterOptionsType(typeof(LoggingLimit.SQL));
+                    RegisterOptionsType(typeof(HttpClientDefaults));
+                    RegisterOptionsType(typeof(CacheOption));
+                    RegisterOptionsType(typeof(ClownFishOptions));
+                    RegisterOptionsType(typeof(ClownFishPubOptions));
+
+#if NETCOREAPP
+                    RegisterStatusInfoCallback(DebugReportBlocks.GetThreadPoolInfo);
+                    RegisterStatusInfoCallback(DebugReportBlocks.GetGCInfo);
+                    RegisterStatusInfoCallback(MemoryStreamPool.GetStatus);
+#endif
+                    RegisterStatusInfoCallback(DebugReportBlocks.GetLoggingCounters);
+                    RegisterStatusInfoCallback(DebugReportBlocks.GetCacheStatus);
+
                     s_inited = true;
                 }
             }
@@ -106,18 +213,17 @@ public static class DebugReport
     }
 
 
+
     internal static List<DebugReportBlock> GetStatusInfo()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(30);
-#if NETCOREAPP
-        blocks.Add(DebugReportBlocks.GetThreadPoolInfo());
-        blocks.Add(DebugReportBlocks.GetGCInfo());
-        blocks.Add(MemoryStreamPool.GetStatus());
-        //blocks.Add(BackgroundTaskManager.GetReportBlock());
-#endif
 
-        blocks.Add(DebugReportBlocks.GetLoggingCounters());
-        blocks.Add(DebugReportBlocks.GetCacheStatus());
+        foreach( var cb in s_statusInfoCbList ) {
+            DebugReportBlock block = cb.Invoke();
+            if( block != null ) {
+                blocks.Add(block);
+            }
+        }
 
         return blocks;
     }
@@ -125,19 +231,19 @@ public static class DebugReport
     internal static List<DebugReportBlock> GetSysInfo()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(10);
-        return blocks.AddRange2(SysInfoList);
+        return blocks.AddRange2(s_sysInfoList);
     }
 
     internal static List<DebugReportBlock> GetConfigInfo()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(5);
-        return blocks.AddRange2(ConfigList);
+        return blocks.AddRange2(s_configList);
     }
 
     internal static List<DebugReportBlock> GetStaticVariables()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(1);
-        DebugReportBlock block = DebugReportBlocks.GetStaticVariablesReportBlock();
+        DebugReportBlock block = DebugReportBlocks.GetStaticVariablesReportBlock(s_optionList);
         blocks.Add(block);
         return blocks;
     }
@@ -146,13 +252,13 @@ public static class DebugReport
     internal static List<DebugReportBlock> GetAsmInfo()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(5);
-        return blocks.AddRange2(TypeInfoList);
+        return blocks.AddRange2(s_asmInfoList);
     }
 
 
     internal static List<DebugReportBlock> GetAllData()
     {
-        return GetStatusInfo().AddRange2(SysInfoList).AddRange2(ConfigList).AddRange2(TypeInfoList);
+        return GetStatusInfo().AddRange2(s_sysInfoList).AddRange2(s_configList).AddRange2(s_asmInfoList);
     }
 
     internal static string ToText(this List<DebugReportBlock> blocks)

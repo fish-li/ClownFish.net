@@ -249,6 +249,47 @@ internal static class DebugReportBlocks
     }
 
 
+
+    internal static DebugReportBlock GetStaticVariablesReportBlock(List<object> optionList)
+    {
+        DebugReportBlock block = new DebugReportBlock { Category = "Runtime Static Variables" };
+        block.AppendLine(" ");
+
+        Dictionary<string, object> dict = new Dictionary<string, object>(optionList.Count);
+
+        // 先获取各“小块”的标题
+        foreach( var x in optionList.Where(a => a != null) ) {
+            if( x is Type type ) {
+                dict[type.FullName] = x;  // type
+            }
+            else if( x is Func<NameValue> func ) {
+                NameValue nv = func.Invoke();
+                dict[nv.Name] = nv;
+            }
+            else {
+                dict[x.GetType().FullName] = x;  // instance
+            }
+        }
+
+        // 按标题排序输出
+        foreach( var x in dict.OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase).Select(x => x.Value) ) {
+            if( x is Type type ) {
+                block.AppendLine($"------------------{type.FullName}--------------------------");
+                AddFieldValues1(block, type);
+            }
+            else if( x is NameValue nv ) {
+                block.AppendLine($"------------------{nv.Name}--------------------------");
+                block.AppendLine(nv.Value);
+            }
+            else {
+                block.AppendLine($"------------------{x.GetType().FullName}--------------------------");
+                AddFieldValues2(block, x);
+            }
+            block.AppendLine(" ");
+        }
+        return block;
+    }
+
     internal static void AddFieldValues1(DebugReportBlock block, Type optType)
     {
         PropertyInfo[] ps = optType.GetProperties(BindingFlags.Static | BindingFlags.Public);
@@ -282,46 +323,4 @@ internal static class DebugReportBlocks
             block.AppendLine($"{f.Name} = {value.ToString2()}");
         }
     }
-
-
-    public static DebugReportBlock GetStaticVariablesReportBlock()
-    {
-        DebugReportBlock block = new DebugReportBlock { Category = "Runtime Static Variables" };
-        block.AppendLine(" ");
-
-        Dictionary<string, object> dict = new Dictionary<string, object>(DebugReport.OptionList.Count);
-
-        // 先获取各“小块”的标题
-        foreach( var x in DebugReport.OptionList.Where(a => a != null) ) {
-            if( x is Type type ) {
-                dict[type.FullName] = x;  // type
-            }
-            else if( x is Func<NameValue> func ) {
-                NameValue nv = func.Invoke();
-                dict[nv.Name] = nv;
-            }
-            else {
-                dict[x.GetType().FullName] = x;  // instance
-            }
-        }
-
-        // 按标题排序输出
-        foreach( var x in dict.OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase).Select(x => x.Value) ) {
-            if( x is Type type ) {
-                block.AppendLine($"------------------{type.FullName}--------------------------");
-                AddFieldValues1(block, type);
-            }
-            else if( x is NameValue nv ) {
-                block.AppendLine($"------------------{nv.Name}--------------------------");
-                block.AppendLine(nv.Value);
-            }
-            else {
-                block.AppendLine($"------------------{x.GetType().FullName}--------------------------");
-                AddFieldValues2(block, x);
-            }
-            block.AppendLine(" ");
-        }
-        return block;
-    }
-
 }

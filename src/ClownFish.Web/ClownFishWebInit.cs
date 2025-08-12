@@ -7,8 +7,8 @@ public static class ClownFishWebInit
     public static void InitOptions()
     {
         AuthOptions.Init();
-        DebugReport.OptionList.Add(typeof(ClownFish.Web.Security.Auth.AuthOptions));
-        DebugReport.OptionList.Add(typeof(ClownFish.Web.ClownFishWebOptions));
+        DebugReport.RegisterOptionsType(typeof(ClownFish.Web.Security.Auth.AuthOptions));
+        DebugReport.RegisterOptionsType(typeof(ClownFish.Web.ClownFishWebOptions));
     }
 
     internal static void InitAuth()

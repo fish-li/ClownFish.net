@@ -21,7 +21,7 @@ public class DebugReportBlocksTest
     [TestMethod]
     public void Test_GetStaticVariablesReportBlock()
     {
-        string text = DebugReportBlocks.GetStaticVariablesReportBlock().ToString2();
+        string text = DebugReport.GetStaticVariables().First().ToString2();
         Console.WriteLine(text);
     }
 
