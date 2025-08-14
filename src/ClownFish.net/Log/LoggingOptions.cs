@@ -104,7 +104,7 @@ public static class LoggingOptions
         /// <summary>
         /// 是否必须记录 RequestBody 到日志中
         /// </summary>
-        public static readonly bool LogRequestBody = IsLogHttpAll || LocalSettings.GetBool("ClownFish_Log_Http_LogRequestBody", 1);
+        public static readonly bool LogRequestBody = IsLogHttpAll || LocalSettings.GetBool("ClownFish_Log_Http_LogRequestBody");
 
 
         /// <summary>
@@ -115,7 +115,7 @@ public static class LoggingOptions
         /// <summary>
         /// 是否必须记录 ResponseBody 到日志中
         /// </summary>
-        public static readonly bool LogResponseBody = IsLogHttpAll || LocalSettings.GetBool("ClownFish_Log_Http_LogResponseBody", 1);
+        public static readonly bool LogResponseBody = IsLogHttpAll || LocalSettings.GetBool("ClownFish_Log_Http_LogResponseBody");
     }
 
 
