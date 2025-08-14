@@ -3,7 +3,7 @@
 /// <summary>
 /// 从HTTP流中读取数据。当数据流是压缩格式时自动解压缩。
 /// </summary>
-internal struct HttpStreamReader
+public struct HttpStreamReader
 {
     private readonly Stream _httpStream;
     private readonly string _contentEncoding;
@@ -64,6 +64,11 @@ internal struct HttpStreamReader
         };
     }
 
+    /// <summary>
+    /// 按文本方式读取流数据
+    /// </summary>
+    /// <param name="encoding"></param>
+    /// <returns></returns>
     public string ReadAllText(Encoding encoding = null)
     {
         EnsureCanRead();
@@ -81,8 +86,12 @@ internal struct HttpStreamReader
             return ReadStream(zipStream, encoding2);
         }
     }
-      
 
+    /// <summary>
+    /// 按文本方式读取流数据
+    /// </summary>
+    /// <param name="encoding"></param>
+    /// <returns></returns>
     public async Task<string> ReadAllTextAsync(Encoding encoding = null)
     {
         EnsureCanRead();
