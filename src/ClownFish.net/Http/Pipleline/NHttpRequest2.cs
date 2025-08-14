@@ -293,9 +293,14 @@ public partial class NHttpRequest : ILoggingObject
                 sb.AppendLineRN();  // 分隔行
 
                 try {
-                    string postData = this.GetBodyText();
-                    //string postData = ReadBodyWithSafeFilter();
-                    sb.Append(postData);
+                    if( this.ContentLength > LoggingLimit.HttpBodyMaxLen ) {
+                        sb.Append("### request body too larger, ignore logging... ###");
+                    }
+                    else {
+                        string postData = this.GetBodyText();
+                        //string postData = ReadBodyWithSafeFilter();
+                        sb.Append(postData);
+                    }
                 }
                 catch( Exception ex ) {
                     sb.Append("### ResponseBody 不能读取，原因：" + ex.ToString());
