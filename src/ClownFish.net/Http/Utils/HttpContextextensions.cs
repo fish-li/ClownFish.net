@@ -166,29 +166,82 @@ public static partial class HttpContextExtensions
 
         if( string.IsNullOrEmpty(body) ) {
             httpContext.Response.StatusCode = 204;
+            return;
         }
-        else {
-            NHttpResponse response = httpContext.Response;
-            response.StatusCode = statusCode;
-            response.ContentType = contentType ?? ResponseContentType.TextUtf8;
 
-            response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = statusCode;
+        response.ContentType = contentType ?? ResponseContentType.TextUtf8;
 
-            using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
-                using( GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true) ) {
-                    using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-                        writer.Write(body);
-                        writer.Close();
-                    }
+        response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
+
+#if NET6_0_OR_GREATER
+        CompressionLevel level = CompressionLevel.SmallestSize;
+#else
+        CompressionMode level = CompressionMode.Compress;
+#endif
+
+        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
+            using( GZipStream gzip = new GZipStream(ms, level, true) ) {
+                using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
+                    writer.Write(body);
+                    writer.Close();
                 }
-
-                ms.Position = 0;
-                response.ContentLength = ms.Length;
-
-                await ms.CopyToAsync(response.OutputStream);
             }
+
+            ms.Position = 0;
+            response.ContentLength = ms.Length;
+
+            await ms.CopyToAsync(response.OutputStream);
         }
     }
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="list"></param>
+    /// <returns>返回最后写入到响应流的字节数</returns>
+    public static async Task HttpGzipNdjsonReply(this NHttpContext httpContext, ICollection list)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( list.IsNullOrEmpty() ) {
+            httpContext.Response.StatusCode = 204;
+            return;
+        }
+
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = 200;
+        response.ContentType = ResponseContentType.JsonLines;
+
+        response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
+
+#if NET6_0_OR_GREATER
+        CompressionLevel level = CompressionLevel.SmallestSize;
+#else
+        CompressionMode level = CompressionMode.Compress;
+#endif
+
+        TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
+
+        using( GZipStream gzip = new GZipStream(stream, level, true) ) {
+            using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
+
+                list.ToMultiLineJson(writer);
+            }
+        }
+
+        await stream.FlushAsync();
+        long len = stream.GetOutSize();
+
+        // 当前方法将会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
+        httpContext.OprLog.OutSize = len;
+    }
+
+
+
 
     /// <summary>
     /// 响应HTTP请求

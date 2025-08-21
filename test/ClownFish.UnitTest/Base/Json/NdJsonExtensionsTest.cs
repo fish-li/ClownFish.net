@@ -6,10 +6,10 @@ public class NdJsonExtensionsTest
     [TestMethod]
     public void Test_ToMultiLineJson()
     {
-        List<Product2> list = new List<Product2>();
-        list.Add(Product2.CreateByFixedData());
-        list.Add(Product2.CreateByFixedData());
-        list.Add(Product2.CreateByFixedData());
+        List<Product3> list = new List<Product3>();
+        list.Add(Product3.CreateByFixedData());
+        list.Add(Product3.CreateByFixedData());
+        list.Add(Product3.CreateByFixedData());
 
         string lines = list.ToMultiLineJson().TrimEnd();
         Assert.AreEqual(2, lines.Where(x => x == '\n').Count());
@@ -17,7 +17,7 @@ public class NdJsonExtensionsTest
         Assert.IsTrue(lines.EndsWith("}"));
 
 
-        List<Product2> list2 = lines.FromMultiLineJson<Product2>();
+        List<Product3> list2 = lines.FromMultiLineJson<Product3>();
         Assert.AreEqual(3, list2.Count);
 
         MyAssert.AreEqual(list, list2);
@@ -28,18 +28,18 @@ public class NdJsonExtensionsTest
     public void Test_FromMultiLineJson()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append(Product2.CreateByFixedData().ToJson()).Append("\n");
-        sb.Append(Product2.CreateByRandomData().ToJson()).Append("\n");
-        sb.Append(Product2.CreateByRandomData().ToJson()).Append("\n");
+        sb.Append(Product3.CreateByFixedData().ToJson()).Append("\n");
+        sb.Append(Product3.CreateByRandomData().ToJson()).Append("\n");
+        sb.Append(Product3.CreateByRandomData().ToJson()).Append("\n");
 
-        List<Product2> list = sb.ToString().FromMultiLineJson<Product2>();
+        List<Product3> list = sb.ToString().FromMultiLineJson<Product3>();
         Assert.AreEqual(3, list.Count);
 
 
-        List<Product2> list2 = NdJsonExtensions.FromMultiLineJson<Product2>(string.Empty);
+        List<Product3> list2 = NdJsonExtensions.FromMultiLineJson<Product3>(string.Empty);
         Assert.AreEqual(0, list2.Count);
 
-        List<Product2> list3 = NdJsonExtensions.FromMultiLineJson<Product2>((string)null);
+        List<Product3> list3 = NdJsonExtensions.FromMultiLineJson<Product3>((string)null);
         Assert.IsNull(list3);
     }
 

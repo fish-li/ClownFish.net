@@ -6,10 +6,10 @@ public class XmlExtensionsTest
     [TestMethod]
     public void Test_ToXml_FromXml()
     {
-        Product2 p = Product2.CreateByRandomData();
+        Product3 p = Product3.CreateByRandomData();
 
         string xml = p.ToXml();
-        Product2 p2 = xml.FromXml<Product2>();
+        Product3 p2 = xml.FromXml<Product3>();
 
         Assert.IsTrue(p.IsEqual(p2));
     }
@@ -19,10 +19,10 @@ public class XmlExtensionsTest
     [TestMethod]
     public void Test_FromXml_ObjectType()
     {
-        Product2 p = Product2.CreateByRandomData();
+        Product3 p = Product3.CreateByRandomData();
 
         string xml = p.ToXml();
-        Product2 p2 = xml.FromXml(typeof(Product2)) as Product2;
+        Product3 p2 = xml.FromXml(typeof(Product3)) as Product3;
 
         Assert.IsTrue(p.IsEqual(p2));
     }

@@ -142,12 +142,7 @@ internal struct RequestWriter
                 throw new ArgumentException("HttpOption.Data is not List<T>");
 
 
-            Type elementType = dataType.GetGenericArguments()[0];
-
-            MethodInfo method = typeof(RequestWriter).GetMethod("WriteNdjsonToStream", BindingFlags.Static | BindingFlags.NonPublic);
-            MethodInfo method2 = method.MakeGenericMethod(elementType);
-
-            int count = (int)method2.FastInvoke(null, new object[] { stream, data, autoGzip });
+            int count = WriteNdjsonToStream(stream, (ICollection)data, autoGzip);
 
             if( autoGzip && count > 0 ) {
                 IsGzip = true;
@@ -156,9 +151,8 @@ internal struct RequestWriter
         }
     }
 
-    private static int WriteNdjsonToStream<T>(Stream stream, object data, bool autoGzip)
+    private static int WriteNdjsonToStream(Stream stream, ICollection list, bool autoGzip)
     {
-        List<T> list = (List<T>)data;
         if( list.IsNullOrEmpty() )
             return 0;
 

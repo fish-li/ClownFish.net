@@ -229,7 +229,7 @@ Amount=3.14;Week={DayOfWeek.Saturday};time2={time2};bytes={base64};x1=1qaz";
         Assert.IsNull(StringConverter.ChangeType("", typeof(DateTime)));
 
         MyAssert.IsError<NotSupportedException>(() => {
-            _= StringConverter.ChangeType("xxx", typeof(Product2));
+            _= StringConverter.ChangeType("xxx", typeof(Product3));
         });
 
     }

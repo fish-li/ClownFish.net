@@ -175,7 +175,7 @@ public class DictionaryExtensionsTest
     [TestMethod]
     public void Test_Object_To_Dictionary()
     {
-        Product2 p = new Product2 {
+        Product3 p = new Product3 {
             CategoryID = 2,
             ProductID = 123,
             ProductName = Guid.NewGuid().ToString(),
@@ -187,7 +187,7 @@ public class DictionaryExtensionsTest
 
         var dict = p.ToDictionary();
 
-        Product2 p2 = (Product2)dict.ToObject(typeof(Product2));
+        Product3 p2 = (Product3)dict.ToObject(typeof(Product3));
 
         string json1 = p.ToJson();
         string json2 = p2.ToJson();
@@ -199,7 +199,7 @@ public class DictionaryExtensionsTest
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = DictionaryExtensions.ToObject(null, typeof(Product2));
+            _ = DictionaryExtensions.ToObject(null, typeof(Product3));
         });
     }
 
@@ -223,7 +223,7 @@ public class DictionaryExtensionsTest
     [TestMethod]
     public void Test_ToStringDictionary()
     {
-        Product2 p = new Product2 {
+        Product3 p = new Product3 {
             CategoryID = 2,
             ProductID = 123,
             ProductName = Guid.NewGuid().ToString(),

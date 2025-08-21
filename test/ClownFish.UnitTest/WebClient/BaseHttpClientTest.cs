@@ -22,7 +22,7 @@ public class BaseHttpClientTest
         Assert.AreNotEqual(clent2.OperationId, clent1.OperationId);
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = clent1.GetResult2<Product2>(null);
+            _ = clent1.GetResult2<Product3>(null);
         });
 
 

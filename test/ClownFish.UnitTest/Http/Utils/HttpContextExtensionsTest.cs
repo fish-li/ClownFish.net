@@ -5,7 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ClownFish.UnitTest.Base;
 using ClownFish.UnitTest.Http.Pipleline.Test;
+using ClownFish.UnitTest.WebClient;
 
 namespace ClownFish.UnitTest.Http.Utils;
 [TestClass]
@@ -442,5 +444,54 @@ public class HttpContextExtensionsTest
     }
 #endif
 
+
+    [TestMethod]
+    public async Task Test_HttpGzipNdjsonReply_200()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
+
+        await httpContext.HttpGzipNdjsonReply(list);
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(200, response.StatusCode);
+        Assert.AreEqual("application/x-ndjson", response.ContentType);
+
+        string contentEncoding = response.GetHeader("Content-Encoding");
+        Assert.AreEqual("gzip", contentEncoding);
+        Assert.IsTrue(pipelineContext.OprLog.OutSize > 0);
+
+        byte[] body = response.OutputStream.ToArray();
+        string bodyText = body.UnGzip().ToUtf8String();
+        
+        string bodyText2 = (new HttpStreamReader(response.OutputStream, contentEncoding)).ReadAllText();
+
+        string inputText = list.ToMultiLineJson();
+
+        Assert.AreEqual(inputText, bodyText);
+        Assert.AreEqual(inputText, bodyText2);
+
+        await MyAssert.IsErrorAsync<ArgumentNullException>(async () => {
+            await HttpContextExtensions.HttpGzipNdjsonReply((NHttpContext)null, list);
+        });
+    }
+
+    [TestMethod]
+    public async Task Test_HttpGzipNdjsonReply_204()
+    {
+        MockRequestData requestData = HttpTest1.GetRequestData();
+        MockHttpContext httpContext = new MockHttpContext(requestData);
+        using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
+
+        List<Product3> list = null;
+
+        await httpContext.HttpGzipNdjsonReply(list);
+
+        MockHttpResponse response = (MockHttpResponse)httpContext.Response;
+        Assert.AreEqual(204, response.StatusCode);
+    }
 
 }

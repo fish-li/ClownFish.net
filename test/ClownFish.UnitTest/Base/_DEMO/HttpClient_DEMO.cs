@@ -27,7 +27,7 @@ public class HttpClient_DEMO
         byte[] bin = httpOption.GetResult<byte[]>();
 
         // 3，如果服务端返回 json / xml，可以直接通过反序列化得到强类型结果
-        Product2 product = httpOption.GetResult<Product2>();
+        Product3 product = httpOption.GetResult<Product3>();
 
         // 4，以文本形式获取服务端的返回结果，并需要访问响应头
         HttpResult<string> httpResult1 = httpOption.GetResult<HttpResult<string>>();
@@ -39,8 +39,8 @@ public class HttpClient_DEMO
         byte[] bin2 = httpResult2.Result;
 
         // 6，服务端返回 json / xml，结果反序列化，并需要访问响应头
-        HttpResult<Product2> httpResult3 = httpOption.GetResult<HttpResult<Product2>>();
-        Product2 product2 = httpResult3.Result;
+        HttpResult<Product3> httpResult3 = httpOption.GetResult<HttpResult<Product3>>();
+        Product3 product2 = httpResult3.Result;
 
         // 7, 以Stream形式获取服务端的返回结果
         // 注意：拿到结果后，请使用 using 包起来使用
@@ -111,7 +111,7 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_Ndjson_方式提交数据()
     {
-        List<Product2> list = ResponseReaderTest.CreateTestDataList(20);
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(20);
 
         string text = new HttpOption {
             Method = "POST",

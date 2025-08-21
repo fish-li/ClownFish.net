@@ -80,7 +80,10 @@ public partial class OprLog
 
     internal void SetSomeFields(NHttpContext httpContext)
     {
-        this.OutSize = httpContext.Response.ContentLength;
+        if( this.OutSize == 0 ) {    // 允许在框架之外直接指定
+            this.OutSize = httpContext.Response.ContentLength;
+        }
+
         this.Status = httpContext.Response.StatusCode;
 
         if( this.OprKind.IsNullOrEmpty() ) {

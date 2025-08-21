@@ -10,11 +10,11 @@ public class AppCacheTest
     {
         string key = Guid.NewGuid().ToString();
 
-        Product2 p1 = AppCache.GetObject<Product2>(key);
+        Product3 p1 = AppCache.GetObject<Product3>(key);
         Assert.IsNull(p1);
 
-        Product2 p2 = AppCache.GetObject<Product2>(key, () => {
-            return new Product2 { ProductID = 3, ProductName = "Name5" };
+        Product3 p2 = AppCache.GetObject<Product3>(key, () => {
+            return new Product3 { ProductID = 3, ProductName = "Name5" };
         });
 
         Assert.IsNotNull(p2);
@@ -28,13 +28,13 @@ public class AppCacheTest
     {
         string key = Guid.NewGuid().ToString();
 
-        Product2 p1 = AppCache.GetObject<Product2>(key);
+        Product3 p1 = AppCache.GetObject<Product3>(key);
         Assert.IsNull(p1);
 
-        Product2 p2 = new Product2 { ProductID = 3, ProductName = "Name5" };
+        Product3 p2 = new Product3 { ProductID = 3, ProductName = "Name5" };
         AppCache.SetObject(key, p2, DateTime.Now.AddMinutes(1));
 
-        p1 = AppCache.GetObject<Product2>(key);
+        p1 = AppCache.GetObject<Product3>(key);
         Assert.IsNotNull(p1);
 
         Assert.AreEqual(p1, p2);
@@ -42,7 +42,7 @@ public class AppCacheTest
 
         AppCache.RemoveObject(key);
 
-        Product2 p3 = AppCache.GetObject<Product2>(key);
+        Product3 p3 = AppCache.GetObject<Product3>(key);
         Assert.IsNull(p3);
     }
 
@@ -52,12 +52,12 @@ public class AppCacheTest
     {
         MyAssert.IsError<ArgumentNullException>(() => {
             string key = null;
-            Product2 value = AppCache.GetObject<Product2>(key);
+            Product3 value = AppCache.GetObject<Product3>(key);
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
             string key = null;
-            AppCache.SetObject(key, new Product2(), DateTime.Now.AddDays(1));
+            AppCache.SetObject(key, new Product3(), DateTime.Now.AddDays(1));
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
@@ -72,17 +72,17 @@ public class AppCacheTest
     {
         string key = Guid.NewGuid().ToString();
 
-        Product2 LoadData()
+        Product3 LoadData()
         {
-            return new Product2 { ProductID = 3, ProductName = "Name5" };
+            return new Product3 { ProductID = 3, ProductName = "Name5" };
         }
 
-        Product2 p1 = AppCache.GetObject<Product2>(key, LoadData, 20);
+        Product3 p1 = AppCache.GetObject<Product3>(key, LoadData, 20);
         Assert.IsNotNull(p1);
 
         Thread.Sleep(50);
 
-        Product2 p2 = AppCache.GetObject<Product2>(key);
+        Product3 p2 = AppCache.GetObject<Product3>(key);
         Assert.IsNull(p2);
     }
 
@@ -94,16 +94,16 @@ public class AppCacheTest
         ValueCounter loadCounter = new ValueCounter();
         ValueCounter errorCounter = new ValueCounter();
 
-        Product2 LoadData()
+        Product3 LoadData()
         {
             loadCounter.Increment();
             Thread.Sleep(100);
-            return new Product2 { ProductID = 3, ProductName = "Name" + loadCounter.Get() };
+            return new Product3 { ProductID = 3, ProductName = "Name" + loadCounter.Get() };
         }
 
         void ThreadAction(object xx)
         {
-            Product2 p = AppCache.GetObject<Product2>(key, LoadData) as Product2;
+            Product3 p = AppCache.GetObject<Product3>(key, LoadData) as Product3;
 
             try {
                 Assert.IsNotNull(p);

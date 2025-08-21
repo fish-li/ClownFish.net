@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.UnitTest.Base;
 
 [Serializable]
-public class Product2
+public class Product3
 {
     public int ProductID { get; set; }
     public string ProductName { get; set; }
@@ -20,11 +20,11 @@ public class Product2
     }
 
 
-    public static Product2 CreateByRandomData()
+    public static Product3 CreateByRandomData()
     {
         DateTime dt = DateTime.Now;
 
-        Product2 p = new Product2();
+        Product3 p = new Product3();
         p.ProductID = dt.Year;
         p.ProductName = Guid.NewGuid().ToString();
         p.CategoryID = dt.Month;
@@ -36,9 +36,9 @@ public class Product2
     }
 
 
-    public static Product2 CreateByFixedData()
+    public static Product3 CreateByFixedData()
     {
-        Product2 p = new Product2();
+        Product3 p = new Product3();
         p.ProductID = 123;
         p.ProductName = "MSDN Library";
         p.CategoryID = 8;
@@ -50,7 +50,7 @@ public class Product2
     }
 
 
-    public bool IsEqual(Product2 p)
+    public bool IsEqual(Product3 p)
     {
         if( p == null )
             return false;

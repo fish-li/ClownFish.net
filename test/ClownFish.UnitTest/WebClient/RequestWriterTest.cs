@@ -52,7 +52,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_Write_Xml()
     {
-        Product2 p = new Product2 { ProductID = 2, ProductName = "abc" };
+        Product3 p = new Product3 { ProductID = 2, ProductName = "abc" };
         string xml = p.ToXml();
 
         var actual = WriteStream1(p, SerializeFormat.Xml);
@@ -451,7 +451,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_string()
     {
-        List<Product2> list = ResponseReaderTest.CreateTestDataList(9);
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(9);
         string text = list.ToMultiLineJson();
 
         MemoryStream ms = new MemoryStream();
@@ -469,7 +469,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_string_gzip()
     {
-        List<Product2> list = ResponseReaderTest.CreateTestDataList(100);
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
         string text = list.ToMultiLineJson();
 
         MemoryStream ms = new MemoryStream();
@@ -487,7 +487,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_list()
     {
-        List<Product2> list = ResponseReaderTest.CreateTestDataList(9);
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(9);
 
         MemoryStream ms = new MemoryStream();
 
@@ -505,7 +505,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_list_gzip()
     {
-        List<Product2> list = ResponseReaderTest.CreateTestDataList(100);
+        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
 
         MemoryStream ms = new MemoryStream();
 
@@ -524,7 +524,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_list_empty()
     {
-        List<Product2> list = new List<Product2>();
+        List<Product3> list = new List<Product3>();
 
         MemoryStream ms = new MemoryStream();
 
@@ -541,7 +541,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_notlist()
     {
-        Product2 p = new Product2();
+        Product3 p = new Product3();
 
         MemoryStream ms = new MemoryStream();
 

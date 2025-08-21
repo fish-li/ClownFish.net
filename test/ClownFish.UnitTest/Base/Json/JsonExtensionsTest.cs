@@ -13,12 +13,12 @@ public class JsonExtensionsTest
     [TestMethod]
     public void Test_ToJson_FromJson()
     {
-        Product2 p = Product2.CreateByRandomData();
+        Product3 p = Product3.CreateByRandomData();
 
         string json = p.ToJson();
 
 
-        Product2 p2 = json.FromJson<Product2>();
+        Product3 p2 = json.FromJson<Product3>();
 
         Assert.IsTrue(p.IsEqual(p2));
     }
@@ -32,21 +32,21 @@ public class JsonExtensionsTest
     [TestMethod]
     public void Test_ToJsonKeepTypeInfo()
     {
-        Product2 p = Product2.CreateByFixedData();
+        Product3 p = Product3.CreateByFixedData();
         TestData data = new TestData { Data = p };
 
         string json = data.ToJson(JsonStyle.KeepType);
 
-        Assert.IsTrue(json.Contains("{\"$type\":\"ClownFish.UnitTest.Base.Product2, ClownFish.UnitTest\""));
+        Assert.IsTrue(json.Contains("{\"$type\":\"ClownFish.UnitTest.Base.Product3, ClownFish.UnitTest\""));
     }
 
     [TestMethod]
     public void Test_FromJson_ObjectType()
     {
-        Product2 p = Product2.CreateByRandomData();
+        Product3 p = Product3.CreateByRandomData();
 
         string json = p.ToJson();
-        Product2 p2 = json.FromJson(typeof(Product2)) as Product2;
+        Product3 p2 = json.FromJson(typeof(Product3)) as Product3;
 
         Assert.IsTrue(p.IsEqual(p2));
     }

@@ -544,17 +544,17 @@ public class ResponseReaderTest
     public void Test_ConvertResult()
     {
         Assert.AreEqual("abc", ResponseReaderConvertResult<string>("abc", "xxxxxxx"));
-        Assert.AreEqual(null, ResponseReaderConvertResult<Product2>("", "xxxxxxx"));
+        Assert.AreEqual(null, ResponseReaderConvertResult<Product3>("", "xxxxxxx"));
 
-        Product2 p0 = Product2.CreateByFixedData();
+        Product3 p0 = Product3.CreateByFixedData();
 
         string json = p0.ToJson();
-        Product2 p1 = ResponseReaderConvertResult<Product2>(json, "application/json; charset=utf-8");
+        Product3 p1 = ResponseReaderConvertResult<Product3>(json, "application/json; charset=utf-8");
         Assert.IsTrue(p0.IsEqual(p1));
 
 
         string xml = p0.ToXml();
-        Product2 p2 = ResponseReaderConvertResult<Product2>(xml, "application/xml; charset=utf-8");
+        Product3 p2 = ResponseReaderConvertResult<Product3>(xml, "application/xml; charset=utf-8");
         Assert.IsTrue(p0.IsEqual(p2));
 
         Assert.AreEqual(123, ResponseReaderConvertResult<int>("123", "text/plain; charset=utf-8"));
@@ -565,22 +565,22 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ConvertResult_Error()
     {
-        string json = Product2.CreateByFixedData().ToJson();
+        string json = Product3.CreateByFixedData().ToJson();
 
         MyAssert.IsError<NotSupportedException>(() => {
-            ResponseReaderConvertResult<Product2>(json, "x; charset=utf-8");
+            ResponseReaderConvertResult<Product3>(json, "x; charset=utf-8");
         });
 
         MyAssert.IsError<NotSupportedException>(() => {
-            ResponseReaderConvertResult<Product2>(json, "application/json-seq");   // 没有被【标准化】，暂不支持
+            ResponseReaderConvertResult<Product3>(json, "application/json-seq");   // 没有被【标准化】，暂不支持
         });
 
         MyAssert.IsError<NotSupportedException>(() => {
-            ResponseReaderConvertResult<Product2>(json, "application/jsonl");   // 没有被【标准化】，暂不支持
+            ResponseReaderConvertResult<Product3>(json, "application/jsonl");   // 没有被【标准化】，暂不支持
         });
 
         MyAssert.IsError<NotSupportedException>(() => {
-            ResponseReaderConvertResult<Product2>(json, "application/jsonl ; charset=xxx");
+            ResponseReaderConvertResult<Product3>(json, "application/jsonl ; charset=xxx");
         });
     }
 
@@ -725,7 +725,7 @@ public class ResponseReaderTest
         string text = "";
         MemoryStream ms = new MemoryStream(text.GetBytes());
 
-        Product2 p = ResponseReader.ReturnResultFromTextStream<Product2>(ms, "application/json; charset=utf-8");
+        Product3 p = ResponseReader.ReturnResultFromTextStream<Product3>(ms, "application/json; charset=utf-8");
         Assert.IsNull(p);
     }
 
@@ -745,7 +745,7 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/json; charset=utf-8");
+        List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/json; charset=utf-8");
         Assert.AreEqual(9, list.Count);
     }
 
@@ -754,7 +754,7 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToMultiLineJson().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/x-ndjson; charset=utf-8");
+        List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/x-ndjson; charset=utf-8");
         Assert.AreEqual(9, list.Count);
     }
 
@@ -764,7 +764,7 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToXml().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnResultFromTextStream<List<Product2>>(ms, "application/xml; charset=utf-8");
+        List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/xml; charset=utf-8");
         Assert.AreEqual(9, list.Count);
     }
 
@@ -795,11 +795,11 @@ public class ResponseReaderTest
     }
 
 
-    internal static List<Product2> CreateTestDataList(int count)
+    internal static List<Product3> CreateTestDataList(int count)
     {
-        List<Product2> list1 = new List<Product2>();
+        List<Product3> list1 = new List<Product3>();
         for( int i = 0; i < count; i++ ) {
-            list1.Add(Product2.CreateByRandomData());
+            list1.Add(Product3.CreateByRandomData());
         }
         return list1;
     }
@@ -809,7 +809,7 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnObjectFromJsonStream<List<Product2>>(ms, null);
+        List<Product3> list = ResponseReader.ReturnObjectFromJsonStream<List<Product3>>(ms, null);
         Assert.AreEqual(9, list.Count);
     }
 
@@ -819,8 +819,14 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(10).ToMultiLineJson().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnListFromNdjsonStream<List<Product2>>(ms, null);
+        List<Product3> list = ResponseReader.ReturnListFromNdjsonStream<List<Product3>>(ms, null);
         Assert.AreEqual(10, list.Count);
+
+
+
+        MemoryStream emptyMs = new MemoryStream();
+        List<Product3> list2 = ResponseReader.ReturnListFromNdjsonStream<List<Product3>>(emptyMs, null);
+        Assert.AreEqual(0, list2.Count);
     }
 
     [TestMethod]
@@ -828,7 +834,7 @@ public class ResponseReaderTest
     {
         MemoryStream ms = new MemoryStream(CreateTestDataList(11).ToXml().GetBytes());
 
-        List<Product2> list = ResponseReader.ReturnObjectFromXmlStream<List<Product2>>(ms, null);
+        List<Product3> list = ResponseReader.ReturnObjectFromXmlStream<List<Product3>>(ms, null);
         Assert.AreEqual(11, list.Count);
     }
 
@@ -836,24 +842,24 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnTypeIsList()
     {
-        Assert.IsTrue(ResponseReader.ReturnTypeIsList<List<Product2>>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsList<List<Product3>>());
         Assert.IsTrue(ResponseReader.ReturnTypeIsList<List<int>>());
 
         Assert.IsFalse(ResponseReader.ReturnTypeIsList<int>());
-        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product2>());
-        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product2[]>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product3>());
+        Assert.IsFalse(ResponseReader.ReturnTypeIsList<Product3[]>());
     }
 
     [TestMethod]
     public void Test_ReturnTypeIsObject()
     {
-        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<List<Product2>>());
-        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product2[]>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<List<Product3>>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product3[]>());
 
         Assert.IsTrue(ResponseReader.ReturnTypeIsObject<List<int>>());
         Assert.IsTrue(ResponseReader.ReturnTypeIsObject<int[]>());
 
-        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product2>());
+        Assert.IsTrue(ResponseReader.ReturnTypeIsObject<Product3>());
 
         Assert.IsFalse(ResponseReader.ReturnTypeIsObject<object>());
 

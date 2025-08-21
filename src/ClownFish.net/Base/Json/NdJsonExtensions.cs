@@ -12,7 +12,7 @@ public static class NdJsonExtensions
     /// <param name="list">要序列化的对象</param>
     /// <param name="settings"></param>
     /// <returns>序列化得到的JSON字符串</returns>
-    public static string ToMultiLineJson<T>(this IEnumerable<T> list, JsonSerializerSettings settings = null)
+    public static string ToMultiLineJson(this ICollection list, JsonSerializerSettings settings = null)
     {
         if( list == null )
             return string.Empty;
@@ -21,7 +21,7 @@ public static class NdJsonExtensions
         try {
             using( StringWriter writer = new StringWriter(sb) ) {
 
-                ToMultiLineJson<T>(list, writer, settings);
+                ToMultiLineJson(list, writer, settings);
 
                 return sb.ToString();
             }
@@ -35,12 +35,11 @@ public static class NdJsonExtensions
     /// <summary>
     /// 将一个对象序列化为 ndjson 字符串。
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="list"></param>
     /// <param name="writer"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    public static int ToMultiLineJson<T>(this IEnumerable<T> list, TextWriter writer, JsonSerializerSettings settings = null)
+    public static int ToMultiLineJson(this ICollection list, TextWriter writer, JsonSerializerSettings settings = null)
     {
         if( list == null )
             return 0;
