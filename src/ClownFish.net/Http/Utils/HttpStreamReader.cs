@@ -76,14 +76,14 @@ public struct HttpStreamReader
         Encoding encoding2 = encoding ?? Encoding.UTF8;
 
         if( _contentEncoding.IsNullOrEmpty() ) {
-            return ReadStream(_httpStream, encoding2);
+            return ReadAllText0(_httpStream, encoding2);
         }
 
         // 创建一个解压缩流的包装
         Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
         using( zipStream ) {
-            return ReadStream(zipStream, encoding2);
+            return ReadAllText0(zipStream, encoding2);
         }
     }
 
@@ -99,26 +99,26 @@ public struct HttpStreamReader
         Encoding encoding2 = encoding ?? Encoding.UTF8;
 
         if( _contentEncoding.IsNullOrEmpty() ) {
-            return await ReadStreamAsync(_httpStream, encoding2);
+            return await ReadAllText0Async(_httpStream, encoding2);
         }
 
         // 创建一个解压缩流的包装
         Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
         using( zipStream ) {
-            return await ReadStreamAsync(zipStream, encoding2);
+            return await ReadAllText0Async(zipStream, encoding2);
         }
     }
 
 
 
-    private static string ReadStream(Stream stream, Encoding encoding)
+    private static string ReadAllText0(Stream stream, Encoding encoding)
     {
         using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
         return reader.ReadToEnd();
     }
 
-    private static async Task<string> ReadStreamAsync(Stream stream, Encoding encoding)
+    private static async Task<string> ReadAllText0Async(Stream stream, Encoding encoding)
     {
         using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
         return await reader.ReadToEndAsync();

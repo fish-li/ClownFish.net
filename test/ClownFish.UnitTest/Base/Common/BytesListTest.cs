@@ -56,7 +56,9 @@ public class BytesListTest
         int len2 = list.CopyToStream(ms2);
         Assert.AreEqual(0, len2);
 
-        Assert.AreEqual(-1, list.CopyToStream((MemoryStream)null));
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = list.CopyToStream((MemoryStream)null);
+        });
     }
 
 
@@ -91,6 +93,21 @@ public class BytesListTest
 
         string text = Encoding.UTF8.GetString(span.Slice(5));
         Assert.AreEqual(input, text);
+    }
+
+
+    [TestMethod]
+    public void Test_GzipToStream()
+    {
+        BytesList list = new BytesList();
+
+        MemoryStream ms = new MemoryStream();
+        int count = list.GzipToStream(ms);
+        Assert.AreEqual(0, count);
+
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = list.GzipToStream((MemoryStream)null);
+        });
     }
 }
 

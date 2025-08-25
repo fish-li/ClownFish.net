@@ -82,28 +82,6 @@ public sealed class TransparentOutStream : Stream
         return _stream.WriteAsync(buffer, offset, count, cancellationToken);
     }
 
-#if NETCOREAPP
-    /// <inheritdoc/>
-    public override void Write(ReadOnlySpan<byte> buffer)
-    {
-        _outLen += buffer.Length;
-        _stream.Write(buffer);
-    }
 
-    /// <inheritdoc/>
-    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        _outLen += buffer.Length;
-        return _stream.WriteAsync(buffer, cancellationToken);
-    }
-
-#endif
-
-    /// <inheritdoc/>
-    public override void WriteByte(byte value)
-    {
-        _outLen++;
-        _stream.WriteByte(value);
-    }
 
 }

@@ -88,7 +88,7 @@ public struct BytesList
     public int CopyToStream(Stream stream)
     {
         if( stream == null )
-            return -1;
+            throw new ArgumentNullException(nameof(stream));
 
         int count = 0;
 
@@ -101,6 +101,30 @@ public struct BytesList
         return count;
     }
 
+    /// <summary>
+    /// 将内部压缩到指定的数据流中
+    /// </summary>
+    /// <param name="stream"></param>
+    public int GzipToStream(Stream stream)
+    {
+        if( stream == null )
+            throw new ArgumentNullException(nameof(stream));
+
+        int sumLen = GetSumLength();
+        if( sumLen == 0 )
+            return 0;
+
+#if NET6_0_OR_GREATER
+        CompressionLevel level = CompressionLevel.SmallestSize;
+#else
+        CompressionMode level = CompressionMode.Compress;
+#endif
+        using( GZipStream gZipStream = new GZipStream(stream, level, true) ) {
+            this.CopyToStream(gZipStream);
+        }
+
+        return sumLen;
+    }
 
     /// <summary>
     /// 将内部数据压缩并返回
@@ -112,20 +136,11 @@ public struct BytesList
         if( sumLen == 0 )
             return Empty.Array<byte>();
 
-#if NET6_0_OR_GREATER
-        CompressionLevel level = CompressionLevel.SmallestSize;
-#else
-        CompressionMode level = CompressionMode.Compress;
-#endif
-
         using( MemoryStream resultStream = MemoryStreamPool.GetStream() ) {
-            using( GZipStream gZipStream = new GZipStream(resultStream, level, true) ) {
-                this.CopyToStream(gZipStream);
-            }
-
-            resultStream.Position = 0;
+            GzipToStream(resultStream);
             return resultStream.ToArray();
         }
     }
+
 
 }
