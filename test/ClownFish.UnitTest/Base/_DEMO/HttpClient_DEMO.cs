@@ -178,8 +178,8 @@ public class HttpClient_DEMO
         Assert.IsTrue(text.Contains("Content-Type = application/json"));
         Assert.IsTrue(text.Contains("Content-Encoding = gzip"));
 
-        string base64 = data.ToJson().ToGzip().ToBase64();
-        Assert.IsTrue(text.Contains(base64));
+        string[] lines = text.TrimEnd().ToLines();
+        Assert.AreEqual(data.ToJson(), lines.Last().UnGzip());
     }
 
 

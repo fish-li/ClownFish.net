@@ -47,8 +47,8 @@ public class HttpOptionTest_Gzip
 
         Assert.IsFalse(response2.Contains(text));
 
-        string text2 = text.ToGzip().ToBase64();
-        Assert.IsTrue(response2.Contains(text2));
+        string[] lines = response2.TrimEnd().ToLines();
+        Assert.AreEqual(text, lines.Last().UnGzip());
     }
 
 
@@ -91,8 +91,8 @@ public class HttpOptionTest_Gzip
 
         Assert.IsFalse(response2.Contains(data.Value));
 
-        string text2 = data.ToJson().ToGzip().ToBase64();
-        Assert.IsTrue(response2.Contains(text2));
+        string[] lines = response2.TrimEnd().ToLines();
+        Assert.AreEqual(data.ToJson(), lines.Last().UnGzip());
     }
 
 }

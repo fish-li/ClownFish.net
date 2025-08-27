@@ -72,6 +72,10 @@ internal static class HttpObjectUtils
         if( postData == null )
             return new ByteArrayContent(Array.Empty<byte>());
 
+        // 这里提前处理 byte[]/stream 类型，好处是可以简化 text/json/ndjson/xml 场景下的代码，具体可参考 RequestWriter.cs
+        // 缺点是，会导致 AutoGzipUpload 参数对二进制数据不起作用
+        // 但是，对于二进制数据，尤其是 stream 的使用场景，它可能会包含大量的数据，使用 RequestWriter 本质是在内存中做压缩，
+        // 反而可能会出现 OOM 的问题，所以就这样吧~~~~~~
 
         if( postData is Stream srcStream ) {
             return CreateRequestMessageBody1(httpOption.Format, srcStream);   // StreamContent

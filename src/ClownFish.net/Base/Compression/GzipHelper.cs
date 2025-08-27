@@ -33,6 +33,19 @@ public static class GzipHelper
 
 
     /// <summary>
+    /// 用GZIP解压缩一个BASE64字符串
+    /// </summary>
+    /// <param name="base64GzipString"></param>
+    /// <returns></returns>
+    public static string UnGzip(this string base64GzipString)
+    {
+        if( string.IsNullOrEmpty(base64GzipString) )
+            return base64GzipString;
+
+        return base64GzipString.UnBase64().UnGzip().ToUtf8String();
+    }
+
+    /// <summary>
     /// 将一个文本转指定编码后做Gzip压缩
     /// </summary>
     /// <param name="text"></param>

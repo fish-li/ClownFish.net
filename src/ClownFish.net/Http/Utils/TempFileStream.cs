@@ -18,15 +18,24 @@ public sealed class TempFileStream : Stream
     /// </summary>
     public TempFileStream()
     {
-        _filePath = TempFile.GenTempFileFullName(".dat");
+        _filePath = TempFile.GenTempFileFullName(".strm");
         _stream = RetryFile.Create(_filePath);
+    }
+
+    /// <inheritdoc/>
+    ~TempFileStream()
+    {
+        Dispose(false);
     }
 
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if( _filePath != null ) {
-            _stream.Close();
+            if( _stream != null ) {
+                _stream.Close();
+                // 注意：这里并不设置 _stream = null，好处是在后续访问时抛出ObjectDisposedException
+            }
 
             TempFile.DeleteFile(_filePath);
             _filePath = null;
