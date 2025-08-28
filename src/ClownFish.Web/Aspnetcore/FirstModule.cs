@@ -130,7 +130,7 @@ public class FirstModule
         if( httpContext.Request.ContentLength > ClownFishWebOptions.MaxRequestBodySize ) {
 
             // 上传文件可以不检查
-            SerializeFormat format = ContenTypeUtils.GetFormat(httpContext.Request.ContentType);
+            SerializeFormat format = ContentTypeUtils.GetFormat(httpContext.Request.ContentType);
             if( format == SerializeFormat.Binary || format == SerializeFormat.Multipart )
                 return;
 

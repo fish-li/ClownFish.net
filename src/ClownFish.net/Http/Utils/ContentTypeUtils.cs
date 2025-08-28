@@ -2,7 +2,7 @@
 /// <summary>
 /// 
 /// </summary>
-public static class ContenTypeUtils
+public static class ContentTypeUtils
 {
     /// <summary>
     /// 根据 Content-Type 请求头字符串，转换成SerializeFormat枚举

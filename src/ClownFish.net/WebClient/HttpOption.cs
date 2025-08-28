@@ -452,7 +452,7 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
         if( HttpUtils.RequestHasBody(this.Method)
             && (_headers == null || _headers.ContainsKey(HttpHeaders.Request.ContentType) == false) ) {
             if( contentType == null ) {
-                contentType = ContenTypeUtils.GetByFormat(this.Format);  // 这里得到的结果可能不正确~~，只适用于简单场景
+                contentType = ContentTypeUtils.GetByFormat(this.Format);  // 这里得到的结果可能不正确~~，只适用于简单场景
             }
             if( contentType.HasValue() ) {
                 sb.AppendLineRN($"{HttpHeaders.Request.ContentType}: {contentType}");
@@ -515,7 +515,7 @@ public sealed partial class HttpOption : ILoggingObject, IToAllText, ITextSerial
 
             string contentType2 = contentType;
             if( contentType2.IsNullOrEmpty() )
-                contentType2 = ContenTypeUtils.GetByFormat(this.Format);
+                contentType2 = ContentTypeUtils.GetByFormat(this.Format);
             if( contentType2.IsNullOrEmpty() )
                 contentType2 = this.Headers[HttpHeaders.Request.ContentType];
 

@@ -280,7 +280,7 @@ internal sealed class HttpClient : BaseHttpClient
             }
         }
 
-        string contentType = ContenTypeUtils.GetByFormat(this.HttpOption.Format);
+        string contentType = ContentTypeUtils.GetByFormat(this.HttpOption.Format);
         if( contentType.IsNullOrEmpty() == false )
             this.Request.ContentType = contentType;
     }
@@ -289,7 +289,7 @@ internal sealed class HttpClient : BaseHttpClient
     {
         destStream.Write(bytes, 0, bytes.Length);
 
-        string contentType = ContenTypeUtils.GetByFormat(this.HttpOption.Format);
+        string contentType = ContentTypeUtils.GetByFormat(this.HttpOption.Format);
         if( contentType.IsNullOrEmpty() == false )
             this.Request.ContentType = contentType;
     }

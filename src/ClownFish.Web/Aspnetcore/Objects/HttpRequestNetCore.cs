@@ -26,7 +26,7 @@ public sealed class HttpRequestNetCore : NHttpRequest
     {
         _request = request;
 
-        SerializeFormat format = ContenTypeUtils.GetFormat(_request.ContentType);
+        SerializeFormat format = ContentTypeUtils.GetFormat(_request.ContentType);
         _hasForm = HttpUtils.RequestHasBody(request.Method) && (format == SerializeFormat.Form || format == SerializeFormat.Multipart);
     }
 
