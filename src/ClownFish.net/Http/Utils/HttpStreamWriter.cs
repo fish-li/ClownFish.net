@@ -36,7 +36,7 @@ internal struct HttpStreamWriter
             return;
         }
 
-        Stream zipStream = HttpStreamReader.WrapperCompressionStream(_responseStream, _contentEncoding, CompressionMode.Compress);
+        Stream zipStream = HttpStreamReader.CreateCompressionStream(_responseStream, _contentEncoding, CompressionMode.Compress);
 
         if( zipStream != null ) {
             using( zipStream ) {

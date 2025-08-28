@@ -79,7 +79,7 @@ public sealed class ResponseReader : IDisposable
             // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Encoding
             string contentEncoding = _response.ContentEncoding;
             if( contentEncoding.HasValue() ) {
-                return HttpStreamReader.WrapperCompressionStream(responseStream, contentEncoding, CompressionMode.Decompress);
+                return HttpStreamReader.CreateCompressionStream(responseStream, contentEncoding, CompressionMode.Decompress);
             }
             // else 没有指定 “Content-Encoding”，也就是没有使用压缩格式
         }

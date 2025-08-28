@@ -52,15 +52,24 @@ public struct HttpStreamReader
         };
     }
 
-    internal static Stream WrapperCompressionStream(Stream input, string algorithmName, CompressionMode mode)
+
+    /// <summary>
+    /// 将一个数据流包装成压缩流
+    /// </summary>
+    /// <param name="httpStream">输入流</param>
+    /// <param name="contentEncoding">HTTP头 Content-Encoding 的值</param>
+    /// <param name="mode">压缩还是解压缩</param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public static Stream CreateCompressionStream(Stream httpStream, string contentEncoding, CompressionMode mode)
     {
-        return algorithmName switch {
-            "gzip" => new GZipStream(input, mode, true),
-            "deflate" => new DeflateStream(input, mode, true),
+        return contentEncoding switch {
+            "gzip" => new GZipStream(httpStream, mode, true),
+            "deflate" => new DeflateStream(httpStream, mode, true),
 #if NETCOREAPP
-            "br" => new BrotliStream(input, mode, true),
+            "br" => new BrotliStream(httpStream, mode, true),
 #endif
-            _ => throw new NotSupportedException("当前.NET版本不支持此压缩算法: " + algorithmName)
+            _ => throw new NotSupportedException("当前.NET版本不支持此压缩算法: " + contentEncoding)
         };
     }
 
@@ -80,7 +89,7 @@ public struct HttpStreamReader
         }
 
         // 创建一个解压缩流的包装
-        Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
+        Stream zipStream = CreateCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
         using( zipStream ) {
             return ReadAllText0(zipStream, encoding2);
@@ -103,7 +112,7 @@ public struct HttpStreamReader
         }
 
         // 创建一个解压缩流的包装
-        Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
+        Stream zipStream = CreateCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
         using( zipStream ) {
             return await ReadAllText0Async(zipStream, encoding2);
@@ -138,7 +147,7 @@ public struct HttpStreamReader
     //        return _httpStream.ToArray();
 
     //    // 创建一个解压缩流的包装
-    //    Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
+    //    Stream zipStream = CreateCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
     //    using( zipStream ) {
     //        return zipStream.ToArray();
@@ -154,7 +163,7 @@ public struct HttpStreamReader
     //        return await _httpStream.ToArrayAsync();
 
     //    // 创建一个解压缩流的包装
-    //    Stream zipStream = WrapperCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
+    //    Stream zipStream = CreateCompressionStream(_httpStream, _contentEncoding, CompressionMode.Decompress);
 
     //    using( zipStream ) {
     //        return await zipStream.ToArrayAsync();

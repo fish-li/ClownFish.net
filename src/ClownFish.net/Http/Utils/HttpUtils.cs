@@ -246,7 +246,7 @@ public static class HttpUtils
     /// <param name="mediaType"></param>
     /// <param name="encoding"></param>
     /// <returns>解析出来多少个数据，0：contentType参数为空，1：只解析出 mediaType，2：已解析 mediaType 和 encoding </returns>
-    internal static int ParseContentType(string contentType, out string mediaType, out Encoding encoding)
+    public static int ParseContentType(string contentType, out string mediaType, out Encoding encoding)
     {
         // 参考链接：https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Reference/Headers/Content-Type
         // Content-Type 通常有以下2种用法：
@@ -313,7 +313,12 @@ public static class HttpUtils
     }
 
 
-    internal static string ParseMediaType(string contentType)
+    /// <summary>
+    /// 解析 Content-Type 标头
+    /// </summary>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public static string ParseMediaType(string contentType)
     {
         if( contentType.IsNullOrEmpty() )
             return string.Empty;
