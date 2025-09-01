@@ -160,6 +160,8 @@ public static class StringConverter
     }
 
 
+    private static readonly Type[] s_op_Implicit_args_types = new Type[] { typeof(string) };
+
     /// <summary>
     /// 判断指定的类型是否能从String类型做隐式类型转换，如果可以，则返回相应的方法
     /// </summary>
@@ -169,7 +171,7 @@ public static class StringConverter
     {
         MethodInfo m = conversionType.GetMethod("op_Implicit",
                                                 BindingFlags.Static | BindingFlags.Public, null,
-                                                new Type[] { typeof(string) }, null);
+                                                s_op_Implicit_args_types, null);
 
         if( m != null && m.IsSpecialName && m.ReturnType == conversionType )
             return m;

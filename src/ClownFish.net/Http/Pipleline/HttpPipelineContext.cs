@@ -141,6 +141,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
         this.IsLoginAction = isLoginAction;
     }
 
+    private static readonly Type[] s_call_args_types1 = new Type[] { typeof(NHttpContext) };
     /// <summary>
     /// 指定一个可用于处理当前请求的IAsyncNHttpHandler实例。
     /// 注意：一定要在MVC Action执行前调用此方法。
@@ -154,7 +155,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
         Type controllerType = handler.GetType();
         MethodInfo method = controllerType.GetMethod(nameof(IAsyncNHttpHandler.ProcessRequestAsync),
                                                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                                                    new Type[] { typeof(NHttpContext) }, null);
+                                                    s_call_args_types1, null);
 
         this.Action = new ActionDescription(handler, method, controllerType);
     }

@@ -140,6 +140,8 @@ internal static class DynamicMethodFactory
         }
     }
 
+    private static readonly Type[] s_call_args_types1 = new Type[] { typeof(object) };
+
     public static GetValueDelegate CreatePropertyGetter(PropertyInfo property)
     {
         if( property == null )
@@ -154,7 +156,7 @@ internal static class DynamicMethodFactory
         MethodInfo getMethod = property.GetGetMethod(true);
 
         DynamicMethod dm = new DynamicMethod("PropertyGetter", typeof(object),
-            new Type[] { typeof(object) },
+            s_call_args_types1,
             property.DeclaringType, true);
 
         ILGenerator il = dm.GetILGenerator();
@@ -174,6 +176,7 @@ internal static class DynamicMethodFactory
         return (GetValueDelegate)dm.CreateDelegate(typeof(GetValueDelegate));
     }
 
+    private static readonly Type[] s_call_args_types3 = new Type[] { typeof(object), typeof(object) };
     public static SetValueDelegate CreatePropertySetter(PropertyInfo property)
     {
         if( property == null )
@@ -188,7 +191,7 @@ internal static class DynamicMethodFactory
         MethodInfo setMethod = property.GetSetMethod(true);
 
         DynamicMethod dm = new DynamicMethod("PropertySetter", null,
-            new Type[] { typeof(object), typeof(object) },
+            s_call_args_types3,
             property.DeclaringType, true);
 
         ILGenerator il = dm.GetILGenerator();
@@ -210,13 +213,14 @@ internal static class DynamicMethodFactory
         return (SetValueDelegate)dm.CreateDelegate(typeof(SetValueDelegate));
     }
 
+    private static readonly Type[] s_call_args_types2 = new Type[] { typeof(object) };
     public static GetValueDelegate CreateFieldGetter(FieldInfo field)
     {
         if( field == null )
             throw new ArgumentNullException("field");
 
         DynamicMethod dm = new DynamicMethod("FieldGetter", typeof(object),
-            new Type[] { typeof(object) },
+            s_call_args_types2,
             field.DeclaringType, true);
 
         ILGenerator il = dm.GetILGenerator();
@@ -239,13 +243,14 @@ internal static class DynamicMethodFactory
         return (GetValueDelegate)dm.CreateDelegate(typeof(GetValueDelegate));
     }
 
+    private static readonly Type[] s_call_args_types4 = new Type[] { typeof(object), typeof(object) };
     public static SetValueDelegate CreateFieldSetter(FieldInfo field)
     {
         if( field == null )
             throw new ArgumentNullException("field");
 
         DynamicMethod dm = new DynamicMethod("FieldSetter", null,
-            new Type[] { typeof(object), typeof(object) },
+            s_call_args_types4,
             field.DeclaringType, true);
 
         ILGenerator il = dm.GetILGenerator();
