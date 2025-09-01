@@ -1,5 +1,4 @@
 ﻿using ClownFish.UnitTest.Base;
-using ClownFish.UnitTest.WebClient;
 
 namespace ClownFish.Base.DEMO;
 
@@ -111,7 +110,7 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_Ndjson_方式提交数据()
     {
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(20);
+        List<Product3> list = Product3.CreateTestDataList(20);
 
         string text = new HttpOption {
             Method = "POST",

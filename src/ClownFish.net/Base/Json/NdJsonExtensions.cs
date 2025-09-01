@@ -48,12 +48,12 @@ public static class NdJsonExtensions
 
         int count = 0;
         using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
+            jsonTextWriter.CloseOutput = false;
             jsonTextWriter.Formatting = jsonSerializer.Formatting;
 
             foreach( var x in list ) {
                 count++;
                 jsonSerializer.Serialize(jsonTextWriter, x);
-                //jsonTextWriter.Flush();   // ##### 注意是：这行代码不能启用，它会导致 writer 的缓冲区失效，如果外层是一个GZIP流，它会影响压缩率！
                 writer.Write('\n');
 
                 // 最后以“换行符”结束，这里参考了 elasticsearch 的要求
@@ -61,6 +61,32 @@ public static class NdJsonExtensions
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html#docs-bulk-api-desc
             }
         }
+
+        // writer.Flush() 这个调用也没发现有什么实质意义~~~
+        // 但是可以检测一个异常，System.ObjectDisposedException: Cannot write to a closed TextWriter. Object name: 'StreamWriter'.
+
+        // 异常重现方法：
+        // 1，不设置 jsonTextWriter.CloseOutput = false;     // 此属性默认是 true
+        // 2，外层调用代码：
+        //      using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+        //         list.ToMultiLineJson(writer);
+        //      }
+        // 在调试模式下，发现 writer._disposed = true，其实也【符合预期】，毕竟 jsonTextWriter.CloseOutput = true
+
+
+        // 早期版本 不出现 异常的做法：
+        // 1，不设置 jsonTextWriter.CloseOutput = false;      // 以前也不知道有这个属性，和它相关
+        // 2，外层调用代码： 
+        //       using( GZipStream gzip = new GZipStream(stream, CompressionMode.Compress, true) ) {
+        //            using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
+        //                list.ToMultiLineJson(writer);
+        //            }
+        //       }
+        // 在调试模式下，发现 writer._disposed = false 【居然没有关闭】~~~~~~~~~~
+
+        // 所以，最终决定，保留下面这行代码：writer.Flush();
+        // 然后设置 jsonTextWriter.CloseOutput = false;    明确指定不让jsonTextWriter瞎操作！
+
         writer.Flush();
         return count;
     }
@@ -75,7 +101,7 @@ public static class NdJsonExtensions
     /// <param name="capacity">返回列表的初始容量</param>
     /// <param name="settings">json序列化参数</param>
     /// <returns>反序列化得到的结果</returns>
-    public static List<T> FromMultiLineJson<T>(this string multiLineJson, int capacity = 32, JsonSerializerSettings settings = null)
+    public static List<T> FromMultiLineJson<T>(this string multiLineJson, int capacity = 100, JsonSerializerSettings settings = null)
     {
         if( multiLineJson == null )
             return null;
@@ -90,14 +116,14 @@ public static class NdJsonExtensions
 
 
     /// <summary>
-    /// 将一个 ndjson 字符串反序列化为列表对象
+    /// 从TextReader对象中逐行读取并转成对象
     /// </summary>
     /// <typeparam name="T">反序列的对象类型参数</typeparam>
     /// <param name="reader">用于获取 ndjson 的数据读取器</param>
     /// <param name="capacity">返回列表的初始容量</param>
     /// <param name="settings">json序列化参数</param>
     /// <returns></returns>
-    public static List<T> FromMultiLineJson<T>(this TextReader reader, int capacity = 32, JsonSerializerSettings settings = null)
+    public static List<T> FromMultiLineJson<T>(this TextReader reader, int capacity = 100, JsonSerializerSettings settings = null)
     {
         if( reader == null )
             return new List<T>(0);
@@ -114,14 +140,27 @@ public static class NdJsonExtensions
 
             if( line.Length > 0 ) {
 
-                using( JsonTextReader reader2 = new JsonTextReader(new StringReader(line)) ) {
-                    T log = (T)jsonSerializer.Deserialize(reader2, destType);
-                    list.Add(log);
-                }
+                T item = (T)jsonSerializer.Deserialize(new StringReader(line), destType);
+                list.Add(item);
             }
         }
 
         return list;
+    }
+
+
+    private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod("FromMultiLineJson",
+                                                    BindingFlags.Static | BindingFlags.Public, null,
+                                                    new Type[] { typeof(TextReader), typeof(int), typeof(JsonSerializerSettings) }
+                                                    , null);
+
+    internal static object LoadListFromMultiLineJson(this TextReader reader, Type listType)
+    {
+        Type elementType = listType.GetGenericArguments()[0];
+
+        MethodInfo method2 = s_method1.MakeGenericMethod(elementType);
+
+        return method2.FastInvoke(null, new object[] { reader, 64, null });
     }
 
 
@@ -147,6 +186,7 @@ public static class NdJsonExtensions
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
         using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
+            jsonTextWriter.CloseOutput = false;
             jsonTextWriter.Formatting = jsonSerializer.Formatting;
 
             while( reader.Read() ) {   // 为了代码共用，这里固定使用同步调用。这里再使用异步也不会对吞吐量有多大改善了~~~

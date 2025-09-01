@@ -452,7 +452,7 @@ public class HttpContextExtensionsTest
         MockHttpContext httpContext = new MockHttpContext(requestData);
         using HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContext);
 
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
+        List<Product3> list = Product3.CreateTestDataList(100);
 
         await httpContext.HttpGzipNdjsonReply(list);
 

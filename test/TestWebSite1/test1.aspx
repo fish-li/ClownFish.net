@@ -18,7 +18,7 @@
 
         string flag = this.Request.QueryString["x-result-CompressionMode"];
         if( flag == "gzip" ) {
-            this.Response.Filter = new System.IO.Compression.GZipStream(this.Response.Filter, System.IO.Compression.CompressionLevel.Fastest);
+            this.Response.Filter = new System.IO.Compression.GZipStream(this.Response.Filter, System.IO.Compression.CompressionLevel.Optimal);
             this.Response.AddHeader("Content-Encoding", "gzip");
         }
     }

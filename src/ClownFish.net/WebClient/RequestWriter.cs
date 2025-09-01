@@ -55,11 +55,8 @@ internal struct RequestWriter
         if( text != null && text.Length > 0 ) {
             if( autoGzip && text.Length > ClownFishOptions.HttpClient_GzipThreshold ) {
 
-                using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
-                    using( StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-
-                        writer.Write(text);
-                    }
+                using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+                    writer.Write(text);
                 }
                 IsGzip = true;
                 IsBinaryData = true;
@@ -133,13 +130,12 @@ internal struct RequestWriter
             WriteTextAutoGzip(stream, text, autoGzip);    // ndjson
         }
         else {
-            Type dataType = data.GetType();
-            bool isList = dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(List<>);
-            if( isList == false )
+            if( data is ICollection list ) {
+                WriteNdjsonToStream(stream, list, autoGzip);
+            }
+            else {
                 throw new ArgumentException("HttpOption.Data is not List<T>");
-
-
-            WriteNdjsonToStream(stream, (ICollection)data, autoGzip);
+            }
         }
     }
 
@@ -150,16 +146,16 @@ internal struct RequestWriter
         }
 
         if( autoGzip ) {   // 这里不做长度判断，直接Gzip压缩
-            using GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true);
-            using StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024 * 4, true); // 增加数据窗口大小可以提高压缩率
-            list.ToMultiLineJson(writer);
-
+            using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+                list.ToMultiLineJson(writer);
+            }
             IsGzip = true;
             IsBinaryData = true;
         }
         else {
-            using StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true);
-            list.ToMultiLineJson(writer);
+            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+                list.ToMultiLineJson(writer);
+            }
         }
     }
 

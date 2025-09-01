@@ -451,7 +451,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_string()
     {
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(9);
+        List<Product3> list = Product3.CreateTestDataList(9);
         string text = list.ToMultiLineJson();
 
         MemoryStream ms = new MemoryStream();
@@ -469,7 +469,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_string_gzip()
     {
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
+        List<Product3> list = Product3.CreateTestDataList(100);
         string text = list.ToMultiLineJson();
 
         MemoryStream ms = new MemoryStream();
@@ -487,7 +487,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_list()
     {
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(9);
+        List<Product3> list = Product3.CreateTestDataList(9);
 
         MemoryStream ms = new MemoryStream();
 
@@ -505,7 +505,7 @@ public class RequestWriterTest
     [TestMethod]
     public void Test_WriteAsJsonLinesFormat_list_gzip()
     {
-        List<Product3> list = ResponseReaderTest.CreateTestDataList(100);
+        List<Product3> list = Product3.CreateTestDataList(100);
 
         MemoryStream ms = new MemoryStream();
 

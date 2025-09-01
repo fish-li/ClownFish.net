@@ -743,7 +743,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnResultFromTextStream_Json()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(9).ToJson().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/json; charset=utf-8");
         Assert.AreEqual(9, list.Count);
@@ -752,7 +752,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnResultFromTextStream_NdJson()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToMultiLineJson().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(9).ToMultiLineJson().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/x-ndjson; charset=utf-8");
         Assert.AreEqual(9, list.Count);
@@ -762,7 +762,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnResultFromTextStream_xml()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToXml().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(9).ToXml().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnResultFromTextStream<List<Product3>>(ms, "application/xml; charset=utf-8");
         Assert.AreEqual(9, list.Count);
@@ -795,19 +795,10 @@ public class ResponseReaderTest
     }
 
 
-    internal static List<Product3> CreateTestDataList(int count)
-    {
-        List<Product3> list1 = new List<Product3>();
-        for( int i = 0; i < count; i++ ) {
-            list1.Add(Product3.CreateByRandomData());
-        }
-        return list1;
-    }
-
     [TestMethod]
     public void Test_ReturnObjectFromJsonStream()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(9).ToJson().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(9).ToJson().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnObjectFromJsonStream<List<Product3>>(ms, null);
         Assert.AreEqual(9, list.Count);
@@ -817,7 +808,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnListFromNdjsonStream()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(10).ToMultiLineJson().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(10).ToMultiLineJson().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnListFromNdjsonStream<List<Product3>>(ms, null);
         Assert.AreEqual(10, list.Count);
@@ -832,7 +823,7 @@ public class ResponseReaderTest
     [TestMethod]
     public void Test_ReturnObjectFromXmlStream()
     {
-        MemoryStream ms = new MemoryStream(CreateTestDataList(11).ToXml().GetBytes());
+        MemoryStream ms = new MemoryStream(Product3.CreateTestDataList(11).ToXml().GetBytes());
 
         List<Product3> list = ResponseReader.ReturnObjectFromXmlStream<List<Product3>>(ms, null);
         Assert.AreEqual(11, list.Count);

@@ -24,7 +24,7 @@ public sealed class ResponseReader : IDisposable
     /// 构造方法
     /// </summary>
     /// <param name="response">HTTP响应对象</param>
-    /// <param name="autoDecompress">是否需要在读取响应时自动解压缩，目前仅用于单元测试时使用</param>
+    /// <param name="autoDecompress">是否需要在读取响应时自动解压缩</param>
     /// <param name="maxLimitLen">最大允许的响应体长度，可以不指定</param>
     public ResponseReader(HttpWebResponse response, bool autoDecompress = false, long maxLimitLen = 0)
     {
@@ -52,7 +52,7 @@ public sealed class ResponseReader : IDisposable
         if( resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(HttpResult<>) ) {
             Type argType = resultType.GetGenericArguments()[0];
             MethodInfo method = this.GetType()
-                                    .GetMethod(nameof(GetHttpResult), BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .GetMethod(nameof(GetHttpResult000), BindingFlags.Instance | BindingFlags.NonPublic)
                                     .MakeGenericMethod(argType);
             return (T)method.FastInvoke(this, null);
         }
@@ -61,7 +61,7 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
-    private HttpResult<T> GetHttpResult<T>()
+    private HttpResult<T> GetHttpResult000<T>()
     {
         int statusCode = (int)_response.StatusCode;
         var header = _response.GetAllHeaders();
@@ -79,7 +79,7 @@ public sealed class ResponseReader : IDisposable
             // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Encoding
             string contentEncoding = _response.ContentEncoding;
             if( contentEncoding.HasValue() ) {
-                return HttpStreamReader.CreateCompressionStream(responseStream, contentEncoding, CompressionMode.Decompress);
+                return responseStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress);
             }
             // else 没有指定 “Content-Encoding”，也就是没有使用压缩格式
         }
@@ -202,16 +202,11 @@ public sealed class ResponseReader : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static T ReturnListFromNdjsonStream<T>(Stream responseStream, Encoding encoding)
+    internal static LIST ReturnListFromNdjsonStream<LIST>(Stream responseStream, Encoding encoding)
     {
-        Type elementType = typeof(T).GetGenericArguments()[0];
-
         using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
 
-        MethodInfo method = typeof(NdJsonExtensions).GetMethod("FromMultiLineJson", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(TextReader), typeof(int), typeof(JsonSerializerSettings) }, null);
-        MethodInfo method2 = method.MakeGenericMethod(elementType);
-
-        return (T)method2.FastInvoke(null, new object[] { reader, 64, null });
+        return (LIST)NdJsonExtensions.LoadListFromMultiLineJson(reader, typeof(LIST));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -80,6 +80,68 @@ public class NdJsonExtensionsTest
     }
 
 
+    [TestMethod]
+    public void Test_NdJsonReader()
+    {
+        List<Product3> list = Product3.CreateTestDataList(900);
+
+        MemoryStream gzipData = new MemoryStream();
+
+        using( StreamWriter writer = gzipData.CreateGzipWriter() ) {
+            list.ToMultiLineJson(writer);
+        }
+        
+
+        gzipData.Position = 0;
+        List<Product3> list2 = new List<Product3>();
+
+        using( NdJsonReader reader = new NdJsonReader(gzipData, "gzip") ) {
+            foreach( Product3 p in reader.ReadLines<Product3>() ) {
+                list2.Add(p);
+            }
+        }
+
+        Assert.AreEqual(900, list2.Count);
+
+        gzipData.Position = 0;
+        using StreamReader reader1 = gzipData.CreateGzipReader();
+        string ndjson = reader1.ReadToEnd();
+
+        Assert.IsTrue(ndjson.Contains(list.First().ToJson()));
+        Assert.IsTrue(ndjson.Contains(list.Last().ToJson()));
+
+        // =====================================================================
+
+        MemoryStream notgData = new MemoryStream();
+
+        using( StreamWriter writer2 = new StreamWriter(notgData, Encoding.UTF8, 1024, true) ) {
+            list.ToMultiLineJson(writer2);
+        }
+
+        notgData.Position = 0;
+        List<Product3> list3 = new List<Product3>();
+
+        using( NdJsonReader reader2 = new NdJsonReader(notgData, null) ) {
+            foreach( Product3 p in reader2.ReadLines<Product3>() ) {
+                list3.Add(p);
+            }
+        }
+
+        Assert.AreEqual(900, list3.Count);
+
+        notgData.Position = 0;
+        using StreamReader reader3 = new StreamReader(notgData, Encoding.UTF8, true, 1024, true);
+        string ndjson2 = reader3.ReadToEnd();
+
+        Assert.IsTrue(ndjson2.Contains(list.First().ToJson()));
+        Assert.IsTrue(ndjson2.Contains(list.Last().ToJson()));
+
+        // =====================================================================
+
+        Console.WriteLine($"gzipData.Length = {gzipData.Length}");
+        Console.WriteLine($"notgData.Length = {notgData.Length}");
+        Assert.IsTrue(notgData.Length > gzipData.Length);
+    }
 
 }
 

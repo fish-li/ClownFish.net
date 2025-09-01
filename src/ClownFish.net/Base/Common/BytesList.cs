@@ -105,7 +105,7 @@ public struct BytesList
     /// 将内部压缩到指定的数据流中
     /// </summary>
     /// <param name="stream"></param>
-    public int GzipToStream(Stream stream)
+    public int GzipToStream(Stream stream)   // 调用方：TxClient
     {
         if( stream == null )
             throw new ArgumentNullException(nameof(stream));
@@ -114,12 +114,7 @@ public struct BytesList
         if( sumLen == 0 )
             return 0;
 
-#if NET6_0_OR_GREATER
-        CompressionLevel level = CompressionLevel.SmallestSize;
-#else
-        CompressionMode level = CompressionMode.Compress;
-#endif
-        using( GZipStream gZipStream = new GZipStream(stream, level, true) ) {
+        using( GZipStream gZipStream = new GZipStream(stream, CompressionMode.Compress, true) ) {
             this.CopyToStream(gZipStream);
         }
 

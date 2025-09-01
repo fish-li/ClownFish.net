@@ -67,12 +67,6 @@ internal class HttpJsonWriter : ILogWriter
 
         string url = GetInvokeUrl(typeof(T).Name);
 
-#if NET6_0_OR_GREATER
-        CompressionLevel level = CompressionLevel.SmallestSize;
-#else
-        CompressionMode level = CompressionMode.Compress;
-#endif
-
         // 如果网络中断，或者服务端挂了，整个数据包就一起丢弃，避免无用的重试。
         try {
             // 按照指定大小，将列表中的元素先做JSON序列化，然后再拼接成一个字符串
@@ -82,11 +76,8 @@ internal class HttpJsonWriter : ILogWriter
                 using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
 
                     int count = 0;
-                    using( GZipStream gZipStream = new GZipStream(stream, level, true) ) {
-                        using( StreamWriter writer = new StreamWriter(gZipStream, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-
-                            count = spliter.GetNextPart(writer);
-                        }
+                    using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+                        count = spliter.GetNextPart(writer);
                     }
 
                     if( count <= 0 ) {

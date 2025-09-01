@@ -20,6 +20,15 @@ public class Product3
     }
 
 
+    public static List<Product3> CreateTestDataList(int count)
+    {
+        List<Product3> list1 = new List<Product3>();
+        for( int i = 0; i < count; i++ ) {
+            list1.Add(Product3.CreateByRandomData());
+        }
+        return list1;
+    }
+
     public static Product3 CreateByRandomData()
     {
         DateTime dt = DateTime.Now;

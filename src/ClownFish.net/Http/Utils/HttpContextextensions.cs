@@ -175,25 +175,15 @@ public static partial class HttpContextExtensions
 
         response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
-#if NET6_0_OR_GREATER
-        CompressionLevel level = CompressionLevel.SmallestSize;
-#else
-        CompressionMode level = CompressionMode.Compress;
-#endif
+        TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
 
-        using( MemoryStream ms = MemoryStreamPool.GetStream() ) {
-            using( GZipStream gzip = new GZipStream(ms, level, true) ) {
-                using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-                    writer.Write(body);
-                    writer.Close();
-                }
-            }
-
-            ms.Position = 0;
-            response.ContentLength = ms.Length;
-
-            await ms.CopyToAsync(response.OutputStream);
+        using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+            await writer.WriteAsync(body);
         }
+
+        await stream.FlushAsync();
+        // 当前方法将会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
+        httpContext.OprLog.OutSize = stream.GetOutSize();
     }
 
     /// <summary>
@@ -218,26 +208,15 @@ public static partial class HttpContextExtensions
 
         response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
-#if NET6_0_OR_GREATER
-        CompressionLevel level = CompressionLevel.SmallestSize;
-#else
-        CompressionMode level = CompressionMode.Compress;
-#endif
-
         TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
 
-        using( GZipStream gzip = new GZipStream(stream, level, true) ) {
-            using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-
-                list.ToMultiLineJson(writer);
-            }
+        using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+            list.ToMultiLineJson(writer);
         }
 
         await stream.FlushAsync();
-        long len = stream.GetOutSize();
-
         // 当前方法将会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
-        httpContext.OprLog.OutSize = len;
+        httpContext.OprLog.OutSize = stream.GetOutSize();
     }
 
 

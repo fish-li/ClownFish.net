@@ -18,6 +18,17 @@ public sealed class TransparentOutStream : Stream
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
     }
 
+//#if DEBUG
+//    private bool _disposed;
+//    internal bool IsDisposed => _disposed;
+
+//    /// <inheritdoc/>
+//    protected override void Dispose(bool disposing)
+//    {
+//        _disposed = true;
+//    }
+//#endif
+
     /// <summary>
     /// 获取累计的写入长度
     /// </summary>

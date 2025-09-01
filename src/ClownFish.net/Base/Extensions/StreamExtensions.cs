@@ -169,4 +169,55 @@ public static class StreamExtensions
             }
         }
     }
+
+
+
+    /// <summary>
+    /// 将一个数据流包装成 压缩流/解压缩流
+    /// </summary>
+    /// <param name="httpStream">请求流或者响应流</param>
+    /// <param name="contentEncoding">压缩算法名称，可参考HTTP头 Content-Encoding 的取值</param>
+    /// <param name="mode">压缩还是解压缩</param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    public static Stream CreateCompressionStream(this Stream httpStream, string contentEncoding, CompressionMode mode)
+    {
+        return contentEncoding switch {
+            null or "" => throw new ArgumentNullException(nameof(contentEncoding)),
+            "gzip" => new GZipStream(httpStream, mode, true),
+            "deflate" => new DeflateStream(httpStream, mode, true),
+#if NETCOREAPP
+            "br" => new BrotliStream(httpStream, mode, true),
+#endif
+            _ => throw new NotSupportedException("当前.NET版本不支持此压缩算法: " + contentEncoding)
+        };
+    }
+
+
+    /// <summary>
+    /// 为数据流创建StreamWriter，并可以添加压缩包装
+    /// </summary>
+    /// <param name="httpStream">请求流或者响应流</param>
+    /// <param name="bufferSize">缓冲区大小</param>
+    /// <returns></returns>
+    public static StreamWriter CreateGzipWriter(this Stream httpStream, int bufferSize = 1024)
+    {
+        GZipStream zipStream = new GZipStream(httpStream, CompressionMode.Compress, true);
+        return new StreamWriter(zipStream, EncodingUtils.UTF8NoBOM, bufferSize, false);
+    }
+
+
+    /// <summary>
+    /// 为数据流创建StreamReader，并可以添加解压缩包装
+    /// </summary>
+    /// <param name="httpStream">请求流或者响应流</param>
+    /// <param name="bufferSize">缓冲区大小</param>
+    /// <returns></returns>
+    public static StreamReader CreateGzipReader(this Stream httpStream, int bufferSize = 1024)
+    {
+        GZipStream zipStream = new GZipStream(httpStream, CompressionMode.Decompress, true);
+        return new StreamReader(zipStream, Encoding.UTF8, true, bufferSize, false);
+    }
+
+
 }
