@@ -16,9 +16,10 @@ public sealed class TempFileStream : Stream
     /// <summary>
     /// 构造方法
     /// </summary>
-    public TempFileStream()
+    /// <param name="filePath"></param>
+    public TempFileStream(string filePath = null)
     {
-        _filePath = TempFile.GenTempFileFullName(".strm");
+        _filePath = filePath.IfEmpty(TempFile.GenTempFileFullName(".strm"));
         _stream = RetryFile.Create(_filePath);
     }
 
