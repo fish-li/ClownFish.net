@@ -276,7 +276,7 @@ public sealed class SimpleEsClient
             dataList.Add(item);
         }
 
-        dataList.ToMultiLineJson(writer, EsJsonStyle);
+        dataList.ToNdjson(writer, EsJsonStyle);
 
         string index = indexName ?? GetIndexName(typeof(T));
 

@@ -204,14 +204,14 @@ public static partial class HttpContextExtensions
 
         NHttpResponse response = httpContext.Response;
         response.StatusCode = 200;
-        response.ContentType = ResponseContentType.JsonLines;
+        response.ContentType = ResponseContentType.Ndjson;
 
         response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
         TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
 
         using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
-            list.ToMultiLineJson(writer);
+            list.ToNdjson(writer);
         }
 
         await stream.FlushAsync();

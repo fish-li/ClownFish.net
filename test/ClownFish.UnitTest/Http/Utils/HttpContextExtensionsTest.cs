@@ -469,7 +469,7 @@ public class HttpContextExtensionsTest
         
         string bodyText2 = (new HttpStreamReader(response.OutputStream, contentEncoding)).ReadAllText();
 
-        string inputText = list.ToMultiLineJson();
+        string inputText = list.ToNdjson();
 
         Assert.AreEqual(inputText, bodyText);
         Assert.AreEqual(inputText, bodyText2);

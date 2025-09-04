@@ -4,20 +4,20 @@
 public class NdJsonExtensionsTest
 {
     [TestMethod]
-    public void Test_ToMultiLineJson()
+    public void Test_ToNdjson()
     {
         List<Product3> list = new List<Product3>();
         list.Add(Product3.CreateByFixedData());
         list.Add(Product3.CreateByFixedData());
         list.Add(Product3.CreateByFixedData());
 
-        string lines = list.ToMultiLineJson().TrimEnd();
+        string lines = list.ToNdjson().TrimEnd();
         Assert.AreEqual(2, lines.Where(x => x == '\n').Count());
         Assert.IsTrue(lines.StartsWith("{"));
         Assert.IsTrue(lines.EndsWith("}"));
 
 
-        List<Product3> list2 = lines.FromMultiLineJson<Product3>();
+        List<Product3> list2 = lines.FromNdjson<Product3>();
         Assert.AreEqual(3, list2.Count);
 
         MyAssert.AreEqual(list, list2);
@@ -25,21 +25,21 @@ public class NdJsonExtensionsTest
 
 
     [TestMethod]
-    public void Test_FromMultiLineJson()
+    public void Test_FromNdjson()
     {
         StringBuilder sb = new StringBuilder();
         sb.Append(Product3.CreateByFixedData().ToJson()).Append("\n");
         sb.Append(Product3.CreateByRandomData().ToJson()).Append("\n");
         sb.Append(Product3.CreateByRandomData().ToJson()).Append("\n");
 
-        List<Product3> list = sb.ToString().FromMultiLineJson<Product3>();
+        List<Product3> list = sb.ToString().FromNdjson<Product3>();
         Assert.AreEqual(3, list.Count);
 
 
-        List<Product3> list2 = NdJsonExtensions.FromMultiLineJson<Product3>(string.Empty);
+        List<Product3> list2 = NdJsonExtensions.FromNdjson<Product3>(string.Empty);
         Assert.AreEqual(0, list2.Count);
 
-        List<Product3> list3 = NdJsonExtensions.FromMultiLineJson<Product3>((string)null);
+        List<Product3> list3 = NdJsonExtensions.FromNdjson<Product3>((string)null);
         Assert.IsNull(list3);
     }
 
@@ -48,15 +48,15 @@ public class NdJsonExtensionsTest
     public void Test_x_args()
     {
         List<InvokeLog> list = null;
-        Assert.AreEqual("", list.ToMultiLineJson());
-        Assert.AreEqual(0, list.ToMultiLineJson((TextWriter)null));
+        Assert.AreEqual("", list.ToNdjson());
+        Assert.AreEqual(0, list.ToNdjson((TextWriter)null));
 
         string nullString = null;
-        Assert.IsNull(nullString.FromMultiLineJson<InvokeLog>());
-        Assert.AreEqual(0, string.Empty.FromMultiLineJson<InvokeLog>().Count);
+        Assert.IsNull(nullString.FromNdjson<InvokeLog>());
+        Assert.AreEqual(0, string.Empty.FromNdjson<InvokeLog>().Count);
 
         TextReader nullReader = null;
-        Assert.AreEqual(0, nullReader.FromMultiLineJson<InvokeLog>().Count);
+        Assert.AreEqual(0, nullReader.FromNdjson<InvokeLog>().Count);
 
 
         MyAssert.IsError<ArgumentNullException>(() => {
@@ -88,7 +88,7 @@ public class NdJsonExtensionsTest
         MemoryStream gzipData = new MemoryStream();
 
         using( StreamWriter writer = gzipData.CreateGzipWriter() ) {
-            list.ToMultiLineJson(writer);
+            list.ToNdjson(writer);
         }
         
 
@@ -115,7 +115,7 @@ public class NdJsonExtensionsTest
         MemoryStream notgData = new MemoryStream();
 
         using( StreamWriter writer2 = new StreamWriter(notgData, Encoding.UTF8, 1024, true) ) {
-            list.ToMultiLineJson(writer2);
+            list.ToNdjson(writer2);
         }
 
         notgData.Position = 0;

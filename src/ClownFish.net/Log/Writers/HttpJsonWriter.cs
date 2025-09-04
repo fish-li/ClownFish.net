@@ -117,7 +117,7 @@ internal class HttpJsonWriter : ILogWriter
         // application/x-ndjson:  是一种更为具体和标准化的格式，要求每个 JSON 对象用换行符分隔，适合于流式处理。
         // 因此后者的定义更明确，这里就采用后者
 
-        httpOption.Headers.Add("Content-Type", RequestContentType.JsonLines);
+        httpOption.Headers.Add("Content-Type", RequestContentType.Ndjson);
         httpOption.Headers.Add("Content-Encoding", "gzip");
         httpOption.Headers.Add("x-datatype", typeof(T).FullName);
 

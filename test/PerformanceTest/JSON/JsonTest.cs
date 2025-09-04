@@ -129,8 +129,8 @@ public class JsonTest
         Stopwatch watch = Stopwatch.StartNew();
 
         for( int i = 0; i < RunCount2; i++ ) {
-            string json = s_testList.ToMultiLineJson();
-            List<InvokeLog> log2 = json.FromMultiLineJson<InvokeLog>();
+            string json = s_testList.ToNdjson();
+            List<InvokeLog> log2 = json.FromNdjson<InvokeLog>();
         }
 
         watch.Stop();
@@ -143,8 +143,8 @@ public class JsonTest
         Stopwatch watch = Stopwatch.StartNew();
 
         for( int i = 0; i < RunCount2; i++ ) {
-            var json = s_testList.ToMultiLineJson2();
-            List<InvokeLog> log2 = json.FromMultiLineJson2<InvokeLog>();
+            var json = s_testList.ToNdjson2();
+            List<InvokeLog> log2 = json.FromNdjson2<InvokeLog>();
         }
 
         watch.Stop();

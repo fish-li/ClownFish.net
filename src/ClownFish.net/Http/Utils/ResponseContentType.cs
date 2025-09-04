@@ -29,7 +29,7 @@ public static class ResponseContentType
     /// <summary>
     /// 表示以 ndjson 形式响应
     /// </summary>
-    public static readonly string JsonLines = "application/x-ndjson";
+    public static readonly string Ndjson = "application/x-ndjson";
 
     /// <summary>
     /// 表示以XML形式响应

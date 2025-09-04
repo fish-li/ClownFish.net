@@ -12,8 +12,8 @@ public class RequestContentTypeTest
         Assert.AreEqual(SerializeFormat.Json, ContentTypeUtils.GetFormat("application/json"));
         Assert.AreEqual(SerializeFormat.Json, ContentTypeUtils.GetFormat("application/json; charset=utf-8"));
 
-        Assert.AreEqual(SerializeFormat.JsonLines, ContentTypeUtils.GetFormat("application/x-ndjson"));
-        Assert.AreEqual(SerializeFormat.JsonLines, ContentTypeUtils.GetFormat("application/x-ndjson; charset=utf-8"));
+        Assert.AreEqual(SerializeFormat.Ndjson, ContentTypeUtils.GetFormat("application/x-ndjson"));
+        Assert.AreEqual(SerializeFormat.Ndjson, ContentTypeUtils.GetFormat("application/x-ndjson; charset=utf-8"));
 
         Assert.AreEqual(SerializeFormat.Xml, ContentTypeUtils.GetFormat("application/xml"));
         Assert.AreEqual(SerializeFormat.Xml, ContentTypeUtils.GetFormat("application/xml; charset=utf-8"));
@@ -44,7 +44,7 @@ public class RequestContentTypeTest
         Assert.AreEqual("application/x-www-form-urlencoded; charset=utf-8", ContentTypeUtils.GetByFormat(SerializeFormat.Form));
         Assert.AreEqual("multipart/form-data", ContentTypeUtils.GetByFormat(SerializeFormat.Multipart));
         Assert.AreEqual("application/octet-stream", ContentTypeUtils.GetByFormat(SerializeFormat.Binary));
-        Assert.AreEqual("application/x-ndjson", ContentTypeUtils.GetByFormat(SerializeFormat.JsonLines));
+        Assert.AreEqual("application/x-ndjson", ContentTypeUtils.GetByFormat(SerializeFormat.Ndjson));
         Assert.AreEqual(string.Empty, ContentTypeUtils.GetByFormat(SerializeFormat.None));
         Assert.AreEqual(string.Empty, ContentTypeUtils.GetByFormat(SerializeFormat.Auto));
         Assert.AreEqual(string.Empty, ContentTypeUtils.GetByFormat(SerializeFormat.Unknown));

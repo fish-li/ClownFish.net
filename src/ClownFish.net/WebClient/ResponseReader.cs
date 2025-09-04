@@ -173,7 +173,7 @@ public sealed class ResponseReader : IDisposable
             return ReturnObjectFromJsonStream<T>(responseStream, encoding);
         }
 
-        if( mediaType.Is(ResponseContentType.JsonLines) && ReturnTypeIsList<T>() ) {
+        if( mediaType.Is(ResponseContentType.Ndjson) && ReturnTypeIsList<T>() ) {
             // ndjson 用于大数据量返回，提前做特殊处理（直接读流做反序列化，不需要先生成responseText），可优化性能
             return ReturnListFromNdjsonStream<T>(responseStream, encoding);
         }
@@ -206,7 +206,7 @@ public sealed class ResponseReader : IDisposable
     {
         using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
 
-        return (LIST)NdJsonExtensions.LoadListFromMultiLineJson(reader, typeof(LIST));
+        return (LIST)NdJsonExtensions.LoadListFromNdjson(reader, typeof(LIST));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

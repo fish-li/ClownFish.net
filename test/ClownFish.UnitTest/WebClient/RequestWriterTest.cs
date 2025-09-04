@@ -449,15 +449,15 @@ public class RequestWriterTest
     }
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_string()
+    public void Test_WriteAsNdjsonFormat_string()
     {
         List<Product3> list = Product3.CreateTestDataList(9);
-        string text = list.ToMultiLineJson();
+        string text = list.ToNdjson();
 
         MemoryStream ms = new MemoryStream();
 
         RequestWriter writer = new RequestWriter();
-        writer.Write(ms, text, SerializeFormat.JsonLines, false);
+        writer.Write(ms, text, SerializeFormat.Ndjson, false);
 
         Assert.AreEqual("application/x-ndjson", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
@@ -467,15 +467,15 @@ public class RequestWriterTest
     }
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_string_gzip()
+    public void Test_WriteAsNdjsonFormat_string_gzip()
     {
         List<Product3> list = Product3.CreateTestDataList(100);
-        string text = list.ToMultiLineJson();
+        string text = list.ToNdjson();
 
         MemoryStream ms = new MemoryStream();
 
         RequestWriter writer = new RequestWriter();
-        writer.Write(ms, text, SerializeFormat.JsonLines, true);
+        writer.Write(ms, text, SerializeFormat.Ndjson, true);
 
         Assert.AreEqual("application/x-ndjson", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
@@ -485,51 +485,51 @@ public class RequestWriterTest
     }
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_list()
+    public void Test_WriteAsNdjsonFormat_list()
     {
         List<Product3> list = Product3.CreateTestDataList(9);
 
         MemoryStream ms = new MemoryStream();
 
         RequestWriter writer = new RequestWriter();
-        writer.Write(ms, list, SerializeFormat.JsonLines, false);
+        writer.Write(ms, list, SerializeFormat.Ndjson, false);
 
         Assert.AreEqual("application/x-ndjson", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
 
         string text2 = ms.ToArray().ToUtf8String();
-        string text = list.ToMultiLineJson();
+        string text = list.ToNdjson();
         Assert.AreEqual(text, text2);
     }
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_list_gzip()
+    public void Test_WriteAsNdjsonFormat_list_gzip()
     {
         List<Product3> list = Product3.CreateTestDataList(100);
 
         MemoryStream ms = new MemoryStream();
 
         RequestWriter writer = new RequestWriter();
-        writer.Write(ms, list, SerializeFormat.JsonLines, true);
+        writer.Write(ms, list, SerializeFormat.Ndjson, true);
 
         Assert.AreEqual("application/x-ndjson", writer.ContentType);
         Assert.IsTrue(writer.IsGzip);
 
         string text2 = ms.ToArray().UnGzip().ToUtf8String();
-        string text = list.ToMultiLineJson();
+        string text = list.ToNdjson();
         Assert.AreEqual(text, text2);
     }
 
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_list_empty()
+    public void Test_WriteAsNdjsonFormat_list_empty()
     {
         List<Product3> list = new List<Product3>();
 
         MemoryStream ms = new MemoryStream();
 
         RequestWriter writer = new RequestWriter();
-        writer.Write(ms, list, SerializeFormat.JsonLines, true);
+        writer.Write(ms, list, SerializeFormat.Ndjson, true);
 
         Assert.AreEqual("application/x-ndjson", writer.ContentType);
         Assert.IsFalse(writer.IsGzip);
@@ -539,7 +539,7 @@ public class RequestWriterTest
 
 
     [TestMethod]
-    public void Test_WriteAsJsonLinesFormat_notlist()
+    public void Test_WriteAsNdjsonFormat_notlist()
     {
         Product3 p = new Product3();
 
@@ -548,7 +548,7 @@ public class RequestWriterTest
         RequestWriter writer = new RequestWriter();
 
         ArgumentException ex = MyAssert.IsError<ArgumentException>(() => {
-            writer.Write(ms, p, SerializeFormat.JsonLines, true);
+            writer.Write(ms, p, SerializeFormat.Ndjson, true);
         });
 
         Assert.IsTrue(ex.Message.Contains("HttpOption.Data"));

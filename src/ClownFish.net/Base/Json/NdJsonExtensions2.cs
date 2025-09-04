@@ -16,13 +16,13 @@
 //    /// <param name="list">要序列化的对象</param>
 //    /// <param name="settings"></param>
 //    /// <returns>序列化得到的JSON字符串</returns>
-//    public static string ToNdJson(this ICollection list, JsonSerializerOptions settings = null)
+//    public static string ToNdJson2(this ICollection list, JsonSerializerOptions settings = null)
 //    {
 //        if( list == null )
 //            return string.Empty;
 
 //        using MemoryStream stream = MemoryStreamPool.GetStream();
-//        ToNdJson(list, stream, settings);
+//        ToNdJson2(list, stream, settings);
 
 //        stream.Position = 0;
 //        using( StreamReader reader = new StreamReader(stream, Encoding.UTF8) ) {
@@ -39,7 +39,7 @@
 //    /// <param name="stream"></param>
 //    /// <param name="settings"></param>
 //    /// <returns></returns>
-//    public static int ToNdJson(this ICollection list, Stream stream, JsonSerializerOptions settings = null)
+//    public static int ToNdJson2(this ICollection list, Stream stream, JsonSerializerOptions settings = null)
 //    {
 //        if( list == null )
 //            return 0;
@@ -65,7 +65,7 @@
 //    /// <param name="capacity">返回列表的初始容量</param>
 //    /// <param name="settings">json序列化参数</param>
 //    /// <returns>反序列化得到的结果</returns>
-//    public static List<T> FromNdJson<T>(this string ndJson, int capacity = 32, JsonSerializerOptions settings = null)
+//    public static List<T> FromNdJson2<T>(this string ndJson, int capacity = 32, JsonSerializerOptions settings = null)
 //    {
 //        if( ndJson == null )
 //            return null;
@@ -103,7 +103,7 @@
 //    /// <param name="capacity">返回列表的初始容量</param>
 //    /// <param name="settings">json序列化参数</param>
 //    /// <returns></returns>
-//    public static List<T> FromNdJson<T>(this Stream stream, int capacity = 32, JsonSerializerOptions settings = null)
+//    public static List<T> FromNdJson2<T>(this Stream stream, int capacity = 32, JsonSerializerOptions settings = null)
 //    {
 //        if( stream == null )
 //            return new List<T>(0);

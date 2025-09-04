@@ -86,11 +86,11 @@
 
 //        sw.Restart();
 //        for( int i = 0; i < count; i++ ) {
-//            string s = list.ToMultiLineJson();
+//            string s = list.ToNdjson();
 //            lastJson2 = s;
 //        }
 //        sw.Stop();
-//        Console.Write("ToMultiLineJson: ".PadRight(20));
+//        Console.Write("ToNdjson: ".PadRight(20));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
@@ -106,11 +106,11 @@
 
 //        sw.Restart();
 //        for( int i = 0; i < count; i++ ) {
-//            List<FidesClientObject> list2 = lastJson2.FromMultiLineJson<FidesClientObject>(5000);
+//            List<FidesClientObject> list2 = lastJson2.FromNdjson<FidesClientObject>(5000);
 //            client2 = list2.First();
 //        }
 //        sw.Stop();
-//        Console.Write("FromMultiLineJson: ".PadRight(20));
+//        Console.Write("FromNdjson: ".PadRight(20));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
@@ -121,21 +121,21 @@
 
 //        sw.Restart();
 //        for( int i = 0; i < count; i++ ) {
-//            string s = list.ToNdJson(jsonSerializerOptions);
+//            string s = list.ToNdJson2(jsonSerializerOptions);
 //            lastJson2 = s;
 //        }
 //        sw.Stop();
-//        Console.Write("ToNdJson: ".PadRight(20));
+//        Console.Write("ToNdJson2: ".PadRight(20));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 //        object client3 = null;
 //        sw.Restart();
 //        for( int i = 0; i < count; i++ ) {
-//            List<FidesClientObject> list2 = lastJson2.FromNdJson<FidesClientObject>(5000, jsonSerializerOptions);
+//            List<FidesClientObject> list2 = lastJson2.FromNdJson2<FidesClientObject>(5000, jsonSerializerOptions);
 //            client3 = list2.First();
 //        }
 //        sw.Stop();
-//        Console.Write("FromNdJson: ".PadRight(20));
+//        Console.Write("FromNdJson2: ".PadRight(20));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 //        Console.WriteLine($"JsonArray.Length:   {lastJson1.Length}");
@@ -152,12 +152,12 @@
 
 //        // output:  (count = 100)
 //        //ToJson:             00:00:01.3771499
-//        //ToMultiLineJson:    00:00:00.8930489
+//        //ToNdjson:           00:00:00.8930489
 //        //FromJson:           00:00:01.9413256
-//        //FromMultiLineJson:  00:00:02.8036464
+//        //FromNdjson:         00:00:02.8036464
 
-//        //ToNdJson:           00:00:01.1619535
-//        //FromNdJson:         00:00:02.2545541
+//        //ToNdJson2:          00:00:01.1619535
+//        //FromNdJson2:        00:00:02.2545541
 
 //        // 结论：json-array 和 ndjson 在序列化和反序列化的时间总和差不多
 //    }
@@ -182,11 +182,11 @@
 //        Stopwatch sw = Stopwatch.StartNew();
 
 //        for( int i = 0; i < count; i++ ) {
-//            string json1 = list.ToMultiLineJson();
+//            string json1 = list.ToNdjson();
 //            len1 = json1.Length;
 //        }
 //        sw.Stop();
-//        Console.Write("ToMultiLineJson-ToString: ".PadRight(32));
+//        Console.Write("ToNdjson-ToString: ".PadRight(32));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
@@ -194,12 +194,12 @@
 //        for( int i = 0; i < count; i++ ) {
 //            using MemoryStream stream = MemoryStreamPool.GetStream();
 //            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
-//                list.ToMultiLineJson(writer);
+//                list.ToNdjson(writer);
 //            }
 //            len2 = (int)stream.Length;
 //        }
 //        sw.Stop();
-//        Console.Write("ToMultiLineJson-ToStream: ".PadRight(32));
+//        Console.Write("ToNdjson-ToStream: ".PadRight(32));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
@@ -207,27 +207,27 @@
 //        for( int i = 0; i < count; i++ ) {
 //            using MemoryStream stream = MemoryStreamPool.GetStream();
 //            using( GZipStream gzip = new GZipStream(stream, CompressionMode.Compress, true) ) {
-//                using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) { // 增加数据窗口大小可以提高压缩率
+//                using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
 
-//                    list.ToMultiLineJson(writer);
+//                    list.ToNdjson(writer);
 //                }
 //            }
 //            len3 = (int)stream.Length;
 //        }
 //        sw.Stop();
-//        Console.Write("ToMultiLineJson-ToGzipStream: ".PadRight(32));
+//        Console.Write("ToNdjson-ToGzipStream: ".PadRight(32));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
 
 //        sw.Restart();
 //        for( int i = 0; i < count; i++ ) {
-//            string json1 = list.ToMultiLineJson();
+//            string json1 = list.ToNdjson();
 //            byte[] bytes = json1.ToGzip();
 //            len4 = bytes.Length;
 //        }
 //        sw.Stop();
-//        Console.Write("ToMultiLineJson-ToGzipBytes: ".PadRight(32));
+//        Console.Write("ToNdjson-ToGzipBytes: ".PadRight(32));
 //        Console.WriteLine(sw.Elapsed.ToString());
 
 
@@ -239,10 +239,10 @@
 
 
 //        // output:  (count = 100)
-//        //ToMultiLineJson - ToString:       00:00:01.4197390
-//        //ToMultiLineJson - ToStream:       00:00:00.6168259
-//        //ToMultiLineJson - ToGzipStream:   00:00:00.8357746
-//        //ToMultiLineJson - ToGzipBytes:    00:00:01.4432242
+//        //ToNdjson - ToString:       00:00:01.4197390
+//        //ToNdjson - ToStream:       00:00:00.6168259
+//        //ToNdjson - ToGzipStream:   00:00:00.8357746
+//        //ToNdjson - ToGzipBytes:    00:00:01.4432242
 //        //ndjson.Length:        2650000
 //        //stream.Length:        2650000
 //        //gzip - stream.Length:   13798

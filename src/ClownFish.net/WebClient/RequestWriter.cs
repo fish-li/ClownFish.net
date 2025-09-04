@@ -27,8 +27,8 @@ internal struct RequestWriter
                 WriteAsJson2Format(stream, data, autoGzip);
                 break;
 
-            case SerializeFormat.JsonLines:
-                WriteAsJsonLinesFormat(stream, data, autoGzip);
+            case SerializeFormat.Ndjson:
+                WriteAsNdjsonFormat(stream, data, autoGzip);
                 break;
 
             case SerializeFormat.Xml:
@@ -122,9 +122,9 @@ internal struct RequestWriter
         WriteTextAutoGzip(stream, text, autoGzip);    // json2
     }
 
-    private void WriteAsJsonLinesFormat(Stream stream, object data, bool autoGzip)
+    private void WriteAsNdjsonFormat(Stream stream, object data, bool autoGzip)
     {
-        this.ContentType = ResponseContentType.JsonLines;
+        this.ContentType = ResponseContentType.Ndjson;
 
         if( data is string text ) {
             WriteTextAutoGzip(stream, text, autoGzip);    // ndjson
@@ -147,14 +147,14 @@ internal struct RequestWriter
 
         if( autoGzip ) {   // 这里不做长度判断，直接Gzip压缩
             using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
-                list.ToMultiLineJson(writer);
+                list.ToNdjson(writer);
             }
             IsGzip = true;
             IsBinaryData = true;
         }
         else {
             using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
-                list.ToMultiLineJson(writer);
+                list.ToNdjson(writer);
             }
         }
     }

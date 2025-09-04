@@ -42,7 +42,7 @@ public static class JsonExtensions2
     /// <param name="list">要序列化的对象</param>
     /// <param name="options"></param>
     /// <returns>序列化得到的JSON字符串</returns>
-    public static byte[] ToMultiLineJson2<T>(this ICollection<T> list, JsonSerializerOptions options = null)
+    public static byte[] ToNdjson2<T>(this ICollection<T> list, JsonSerializerOptions options = null)
     {
         if( list == null || list.Count == 0 )
             return Empty.Array<byte>();
@@ -78,7 +78,7 @@ public static class JsonExtensions2
     /// <param name="multiLineJson">以换行符为分隔的多行JSON字符串</param>
     /// <param name="options"></param>
     /// <returns>反序列化得到的结果</returns>
-    public static List<T> FromMultiLineJson2<T>(this byte[] multiLineJson, JsonSerializerOptions options = null)
+    public static List<T> FromNdjson2<T>(this byte[] multiLineJson, JsonSerializerOptions options = null)
     {
         if( multiLineJson == null )
             return default(List<T>);

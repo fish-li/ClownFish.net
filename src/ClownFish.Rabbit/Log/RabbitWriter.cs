@@ -89,14 +89,14 @@ internal sealed class RabbitWriter : ILogWriter
         int batchSize = attr.BatchSize;
 
         if( list.Count <= batchSize ) {
-            string json = attr.Ndjson ? list.ToMultiLineJson() : list.ToJson();
+            string json = attr.Ndjson ? list.ToNdjson() : list.ToJson();
             client.SendMessage(json, null, routingKey);
         }
         else {
             List<List<T>> listlist = list.SplitList(int.MaxValue, batchSize);
 
             foreach( List<T> listX in listlist ) {
-                string json = attr.Ndjson ? listX.ToMultiLineJson() : list.ToJson();
+                string json = attr.Ndjson ? listX.ToNdjson() : list.ToJson();
                 client.SendMessage(json, null, routingKey);
             }
         }

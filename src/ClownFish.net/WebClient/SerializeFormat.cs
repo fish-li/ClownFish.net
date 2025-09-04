@@ -54,10 +54,10 @@ public enum SerializeFormat
     Unknown,
 
     /// <summary>
-    /// 将提交数据序列化成 多行JSON 字符串
+    /// 将提交数据序列化成 ndjson(多行JSON) 字符串
     /// 并设置请求头：Content-Type: application/x-ndjson
     /// </summary>
-    JsonLines,
+    Ndjson,
 }
 
 

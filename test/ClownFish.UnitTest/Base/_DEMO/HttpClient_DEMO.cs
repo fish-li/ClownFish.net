@@ -116,7 +116,7 @@ public class HttpClient_DEMO
             Method = "POST",
             Url = "http://www.fish-test.com/show-body.aspx",
             Data = list,
-            Format = SerializeFormat.JsonLines     // 注意这里
+            Format = SerializeFormat.Ndjson     // 注意这里
         }.GetResult();
         Console.WriteLine(text);
 

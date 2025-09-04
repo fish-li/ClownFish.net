@@ -76,7 +76,7 @@ public static class HttpUtils
             return contentType.StartsWith0(RequestContentType.Json)  // 可包含：application/json-seq
                 || contentType.StartsWith0(RequestContentType.Xml)
                 || contentType.StartsWith0(RequestContentType.Form)
-                || contentType.StartsWith0(RequestContentType.JsonLines);
+                || contentType.StartsWith0(RequestContentType.Ndjson);
         }
 
         return false;
@@ -100,7 +100,7 @@ public static class HttpUtils
             return contentType.StartsWith0(ResponseContentType.Json)  // 可包含：application/json-seq
                 || contentType.StartsWith0(ResponseContentType.Xml)
                 //|| contentType.StartsWith0(RequestContentType.Form)  // Response根本不使用这个类型
-                || contentType.StartsWith0(ResponseContentType.JsonLines)
+                || contentType.StartsWith0(ResponseContentType.Ndjson)
                 || contentType.StartsWith0("application/problem+json");
 
             //|| contentType.StartsWith0("application/problem+xml")
@@ -203,7 +203,7 @@ public static class HttpUtils
         AddContentTypeCache(ResponseContentType.TextUtf8);
         AddContentTypeCache(ResponseContentType.Json);
         AddContentTypeCache(ResponseContentType.JsonUtf8);
-        AddContentTypeCache(ResponseContentType.JsonLines);
+        AddContentTypeCache(ResponseContentType.Ndjson);
         AddContentTypeCache(ResponseContentType.Xml);
         AddContentTypeCache(ResponseContentType.XmlUtf8);
         AddContentTypeCache(ResponseContentType.Html);

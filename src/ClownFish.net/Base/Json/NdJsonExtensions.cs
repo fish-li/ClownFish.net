@@ -5,6 +5,63 @@
 /// </summary>
 public static class NdJsonExtensions
 {
+    #region 已废弃的方法
+
+    /// <summary>
+    /// 已废弃的方法
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    [Obsolete("请用 ToNdjson 方法来代替")]
+    public static string ToMultiLineJson(this ICollection list, JsonSerializerSettings settings = null)
+    {
+        return ToNdjson(list, settings);
+    }
+
+    /// <summary>
+    /// 已废弃的方法
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="writer"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    [Obsolete("请用 ToNdjson 方法来代替")]
+    public static int ToMultiLineJson(this ICollection list, TextWriter writer, JsonSerializerSettings settings = null)
+    {
+        return ToNdjson(list, writer, settings);
+    }
+
+    /// <summary>
+    /// 已废弃的方法
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="ndjson"></param>
+    /// <param name="capacity"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    [Obsolete("请用 FromNdjson 方法来代替")]
+    public static List<T> FromMultiLineJson<T>(this string ndjson, int capacity = 100, JsonSerializerSettings settings = null)
+    {
+        return FromNdjson<T>(ndjson, capacity, settings);
+    }
+
+    /// <summary>
+    /// 已废弃的方法
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="reader"></param>
+    /// <param name="capacity"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    [Obsolete("请用 FromNdjson 方法来代替")]
+    public static List<T> FromMultiLineJson<T>(this TextReader reader, int capacity = 100, JsonSerializerSettings settings = null)
+    {
+        return FromNdjson<T>(reader, capacity, settings);
+    }
+
+    #endregion
+
 
     /// <summary>
     /// 将一个对象序列化为 ndjson 字符串。
@@ -12,7 +69,7 @@ public static class NdJsonExtensions
     /// <param name="list">要序列化的对象</param>
     /// <param name="settings"></param>
     /// <returns>序列化得到的JSON字符串</returns>
-    public static string ToMultiLineJson(this ICollection list, JsonSerializerSettings settings = null)
+    public static string ToNdjson(this ICollection list, JsonSerializerSettings settings = null)
     {
         if( list == null )
             return string.Empty;
@@ -21,7 +78,7 @@ public static class NdJsonExtensions
         try {
             using( StringWriter writer = new StringWriter(sb) ) {
 
-                ToMultiLineJson(list, writer, settings);
+                ToNdjson(list, writer, settings);
 
                 return sb.ToString();
             }
@@ -31,7 +88,7 @@ public static class NdJsonExtensions
         }
     }
 
-
+    
     /// <summary>
     /// 将一个对象序列化为 ndjson 字符串。
     /// </summary>
@@ -39,7 +96,7 @@ public static class NdJsonExtensions
     /// <param name="writer"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    public static int ToMultiLineJson(this ICollection list, TextWriter writer, JsonSerializerSettings settings = null)
+    public static int ToNdjson(this ICollection list, TextWriter writer, JsonSerializerSettings settings = null)
     {
         if( list == null )
             return 0;
@@ -69,7 +126,7 @@ public static class NdJsonExtensions
         // 1，不设置 jsonTextWriter.CloseOutput = false;     // 此属性默认是 true
         // 2，外层调用代码：
         //      using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
-        //         list.ToMultiLineJson(writer);
+        //         list.ToNdjson(writer);
         //      }
         // 在调试模式下，发现 writer._disposed = true，其实也【符合预期】，毕竟 jsonTextWriter.CloseOutput = true
 
@@ -79,7 +136,7 @@ public static class NdJsonExtensions
         // 2，外层调用代码： 
         //       using( GZipStream gzip = new GZipStream(stream, CompressionMode.Compress, true) ) {
         //            using( StreamWriter writer = new StreamWriter(gzip, EncodingUtils.UTF8NoBOM, 1024 * 4, true) ) {
-        //                list.ToMultiLineJson(writer);
+        //                list.ToNdjson(writer);
         //            }
         //       }
         // 在调试模式下，发现 writer._disposed = false 【居然没有关闭】~~~~~~~~~~
@@ -92,25 +149,26 @@ public static class NdJsonExtensions
     }
 
 
+    
 
     /// <summary>
     /// 将一个 ndjson 字符串反序列化为列表对象
     /// </summary>
     /// <typeparam name="T">反序列的对象类型参数</typeparam>
-    /// <param name="multiLineJson">以换行符为分隔的多行JSON字符串</param>
+    /// <param name="ndjson">以换行符为分隔的多行JSON字符串</param>
     /// <param name="capacity">返回列表的初始容量</param>
     /// <param name="settings">json序列化参数</param>
     /// <returns>反序列化得到的结果</returns>
-    public static List<T> FromMultiLineJson<T>(this string multiLineJson, int capacity = 100, JsonSerializerSettings settings = null)
+    public static List<T> FromNdjson<T>(this string ndjson, int capacity = 100, JsonSerializerSettings settings = null)
     {
-        if( multiLineJson == null )
+        if( ndjson == null )
             return null;
 
-        if( multiLineJson.Length == 0 )
+        if( ndjson.Length == 0 )
             return new List<T>(0);
 
-        using( StringReader reader = new StringReader(multiLineJson) ) {
-            return FromMultiLineJson<T>(reader, capacity, settings);
+        using( StringReader reader = new StringReader(ndjson) ) {
+            return FromNdjson<T>(reader, capacity, settings);
         }
     }
 
@@ -123,7 +181,7 @@ public static class NdJsonExtensions
     /// <param name="capacity">返回列表的初始容量</param>
     /// <param name="settings">json序列化参数</param>
     /// <returns></returns>
-    public static List<T> FromMultiLineJson<T>(this TextReader reader, int capacity = 100, JsonSerializerSettings settings = null)
+    public static List<T> FromNdjson<T>(this TextReader reader, int capacity = 100, JsonSerializerSettings settings = null)
     {
         if( reader == null )
             return new List<T>(0);
@@ -149,12 +207,12 @@ public static class NdJsonExtensions
     }
 
 
-    private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod("FromMultiLineJson",
+    private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod("FromNdjson",
                                                     BindingFlags.Static | BindingFlags.Public, null,
                                                     new Type[] { typeof(TextReader), typeof(int), typeof(JsonSerializerSettings) }
                                                     , null);
 
-    internal static object LoadListFromMultiLineJson(this TextReader reader, Type listType)
+    internal static object LoadListFromNdjson(this TextReader reader, Type listType)
     {
         Type elementType = listType.GetGenericArguments()[0];
 

@@ -30,7 +30,7 @@ public static class RequestContentType
     /// <summary>
     /// 指示请求体是一个 ndjson
     /// </summary>
-    public static readonly string JsonLines = "application/x-ndjson";
+    public static readonly string Ndjson = "application/x-ndjson";
 
     /// <summary>
     /// 指示请求体是一个XML

@@ -27,8 +27,8 @@ public static class ContentTypeUtils
             if( mediaType == RequestContentType.Json )
                 return SerializeFormat.Json;
 
-            if( mediaType == RequestContentType.JsonLines )
-                return SerializeFormat.JsonLines;
+            if( mediaType == RequestContentType.Ndjson )
+                return SerializeFormat.Ndjson;
 
             if( mediaType == RequestContentType.Xml )
                 return SerializeFormat.Xml;
@@ -74,7 +74,7 @@ public static class ContentTypeUtils
             SerializeFormat.Text => ResponseContentType.TextUtf8,
             SerializeFormat.Json => ResponseContentType.JsonUtf8,
             SerializeFormat.Json2 => ResponseContentType.JsonUtf8,
-            SerializeFormat.JsonLines => RequestContentType.JsonLines,
+            SerializeFormat.Ndjson => RequestContentType.Ndjson,
             SerializeFormat.Xml => ResponseContentType.XmlUtf8,
             SerializeFormat.Form => RequestContentType.FormUtf8,
             SerializeFormat.Multipart => RequestContentType.Multipart,
