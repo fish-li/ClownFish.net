@@ -81,6 +81,7 @@ public class HttpTest1
     public async Task Test_Normal()
     {
         MockRequestData requestData = GetRequestData();
+        requestData.InputStreamSupportMultiRead = true;
 
         using( MockHttpPipeline mock = new MockHttpPipeline(requestData) ) {
 

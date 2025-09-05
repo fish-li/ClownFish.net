@@ -43,12 +43,19 @@ public class MockRequestData
             if( this.Body == null )
                 return null;
 
-            //return new MemoryStream(this.Body, false);
-            return new MockNetworkStream(this.Body);
+            if( InputStreamSupportMultiRead )
+                return new MemoryStream(this.Body, false);
+            else
+                return new MockNetworkStream(this.Body);
         }
     }
 
     private Stream _inputStream;
+
+    /// <summary>
+    /// 创建InputStream时，是否允许多次读取
+    /// </summary>
+    public bool InputStreamSupportMultiRead = false;
 
     /// <summary>
     /// 

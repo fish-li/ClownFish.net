@@ -1,4 +1,6 @@
-﻿namespace ClownFish.UnitTest.Http.Pipleline.Test;
+﻿using ClownFish.UnitTest.Base;
+
+namespace ClownFish.UnitTest.Http.Pipleline.Test;
 
 [TestClass]
 public class NHttpRequestTest
@@ -272,6 +274,8 @@ Content-Type: text/plain
 ".Trim();
 
         MockRequestData requestData = MockRequestData.FromText(requestText);
+        requestData.InputStreamSupportMultiRead = true;
+
         MockHttpRequest request = requestData;
 
         byte[] body = request.ReadBodyAsBytes();
@@ -390,4 +394,165 @@ GET http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
             Assert.IsTrue(mock.HttpContext.IsAuthenticated);
         }
     }
+
+    [TestMethod]
+    public void Test_ReadBodyAsJsonTo_error()
+    {
+        string requestText = @"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+aa: 11
+bb: 22
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+".Trim();
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        MyAssert.IsError<InvalidOperationException>(()=> {
+            NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        });
+    }
+
+    [TestMethod]
+    public void Test_ReadBodyAsJsonTo_null()
+    {
+        string json = new NameValue("name1", "中文汉字#abcd").ToJson();
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{json}".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        string body = request.ReadBodyAsText();   // 先读一次
+
+        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        Assert.IsNull(nv);
+    }
+
+    [TestMethod]
+    public void Test_ReadBodyAsJsonTo_normal()
+    {
+        string json = new NameValue("name1", "中文汉字#abcd").ToJson();
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{json}".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        Assert.IsNotNull(nv);
+        Assert.AreEqual("name1", nv.Name);
+        Assert.AreEqual("中文汉字#abcd", nv.Value);
+    }
+
+    [TestMethod]
+    public void Test_ReadBodyAsJsonTo_gzip()
+    {
+        string json = new NameValue("name1", "中文汉字#abcd").ToJson();
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/json; charset=utf-8
+Content-Encoding: gzip
+".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        requestData.Body = json.ToUtf8Bytes().ToGzip();
+
+        MockHttpRequest request = requestData;
+
+        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        Assert.IsNotNull(nv);
+        Assert.AreEqual("name1", nv.Name);
+        Assert.AreEqual("中文汉字#abcd", nv.Value);
+    }
+
+
+
+    [TestMethod]
+    public void Test_ReadBodyAsNdjonsToList_error()
+    {
+        string json = new NameValue("name1", "中文汉字#abcd").ToJson();
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{json}".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        MyAssert.IsError<InvalidOperationException>(() => {
+            _ = request.ReadBodyAsNdjonsToList<NameValue>();
+        });
+    }
+
+
+    [TestMethod]
+    public void Test_ReadBodyAsNdjonsToList_null()
+    {
+        string json = new NameValue("name1", "中文汉字#abcd").ToJson();
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/x-ndjson
+
+{json}".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        string body = request.ReadBodyAsText();   // 先读一次
+
+        List<NameValue> list = request.ReadBodyAsNdjonsToList<NameValue>();
+        Assert.IsNull(list);
+    }
+
+
+    [TestMethod]
+    public void Test_ReadBodyAsNdjonsToList_normal()
+    {
+        List<Product3> list = Product3.CreateTestDataList(900);
+        string ndjson = list.ToNdjson();
+
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/x-ndjson
+
+{ndjson}".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        MockHttpRequest request = requestData;
+
+        List<Product3> list2 = request.ReadBodyAsNdjonsToList<Product3>();
+        Assert.AreEqual(900, list2.Count);
+    }
+
+
+    [TestMethod]
+    public void Test_ReadBodyAsNdjonsToList_gzip()
+    {
+        List<Product3> list = Product3.CreateTestDataList(900);
+        string ndjson = list.ToNdjson();
+
+        string requestText = @$"
+POST http://www.abc.com:14752/aaa/bb/ccc.aspx?tenantId=my57972739adc90 HTTP/1.1
+Content-Type: application/x-ndjson
+Content-Encoding: gzip
+".Trim();
+
+        MockRequestData requestData = MockRequestData.FromText(requestText);
+        requestData.Body = ndjson.ToUtf8Bytes().ToGzip();
+
+        MockHttpRequest request = requestData;
+
+        List<Product3> list2 = request.ReadBodyAsNdjonsToList<Product3>();
+        Assert.AreEqual(900, list2.Count);
+    }
+
+
 }

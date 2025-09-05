@@ -39,14 +39,19 @@ public partial class NHttpRequest : ILoggingObject
         return _bodyText;
     }
 
-
     /// <summary>
-    /// 请求体是否支持多次读取
+    /// 检查请求体是否可读，并设置已读标记
     /// </summary>
     /// <returns></returns>
-    protected virtual bool BodySupportMultiRead()
+    internal protected bool CheckBodyCanReadAndSetReadFlag()
     {
-        return this.InputStream.CanSeek;
+        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+            return false;
+
+        if( this.InputStream.CanSeek == false )   // 请求体是否支持多次读取
+            _isRead = true;  // 避免出现：System.InvalidOperationException: Reading is already in progress.
+
+        return true;
     }
 
 
@@ -96,18 +101,16 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns>输入的流</returns>
     public virtual string ReadBodyAsText()
     {
-        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
-            return string.Empty;
-
         // 如果请求体不是文本格式，就直接不读取
         if( HttpUtils.RequestBodyIsText(this.ContentType) == false )
+            return string.Empty;
+
+        if( CheckBodyCanReadAndSetReadFlag() == false )
             return string.Empty;
 
         Encoding encoding = this.GetEncoding();
         string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
 
-        if( this.BodySupportMultiRead() == false )
-            _isRead = true;  // 避免出现：System.InvalidOperationException: Reading is already in progress.
 
         try {
             HttpStreamReader reader = new HttpStreamReader(this.InputStream, contentEncoding);
@@ -130,18 +133,16 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns>输入的流</returns>
     public virtual async Task<string> ReadBodyAsTextAsync()
     {
-        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
-            return string.Empty;
-
         // 如果请求体不是文本格式，就直接不读取
         if( HttpUtils.RequestBodyIsText(this.ContentType) == false )
+            return string.Empty;
+
+        if( CheckBodyCanReadAndSetReadFlag() == false )
             return string.Empty;
 
         Encoding encoding = this.GetEncoding();
         string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
 
-        if( this.BodySupportMultiRead() == false )
-            _isRead = true;
 
         try {
             HttpStreamReader reader = new HttpStreamReader(this.InputStream, contentEncoding);
@@ -161,11 +162,8 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns></returns>
     public virtual byte[] ReadBodyAsBytes()
     {
-        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( CheckBodyCanReadAndSetReadFlag() == false )
             return Empty.Array<byte>();
-
-        if( this.BodySupportMultiRead() == false )
-            _isRead = true;
 
         try {
             return this.InputStream.ToArray();
@@ -184,11 +182,8 @@ public partial class NHttpRequest : ILoggingObject
     /// <returns></returns>
     public virtual async Task<byte[]> ReadBodyAsBytesAsync()
     {
-        if( _isRead || this.HasBody == false || this.InputStream == null || this.InputStream.CanRead == false )
+        if( CheckBodyCanReadAndSetReadFlag() == false )
             return Empty.Array<byte>();
-
-        if( this.BodySupportMultiRead() == false )
-            _isRead = true;
 
         try {
             return await this.InputStream.ToArrayAsync();
@@ -276,8 +271,9 @@ public partial class NHttpRequest : ILoggingObject
     /// <summary>
     /// 将请求转换成符合HTTP协议描述的文本格式
     /// </summary>
+    /// <param name="includeRequestBody">是否尽量包含请求体部分</param>
     /// <returns></returns>
-    internal string ToRawText(bool includeRequestBody)
+    public string ToRawText(bool includeRequestBody)
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {
@@ -337,8 +333,58 @@ public partial class NHttpRequest : ILoggingObject
     //    return this.GetBodyText();
     //}
 
+    /// <summary>
+    /// 按 ndjson 的方式读取请求体，并反序列化成指定的类型-实例列表。
+    /// 【##### 此方法不做结果缓存，因此不要多次调用 #####】
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public List<T> ReadBodyAsNdjonsToList<T>()
+    {
+        HttpUtils.ParseContentType(this.ContentType, out string mediaType, out Encoding encoding);
+        if( mediaType != RequestContentType.Ndjson )
+            throw new InvalidOperationException($"请求体数据类型不是预期的ndjson格式，当前Content-Type={this.ContentType}");
+
+        if( CheckBodyCanReadAndSetReadFlag() == false )
+            return null;
+
+        List<T> list = new List<T>(100);
+
+        string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
+        using NdJsonReader reader = new NdJsonReader(this.InputStream, contentEncoding, encoding);
+
+        foreach( T item in reader.ReadLines<T>() )
+            list.Add(item);
+
+        return list;
+    }
 
 
+    /// <summary>
+    /// 按 json 的方式读取请求体，并反序列化成指定的类型实例。
+    /// 【##### 此方法不做结果缓存，因此不要多次调用 #####】
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public T ReadBodyAsJsonTo<T>()
+    {
+        HttpUtils.ParseContentType(this.ContentType, out string mediaType, out Encoding encoding);
+        if( mediaType != RequestContentType.Json )
+            throw new InvalidOperationException($"请求体数据类型不是预期的json格式，当前Content-Type={this.ContentType}");
+
+        if( CheckBodyCanReadAndSetReadFlag() == false )
+            return default(T);
 
 
+        string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
+        if( contentEncoding.IsNullOrEmpty() ) {
+            using StreamReader reader = new StreamReader(this.InputStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+            return (T)reader.FromJson(typeof(T));
+        }
+        else {
+            using Stream zipStream = this.InputStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress);
+            using StreamReader reader = new StreamReader(zipStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+            return (T)reader.FromJson(typeof(T));
+        }
+    }
 }
