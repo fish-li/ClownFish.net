@@ -81,7 +81,7 @@ public sealed class NdJsonReader : IDisposable
             throw new InvalidOperationException($"响应体数据类型不是预期的ndjson格式，当前Content-Type={contentType}");
 
 
-        string contentEncoding = httpResult.GetHeader(HttpHeaders.Request.ContentEncoding);  // 目前永远为 null
+        string contentEncoding = httpResult.GetHeader(HttpHeaders.Request.ContentEncoding);
         return new NdJsonReader(httpResult.Result, contentEncoding, encoding, autoCloseStream);
     }
 

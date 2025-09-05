@@ -178,16 +178,17 @@ public static class StreamExtensions
     /// <param name="httpStream">请求流或者响应流</param>
     /// <param name="contentEncoding">压缩算法名称，可参考HTTP头 Content-Encoding 的取值</param>
     /// <param name="mode">压缩还是解压缩</param>
+    /// <param name="leaveOpen"></param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
-    public static Stream CreateCompressionStream(this Stream httpStream, string contentEncoding, CompressionMode mode)
+    public static Stream CreateCompressionStream(this Stream httpStream, string contentEncoding, CompressionMode mode, bool leaveOpen = true)
     {
         return contentEncoding switch {
             null or "" => throw new ArgumentNullException(nameof(contentEncoding)),
-            "gzip" => new GZipStream(httpStream, mode, true),
-            "deflate" => new DeflateStream(httpStream, mode, true),
+            "gzip" => new GZipStream(httpStream, mode, leaveOpen),
+            "deflate" => new DeflateStream(httpStream, mode, leaveOpen),
 #if NETCOREAPP
-            "br" => new BrotliStream(httpStream, mode, true),
+            "br" => new BrotliStream(httpStream, mode, leaveOpen),
 #endif
             _ => throw new NotSupportedException("当前.NET版本不支持此压缩算法: " + contentEncoding)
         };

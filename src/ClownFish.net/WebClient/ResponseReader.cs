@@ -9,8 +9,6 @@ public sealed class ResponseReader : IDisposable
 {
     private readonly HttpWebResponse _response;
 
-    private readonly bool _autoDecompress;
-
     private long _maxLimitLen;
 
     private Stream _responseStream;
@@ -18,24 +16,32 @@ public sealed class ResponseReader : IDisposable
     /// <summary>
     /// 是否需要自动关闭Response流
     /// </summary>
-    private bool _autoCloseResponseStream = true;
+    private bool _autoCloseResponseStream = true;   // 当返回类型为 Stream 时设置为 false
 
     /// <summary>
     /// 构造方法
     /// </summary>
     /// <param name="response">HTTP响应对象</param>
-    /// <param name="autoDecompress">是否需要在读取响应时自动解压缩</param>
     /// <param name="maxLimitLen">最大允许的响应体长度，可以不指定</param>
-    public ResponseReader(HttpWebResponse response, bool autoDecompress = false, long maxLimitLen = 0)
+    public ResponseReader(HttpWebResponse response, long maxLimitLen = 0)
     {
         if( response == null )
             throw new ArgumentNullException(nameof(response));
 
         _response = response;
-        _autoDecompress = autoDecompress;
         _maxLimitLen = maxLimitLen;
     }
 
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
+    void IDisposable.Dispose()
+    {
+        if( _autoCloseResponseStream ) {
+            if( _responseStream != null ) {
+                _responseStream.Dispose();
+                _responseStream = null;
+            }
+        }
+    }
 
     /// <summary>
     /// 获取指定类型的结果
@@ -61,6 +67,18 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
+    private Stream GetResponseStream()
+    {
+        Stream responseStream = _response.GetResponseStream();
+
+        string contentEncoding = _response.ContentEncoding;
+        if( contentEncoding.HasValue() ) {
+            return responseStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress, false);
+        }
+
+        return responseStream;
+    }
+
     private HttpResult<T> GetHttpResult000<T>()
     {
         int statusCode = (int)_response.StatusCode;
@@ -69,24 +87,6 @@ public sealed class ResponseReader : IDisposable
 
         return new HttpResult<T>(statusCode, header, body);
     }
-
-    private Stream GetResponseStream()
-    {
-        Stream responseStream = _response.GetResponseStream();
-
-        if( _autoDecompress ) {
-
-            // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Encoding
-            string contentEncoding = _response.ContentEncoding;
-            if( contentEncoding.HasValue() ) {
-                return responseStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress);
-            }
-            // else 没有指定 “Content-Encoding”，也就是没有使用压缩格式
-        }
-
-        return responseStream;
-    }
-
 
     private T GetResult<T>()
     {
@@ -234,7 +234,7 @@ public sealed class ResponseReader : IDisposable
 
         return (T)mySerializer.Deserialize(reader);
     }
-        
+
 
     internal static T ConvertResult<T>(string responseText, string mediaType, string contentType)
     {
@@ -422,20 +422,4 @@ public sealed class ResponseReader : IDisposable
         return null;
     }
 
-
-
-    #region IDisposable 成员
-
-    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
-    void IDisposable.Dispose()
-    {
-        if( _autoCloseResponseStream ) {
-            if( _responseStream != null ) {
-                _responseStream.Dispose();
-                _responseStream = null;
-            }
-        }
-    }
-
-    #endregion
 }

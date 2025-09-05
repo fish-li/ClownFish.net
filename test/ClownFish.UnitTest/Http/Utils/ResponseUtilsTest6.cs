@@ -39,7 +39,6 @@ public class ResponseUtilsTest6
         responseMessage.StatusCode = HttpStatusCode.OK;
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody2(SerializeFormat.Json, @"{""a"": 2, ""b"": 3}".ToUtf8Bytes());
         responseMessage.Headers.Add("Connection", "keep-alive");
-        responseMessage.Content.Headers.Add("Content-Encoding", "zstd");
         responseMessage.Headers.Add("Pragma", "no-cache");
         responseMessage.Headers.Add("Vary", "Accept-Encoding");
         responseMessage.Headers.Add("X-Content-Type-Options", "nosniff");
@@ -60,7 +59,6 @@ public class ResponseUtilsTest6
         Assert.AreEqual(200, httpResult.StatusCode);
         Assert.AreEqual("application/json; charset=utf-8", httpResult.GetHeader("Content-Type"));
         Assert.AreEqual("keep-alive", httpResult.GetHeader("Connection"));
-        Assert.AreEqual("zstd", httpResult.GetHeader("Content-Encoding"));
         Assert.AreEqual("no-cache", httpResult.GetHeader("Pragma"));
         Assert.AreEqual("Accept-Encoding", httpResult.GetHeader("Vary"));
         Assert.AreEqual("nosniff", httpResult.GetHeader("X-Content-Type-Options"));

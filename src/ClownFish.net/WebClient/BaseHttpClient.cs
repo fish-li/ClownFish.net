@@ -74,15 +74,8 @@ internal abstract class BaseHttpClient
         if( typeof(T) == typeof(ClownFish.Base.Void) )
             return (T)(object)ClownFish.Base.Void.Value;
 
-        // 这里不使用 ResponseReader 的 “自动解压缩” 功能，因为可以在 SocketsHttpHandler 中设置解决
-        // 例如：clientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Brotli;
 
-        // ResponseReader 的 autoDecompress 这个参数如何设置，最靠谱的做法是检查 "Content-Encoding" 标头，
-        // 如果有这个头，并且是一个压缩算法名称，那么就应该设置为 true，否则为 false
-
-        // 对于当前类型来说，由于已经确定设置了 SocketsHttpHandler.AutomaticDecompression ，所以就直接设置为 false
-
-        using( ResponseReader reader = new ResponseReader(response, false, this.HttpOption.MaxResponseBodySize) ) {
+        using( ResponseReader reader = new ResponseReader(response, this.HttpOption.MaxResponseBodySize) ) {
             return reader.Read<T>();
         }
     }

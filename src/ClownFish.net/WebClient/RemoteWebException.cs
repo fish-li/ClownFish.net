@@ -115,12 +115,15 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
             return;
 
         try {
-            using( ResponseReader reader = new ResponseReader(response) ) {  // 读写之后释放 Response
+            using( ResponseReader reader = new ResponseReader(response) ) {
                 this.Result = reader.Read<HttpResult<string>>();
             }
         }
         catch( Exception exx ) {
             Console2.Warnning(exx);
+        }
+        finally {
+            response.Dispose();
         }
 
 

@@ -75,7 +75,7 @@ public class ResponseReaderTest
         HttpWebRequest request = WebRequest.CreateHttp(TestUrl + "?x-result-CompressionMode=gzip");
         using( HttpWebResponse response = (HttpWebResponse)request.GetResponse() ) {
 
-            using( ResponseReader reader = new ResponseReader(response, true) ) {
+            using( ResponseReader reader = new ResponseReader(response) ) {
 
                 HttpResult<string> result = reader.Read<HttpResult<string>>();
                 Assert.AreEqual(200, result.StatusCode);
@@ -85,27 +85,7 @@ public class ResponseReaderTest
         }
     }
 
-    [TestMethod]
-    public void Test_As_Gzip_2()
-    {
-        HttpWebRequest request = WebRequest.CreateHttp(TestUrl + "?x-result-CompressionMode=gzip");
-        using( HttpWebResponse response = (HttpWebResponse)request.GetResponse() ) {
-
-            using( ResponseReader reader = new ResponseReader(response) ) {  // 注意这里没有指定第2个参数
-
-                HttpResult<string> result = reader.Read<HttpResult<string>>();
-                Assert.AreEqual(200, result.StatusCode);
-                Assert.IsFalse(result.Result.StartsWith("<!DOCTYPE html>"));  // 此时得到的结果是一些乱码
-                Console.WriteLine(result.Result);
-            }
-        }
-    }
-
-
-    
-   
-
-
+ 
     [TestMethod]
     public void Test_GetEncodingFromHtmlHeader()
     {
@@ -594,15 +574,15 @@ public class ResponseReaderTest
         responseMessage.Content = HttpObjectUtils.CreateRequestMessageBody3(SerializeFormat.Text, "中华文明-5000年");   // ContentLength = 20
         HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
 
-        ResponseReader reader1 = new ResponseReader(response, false, 10);
+        ResponseReader reader1 = new ResponseReader(response, 10);
         MyAssert.IsError<ResponseBodyTooLargeException>(() => {
             reader1.CheckMaxLimitLen();
         });
 
-        ResponseReader reader2 = new ResponseReader(response, false, -10);  // 不检查长度
+        ResponseReader reader2 = new ResponseReader(response, -10);  // 不检查长度
         Assert.AreEqual(0, reader2.CheckMaxLimitLen());
 
-        ResponseReader reader3 = new ResponseReader(response, false, int.MaxValue);
+        ResponseReader reader3 = new ResponseReader(response, int.MaxValue);
         Assert.AreEqual(-1L, reader3.CheckMaxLimitLen());    // 长度已检查，然后直接修改内部变量
     }
 
@@ -616,7 +596,7 @@ public class ResponseReaderTest
 
         HttpWebResponse response = HttpClient2.CreateHttpWebResponse(responseMessage, new Uri(TestUrl), null);
 
-        ResponseReader reader1 = new ResponseReader(response, false, 10);
+        ResponseReader reader1 = new ResponseReader(response, 10);
         Assert.AreEqual(10, reader1.CheckMaxLimitLen());
     }
 
