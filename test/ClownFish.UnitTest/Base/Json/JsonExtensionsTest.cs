@@ -106,12 +106,28 @@ public class JsonExtensionsTest
         TextReader writer = null;
         MyAssert.IsError<ArgumentNullException>(() => {
             _ = writer.FromJson(typeof(InvokeLog));
-        });
+        });       
+    }
 
-        //MyAssert.IsError<DeserializeException>(() => {
-        //    "xxxxx".FromJson<InvokeLog>();
-        //});
+    [TestMethod]
+    public void Test_Writer()
+    {
+        List<Product3> list = Product3.CreateTestDataList(10);
 
-       
+        MemoryStream ms = new MemoryStream();
+
+        using( StreamWriter writer = new StreamWriter(ms, Encoding.UTF8, 1024, true) ) {
+            list.ToJson(writer);
+        }
+
+        string json = ms.ToArray().ToUtf8String();
+        Console.WriteLine(json);
+
+        ms.Position = 0;
+        StreamReader reader = new StreamReader(ms, Encoding.UTF8, true, 1024, true);
+
+        List<Product3> list2 = (List<Product3>)reader.FromJson(typeof (List<Product3>));
+
+        Assert.AreEqual(10, list2.Count);
     }
 }

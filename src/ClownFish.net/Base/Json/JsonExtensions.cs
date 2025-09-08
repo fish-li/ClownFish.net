@@ -68,9 +68,9 @@ public static class JsonExtensions
         try {
             using( StringWriter stringWriter = new StringWriter(sb) ) {
                 using( JsonTextWriter jsonTextWriter = new JsonTextWriter(stringWriter) ) {
-                    jsonTextWriter.Formatting = jsonSerializer.Formatting;
+                    jsonTextWriter.CloseOutput = false;
                     jsonSerializer.Serialize(jsonTextWriter, obj);
-                    jsonTextWriter.Flush();
+                    //jsonTextWriter.Flush();
                 }
             }
             return sb.ToString();
@@ -81,6 +81,24 @@ public static class JsonExtensions
 
         // 说明：不使用下面代码的原因是它在内部每次会创建一个 new StringBuilder(256)，性能不理想！
         //return JsonConvert.SerializeObject(obj, settings);
+    }
+
+
+    /// <summary>
+    /// 将一个对象序列化为JSON字符串。
+    /// </summary>
+    /// <param name="obj">要序列化的对象</param>
+    /// <param name="writer"></param>
+    /// <param name="settings">反序列化参数</param>
+    public static void ToJson(this object obj, TextWriter writer, JsonSerializerSettings settings = null)
+    {
+        JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
+
+        using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
+            jsonTextWriter.CloseOutput = false;
+            jsonSerializer.Serialize(jsonTextWriter, obj);
+            //jsonTextWriter.Flush();
+        }
     }
 
     /// <summary>

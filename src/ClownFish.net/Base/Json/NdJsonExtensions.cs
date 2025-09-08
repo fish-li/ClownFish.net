@@ -106,7 +106,7 @@ public static class NdJsonExtensions
         int count = 0;
         using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
             jsonTextWriter.CloseOutput = false;
-            jsonTextWriter.Formatting = jsonSerializer.Formatting;
+            //jsonTextWriter.Formatting = Formatting.None;
 
             foreach( var x in list ) {
                 count++;
@@ -245,7 +245,7 @@ public static class NdJsonExtensions
 
         using( JsonTextWriter jsonTextWriter = new JsonTextWriter(writer) ) {
             jsonTextWriter.CloseOutput = false;
-            jsonTextWriter.Formatting = jsonSerializer.Formatting;
+            //jsonTextWriter.Formatting = Formatting.None;
 
             while( reader.Read() ) {   // 为了代码共用，这里固定使用同步调用。这里再使用异步也不会对吞吐量有多大改善了~~~
                 count++;
@@ -262,11 +262,7 @@ public static class NdJsonExtensions
                     }
                 }
                 jsonSerializer.Serialize(jsonTextWriter, row);
-                jsonTextWriter.Flush();
                 writer.Write('\n');
-
-                //string json = row.ToJson();
-                //writer.WriteLine(json);
 
                 row.Clear();
 
