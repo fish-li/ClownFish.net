@@ -103,7 +103,12 @@ public sealed partial class HttpResult<T> : IToAllText
         }
     }
 
-    internal string GetHeader(string name)
+    /// <summary>
+    /// 获取响应头
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public string GetHeader(string name)
     {
         return this.Headers[name];
     }

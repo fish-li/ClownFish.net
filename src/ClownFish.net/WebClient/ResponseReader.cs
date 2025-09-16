@@ -50,7 +50,7 @@ public sealed class ResponseReader : IDisposable
     /// <returns></returns>
     public T Read<T>()
     {
-        _responseStream = GetResponseStream();
+        _responseStream = GetResponseStream(typeof(T));
 
         Type resultType = typeof(T);
 
@@ -67,13 +67,20 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
-    private Stream GetResponseStream()
+    private Stream GetResponseStream(Type returnType)
     {
         Stream responseStream = _response.GetResponseStream();
 
-        string contentEncoding = _response.ContentEncoding;
-        if( contentEncoding.HasValue() ) {
-            return responseStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress, false);
+        bool isBinaryDataType = returnType == typeof(byte[]) || returnType == typeof(Stream)
+                              || returnType == typeof(HttpResult<byte[]>) || returnType == typeof(HttpResult<Stream>);
+
+        bool autoDecompress = isBinaryDataType ? false : true;   // 如果返回结果是二进制数据，就不做“自动解压缩”
+
+        if( autoDecompress ) {
+            string contentEncoding = _response.ContentEncoding;
+            if( contentEncoding.HasValue() ) {
+                return responseStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress, false);
+            }
         }
 
         return responseStream;

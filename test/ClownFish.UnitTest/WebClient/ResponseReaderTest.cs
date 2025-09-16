@@ -43,13 +43,32 @@ public class ResponseReaderTest
 
                 HttpResult<byte[]> result = reader.Read<HttpResult<byte[]>>();
                 Assert.AreEqual(200, result.StatusCode);
+                Assert.IsTrue(result.GetHeader("Content-Encoding").IsNullOrEmpty());
 
                 string html = Encoding.UTF8.GetString(result.Result);
                 Assert.IsTrue(html.StartsWith("<!DOCTYPE html>"));
             }
         }
     }
-    
+
+    [TestMethod]
+    public void Test_As_Bytes_gzip()
+    {
+        HttpWebRequest request = WebRequest.CreateHttp(TestUrl + "?x-result-CompressionMode=gzip");
+        using( HttpWebResponse response = (HttpWebResponse)request.GetResponse() ) {
+
+            using( ResponseReader reader = new ResponseReader(response) ) {
+
+                HttpResult<byte[]> result = reader.Read<HttpResult<byte[]>>();
+                Assert.AreEqual(200, result.StatusCode);
+                Assert.AreEqual("gzip", result.GetHeader("Content-Encoding"));
+
+                string html = Encoding.UTF8.GetString(result.Result.UnGzip());   // 不会自动解压缩，需要主动处理
+                Assert.IsTrue(html.StartsWith("<!DOCTYPE html>"));
+            }
+        }
+    }
+
 
     [TestMethod]
     public void Test_As_Stream()
@@ -61,8 +80,28 @@ public class ResponseReaderTest
 
                 HttpResult<Stream> result = reader.Read<HttpResult<Stream>>();
                 Assert.AreEqual(200, result.StatusCode);
+                Assert.IsTrue(result.GetHeader("Content-Encoding").IsNullOrEmpty());
 
                 string html = Encoding.UTF8.GetString(result.Result.ToArray());
+                Assert.IsTrue(html.StartsWith("<!DOCTYPE html>"));
+            }
+        }
+    }
+
+
+    [TestMethod]
+    public void Test_As_Stream_gzip()
+    {
+        HttpWebRequest request = WebRequest.CreateHttp(TestUrl + "?x-result-CompressionMode=gzip");
+        using( HttpWebResponse response = (HttpWebResponse)request.GetResponse() ) {
+
+            using( ResponseReader reader = new ResponseReader(response) ) {
+
+                HttpResult<Stream> result = reader.Read<HttpResult<Stream>>();
+                Assert.AreEqual(200, result.StatusCode);
+                Assert.AreEqual("gzip", result.GetHeader("Content-Encoding"));
+
+                string html = Encoding.UTF8.GetString(result.Result.ToArray().UnGzip());   // 不会自动解压缩，需要主动处理
                 Assert.IsTrue(html.StartsWith("<!DOCTYPE html>"));
             }
         }
@@ -79,6 +118,8 @@ public class ResponseReaderTest
 
                 HttpResult<string> result = reader.Read<HttpResult<string>>();
                 Assert.AreEqual(200, result.StatusCode);
+                Assert.AreEqual("gzip", result.GetHeader("Content-Encoding"));
+
                 Assert.IsTrue(result.Result.StartsWith("<!DOCTYPE html>"));
                 Console.WriteLine(result.Result);
             }
