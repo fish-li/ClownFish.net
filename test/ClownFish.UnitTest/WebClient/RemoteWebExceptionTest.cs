@@ -34,14 +34,80 @@ Server: Kestrel";
         Assert.AreEqual("testxxx", ex.ResponseText);
 
         string text = ex.ToLoggingText();
-        //Console.WriteLine(text);
+        Console.WriteLine(text);
 
         string[] lines = text.ToLines();
-        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: error5"));
+        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: error5 [StatusCode=503]"));
         Assert.IsTrue(lines.Contains("HTTP/1.1 503 ServiceUnavailable"));
         Assert.IsTrue(lines.Contains("testxxx"));
         Assert.IsTrue(lines.Contains("-------------------------Response-------------------------"));
     }
+
+    // 对于超时场景，存在重大差异
+    // .netfx：会抛出异常 “System.Net.WebException: 操作超时”，然后被 ClownFish 包装成 RemoteWebException
+    // net 5+  会抛出异常 “OperationCanceledException”，然后被 ClownFish 包装成 TaskCanceledException("HTTP call timeout, destination address: "
+
+#if NETFRAMEWORK
+    [TestMethod]
+    public void Test_timeout()
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "HEAD",
+            Url = "https://abc.test123.com",
+            Timeout = 1000
+        };
+
+        Exception lastException = null;
+        try {
+            string xx = httpOption.GetResult();
+        }
+        catch( RemoteWebException ex2 ) {           // .net framework 会进入这个分支
+            lastException = ex2;
+        }
+        catch( Exception ex3 ) {
+            lastException = ex3;
+        }
+
+        RemoteWebException ex = lastException as RemoteWebException;
+        Assert.IsNotNull(ex);
+        
+        Assert.AreEqual(0, ex.StatusCode);
+        Assert.AreEqual(httpOption.Url, ex.Url);
+        Assert.IsTrue(ex.ResponseText.IsNullOrEmpty());
+
+        string text = ex.ToLoggingText();
+        Console.WriteLine(text);
+
+        string[] lines = text.ToLines();
+        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: 操作超时 [StatusCode=0]"));
+    }
+
+#else
+    [TestMethod]
+    public void Test_timeout()
+    {
+        HttpOption httpOption = new HttpOption {
+            Method = "HEAD",
+            Url = "https://abc.test123.com",
+            Timeout = 1000
+        };
+
+        Exception lastException = null;
+        try {
+            string xx = httpOption.GetResult();
+        }
+        catch( RemoteWebException ex2 ) {
+            lastException = ex2;
+        }
+        catch( Exception ex3 ) {   // .net 5+ 会进入这个分支
+            lastException = ex3;
+        }
+
+        Assert.IsInstanceOfType(lastException, typeof(TaskCanceledException));
+    }
+#endif
+
+
 
     [TestMethod]
     public void Test2()
@@ -100,7 +166,7 @@ Server: Kestrel";
     }
 
     [TestMethod]
-    public void Test_StatusCode()
+    public void Test_StatusCode_500()
     {
         var ex = ExceptionHelper.CreateException();
         RemoteWebException ex2 = new RemoteWebException(ex, DefaultUrl);
@@ -158,16 +224,16 @@ Server: Kestrel";
     }
 
     [TestMethod]
-    public void Test_StatusCode_500()
+    public void Test_StatusCode_502()
     {
         Dictionary<string, string> header1 = new Dictionary<string, string> {
             {HttpHeaders.XResponse.ErrorMessage, "字段XX的值不能为空！".UrlEncode() }
         };
-        WebException ex = CreateWebException("服务端异常XXX", 500, "xx_<title>服务端异常XXX</title>", header1);
+        WebException ex = CreateWebException("服务端异常XXX", 502, "xx_<title>服务端异常XXX</title>", header1);
         RemoteWebException ex2 = new RemoteWebException(ex, DefaultUrl);
 
-        Assert.AreEqual(500, ex2.StatusCode);
-        Assert.AreEqual(500, (ex2 as IErrorCode).GetErrorCode());
+        Assert.AreEqual(502, ex2.StatusCode);
+        Assert.AreEqual(502, (ex2 as IErrorCode).GetErrorCode());
         Assert.AreEqual("字段XX的值不能为空！", ex2.ServerMessage.UrlDecode());
         Assert.AreEqual("xx_<title>服务端异常XXX</title>", ex2.ResponseText);
     }
@@ -218,15 +284,15 @@ xx_<title>服务端异常XXX</title>", text);
         Dictionary<string, string> header1 = new Dictionary<string, string> {
             {"x-test1", "d203de885b93463b91d33d1375eefef4" }
         };
-        WebException ex = CreateWebException("服务端异常XXX", 500, "xx_<title>服务端异常XXX</title>", header1);
+        WebException ex = CreateWebException("服务端异常XXX", 503, "xx_<title>服务端异常XXX</title>", header1);
         RemoteWebException ex2 = new RemoteWebException(ex, DefaultUrl);
 
-        Assert.AreEqual(500, ex2.StatusCode);
-        Assert.AreEqual(500, (ex2 as IErrorCode).GetErrorCode());
+        Assert.AreEqual(503, ex2.StatusCode);
+        Assert.AreEqual(503, (ex2 as IErrorCode).GetErrorCode());
 
         //Console.WriteLine(ex2.ToLoggingText());
 
-        string outText = @"ClownFish.WebClient.RemoteWebException: 服务端异常XXX
+        string outText = @"ClownFish.WebClient.RemoteWebException: 服务端异常XXX [StatusCode=503]
 =)本次调用的目标地址：http://www.abc.com/aa/bb.aspx
  ---> System.Net.WebException: 服务端异常XXX
  ---> ClownFish.Base.Exceptions.MessageException: 一个用于测试的异常
@@ -234,7 +300,7 @@ xx_<title>服务端异常XXX</title>", text);
    --- End of inner exception stack trace ---
    --- End of inner exception stack trace ---
 -------------------------Response-------------------------
-HTTP/1.1 500 InternalServerError
+HTTP/1.1 503 ServiceUnavailable
 x-test1: d203de885b93463b91d33d1375eefef4
 Server: ClownFish.UnitTest
 Content-Type: text/html; charset=utf-8

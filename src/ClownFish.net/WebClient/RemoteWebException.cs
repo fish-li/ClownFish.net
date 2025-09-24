@@ -82,7 +82,8 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
     /// </summary>
     public override string Message {
         get {
-            return (_message ?? this.GetBaseException().Message)
+            return (_message ?? this.GetBaseException().Message) 
+                    + $" [StatusCode={this.StatusCode}]"
                     + (string.IsNullOrEmpty(Url) ? string.Empty : ("\r\n=)本次调用的目标地址：" + this.Url));
         }
     }
