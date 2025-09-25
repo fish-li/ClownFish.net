@@ -62,7 +62,7 @@ public class OprLogTest
         Assert.AreEqual(888888, log.RetryCount);
 
 
-        log.CalcTime(0, DateTime.Now);
+        log.SetEndTime(0, DateTime.Now);
         Assert.AreEqual(0, log.IsSlow);
 
         Assert.IsNull(log.CtEncoding);
@@ -166,6 +166,41 @@ public class OprLogTest
             OprLog log = mock.PipelineContext.OprLogScope.OprLog;
             Assert.AreEqual("http", log.OprName);
         }
+    }
+
+    [TestMethod]
+    public void Test_CreateNew()
+    {
+        OprLog log1 = OprLog.CreateNew("abc", typeof(OprLogTest));
+        Assert.AreEqual("abc", log1.OprName);
+        Assert.AreEqual("abc", log1.Action);
+        Assert.AreEqual("OprLogTest", log1.Controller);
+        Assert.AreEqual("ClownFish.UnitTest.Log.Logging", log1.Module);
+        Assert.AreEqual("run://OprLogTest", log1.Url);
+        Assert.IsTrue(log1.OprId.HasValue());
+        Assert.IsTrue((DateTime.Now - log1.StartTime).TotalSeconds < 3);
+        Assert.AreEqual(EnvUtils.GetAppName(), log1.AppName);
+        Assert.AreEqual(EnvUtils.GetHostName(), log1.HostName);
+        Assert.AreEqual(EnvUtils.GetClusterName(), log1.EnvName);
+        Assert.AreEqual(LoggingOptions.AppKindDefaultValue, log1.AppKind);
+
+
+        OprLog log2 = OprLog.CreateNew("qaz", typeof(OprLogTest), "url_1111111");
+        Assert.AreEqual("qaz", log2.OprName);
+        Assert.AreEqual("qaz", log2.Action);
+        Assert.AreEqual("OprLogTest", log2.Controller);
+        Assert.AreEqual("ClownFish.UnitTest.Log.Logging", log2.Module);
+        Assert.AreEqual("url_1111111", log2.Url);
+        Assert.IsTrue(log2.OprId.HasValue());
+
+
+        OprLog log3 = OprLog.CreateNew("wsx", null);
+        Assert.AreEqual("wsx", log3.OprName);
+        Assert.AreEqual("wsx", log3.Action);
+        Assert.IsNull(log3.Controller);
+        Assert.IsNull(log3.Module);
+        Assert.AreEqual("url/xxx", log3.Url);
+        Assert.IsTrue(log3.OprId.HasValue());
     }
 
     [TestMethod]

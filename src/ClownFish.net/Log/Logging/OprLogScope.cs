@@ -338,7 +338,7 @@ public sealed class OprLogScope : IDisposable
         this.Release();
 
         this.OprLog.IsLongTask = context.IsLongTask ? 1 : 0;
-        this.OprLog.CalcTime(context.PerformanceThresholdMs, context.EndTime);
+        this.OprLog.SetEndTime(context.PerformanceThresholdMs, context.EndTime);
 
         // 记录执行过程
         if( _exObject != null || this.OprLog.IsSlow == 1 ) {

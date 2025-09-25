@@ -1,6 +1,33 @@
 ﻿namespace ClownFish.Log.Logging;
 public partial class OprLog
 {
+    /// <summary>
+    /// 创建一个OprLog实例，并设置一些数据字段
+    /// </summary>
+    /// <param name="oprName"></param>
+    /// <param name="executorType">当前正在执行的类型</param>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public static OprLog CreateNew(string oprName, Type executorType, string url = null)
+    {
+        OprLog oprLog = new OprLog();
+        oprLog.SetBaseInfo();
+        oprLog.OprKind = "none";
+        oprLog.OprName = oprName.IfEmpty("run");
+        oprLog.Action = oprName.IfEmpty("run");
+
+        if( executorType == null ) {
+            oprLog.Url = url.IfEmpty("url/xxx");
+        }
+        else {
+            oprLog.Module = executorType.Namespace;
+            oprLog.Controller = executorType.Name;
+            oprLog.Url = url.IfEmpty("run://" + oprLog.Controller);
+        }
+        
+        return oprLog;
+    }
+
     internal static OprLog CreateNew(BasePipelineContext context)
     {
         OprLog log = new OprLog();
@@ -32,7 +59,12 @@ public partial class OprLog
         this.AppKind = LoggingOptions.AppKindDefaultValue;
     }
 
-    internal void CalcTime(long performanceThresholdMs, DateTime endTime)
+    /// <summary>
+    /// 计算执行时间，并判断是否超过性能阀值
+    /// </summary>
+    /// <param name="performanceThresholdMs"></param>
+    /// <param name="endTime"></param>
+    public void SetEndTime(long performanceThresholdMs, DateTime endTime)
     {
         TimeSpan time = endTime - this.StartTime;
         this.Duration = (long)time.TotalMilliseconds;
