@@ -1,10 +1,13 @@
 ﻿namespace ClownFish.Log.Logging;
 
+
+// BatchSize = 500 > LoggingOptions.WriteListBatchSize，可以让 RabbitWriter.BatchWrite 不用再次拆分
+
 /// <summary>
 /// 一条简单的执行统计信息（根据OprLog的数据创建）
 /// </summary>
 [Serializable]
-[BatchWritable(BatchSize = 100, Ndjson = true)]
+[BatchWritable(BatchSize = 500, Ndjson = true)]
 public sealed class InvokeLog : IMsgObject
 {
     /// <summary>
