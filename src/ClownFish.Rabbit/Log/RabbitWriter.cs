@@ -93,10 +93,10 @@ internal sealed class RabbitWriter : ILogWriter
             client.SendMessage(json, null, routingKey);
         }
         else {
-            List<List<T>> listlist = list.SplitList(int.MaxValue, batchSize);
+            List<List<T>> list2 = list.SplitList(int.MaxValue, batchSize);
 
-            foreach( List<T> listX in listlist ) {
-                string json = attr.Ndjson ? listX.ToNdjson() : list.ToJson();
+            foreach( List<T> lx in list2 ) {
+                string json = attr.Ndjson ? lx.ToNdjson() : lx.ToJson();
                 client.SendMessage(json, null, routingKey);
             }
         }
