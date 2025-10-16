@@ -7,10 +7,12 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class BatchWritableAttribute : Attribute
 {
-    /// <summary>
-    /// 每个批次的大小
-    /// </summary>
-    public int BatchSize { get; set; } = 10;
+    ///// <summary>
+    ///// 每个批次的大小
+    ///// </summary>
+    //public int BatchSize { get; set; } = 500;
+
+    // 每个批次包含多少个元素由 LoggingOptions.WriteListBatchSize 决定，可参考 CacheQueue.Flush()
 
     /// <summary>
     /// 列表序列化时是否采用 ndjson 格式

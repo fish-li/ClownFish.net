@@ -68,10 +68,13 @@ internal sealed class RabbitWriter : ILogWriter
         if( _inited == false )
             return;
 
-        // 将10条InvokeLog合并在一起发到队列，以LIST方式发送
         BatchWritableAttribute attr = typeof(T).GetMyAttribute<BatchWritableAttribute>();
-        if( attr != null && attr.BatchSize > 1 ) {
-            BatchWrite(list, _client, attr);
+        if( attr != null ) {
+
+            string routingKey = typeof(T).GetQueueName();
+            string json = attr.Ndjson ? list.ToNdjson() : list.ToJson();
+
+            _client.SendMessage(json, null, routingKey);
         }
         else {
             foreach( T x in list ) {
@@ -80,26 +83,6 @@ internal sealed class RabbitWriter : ILogWriter
         }
 
         ClownFishCounters.Logging.RabbitWriteCount.Add(list.Count);
-    }
-
-
-    private void BatchWrite<T>(List<T> list, RabbitClient client, BatchWritableAttribute attr)
-    {
-        string routingKey = typeof(T).GetQueueName();
-        int batchSize = attr.BatchSize;
-
-        if( list.Count <= batchSize ) {
-            string json = attr.Ndjson ? list.ToNdjson() : list.ToJson();
-            client.SendMessage(json, null, routingKey);
-        }
-        else {
-            List<List<T>> list2 = list.SplitList(int.MaxValue, batchSize);
-
-            foreach( List<T> lx in list2 ) {
-                string json = attr.Ndjson ? lx.ToNdjson() : lx.ToJson();
-                client.SendMessage(json, null, routingKey);
-            }
-        }
     }
 
 

@@ -75,10 +75,11 @@ internal sealed class RabbitHttpWriter : ILogWriter
         if( _client == null )
             return;
 
-        // 将10条InvokeLog合并在一起发到队列，以LIST方式发送
         BatchWritableAttribute attr = typeof(T).GetMyAttribute<BatchWritableAttribute>();
         if( attr != null ) {
-            BatchWrite(list, attr.BatchSize.Min(10));
+            string routingKey = typeof(T).GetQueueName();
+
+            SendMessage0(list, null, routingKey);
         }
         else {
             foreach( T x in list ) {
@@ -87,23 +88,6 @@ internal sealed class RabbitHttpWriter : ILogWriter
         }
 
         ClownFishCounters.Logging.Rabbit2WriteCount.Add(list.Count);
-    }
-
-
-    private void BatchWrite<T>(List<T> list, int batchSize)
-    {
-        string routingKey = typeof(T).GetQueueName();
-
-        if( list.Count <= batchSize ) {
-            SendMessage0(list, null, routingKey);
-        }
-        else {
-            List<List<T>> listlist = list.SplitList(int.MaxValue, batchSize);
-
-            foreach( List<T> listX in listlist ) {
-                SendMessage0(listX, null, routingKey);
-            }
-        }
     }
 
     private void SendMessage0(object data, string exchange = null, string routingKey = null)
