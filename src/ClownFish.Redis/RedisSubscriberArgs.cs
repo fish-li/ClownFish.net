@@ -29,5 +29,5 @@ public sealed class RedisSubscriberArgs
     /// <summary>
     /// 最大允许的消息长度。如果超过这个值，消息会直接丢弃。
     /// </summary>
-    public int MaxMessageLength { get; set; } = 16 * 1024;
+    public int MaxMessageLength { get; set; } = 512 * 1024;
 }
