@@ -2,6 +2,9 @@
 
 internal class DataReaderLoadAdapter : DataAdapter
 {
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: loadAdapter.FillLoadOption")]
+#endif
     public static void FillTable(DataTable table, IDataReader reader, int maxRecords)
     {
         DataReaderLoadAdapter loadAdapter = new DataReaderLoadAdapter();

@@ -4,6 +4,9 @@
 /// 实现文件的可靠读取工具类。
 /// 可靠性的要求：写-读，过程中，允许何意时刻断电，最终都可以提供一个可用的文件（最坏情况就是上一个版本）。
 /// </summary>
+#if NETCOREAPP
+[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
 public static class ReliableFile
 {
     /// <summary>
@@ -100,16 +103,16 @@ public static class ReliableFile
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="filePath"></param>
-    public static void WriteObject(object obj, string filePath)
+    /// <param name="serialize">序列化方式，1：xml，2：json</param>
+    public static void WriteObject(object obj, string filePath, int serialize = 1)
     {
         if( obj == null )
             throw new ArgumentNullException(nameof(obj));
         if( string.IsNullOrEmpty(filePath) )
             throw new ArgumentNullException(nameof(filePath));
 
-
-        string xml = obj.ToXml();
-        Write(xml, filePath);
+        string text = serialize == 1 ? obj.ToXml() : obj.ToJson(JsonStyle.Indented);
+        Write(text, filePath);
     }
 
 
@@ -118,18 +121,21 @@ public static class ReliableFile
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="filePath"></param>
+    /// <param name="serialize">序列化方式，1：xml，2：json</param>
     /// <returns></returns>
-    public static T ReadObject<T>(string filePath) where T : class
+    public static T ReadObject<T>(string filePath, int serialize = 1) where T : class
     {
         if( string.IsNullOrEmpty(filePath) )
             throw new ArgumentNullException(nameof(filePath));
 
-        string xml = Read(filePath);
-        if( string.IsNullOrEmpty(xml) )
+        string text = Read(filePath);
+        if( string.IsNullOrEmpty(text) )
             return null;
 
-
-        return xml.FromXml<T>();
+        if( serialize == 1 )
+            return text.FromXml<T>();
+        else
+            return text.FromJson<T>();
     }
 
 

@@ -11,7 +11,9 @@ public sealed class InitAttribute : Attribute
     /// </summary>
     public string MethodName { get; set; }
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: type.GetMethod")]
+#endif
     internal static void ExecuteAll()
     {
         // 搜索业务程序集

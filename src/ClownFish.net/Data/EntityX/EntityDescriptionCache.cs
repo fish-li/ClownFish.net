@@ -37,6 +37,9 @@ internal static class EntityDescriptionCache
         return dataType.IsEnum || (TypeList.GetTypeName(dataType) != null);
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: entityType.GetProperties")]
+#endif
     private static EntityDescription Create(Type entityType)
     {
         // 获取所有类型的属性定义（注意：不处理Field）

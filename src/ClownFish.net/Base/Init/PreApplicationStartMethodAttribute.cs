@@ -63,6 +63,9 @@ public sealed class PreApplicationStartMethodAttribute : Attribute
         }
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: attr.Type.GetMethod")]
+#endif
     internal static void Invoke(PreApplicationStartMethodAttribute attr, Assembly asm)
     {
         MethodInfo method = attr.Type.GetMethod(attr.MethodName,

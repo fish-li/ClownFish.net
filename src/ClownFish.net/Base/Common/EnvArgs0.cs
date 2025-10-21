@@ -7,7 +7,19 @@ internal static class EnvArgs0
     /// <summary>
     /// 当前程序是否以“单文件部署”方式运行
     /// </summary>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
+#endif
     public static readonly bool IsSingleFileDeploy = typeof(EnvArgs0).Assembly.Location.IsNullOrEmpty();
+
+
+    /// <summary>
+    /// 当前程序是否以“NativeAOT”方式运行。需要2个条件：1，单文件部署，2，已设置AOT标记（ClownFish不能自行判断）
+    /// </summary>
+    public static readonly bool IsAot = IsSingleFileDeploy && IsSetAotFlag();
+
+    // NativeAOT有以下限制：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#limitations-of-native-aot-deployment
+
 
     /// <summary>
     /// 判断当前进程是不是运行在 docker 容器中
@@ -41,5 +53,21 @@ internal static class EnvArgs0
             return null;
         }
     }
+
+
+
+    private  static bool IsSetAotFlag()
+    {
+#if NETCOREAPP
+        if( EnvironmentVariables.Get("ClownFish_RUNNING_IsAot").TryToBool() )
+            return true;
+
+        if( AppContext.TryGetSwitch("ClownFish_RUNNING_IsAot", out bool isEnabled) && isEnabled )
+            return true;
+#endif
+
+        return false;
+    }
+
 
 }

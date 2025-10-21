@@ -19,7 +19,6 @@ internal static class HttpResponseSerializer
         }
     }
 
-    private static readonly Type s_type = typeof(HttpContent).Assembly.GetType("System.Net.Http.DecompressionHandler+DecompressedContent", true, false);
 
     public static void ToLoggingText(this HttpResponseMessage response, HttpContent content, bool checkBody, StringBuilder sb)
     {
@@ -84,10 +83,19 @@ internal static class HttpResponseSerializer
     }
 
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.GetType")]
+#endif
+    private static readonly Type s_type = typeof(HttpContent).Assembly.GetType("System.Net.Http.DecompressionHandler+DecompressedContent", false, false);
+
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: s_type.GetField")]
+#endif
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static HttpContent TryGetRealContent(HttpContent content)
     {
-        if( content != null && content.GetType().IsSubclassOf(s_type) ) {
+        if( content != null && s_type != null && content.GetType().IsSubclassOf(s_type) ) {
             FieldInfo field = s_type.GetField("_originalContent", BindingFlags.Instance | BindingFlags.NonPublic);
             if( field != null ) {
                 return (HttpContent)field.GetValue(content);

@@ -40,3 +40,17 @@ internal static class MsSqlProviderUtils
 #endif
     }
 }
+
+
+// 2个SqlClient的已知问题
+
+// 1，System.Data.SqlClient 和 <InvariantGlobalization>true</InvariantGlobalization> 不能一起使用
+//    会出现异常： Unhandled exception. System.InvalidOperationException: Internal connection fatal error.
+
+// 2，Microsoft.Data.SqlClient 和 <InvariantGlobalization>true</InvariantGlobalization> 不能一起使用
+//    会出现异常： Unhandled exception. System.Globalization.CultureNotFoundException: Only the invariant culture is supported in globalization-invariant mode
+
+// 3，Microsoft.Data.SqlClient 会强制使用SSL并校验证书，
+//    会出现异常：Unhandled exception. Microsoft.Data.SqlClient.SqlException (0x80131904): A connection was successfully established with the server, but then an error occurred during the login process. (provider: SSL Provider, error: 0 - 证书链是由不受信任的颁发机构颁发的。)
+//    此问题可解决，请 “搜索网络”
+

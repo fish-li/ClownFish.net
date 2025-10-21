@@ -3,6 +3,9 @@
 /// <summary>
 /// FieldInfo 相关的扩展方法，用于性能优化。
 /// </summary>
+#if NETCOREAPP
+[RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
+#endif
 public static class FieldInfoExtensions
 {
     private static readonly Hashtable s_getterDict = Hashtable.Synchronized(new Hashtable(10240));
@@ -19,6 +22,10 @@ public static class FieldInfoExtensions
         if( fieldInfo == null )
             throw new ArgumentNullException("fieldInfo");
 
+        if( EnvArgs0.IsAot ) {
+            return fieldInfo.GetValue(instance);
+        }
+
         GetValueDelegate getter = (GetValueDelegate)s_getterDict[fieldInfo];
         if( getter == null ) {
             getter = DynamicMethodFactory.CreateFieldGetter(fieldInfo);
@@ -26,7 +33,6 @@ public static class FieldInfoExtensions
         }
 
         return getter(instance);
-        //return fieldInfo.GetValue(instance);
     }
 
     /// <summary>
@@ -40,6 +46,11 @@ public static class FieldInfoExtensions
         if( fieldInfo == null )
             throw new ArgumentNullException("fieldInfo");
 
+        if( EnvArgs0.IsAot ) {
+            fieldInfo.SetValue(instance, value);
+            return;
+        }
+
         SetValueDelegate setter = (SetValueDelegate)s_setterDict[fieldInfo];
         if( setter == null ) {
             setter = DynamicMethodFactory.CreateFieldSetter(fieldInfo);
@@ -47,7 +58,6 @@ public static class FieldInfoExtensions
         }
 
         setter(instance, value);
-        //fieldInfo.SetValue(instance, value);
     }
 }
 

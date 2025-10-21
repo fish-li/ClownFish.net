@@ -37,6 +37,9 @@ internal class EFEventSubscriber : IObserver<DiagnosticListener>
     }
 }
 
+#if NETCOREAPP
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: eventData.Get")]
+#endif
 internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
 {
     public void OnCompleted()

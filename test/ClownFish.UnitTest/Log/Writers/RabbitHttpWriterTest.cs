@@ -30,7 +30,7 @@ public class RabbitHttpWriterTest
         Assert.AreEqual(count1, count2);
 
 
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config");
         HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 
@@ -46,7 +46,7 @@ public class RabbitHttpWriterTest
     {
         RabbitHttpWriter writer = new RabbitHttpWriter();
 
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config");
         Assert.AreEqual(-1, writer.InternalInit(config, "rabbit_config_xxx"));
         Assert.AreEqual(-2, writer.InternalInit(config, "key3"));
 
@@ -66,7 +66,7 @@ public class RabbitHttpWriterTest
     {
         RabbitHttpWriter writer = new RabbitHttpWriter();
 
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config");
         HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 
@@ -86,7 +86,7 @@ public class RabbitHttpWriterTest
     {
         RabbitHttpWriter writer = new RabbitHttpWriter();
 
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config");
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config");
         HttpClientMockResults.SetMockResult("Rabbit_TestConnection", ClownFish.Base.Void.Value);
         writer.InternalInit(config, "rabbit_config");
 

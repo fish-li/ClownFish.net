@@ -8,6 +8,9 @@ namespace ClownFish.Base.Xml;
 /// <summary>
 /// 实现XML序列化与反序列化的包装工具类
 /// </summary>
+#if NETCOREAPP
+[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
 public static class XmlHelper
 {
     /// <summary>

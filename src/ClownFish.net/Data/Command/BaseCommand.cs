@@ -278,6 +278,9 @@ public abstract class BaseCommand
     /// 执行查询，以DataSet形式返回结果
     /// </summary>
     /// <returns>数据集</returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("Calls table.Load(reader)")]
+#endif
     public async Task<DataSet> ToDataSetAsync()
     {
         return await ExecuteAsync<DataSet>(nameof(ToDataSetAsync),

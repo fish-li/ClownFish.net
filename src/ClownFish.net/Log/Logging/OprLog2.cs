@@ -199,6 +199,9 @@ public partial class OprLog
         }
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: ToXml2")]
+#endif
     internal void SetResponse(NHttpContext httpContext)
     {
         if( this.Response.HasValue() )  // 如果已经在代码中明确指定了日志内容，就尊重“调用者”的意图，ClownFish不再自动填充
@@ -277,6 +280,9 @@ public partial class OprLog
     /// <summary>
     /// 根据【当前调用所在的方法】填充 Module,Controller,Action
     /// </summary>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: stack.GetMethod")]
+#endif
     public int SetMCA(int skipFrames = 1)
     {
         try {

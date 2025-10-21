@@ -8,6 +8,10 @@ internal class DaMengClientProvider : BaseClientProvider
     private readonly Type _exceptionType;
     private readonly IGetValue _getter;
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
+#endif
     internal DaMengClientProvider()
     {
         // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider

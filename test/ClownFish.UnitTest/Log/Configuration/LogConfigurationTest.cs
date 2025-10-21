@@ -5,18 +5,18 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_LoadFromFile()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
         Assert.IsNotNull(conf);
 
-        LogConfiguration conf2 = LogConfiguration.LoadFromFile("ClownFish.Log22222.config", false);
+        LogConfiguration conf2 = LogConfig.LoadFromFile("ClownFish.Log22222.config", false);
         Assert.IsNull(conf2);
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = LogConfiguration.LoadFromFile("", false);
+            _ = LogConfig.LoadFromFile("", false);
         });
 
         MyAssert.IsError<FileNotFoundException>(() => {
-            _ = LogConfiguration.LoadFromFile("ClownFish.Log22222.config", true);
+            _ = LogConfig.LoadFromFile("ClownFish.Log22222.config", true);
         });
     }
 
@@ -25,11 +25,11 @@ public class LogConfigurationTest
     public void Test_LoadFromXml()
     {
         string xml = RetryFile.ReadAllText("ClownFish.Log.config");
-        LogConfiguration conf = LogConfiguration.LoadFromXml(xml);
+        LogConfiguration conf = LogConfig.LoadFromXml(xml);
         Assert.IsNotNull(conf);
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = LogConfiguration.LoadFromXml("");
+            _ = LogConfig.LoadFromXml("");
         });
     }
 
@@ -38,7 +38,7 @@ public class LogConfigurationTest
     public void Test_MegerConfig()
     {
         LogConfiguration conf1 = new LogConfiguration();
-        LogConfiguration conf2 = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf2 = LogConfig.LoadFromFile("ClownFish.Log.config", true);
         LogConfiguration conf3 = LogConfiguration.MegerConfig(conf1, conf2);
 
         Assert.IsNotNull(conf3.Performance);
@@ -47,7 +47,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_OverrideWriters()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         Assert.AreEqual("ClownFish.Log.Logging.OprLog, ClownFish.net", conf.Types[0].DataType);
         Assert.AreEqual("ClownFish.Log.Logging.InvokeLog, ClownFish.net", conf.Types[1].DataType);
@@ -64,7 +64,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_OverrideWriters2()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         Assert.AreEqual("ClownFish.Log.Logging.OprLog, ClownFish.net", conf.Types[0].DataType);
         Assert.AreEqual("ClownFish.Log.Logging.InvokeLog, ClownFish.net", conf.Types[1].DataType);
@@ -81,7 +81,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_OverrideWriters3()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         Assert.AreEqual("ClownFish.Log.Logging.OprLog, ClownFish.net", conf.Types[0].DataType);
         Assert.AreEqual("ClownFish.Log.Logging.InvokeLog, ClownFish.net", conf.Types[1].DataType);
@@ -99,7 +99,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_OverrideWriters4()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         conf.OverrideWriters("*=http");   // 修改所有
 
@@ -110,7 +110,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_OverrideWriters5()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         Assert.AreEqual("ClownFish.Log.Logging.OprLog, ClownFish.net", conf.Types[0].DataType);
         Assert.AreEqual("ClownFish.Log.Logging.InvokeLog, ClownFish.net", conf.Types[1].DataType);
@@ -129,7 +129,7 @@ public class LogConfigurationTest
     [TestMethod]
     public void Test_TryUpdateFromLocalSetting()
     {
-        LogConfiguration conf = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration conf = LogConfig.LoadFromFile("ClownFish.Log.config", true);
 
         EnvironmentVariables.Set("ClownFish_Log_Performance_HttpExecute", "1001");
         EnvironmentVariables.Set("ClownFish_Log_Performance_HandleMessage", "2001");

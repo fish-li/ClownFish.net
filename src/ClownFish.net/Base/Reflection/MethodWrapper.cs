@@ -121,6 +121,11 @@ internal static class MethodInvokerFactory
     /// </summary>
     /// <param name="method"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2055: MakeGenericType")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2067: Activator.CreateInstance")]
+#endif
     public static IInvokeMethod CreateMethodInvokerWrapper(MethodInfo method)
     {
         Init();

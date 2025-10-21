@@ -1,4 +1,8 @@
 ﻿namespace ClownFish.Log;
+
+#if NETCOREAPP
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
 internal static class LogInitUtils
 {
     /// <summary>
@@ -33,7 +37,7 @@ internal static class LogInitUtils
     {
         string fileBody = ConfigFile.GetFile(ConfigFile.LogConfigFileName);   // EnvUtils.GetAppName() + ".Log.Config";
         if( fileBody.IsNullOrEmpty() == false ) {
-            return LogConfiguration.LoadFromXml(fileBody);
+            return LogConfig.LoadFromXml(fileBody);
         }
         return null;
     }
@@ -42,7 +46,7 @@ internal static class LogInitUtils
     {
         // 尝试从本地文件中加载配置
         string filePath = ConfigHelper.GetFileAbsolutePath(LogConfig.ConfigFileName);  // "ClownFish.Log.config";
-        return LogConfiguration.LoadFromFile(filePath, false);
+        return LogConfig.LoadFromFile(filePath, false);
     }
 
 
@@ -95,7 +99,7 @@ internal static class LogInitUtils
         if( LogConfig.IsInited )
             return;
 
-        LogConfiguration config = LogConfiguration.LoadFromFile(filePath, true);
+        LogConfiguration config = LogConfig.LoadFromFile(filePath, true);
         InitLog(config);
     }
 }

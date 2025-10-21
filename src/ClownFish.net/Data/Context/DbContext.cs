@@ -102,6 +102,9 @@ public sealed class DbContext : IDisposable
     /// <summary>
     /// XmlCommand工厂实例引用
     /// </summary>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: xml")]
+#endif
     public XmlCommandFactory XmlCommand {
         get {
             if( _factoryXmlCommand == null )

@@ -41,7 +41,9 @@ public sealed class StoreProcedure : BaseCommand
         this.Init(spName, parameters);
     }
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: type.GetProperties")]
+#endif
     private DbParameter[] GetParameters(object parameterObject)
     {
         if( parameterObject == null )

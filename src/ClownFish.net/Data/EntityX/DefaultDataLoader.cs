@@ -54,6 +54,9 @@ internal sealed class DefaultDataLoader<T> : IDataLoader<T> where T : class, new
 
     #region 内部辅助方法
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
+#endif
     private T GetSingle(DbDataReader reader, EntityDescription description, string[] names)
     {
         T instance = (T)typeof(T).FastNew();
@@ -95,6 +98,9 @@ internal sealed class DefaultDataLoader<T> : IDataLoader<T> where T : class, new
         return list;
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
+#endif
     private T GetSingle(DataRow row, EntityDescription description, DataTable table)
     {
         T instance = (T)typeof(T).FastNew();

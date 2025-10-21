@@ -1,17 +1,38 @@
 ﻿namespace ClownFish.Jwt.Impl;
 
-internal abstract class JwtBase
+/// <summary>
+/// JWT算法包装基类
+/// </summary>
+public abstract class JwtBase
 {
+    /// <summary>
+    /// JWT算法名称
+    /// </summary>
     public abstract string Name { get; }
+    /// <summary>
+    /// 返回JWT头部内容
+    /// </summary>
+    /// <returns></returns>
+    public abstract string GetHeader();
 
-    protected abstract string GetHeader();
+    /// <summary>
+    /// 计算签名
+    /// </summary>
+    /// <param name="secret">密钥或者证书对象  byte[] or X509Certificate2</param>
+    /// <param name="bytesToSign">待签名的数据</param>
+    /// <returns></returns>
+    public abstract string GetSignature(object secret, byte[] bytesToSign);
 
-    protected abstract string GetSignature(object secret, byte[] bytesToSign);
+    /// <summary>
+    /// 验证签名
+    /// </summary>
+    /// <param name="secret">密钥或者证书对象  byte[] or X509Certificate2</param>
+    /// <param name="bytesToSign">已签名数据</param>
+    /// <param name="signature">签名</param>
+    public abstract void ValidSignature(object secret, byte[] bytesToSign, string signature);
 
-    protected abstract void ValidSignature(object secret, byte[] bytesToSign, string signature);
 
-
-    public string Encode(string payload, object secret)
+    internal string Encode(string payload, object secret)
     {
         if( payload.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(payload));
@@ -27,7 +48,8 @@ internal abstract class JwtBase
         return text3 + "." + signature;
     }
 
-    public string Encode(string header, string payload, object secret)
+
+    internal string Encode(string header, string payload, object secret)
     {
         if( header.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(header));
@@ -46,7 +68,7 @@ internal abstract class JwtBase
     }
 
 
-    public string Decode(string token, object secret)
+    internal string Decode(string token, object secret)
     {
         if( token.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(token));

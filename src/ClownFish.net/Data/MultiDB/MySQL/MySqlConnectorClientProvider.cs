@@ -9,6 +9,10 @@ internal sealed class MySqlConnectorClientProvider : BaseMySqlClientProvider
     private readonly Type _exceptionType;
     private readonly IGetValue _getter;
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
+#endif
     internal MySqlConnectorClientProvider()
     {
         Type factoryType = Type.GetType("MySqlConnector.MySqlConnectorFactory, MySqlConnector", false, false);

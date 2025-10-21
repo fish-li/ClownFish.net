@@ -96,6 +96,9 @@ public static class DictionaryExtensions
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static IDictionary<string, object> ToDictionary(this object obj)
     {
         if( obj == null )
@@ -118,6 +121,9 @@ public static class DictionaryExtensions
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static IDictionary<string, string> ToStringDictionary(this object obj)
     {
         if( obj == null )
@@ -141,6 +147,9 @@ public static class DictionaryExtensions
     /// <param name="dict"></param>
     /// <param name="destType">目标类型实例，必须要支持公开无参的构造方法。</param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static object ToObject(this IDictionary<string, object> dict, Type destType)
     {
         if( dict == null )

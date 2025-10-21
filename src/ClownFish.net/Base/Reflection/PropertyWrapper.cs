@@ -49,6 +49,9 @@ internal static class GetterSetterFactory
     /// </summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
+#endif
     public static IGetValue CreatePropertyGetterWrapper(PropertyInfo propertyInfo)
     {
         if( propertyInfo == null )
@@ -76,6 +79,9 @@ internal static class GetterSetterFactory
     /// </summary>
     /// <param name="propertyInfo"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
+#endif
     public static ISetValue CreatePropertySetterWrapper(PropertyInfo propertyInfo)
     {
         if( propertyInfo == null )

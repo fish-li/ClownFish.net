@@ -98,7 +98,9 @@ public sealed class MessageBinSerializer
         return text.FromJson<T>();
     }
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2087: Activator.CreateInstance")]
+#endif
     internal static T CreateObjectFromBinary<T>(ReadOnlyMemory<byte> body)
     {
         IBinarySerializer obj = (IBinarySerializer)Activator.CreateInstance(typeof(T));

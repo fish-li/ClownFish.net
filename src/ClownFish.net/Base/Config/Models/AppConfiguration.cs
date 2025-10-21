@@ -1,4 +1,5 @@
-﻿namespace ClownFish.Base.Config.Models;
+﻿
+namespace ClownFish.Base.Config.Models;
 
 /// <summary>
 /// 与 app.config 对应的实体类型，用于反序列读取配置文件。
@@ -58,6 +59,9 @@ public sealed class AppConfiguration
     /// <param name="filePath"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerialize")]
+#endif
     internal static AppConfiguration LoadFromFile(string filePath, bool checkExist = true)
     {
         if( filePath.IsNullOrEmpty() )
@@ -80,6 +84,9 @@ public sealed class AppConfiguration
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerialize")]
+#endif
     internal static AppConfiguration LoadFromXml(string xml)
     {
         if( xml.IsNullOrEmpty() )

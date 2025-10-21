@@ -9,7 +9,7 @@ public class ConfigLoaderTest
     internal static LogConfiguration GetLogConfiguration()
     {
         string filePath = ConfigHelper.GetFileAbsolutePath("ClownFish.Log.config");
-        return LogConfiguration.LoadFromFile(filePath, true);
+        return LogConfig.LoadFromFile(filePath, true);
     }
 
 

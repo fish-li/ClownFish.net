@@ -50,8 +50,8 @@ public class HttpClient_DEMO
         HttpWebResponse response = httpOption.GetResult<HttpWebResponse>();
     }
 
-    private static readonly string s_small_file_txt = Path.Combine(AppDomain.CurrentDomain.GetTempPath(), "small_file_中文汉字.txt");
-    private static readonly string s_small_file_bin = Path.Combine(AppDomain.CurrentDomain.GetTempPath(), "small_file_中文汉字.bin");
+    private static readonly string s_small_file_txt = Path.Combine(EnvUtils.GetTempPath(), "small_file_中文汉字.txt");
+    private static readonly string s_small_file_bin = Path.Combine(EnvUtils.GetTempPath(), "small_file_中文汉字.bin");
 
     static HttpClient_DEMO()
     {

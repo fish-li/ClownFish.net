@@ -24,6 +24,12 @@ public static class AppConfig
     internal static AppConfiguration GetAppConfiguration() => s_configuration.GetConfiguration();
 
 
+#if NETCOREAPP    // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AppConfiguration))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AppSetting))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ConnectionStringSetting))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlDbConfig))]
+#endif
     internal static void Init()
     {
         if( s_inited == false ) {
@@ -81,6 +87,9 @@ public static class AppConfig
         return ConfigHelper.GetFileAbsolutePath(confName);
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
     internal static void InitConfig(string filePath)
     {
         AppConfiguration config = AppConfiguration.LoadFromFile(filePath, false)
@@ -97,6 +106,9 @@ public static class AppConfig
     /// 此方法不是线程安全的，必须在程序初始化时调用。
     /// </summary>
     /// <param name="xml"></param>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
     public static void ReLoadFromXml(string xml)
     {
         Console2.Info("###### AppConfig 配置内容正在从XML文本中加载");

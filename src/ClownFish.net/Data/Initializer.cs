@@ -136,6 +136,9 @@ public sealed class Initializer
     /// </summary>
     /// <param name="directoryPath">包含XmlCommand配置文件的目录，如果不指定就表示接受XmlCommand规范的默认目录</param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
     public Initializer LoadXmlCommandFromDirectory(string directoryPath = null)
     {
         // 如果不指定目录，就采用XmlCommand规范的默认目录
@@ -156,6 +159,9 @@ public sealed class Initializer
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
     public Initializer LoadXmlCommandFromText(string xml)
     {
         XmlCommandManager.Instance.LoadFromText(xml);
@@ -171,6 +177,9 @@ public sealed class Initializer
     /// <param name="dllOutPath"></param>
     /// <param name="useAttrFilter"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
+#endif
     public Initializer CompileAllEntityProxy(string dllOutPath, bool useAttrFilter = true)
     {
         ProxyBuilder.CompileAllEntityProxy(dllOutPath, useAttrFilter);

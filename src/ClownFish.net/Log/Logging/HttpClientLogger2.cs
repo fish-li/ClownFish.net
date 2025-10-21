@@ -78,6 +78,10 @@ internal class HttpClientEventData : ILoggingObject
     }
 }
 
+
+#if NETCOREAPP
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: eventData.Get")]
+#endif
 internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
 {
     private static readonly AsyncLocal<HttpClientEventData> s_local = new AsyncLocal<HttpClientEventData>();

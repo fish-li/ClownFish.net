@@ -13,6 +13,10 @@ internal class SQLiteClientProvider : BaseClientProvider
     // 它们的由来可参考：https://docs.microsoft.com/zh-cn/dotnet/standard/data/sqlite/compare
     // ClownFish只支持 System.Data.SQLite
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
+#endif
     internal SQLiteClientProvider()
     {
         Type factoryType = Type.GetType("System.Data.SQLite.SQLiteFactory, System.Data.SQLite", true, false);

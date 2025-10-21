@@ -9,6 +9,10 @@ internal sealed class MsSqlClientProvider : BaseMsSqlClientProvider
     private readonly Type _exceptionType;
     private readonly IGetValue _getter;
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
+#endif
     internal MsSqlClientProvider()
     {
         Type factoryType = Type.GetType("System.Data.SqlClient.SqlClientFactory, System.Data.SqlClient", true, false);

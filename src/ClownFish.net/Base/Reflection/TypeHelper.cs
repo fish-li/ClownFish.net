@@ -16,6 +16,9 @@ public static class TypeHelper
         InitFormText(configValues);
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: Type.GetType")]
+#endif
     internal static void InitFormText(string configValues)
     {
         if( configValues.IsNullOrEmpty() )
@@ -59,6 +62,9 @@ public static class TypeHelper
     /// <param name="typeName"></param>
     /// <param name="throwOnError"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static Type GetType(string typeName, bool throwOnError)
     {
         if( string.IsNullOrEmpty(typeName) )

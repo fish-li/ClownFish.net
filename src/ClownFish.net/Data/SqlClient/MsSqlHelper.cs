@@ -319,6 +319,9 @@ ORDER  BY [Schema],
     /// <param name="dbContext"></param>
     /// <param name="tablename"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MsSqlDbField))]
+#endif
     public static List<MsSqlDbField> GetFields(this DbContext dbContext, string tablename)
     {
         if( dbContext == null )

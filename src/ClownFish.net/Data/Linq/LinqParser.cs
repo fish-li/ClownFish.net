@@ -300,6 +300,11 @@ internal class LinqParser
 
         return query;
     }
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
+#endif
     private object ToSingle()
     {
         CPQuery query = GetFirstOrDefaultQuery();
@@ -311,6 +316,12 @@ internal class LinqParser
         return method.FastInvoke(query, null);
     }
 
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperty")]
+#endif
     private async Task<object> ToSingleAsync()
     {
         CPQuery query = GetFirstOrDefaultQuery();
@@ -401,6 +412,10 @@ internal class LinqParser
         return query;
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
+#endif
     private object ToList()
     {
         CPQuery query = GetToListQuery();
@@ -412,6 +427,11 @@ internal class LinqParser
         return method.FastInvoke(query, null);
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperty")]
+#endif
     private async Task<object> ToListAsync()
     {
         CPQuery query = GetToListQuery();

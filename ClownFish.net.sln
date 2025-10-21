@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.ImClients", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownFish.Email", "src\ClownFish.Email\ClownFish.Email.csproj", "{E54EA472-53CC-455B-A478-B0177EE323AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AotTestConsoleApp1", "test\AotTestConsoleApp1\AotTestConsoleApp1.csproj", "{D7233B8D-DECA-4A39-B475-FBBC398DC2FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{E54EA472-53CC-455B-A478-B0177EE323AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E54EA472-53CC-455B-A478-B0177EE323AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E54EA472-53CC-455B-A478-B0177EE323AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7233B8D-DECA-4A39-B475-FBBC398DC2FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7233B8D-DECA-4A39-B475-FBBC398DC2FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7233B8D-DECA-4A39-B475-FBBC398DC2FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7233B8D-DECA-4A39-B475-FBBC398DC2FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +138,7 @@ Global
 		{176E6BD3-9644-4EB3-A08E-B488EFD68C3E} = {C811087E-5154-4F54-9888-22196E145D2B}
 		{BFA44B54-6045-4BF3-B762-4D9174C20C30} = {C811087E-5154-4F54-9888-22196E145D2B}
 		{E54EA472-53CC-455B-A478-B0177EE323AF} = {C811087E-5154-4F54-9888-22196E145D2B}
+		{D7233B8D-DECA-4A39-B475-FBBC398DC2FE} = {C70A7C38-8F55-4F3F-ABD4-3A9A6518F20F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A03DB219-9FFE-470E-9974-062E69976B29}

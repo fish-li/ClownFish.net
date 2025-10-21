@@ -24,6 +24,9 @@ public static class MyTimeZone
     /// </summary>
     public static readonly string CurrentTZ;
 
+#if NETCOREAPP   // 保留无参构造函数，确保可序列化
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TZMapping))]
+#endif
     static MyTimeZone()
     {
         string json = typeof(MyTimeZone).Assembly.ReadResAsText("ClownFish.WindowsLinuxTimeZone.json");

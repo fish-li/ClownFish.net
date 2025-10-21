@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Data;
+﻿using ClownFish.Data.Xml;
+
+namespace ClownFish.Data;
 internal static class DataInitUtils
 {
     private static bool s_dalInited = false;
@@ -7,6 +9,24 @@ internal static class DataInitUtils
     /// <summary>
     /// 初始化 ClownFish.Data
     /// </summary>
+#if NETCOREAPP     // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: xml")]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlCmdParameter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlCommandItem))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFish.Base.Xml.XmlCdata))]
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Entity))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IDataLoader<>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IDataFieldTypeHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IDbConfig))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TypeList))]
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DataFieldMapKV))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DataReaderUtils))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DataTableUtils))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IEntityProxy))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FieldNvObject))]
+#endif
     public static void InitDAL()
     {
         if( s_dalInited == false ) {

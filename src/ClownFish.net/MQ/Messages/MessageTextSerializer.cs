@@ -51,6 +51,9 @@ public sealed class MessageTextSerializer
     /// <typeparam name="T"></typeparam>
     /// <param name="body"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2087: Activator.CreateInstance")]
+#endif
     public T Deserialize<T>(string body)
     {
         if( body == null )

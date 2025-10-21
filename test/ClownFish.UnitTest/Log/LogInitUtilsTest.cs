@@ -28,7 +28,7 @@ public class LogInitUtilsTest
 
 
         typeof(LogConfig).SetFieldValue("s_inited", false);
-        LogConfiguration config = LogConfiguration.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config", true);
         ClownFishInit.InitLog(config);
         ClownFishInit.InitLog(config);
 

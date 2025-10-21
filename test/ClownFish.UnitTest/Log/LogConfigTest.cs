@@ -7,23 +7,23 @@ public class LogConfigTest
     public void Test_LogConfiguration()
     {
         MyAssert.IsError<ArgumentNullException>(() => {
-            LogConfiguration.LoadFromXml("");
+            LogConfig.LoadFromXml("");
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            LogConfiguration.LoadFromFile("");
+            LogConfig.LoadFromFile("");
         });
 
         MyAssert.IsError<FileNotFoundException>(() => {
-            LogConfiguration.LoadFromFile("xxxxxxxxxx.config", true);
+            LogConfig.LoadFromFile("xxxxxxxxxx.config", true);
         });
 
 
         string filePath = ConfigHelper.GetFileAbsolutePath("ClownFish.Log.config");
         string xml = File.ReadAllText(filePath, Encoding.UTF8);
 
-        LogConfiguration cfg1 = LogConfiguration.LoadFromXml(xml);
-        LogConfiguration cfg2 = LogConfiguration.LoadFromFile(filePath, true);
+        LogConfiguration cfg1 = LogConfig.LoadFromXml(xml);
+        LogConfiguration cfg2 = LogConfig.LoadFromFile(filePath, true);
     }
 
     [TestMethod]

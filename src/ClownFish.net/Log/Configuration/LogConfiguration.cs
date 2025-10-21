@@ -45,44 +45,6 @@ public sealed class LogConfiguration
 
 
     /// <summary>
-    /// 从文件中加载LogConfiguration
-    /// </summary>
-    /// <param name="filePath"></param>
-    /// <param name="checkExist"></param>
-    /// <returns></returns>
-    public static LogConfiguration LoadFromFile(string filePath, bool checkExist = true)
-    {
-        if( filePath.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(filePath));
-
-
-        if( System.IO.File.Exists(filePath) == false ) {
-            if( checkExist )
-                throw new FileNotFoundException("配置文件没有找到，filePath: " + filePath);
-            else
-                return null;
-        }
-
-        return XmlHelper.XmlDeserializeFromFile<LogConfiguration>(filePath);
-    }
-
-
-    /// <summary>
-    /// 从XML文本中加载LogConfiguration
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <returns></returns>
-    public static LogConfiguration LoadFromXml(string xml)
-    {
-        if( xml.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(xml));
-
-        return XmlHelper.XmlDeserialize<LogConfiguration>(xml);
-    }
-
-
-
-    /// <summary>
     /// 合并二个配置对象，以config1为基础，用config2覆盖config1
     /// </summary>
     /// <param name="config1"></param>

@@ -2,6 +2,10 @@
 
 namespace ClownFish.Log.Configuration;
 
+#if NETCOREAPP
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: RequiresUnreferencedCode")]
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL2072: DynamicallyAccessedMemberTypes")]
+#endif
 internal class ConfigLoader
 {
     private LogConfiguration _config;

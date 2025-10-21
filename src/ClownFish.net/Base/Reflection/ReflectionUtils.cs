@@ -13,6 +13,9 @@ public static class ReflectionUtils
     /// <param name="propName"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static T Get<T>(this object data, string propName)
     {
         if( data == null)
@@ -41,6 +44,9 @@ public static class ReflectionUtils
     /// <param name="typeFullName"></param>
     /// <param name="methodName"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static int CallStaticMethod(string typeFullName, string methodName)
     {
         if( typeFullName.IsNullOrEmpty() )
@@ -68,6 +74,9 @@ public static class ReflectionUtils
     /// <param name="method">要调用的方法</param>
     /// <param name="args">调用方法所需要的参数</param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static async Task<object> CallMethod(object instance, MethodInfo method, object[] args)
     {
         if( method == null )

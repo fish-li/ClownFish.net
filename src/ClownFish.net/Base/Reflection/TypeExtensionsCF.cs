@@ -150,6 +150,9 @@ public static class TypeExtensionsCF
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static bool CanNew(this Type type)
     {
         if( type == null )
@@ -169,6 +172,9 @@ public static class TypeExtensionsCF
     /// <param name="type"></param>
     /// <param name="name"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static MethodInfo GetInstanceMethod(this Type type, string name)
     {
         if( type == null )
@@ -186,6 +192,9 @@ public static class TypeExtensionsCF
     /// <param name="type"></param>
     /// <param name="name"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static MethodInfo GetStaticMethod(this Type type, string name)
     {
         if( type == null )

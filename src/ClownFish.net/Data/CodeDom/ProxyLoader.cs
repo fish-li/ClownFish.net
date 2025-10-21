@@ -9,6 +9,9 @@ internal static class ProxyLoader
     /// 说明：已经存在的代理类型是用工具提前生成好的。
     /// </summary>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
+#endif
     internal static List<EntityCompileResult> SearchExistEntityCompileResult()
     {
         // 工具生成的程序集一定会使用EntityProxyAssemblyAttribute，所以用它做过滤
@@ -50,14 +53,16 @@ internal static class ProxyLoader
         return list;
     }
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
+#endif
     private static void LogDebugInfo(List<Assembly> proxyAsmList)
     {
         DebugReportBlock block = new DebugReportBlock { Category = "EntityProxy Assembly List", Order = 1002 };
 
         if( proxyAsmList.HasValue() ) {
             foreach( Assembly asm in proxyAsmList )
-                block.AppendLine(asm.Location);
+                block.AppendLine(asm.Location.IfEmpty(asm.FullName));
         }
 
         EntityProxyAssemblyListReportBlock = block;

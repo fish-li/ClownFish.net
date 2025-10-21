@@ -16,6 +16,9 @@ public static class ClownFishCounters
         ResetCounters(typeof(ClownFishCounters.Status));
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: type.GetFields")]
+#endif
     internal static void ResetCounters(Type type)
     {
         FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
@@ -42,6 +45,9 @@ public static class ClownFishCounters
         return list;
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: type.GetFields")]
+#endif
     internal static void FillValues(Type type, List<NameInt64> list)
     {
         FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);

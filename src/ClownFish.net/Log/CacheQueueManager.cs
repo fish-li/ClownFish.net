@@ -7,6 +7,9 @@ internal static class CacheQueueManager
     /// </summary>
     private static readonly Dictionary<Type, ICacheQueue> s_queueDict = new Dictionary<Type, ICacheQueue>(128);
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
+#endif
     internal static void Start(List<DataTypeWriterMap> list)
     {
         if( list.IsNullOrEmpty() )

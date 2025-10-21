@@ -23,6 +23,9 @@ public static class DataLoaderFactory
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
+#endif
     public static IDataLoader<T> GetLoader<T>() where T : class, new()
     {
         //ClownFish.Data.CodeDom.ProxyBuilder.Init();
@@ -41,6 +44,11 @@ public static class DataLoaderFactory
         }
     }
 
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: CanNew")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: GetInterfaces")]
+#endif
     internal static Type GetEntityType(Type dataloaderType)
     {
         if( dataloaderType == null )

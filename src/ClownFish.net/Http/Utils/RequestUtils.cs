@@ -81,6 +81,12 @@ public static class RequestUtils
     /// <param name="request"></param>
     /// <param name="name"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: field.FastGetValue")]
+#endif
+#if NET6_0_OR_GREATER
+    [DynamicDependency("_options", typeof(HttpRequestMessage))]
+#endif
     public static T GetOptionValue<T>(this HttpRequestMessage request, string name)
     {
         if( request == null )

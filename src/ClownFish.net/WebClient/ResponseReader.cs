@@ -48,6 +48,12 @@ public sealed class ResponseReader : IDisposable
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2060: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2037: GetHttpResult000")]
+    [DynamicDependency(nameof(GetHttpResult000), typeof(ResponseReader))]
+#endif
     public T Read<T>()
     {
         _responseStream = GetResponseStream(typeof(T));
@@ -57,9 +63,7 @@ public sealed class ResponseReader : IDisposable
         // 先判断是不是 HttpResult<T> 的子类型
         if( resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(HttpResult<>) ) {
             Type argType = resultType.GetGenericArguments()[0];
-            MethodInfo method = this.GetType()
-                                    .GetMethod(nameof(GetHttpResult000), BindingFlags.Instance | BindingFlags.NonPublic)
-                                    .MakeGenericMethod(argType);
+            MethodInfo method = s_method1.MakeGenericMethod(argType);
             return (T)method.FastInvoke(this, null);
         }
         else {
@@ -86,13 +90,17 @@ public sealed class ResponseReader : IDisposable
         return responseStream;
     }
 
-    private HttpResult<T> GetHttpResult000<T>()
+
+    private static readonly MethodInfo s_method1 = typeof(ResponseReader).GetMethod(nameof(GetHttpResult000),
+                                                                        BindingFlags.Instance | BindingFlags.NonPublic);
+
+    private HttpResult<TBody> GetHttpResult000<TBody>()
     {
         int statusCode = (int)_response.StatusCode;
         var header = _response.GetAllHeaders();
-        var body = GetResult<T>();
+        var body = GetResult<TBody>();
 
-        return new HttpResult<T>(statusCode, header, body);
+        return new HttpResult<TBody>(statusCode, header, body);
     }
 
     private T GetResult<T>()
@@ -169,6 +177,9 @@ public sealed class ResponseReader : IDisposable
     }
 
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
     internal static T ReturnResultFromTextStream<T>(Stream responseStream, string contentType)
     {
         HttpUtils.ParseContentType(contentType, out string mediaType, out Encoding encoding);
@@ -232,6 +243,9 @@ public sealed class ResponseReader : IDisposable
         return typeof(T).IsSuitableDeserialize();
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static T ReturnObjectFromXmlStream<T>(Stream responseStream, Encoding encoding)
     {
@@ -243,6 +257,9 @@ public sealed class ResponseReader : IDisposable
     }
 
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
     internal static T ConvertResult<T>(string responseText, string mediaType, string contentType)
     {
         // 优先判断 “返回值类型” 可以起到【纠错】的作用

@@ -48,7 +48,7 @@ public class Initializer
 public class UnitTestAppStartup : ConsoleAppStartup
 {
 #if NET6_0_OR_GREATER
-    internal override bool WaitToEnd => false;
+    public override bool WaitToEnd => false;
 #endif
 
     public override void BeforeClownFishInit()

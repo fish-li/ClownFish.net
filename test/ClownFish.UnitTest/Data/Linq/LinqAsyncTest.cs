@@ -5,7 +5,7 @@ namespace ClownFish.UnitTest.Data.Linq;
 [TestClass]
 public class LinqAsyncTest : BaseTest
 {
-    public int P5 { get; set; } = 5;
+    public static int P5 { get; set; } = 5;
     public int P3 { get; set; } = 3;
 
     private readonly int _f5 = 5;

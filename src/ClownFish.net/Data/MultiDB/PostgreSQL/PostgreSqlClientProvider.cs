@@ -8,6 +8,10 @@ internal class PostgreSqlClientProvider : BaseClientProvider
     private readonly Type _exceptionType;
     private readonly IGetValue _getter;
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
+#endif
     internal PostgreSqlClientProvider()
     {
         Type factoryType = Type.GetType("Npgsql.NpgsqlFactory, Npgsql", true, false);

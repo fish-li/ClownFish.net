@@ -33,8 +33,10 @@ internal static class CodeGenUtils
         return compileResult.Count;
     }
 
-    
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.LoadFrom")]
+#endif
     internal static List<Type> SearchEntityTypes(string binPath)
     {
         string[] files = Directory.GetFiles(binPath, "*.dll", SearchOption.TopDirectoryOnly);

@@ -29,7 +29,9 @@ public static partial class DbContextEvent
     /// </summary>
     public static event EventHandler<CommitTransEventArgs> OnCommited;
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: s_diagnosticSource.Write")]
+#endif
     internal static void ConnectionOpened(DbContext dbContext, DateTime startTime, bool isAsync, Exception ex)
     {
         OpenConnEventArgs e = null;
@@ -98,7 +100,9 @@ public static partial class DbContextEvent
 
 
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: s_diagnosticSource.Write")]
+#endif
     internal static void AfterExecute(BaseCommand command, string operationId, string operationName, DateTime startTime, bool isAsync, Exception ex)
     {
         ExecuteCommandEventArgs e = null;
@@ -137,7 +141,9 @@ public static partial class DbContextEvent
 
 
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: s_diagnosticSource.Write")]
+#endif
     internal static void Commit(DbContext dbContext, DateTime startTime, Exception ex)
     {
         CommitTransEventArgs e = null;

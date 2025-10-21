@@ -59,18 +59,24 @@ internal class WhereParase : ExpressionVisitor
         return false;
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastGetValue")]
+#endif
     private object GetMemberExpressionValue(MemberExpression node)
     {
         object instance = null;
 
-        if( node.Expression is ConstantExpression )
-            instance = (node.Expression as ConstantExpression).Value;
+        if( node.Expression != null ) {
+            if( node.Expression is ConstantExpression )
+                instance = (node.Expression as ConstantExpression).Value;
 
-        else if( node.Expression is MemberExpression )
-            instance = GetMemberExpressionValue(node.Expression as MemberExpression);
+            else if( node.Expression is MemberExpression )
+                instance = GetMemberExpressionValue(node.Expression as MemberExpression);
 
-        else
-            throw new NotSupportedException("表达式不是一个直接值");
+            else
+                throw new NotSupportedException("表达式不是一个直接值");
+        }
+        // else 表达式是一个静态成员的访问
 
 
         if( node.Member is FieldInfo ) {

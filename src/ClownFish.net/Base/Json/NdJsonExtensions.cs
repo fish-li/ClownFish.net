@@ -207,11 +207,20 @@ public static class NdJsonExtensions
     }
 
 
-    private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod("FromNdjson",
-                                                    BindingFlags.Static | BindingFlags.Public, null,
-                                                    new Type[] { typeof(TextReader), typeof(int), typeof(JsonSerializerSettings) }
-                                                    , null);
+    private static List<T> FromNdjson000<T>(this TextReader reader, int capacity)
+    {
+        return FromNdjson<T>(reader, capacity, null);
+    }
 
+    private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod(nameof(FromNdjson000), 
+                                                                        BindingFlags.Static | BindingFlags.NonPublic);
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2060: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2037: FromNdjson000")]
+    [DynamicDependency(nameof(FromNdjson000), typeof(NdJsonExtensions))]
+#endif
     internal static object LoadListFromNdjson(this TextReader reader, Type listType)
     {
         Type elementType = listType.GetGenericArguments()[0];

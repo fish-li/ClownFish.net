@@ -4,8 +4,8 @@
         <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
         <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>9.25.1016.1</Version>
-        <FileVersion>9.25.1016.1</FileVersion>
+        <Version>9.25.1020.3</Version>
+        <FileVersion>9.25.1020.3</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -24,17 +24,21 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
+    <!--<PropertyGroup>
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>-->
+
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
-    
+
     <ItemGroup Condition=" '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48' ">
         <Reference Include="System.Web" />
         <Reference Include="System.Configuration" />
         <Reference Include="System.IO.Compression" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-        <PackageReference Include="Cronos" Version="0.8.4" />        
+        <PackageReference Include="Cronos" Version="0.8.4" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
@@ -47,7 +51,7 @@
         <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
         <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     </ItemGroup>
-   
+
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' ">
         <PackageReference Include="Cronos" Version="0.8.4" />
         <PackageReference Include="System.CodeDom" Version="8.0.0" />
@@ -73,13 +77,13 @@
 
 
     <ItemGroup>
-      <None Remove="ClownFish.Log.config" />
-      <None Remove="WindowsLinuxTimeZone.json" />
+        <None Remove="ClownFish.Log.config" />
+        <None Remove="WindowsLinuxTimeZone.json" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="ClownFish.Log.config" />
-      <EmbeddedResource Include="WindowsLinuxTimeZone.json" />
+        <EmbeddedResource Include="ClownFish.Log.config" />
+        <EmbeddedResource Include="WindowsLinuxTimeZone.json" />
     </ItemGroup>
 
 </Project>

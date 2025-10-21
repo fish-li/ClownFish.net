@@ -78,7 +78,9 @@ public static partial class DbContextEvent
     //        }
 
 
-
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: s_diagnosticSource.Write")]
+#endif
     internal static void AfterExecuteBatch(DbContext dbContext, DbBatch batch, string operationId, string operationName, DateTime startTime, bool isAsync, Exception ex)
     {
         ExecuteBatchEventArgs e = null;

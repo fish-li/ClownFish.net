@@ -9,6 +9,10 @@ namespace ClownFish.Data.CodeDom;
 
 internal static class CodeCompilerHelper
 {
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.LoadFrom")]
+    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
+#endif
     public static Assembly CompileCode(string code, string dllOutPath)
     {
         if( string.IsNullOrEmpty(code) )

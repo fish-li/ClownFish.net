@@ -11,6 +11,10 @@ internal delegate object GetValueDelegate(object target);
 internal delegate void SetValueDelegate(object target, object arg);
 
 
+#if NETCOREAPP
+[UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: DynamicMethod")]
+[RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
+#endif
 internal static class DynamicMethodFactory
 {
     public static CtorDelegate CreateConstructor(ConstructorInfo constructor)
@@ -284,6 +288,9 @@ internal static class DynamicMethodFactory
 /// <summary>
 /// 优化反射性能的工具类
 /// </summary>
+#if NETCOREAPP
+[RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
+#endif
 public static class EmitExtensions
 {
     private static readonly Hashtable s_getterDict = Hashtable.Synchronized(new Hashtable(10240));
@@ -300,6 +307,10 @@ public static class EmitExtensions
     {
         if( propertyInfo == null )
             throw new ArgumentNullException("propertyInfo");
+
+        if( EnvArgs0.IsAot ) {
+            return propertyInfo.GetValue(obj);
+        }
 
         GetValueDelegate getter = (GetValueDelegate)s_getterDict[propertyInfo];
         if( getter == null ) {
@@ -320,6 +331,11 @@ public static class EmitExtensions
     {
         if( propertyInfo == null )
             throw new ArgumentNullException("propertyInfo");
+
+        if( EnvArgs0.IsAot ) {
+            propertyInfo.SetValue(obj, value);
+            return;
+        }
 
         SetValueDelegate setter = (SetValueDelegate)s_setterDict[propertyInfo];
         if( setter == null ) {
@@ -342,6 +358,10 @@ public static class EmitExtensions
     {
         if( methodInfo == null )
             throw new ArgumentNullException("methodInfo");
+
+        if( EnvArgs0.IsAot ) {
+            return methodInfo.Invoke(obj, parameters);
+        }
 
         MethodDelegate invoker = (MethodDelegate)s_methodDict[methodInfo];
         if( invoker == null ) {

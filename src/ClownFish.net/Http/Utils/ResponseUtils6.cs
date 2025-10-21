@@ -1,6 +1,6 @@
 ﻿#if NETCOREAPP
 using System.Net.Http;
-using ClownFish.Http.Proxy;
+
 
 namespace ClownFish.Http.Utils;
 /// <summary>
@@ -8,15 +8,63 @@ namespace ClownFish.Http.Utils;
 /// </summary>
 public static partial class ResponseUtils
 {
-    private static readonly GetValueDelegate s_httpResponseMessageGetter;
+    private static readonly object s_lock = new object();
+    private static bool s_inited = false;
 
-    static ResponseUtils()
+    private static FieldInfo s_field;
+    private static GetValueDelegate s_httpResponseMessageGetter;
+
+
+    private static void Init()
     {
-        FieldInfo field = typeof(HttpWebResponse).GetField("_httpResponseMessage", BindingFlags.Instance | BindingFlags.NonPublic);
-        if( field == null )
-            throw new NotSupportedException("HttpWebResponse._httpResponseMessage not found");
+        if( s_inited == false ) {
+            lock( s_lock ) {
+                if( s_inited == false ) {
 
-        s_httpResponseMessageGetter = DynamicMethodFactory.CreateFieldGetter(field);
+                    Init0();
+                    s_inited = true;
+                }
+            }
+        }
+        
+    }
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: DynamicMethodFactory")]
+    [DynamicDependency("_httpResponseMessage", typeof(HttpWebResponse))]
+#endif
+    private static void Init0()
+    {
+        s_field = typeof(HttpWebResponse).GetField("_httpResponseMessage", BindingFlags.Instance | BindingFlags.NonPublic);
+        if( s_field == null )
+            throw new NotSupportedException("Field HttpWebResponse._httpResponseMessage not found!");
+
+        if( EnvArgs0.IsAot == false ) {
+            s_httpResponseMessageGetter = DynamicMethodFactory.CreateFieldGetter(s_field);
+        }
+    }
+    
+
+    /// <summary>
+    /// 获取HttpWebResponse对象中的原始HttpResponseMessage对象
+    /// </summary>
+    /// <param name="httpWebResponse"></param>
+    /// <returns></returns>
+    public static HttpResponseMessage ToResponseMessage(this HttpWebResponse httpWebResponse)
+    {
+        if( httpWebResponse == null )
+            throw new ArgumentNullException(nameof(httpWebResponse));
+
+        Init();
+
+        HttpResponseMessage responseMessage = EnvArgs0.IsAot
+                    ? (HttpResponseMessage)s_field.GetValue(httpWebResponse)
+                    : (HttpResponseMessage)s_httpResponseMessageGetter.Invoke(httpWebResponse);
+
+        if( responseMessage == null )
+            throw new ObjectDisposedException(nameof(HttpWebResponse));
+
+        return responseMessage;
     }
 
 
@@ -39,23 +87,7 @@ public static partial class ResponseUtils
         return message.CloneAllHeaders();
     }
 
-    /// <summary>
-    /// 获取HttpWebResponse对象中的原始HttpResponseMessage对象
-    /// </summary>
-    /// <param name="httpWebResponse"></param>
-    /// <returns></returns>
-    public static HttpResponseMessage ToResponseMessage(this HttpWebResponse httpWebResponse)
-    {
-        if( httpWebResponse == null )
-            throw new ArgumentNullException(nameof(httpWebResponse));
 
-        HttpResponseMessage responseMessage = (HttpResponseMessage)s_httpResponseMessageGetter.Invoke(httpWebResponse);
-
-        if( responseMessage == null )
-            throw new ObjectDisposedException(nameof(HttpWebResponse));
-
-        return responseMessage;
-    }
 
     /// <summary>
     /// 将HttpResponseMessage中的所有响应头合并在一起。注意此操作将会读取所有响应头并生成一个新的NameValueCollection对象。

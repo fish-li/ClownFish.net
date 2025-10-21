@@ -53,6 +53,9 @@ public sealed class CPQuery : BaseCommand
         _initSql = parameterizedSQL ?? string.Empty;
     }
 
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperties")]
+#endif
     internal void Init(string parameterizedSQL, object argsObject)
     {
         _initSql = parameterizedSQL ?? string.Empty;

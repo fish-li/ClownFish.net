@@ -36,6 +36,29 @@ public static class LogConfig
     /// 初始化日志组件
     /// </summary>
     /// <param name="config">LogConfiguration实例。可以从配置文件ClownFish.Log.config中加载</param>
+#if NETCOREAPP    // 下面几个类型不参与裁剪，它们全是内部类型只能反射使用
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ILogWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ElasticsearchWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FileWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpJsonWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Json2Writer))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFish.Log.Writers.JsonWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NullWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprlogEsWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RabbitHttpWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlWriter))]
+	
+    // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LogConfiguration))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(PerformanceConfig))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FileConfig))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WriterConfig))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WriterOption))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TypeItemConfig))]
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLog))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(InvokeLog))]
+#endif
     public static void Init(LogConfiguration config)
     {
         if( config == null ) 
@@ -94,5 +117,53 @@ public static class LogConfig
 
         return Instance.GetDebugReportBlock();
     }
+
+
+
+
+    /// <summary>
+    /// 从文件中加载LogConfiguration
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <param name="checkExist"></param>
+    /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
+    public static LogConfiguration LoadFromFile(string filePath, bool checkExist = true)
+    {
+        if( filePath.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(filePath));
+
+
+        if( System.IO.File.Exists(filePath) == false ) {
+            if( checkExist )
+                throw new FileNotFoundException("配置文件没有找到，filePath: " + filePath);
+            else
+                return null;
+        }
+
+        return XmlHelper.XmlDeserializeFromFile<LogConfiguration>(filePath);
+    }
+
+
+    /// <summary>
+    /// 从XML文本中加载LogConfiguration
+    /// </summary>
+    /// <param name="xml"></param>
+    /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
+#endif
+    public static LogConfiguration LoadFromXml(string xml)
+    {
+        if( xml.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(xml));
+
+        return XmlHelper.XmlDeserialize<LogConfiguration>(xml);
+    }
+
+
+
 
 }

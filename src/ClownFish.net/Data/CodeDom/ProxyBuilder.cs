@@ -162,6 +162,9 @@ internal static class ProxyBuilder
     /// <param name="entityTypes"></param>
     /// <param name="dllOutPath"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: asm.GetType")]
+#endif
     internal static List<EntityCompileResult> Compile(Type[] entityTypes, string dllOutPath)
     {
         if( entityTypes == null )

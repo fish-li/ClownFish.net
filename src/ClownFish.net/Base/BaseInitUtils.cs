@@ -5,6 +5,16 @@ internal static class BaseInitUtils
 {
     private static bool s_baseInited = false;
 
+
+#if NETCOREAPP    // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NameInt64))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NameTime))]    
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NameValue))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IUserInfo))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IValidate))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EndClientUserInfo))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebUserInfo))]
+#endif
     public static void InitBase()
     {
         if( s_baseInited == false ) {

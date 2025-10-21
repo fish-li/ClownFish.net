@@ -11,6 +11,9 @@ public static class ObjectExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="input"></param>
     /// <returns></returns>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static T ConvertTo<T>(this object input) where T : new()
     {
         // 说明：这个方法就是用于代替 AutoMapper 的使用。
@@ -34,6 +37,9 @@ public static class ObjectExtensions
     /// </summary>
     /// <param name="source"></param>
     /// <param name="destination"></param>
+#if NETCOREAPP
+    [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
+#endif
     public static void CopyData(this object source, object destination)
     {
         if( source == null )

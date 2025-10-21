@@ -24,7 +24,7 @@ public class ConsoleAppStartup
     /// <summary>
     /// 程序启动后，阻塞主线程，直到收到进程结束的信号。
     /// </summary>
-    internal virtual bool WaitToEnd => true;
+    public virtual bool WaitToEnd => true;
 #endif
 
     /// <summary>
