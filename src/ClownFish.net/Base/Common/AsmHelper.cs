@@ -113,7 +113,11 @@ public static class AsmHelper
     }
 
 
-    internal static Assembly[] GetCurrentDomainAssemblies()
+    /// <summary>
+    /// 获取当前进程加载的所有程序集。方法在执行前会尝试加载当前目录下所有的DLL文件
+    /// </summary>
+    /// <returns></returns>
+    public static Assembly[] GetCurrentDomainAssemblies()
     {
         if( s_inited == false ) {
             lock( s_lock ) {
@@ -128,7 +132,7 @@ public static class AsmHelper
     }
 
     /// <summary>
-    /// 获取当前程序加载的所有程序集
+    /// 获取当前进程加载的所有程序集，已排除动态程序集
     /// </summary>
     /// <param name="ignoreSystemAssembly">是否忽略系统（微软提供的）程序集，通常反射时不需要分析它们。</param>
     /// <returns></returns>

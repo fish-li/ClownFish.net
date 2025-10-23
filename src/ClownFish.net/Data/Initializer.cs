@@ -175,14 +175,13 @@ public sealed class Initializer
     /// 如果已存在代理程序集，会直接加载，不会再次编译。
     /// </summary>
     /// <param name="dllOutPath"></param>
-    /// <param name="useAttrFilter"></param>
     /// <returns></returns>
 #if NETCOREAPP
-    [RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
+    [RequiresUnreferencedCode("application published as single-file is not supported")]
 #endif
-    public Initializer CompileAllEntityProxy(string dllOutPath, bool useAttrFilter = true)
+    public Initializer CompileAllEntityProxy(string dllOutPath)
     {
-        ProxyBuilder.CompileAllEntityProxy(dllOutPath, useAttrFilter);
+        ProxyBuilder.CompileAllEntityProxy(dllOutPath);
         return this;
     }
 

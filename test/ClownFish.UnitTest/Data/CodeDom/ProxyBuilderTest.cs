@@ -10,11 +10,11 @@ public class ProxyBuilderTest
     public void Test_CompileAllEntityProxy_Error()
     {
         MyAssert.IsError<ArgumentNullException>(()=> {
-            ProxyBuilder.CompileAllEntityProxy(null, true);
+            ProxyBuilder.CompileAllEntityProxy(null);
         });
 
         MyAssert.IsError<InvalidOperationException>(() => {
-            ProxyBuilder.CompileAllEntityProxy("xx", true);
+            ProxyBuilder.CompileAllEntityProxy("xx");
         });
     }
 
@@ -23,11 +23,7 @@ public class ProxyBuilderTest
     {
         List<EntityCompileResult> existCompileResult = ProxyLoader.SearchExistEntityCompileResult();
 
-        List<Type> list1 = ProxyBuilder.SearchAllEntityTypes(existCompileResult, true);
-        List<Type> list2 = ProxyBuilder.SearchAllEntityTypes(existCompileResult, false);
-
-        Assert.AreEqual(list1.Count, list2.Count);
-        MyAssert.AreEqual(list1.Select(x => x.FullName).ToList(), list2.Select(x => x.FullName).ToList());
+        List<Type> list1 = ProxyBuilder.SearchAllEntityTypes(existCompileResult);
 
 
         string block = ProxyBuilder.CompileEntityListReportBlock.ToString2();

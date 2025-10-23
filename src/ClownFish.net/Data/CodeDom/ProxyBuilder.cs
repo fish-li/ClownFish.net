@@ -20,13 +20,9 @@ internal static class ProxyBuilder
     /// 3、当前方法采用同步单线程方式运行，如果实体过多的大型项目，建议使用工具提前生成代理类型。
     /// </summary>
     /// <param name="dllOutPath"></param>
-    /// <param name="useAttrFilter">
-    /// 仅搜索标记为EntityAssemblyAttribute的程序集，
-    /// 设置为true将会加快搜索速度，
-    /// 但是要求包含实体类型的程序集用 [assembly: ClownFish.Data.EntityAssembly] 标记出来</param>
     /// <returns>返回处理了哪些实体类型（通常情况下不需要接收返回值，除非需要排错）。</returns>
     [MethodImpl(MethodImplOptions.Synchronized)]
-    public static List<Type> CompileAllEntityProxy(string dllOutPath, bool useAttrFilter)
+    public static List<Type> CompileAllEntityProxy(string dllOutPath)
     {
         if( string.IsNullOrEmpty(dllOutPath) )
             throw new ArgumentNullException(nameof(dllOutPath));
@@ -38,7 +34,7 @@ internal static class ProxyBuilder
         if( RetryFile.Exists(dllOutPath) )
             RetryFile.Delete(dllOutPath);
 
-        // add to debug repowrt
+        // add to debug report
 
         // 获取所有已生成的实体代理类型编译结果
         List<EntityCompileResult> existCompileResult = ProxyLoader.SearchExistEntityCompileResult();
@@ -46,7 +42,7 @@ internal static class ProxyBuilder
 
 
         // 搜索所有需要编译的实体类型
-        List<Type> listTypes = SearchAllEntityTypes(existCompileResult, useAttrFilter);
+        List<Type> listTypes = SearchAllEntityTypes(existCompileResult);
         LogDebugInfo(listTypes);
 
 
@@ -80,29 +76,13 @@ internal static class ProxyBuilder
     /// 查找当前进程加载的程序集中所有的实体类型
     /// </summary>
     /// <param name="existCompileResult"></param>
-    /// <param name="useAttrFilter"></param>
     /// <returns></returns>
-    internal static List<Type> SearchAllEntityTypes(List<EntityCompileResult> existCompileResult, bool useAttrFilter)
+    internal static List<Type> SearchAllEntityTypes(List<EntityCompileResult> existCompileResult)
     {
         List<Type> listTypes = new List<Type>();
-        List<Assembly> entityAsmList = null;
 
-        if( useAttrFilter ) {
-            // 仅搜索标记为EntityAssemblyAttribute的程序集
-            entityAsmList = AsmHelper.GetAssemblyList<EntityAssemblyAttribute>();
-        }
-        else {
-            // 先获取进程加载的所有程序集
-            Assembly[] allAsm = AsmHelper.GetLoadAssemblies(true);
-
-            entityAsmList = new List<Assembly>(allAsm.Length);
-
-            // 排除用EntityProxyAssemblyAttribute标记过的程序集（实体代理程序集）
-            foreach( Assembly asm in allAsm ) {
-                if( asm.GetCustomAttribute<EntityProxyAssemblyAttribute>() == null )
-                    entityAsmList.Add(asm);
-            }
-        }
+        // 仅搜索标记为EntityAssemblyAttribute的程序集
+        List<Assembly> entityAsmList = AsmHelper.GetAssemblyList<EntityAssemblyAttribute>();
 
         // 获取所有已生成的实体代理类型
         foreach( Assembly asm in entityAsmList ) {
@@ -132,7 +112,7 @@ internal static class ProxyBuilder
         List<Type> list = new List<Type>();
 
         foreach( Type t in asm.GetPublicTypes() ) {
-            if( t.IsSubclassOf(TypeList.Entity) ) {
+            if( t.IsSubclassOf(TypeList.Entity) ) {   // TODO：判断是不是实体不使用 [DbEntity] + Entity-BaseClass 是个错误想法~~~
 
                 // 排除抽象类
                 if( t.IsAbstract )

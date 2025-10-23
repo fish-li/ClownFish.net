@@ -15,6 +15,7 @@ internal class Program
         try {
             ConsoleAppStarter.Run(new AotTestAppStartup());
 
+            ShowAsmList();
             Directory.CreateDirectory("temp");
             await TestDAL.Run();
             await TestCache.Run();
@@ -42,6 +43,16 @@ internal class Program
             Console2.WriteLine("--------------------- 所有测试用例执行成功 --------------------------");
         }
         Console.ReadLine();
+    }
+
+    private static void ShowAsmList()
+    {
+        Console2.WriteLine("======================================================================");
+        Assembly[] asmList = AppDomain.CurrentDomain.GetAssemblies();
+        foreach( Assembly asm in asmList.OrderBy(x => x.FullName) ) {
+            Console2.WriteLine(asm.FullName);
+        }
+        Console2.WriteLine("======================================================================");
     }
 }
 
