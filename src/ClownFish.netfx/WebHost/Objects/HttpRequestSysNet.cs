@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.WebHost.Objects;
 
-internal class HttpRequestSysNet : NHttpRequest
+public class HttpRequestSysNet : NHttpRequest
 {
     private static readonly NameValueCollection s_empty = new NameValueCollection();
 

@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.WebHost.Objects;
 
-internal class HttpResponseSysNet : NHttpResponse
+public class HttpResponseSysNet : NHttpResponse
 {
     private bool _bodyIsSend = false;
     private readonly System.Net.HttpListenerResponse _response;

@@ -17,7 +17,8 @@ public sealed class SimpleEsClient
 
     private readonly EsConnOption _option;
 
-    private readonly string _indexNameTimeFormat;
+    //private readonly string _indexNameTimeFormat;
+    private readonly IEsIndexNameTimeFormat _timeFormat;
 
     /// <summary>
     /// 构造方法
@@ -31,7 +32,9 @@ public sealed class SimpleEsClient
 
         option.Validate();
         _option = option;
-        _indexNameTimeFormat = indexNameTimeFormat;
+
+        //_indexNameTimeFormat = indexNameTimeFormat;
+        _timeFormat = EsIndexNameTimeFormat.GetImpl(indexNameTimeFormat);
     }
 
     #region 基础方法
@@ -82,10 +85,15 @@ public sealed class SimpleEsClient
     /// <returns></returns>
     private string GetIndexName(Type dataType)
     {
-        if( _indexNameTimeFormat.IsNullOrEmpty() )
+        //if( _indexNameTimeFormat.IsNullOrEmpty() )
+        //    return dataType.Name.NameToLower();   // 这种情况使用一个索引
+        //else
+        //    return dataType.Name.NameToLower() + DateTime.Now.ToString(_indexNameTimeFormat);
+
+        if( _timeFormat == null )
             return dataType.Name.NameToLower();   // 这种情况使用一个索引
         else
-            return dataType.Name.NameToLower() + DateTime.Now.ToString(_indexNameTimeFormat);
+            return dataType.Name.NameToLower() + _timeFormat.TimeToString(DateTime.Now);
     }
 
     /// <summary>

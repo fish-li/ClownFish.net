@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.WebHost.Objects;
 
-internal sealed class HttpContextSysNet : NHttpContext
+public sealed class HttpContextSysNet : NHttpContext
 {
     private readonly System.Net.HttpListenerContext _context;
     private readonly HttpRequestSysNet _request;
