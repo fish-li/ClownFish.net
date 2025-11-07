@@ -75,7 +75,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// </summary>
     /// <param name="requestMessage"></param>
     /// <returns></returns>
-    public virtual async Task<HttpResponseMessage> SendRequest(HttpRequestMessage requestMessage)
+    protected virtual async Task<HttpResponseMessage> SendRequest(HttpRequestMessage requestMessage)
     {
         // 获取HttpClient实例，相同站点的请求共用一个实例
         HttpClient client = HttpProxyUtils.GetHttpClient(requestMessage.RequestUri);

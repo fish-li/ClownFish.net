@@ -4,8 +4,8 @@
         <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>ClownFish.NRedis</RootNamespace>
         <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>9.25.1107.2</Version>
-        <FileVersion>9.25.1107.2</FileVersion>
+        <Version>9.25.1107.3</Version>
+        <FileVersion>9.25.1107.3</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
