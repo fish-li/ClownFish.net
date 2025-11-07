@@ -188,7 +188,7 @@ Server: Kestrel";
 
         if( headers.HasValue() ) {
             foreach(var kv in headers ) {
-                if( ClownFish.WebClient.V2.HttpObjectUtils.IsWellKnownContentHeader(kv.Key) )
+                if( HttpUtils.IsWellKnownContentHeader(kv.Key) )
                     message.Content.Headers.TryAddWithoutValidation(kv.Key, kv.Value);
                 else
                     message.Headers.TryAddWithoutValidation(kv.Key, kv.Value);

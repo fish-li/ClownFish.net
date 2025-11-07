@@ -21,7 +21,7 @@ public class HttpProxyHandler2Test
         MockRequestData reqdata = MockRequestData.FromText("GET http://www.abc.com/test1 HTTP/1.1");
         NHttpContext httpContext = new MockHttpContext(reqdata);
 
-        HttpContent body = HttpProxyHandler2.CreateRequestBodyStatic(httpContext.Request);
+        HttpContent body = HttpProxyUtils.CreateRequestBody(httpContext.Request);
 
         Assert.IsInstanceOfType(body, typeof(ByteArrayContent));
         Assert.AreEqual(0, body.ReadAsStream().Length);
@@ -43,7 +43,7 @@ Content-Length: 666
 
         NHttpContext httpContext = new MockHttpContext(reqdata);
 
-        HttpContent body = HttpProxyHandler2.CreateRequestBodyStatic(httpContext.Request);
+        HttpContent body = HttpProxyUtils.CreateRequestBody(httpContext.Request);
 
         Assert.IsInstanceOfType(body, typeof(StreamContent));
         Assert.AreEqual(16, body.ReadAsStream().Length);

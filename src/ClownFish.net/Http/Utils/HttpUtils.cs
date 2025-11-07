@@ -110,8 +110,12 @@ public static class HttpUtils
         return false;
     }
 
-
-    internal static string GetStatusReasonPhrase(int statusCode)
+    /// <summary>
+    /// 获取状态码对应的名称
+    /// </summary>
+    /// <param name="statusCode"></param>
+    /// <returns></returns>
+    public static string GetStatusReasonPhrase(int statusCode)
     {
         // copy from System.Net.HttpStatusDescription.Get()
 
@@ -337,6 +341,30 @@ public static class HttpUtils
         else {   // 示例 Content-Type: application/json
             return contentType;
         }
+    }
+
+
+    private static readonly HashSet<string> s_wellKnownContentHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
+            "Content-Disposition",
+            "Content-Encoding",
+            "Content-Language",
+            "Content-Length",
+            "Content-Location",
+            "Content-MD5",
+            "Content-Range",
+            "Content-Type",
+            "Expires",
+            "Last-Modified"
+     };
+
+    /// <summary>
+    /// 判断是不是 http-Body 头
+    /// </summary>
+    /// <param name="header"></param>
+    /// <returns></returns>
+    public static bool IsWellKnownContentHeader(string header)
+    {
+        return s_wellKnownContentHeaders.Contains(header);
     }
 
 }

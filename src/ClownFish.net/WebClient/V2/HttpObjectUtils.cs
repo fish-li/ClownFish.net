@@ -11,25 +11,7 @@ namespace ClownFish.WebClient.V2;
 
 internal static class HttpObjectUtils
 {
-    private static readonly HashSet<string> s_wellKnownContentHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
-            "Content-Disposition",
-            "Content-Encoding",
-            "Content-Language",
-            "Content-Length",
-            "Content-Location",
-            "Content-MD5",
-            "Content-Range",
-            "Content-Type",
-            "Expires",
-            "Last-Modified"
-     };
-
-    public static bool IsWellKnownContentHeader(string header)
-    {
-        return s_wellKnownContentHeaders.Contains(header);
-    }
-
-
+    
     public static HttpRequestMessage CreateRequestMessage(MyHttpOption httpOption)
     {
         Uri requestUri = httpOption.GetReuestUri();
@@ -48,7 +30,7 @@ internal static class HttpObjectUtils
 
         // 设置请求头
         foreach( var item in httpOption.Headers ) {
-            if( IsWellKnownContentHeader(item.Name) ) {
+            if( HttpUtils.IsWellKnownContentHeader(item.Name) ) {
                 requestMessage.Content.Headers.TryAddWithoutValidation(item.Name, item.Value);
             }
             else {

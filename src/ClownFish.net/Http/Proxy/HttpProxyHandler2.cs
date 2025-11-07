@@ -1,7 +1,6 @@
 ﻿#if NETCOREAPP
 
 using System.Net.Http;
-using ClownFish.WebClient.V2;
 
 namespace ClownFish.Http.Proxy;
 
@@ -24,7 +23,12 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// </summary>
     public bool AdjustRefererHeader { get; set; }
 
-    private readonly string _destUr;
+    /// <summary>
+    /// 是否添加Forwarded相关的头
+    /// </summary>
+    public bool AddProxyForwardedHeaders { get; set; } = true;
+
+    private readonly string _destUrl;
 
     /// <summary>
     /// 构造方法
@@ -32,7 +36,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// <param name="destUrl"></param>
     public HttpProxyHandler2(string destUrl)
     {
-        _destUr = destUrl;
+        _destUrl = destUrl;
     }
 
     /// <summary>
@@ -42,7 +46,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     public virtual async Task ProcessRequestAsync(NHttpContext httpContext)
     {
         try {
-            Uri destUri = new Uri(_destUr);
+            Uri destUri = new Uri(_destUrl);
 
             // 构造请求消息，包含 headers, body
             HttpRequestMessage requestMessage = CreateRequest(httpContext.Request, destUri);
@@ -71,23 +75,14 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// </summary>
     /// <param name="requestMessage"></param>
     /// <returns></returns>
-    protected virtual async Task<HttpResponseMessage> SendRequest(HttpRequestMessage requestMessage)
+    public virtual async Task<HttpResponseMessage> SendRequest(HttpRequestMessage requestMessage)
     {
         // 获取HttpClient实例，相同站点的请求共用一个实例
-        HttpClient client = GetHttpClient(requestMessage);
+        HttpClient client = HttpProxyUtils.GetHttpClient(requestMessage.RequestUri);
 
         return await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
     }
 
-    /// <summary>
-    /// 创建 HttpClient 实例
-    /// </summary>
-    /// <param name="requestMessage"></param>
-    /// <returns></returns>
-    protected virtual HttpClient GetHttpClient(HttpRequestMessage requestMessage)
-    {
-        return ProxyHttpClientCache.GetClient(requestMessage.RequestUri);
-    }
 
 
     /// <summary>
@@ -120,46 +115,19 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
         //if( string.Equals(httpRequest.Header("Connection"), "keep-alive", StringComparison.OrdinalIgnoreCase) )
         //    requestMessage.SetKeepAlive(true);
 
-        CopyRequestHeadersStatic(httpRequest, requestMessage);
+        HttpProxyUtils.CopyRequestHeaders(httpRequest, requestMessage, HttpProxyModule.IgnoreRequestHeaders);
 
         //SetOriginRequestHeader(httpRequest, requestMessage);
 
         if( this.AdjustRefererHeader )
             SetRefererRequestHeader(httpRequest, requestMessage);
 
-        AddProxyRequestHeaders(httpRequest, requestMessage);
+        if( this.AddProxyForwardedHeaders )
+            AddProxyRequestHeaders(httpRequest, requestMessage);
     }
 
 
-    /// <summary>
-    /// 复制【普通的】请求头
-    /// </summary>
-    /// <param name="httpRequest"></param>
-    /// <param name="requestMessage"></param>
-    public static void CopyRequestHeadersStatic(NHttpRequest httpRequest, HttpRequestMessage requestMessage)
-    {
-        // 复制请求头
-        foreach( string name in httpRequest.HeaderKeys ) {
 
-            // 过滤不允许直接指定的请求头
-            if( HttpProxyModule.IgnoreRequestHeaders.Contains(name) )
-                continue;
-
-            if( HttpObjectUtils.IsWellKnownContentHeader(name) ) {
-
-                string[] values = httpRequest.GetHeaders(name);
-                foreach( string value in values ) {
-                    requestMessage.Content.Headers.TryAddWithoutValidation(name, value);
-                }
-            }
-            else {
-                string[] values = httpRequest.GetHeaders(name);
-                foreach( string value in values ) {
-                    requestMessage.Headers.TryAddWithoutValidation(name, value);
-                }
-            }
-        }
-    }
 
     private string _destRoot;
 
@@ -167,7 +135,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     private string GetDestUrlRoot()
     {
         if( _destRoot == null )
-            _destRoot = Urls.GetWebSiteRoot(_destUr);
+            _destRoot = Urls.GetWebSiteRoot(_destUrl);
         return _destRoot;
     }
 
@@ -262,34 +230,10 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// <returns></returns>
     protected virtual HttpContent CreateRequestBody(NHttpRequest httpRequest)
     {
-        return CreateRequestBodyStatic(httpRequest);
+        return HttpProxyUtils.CreateRequestBody(httpRequest);
     }
 
-    /// <summary>
-    /// 根据NHttpRequest实例创建请求体
-    /// </summary>
-    /// <param name="httpRequest"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static HttpContent CreateRequestBodyStatic(NHttpRequest httpRequest)
-    {
-        Stream srcStream = httpRequest.InputStream;
 
-        if( httpRequest.HasBody && srcStream != null && srcStream.CanRead ) {
-
-            if( srcStream.CanSeek )
-                srcStream.Position = 0;
-
-            // 在启用Request.EnableBuffering时，这里会导致发出去的请求体为空~~  
-            // 补充说明：问题已解决，将EnableBuffering的调用延后。可参考 SpacerModule.SetRequestBuffering 方法的调用时机
-            StreamContent result = new StreamContent(srcStream);
-
-            return result;
-        }
-        else {
-            return new ByteArrayContent(Array.Empty<byte>());
-        }
-    }
 
 
     /// <summary>
@@ -369,7 +313,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     /// <param name="httpResponse"></param>
     protected virtual void CopyResponseHeaders(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
     {
-        CopyResponseHeadersStatic(responseMessage, httpResponse);
+        HttpProxyUtils.CopyResponseHeaders(responseMessage, httpResponse, HttpProxyModule.IgnoreResponseHeaders);
 
         //SetLocationResponseHeader(responseMessage, httpResponse);
     }
@@ -421,37 +365,7 @@ public class HttpProxyHandler2 : IAsyncNHttpHandler
     //}
 
 
-    /// <summary>
-    /// 复制响应头
-    /// </summary>
-    /// <param name="responseMessage">源</param>
-    /// <param name="httpResponse">目标</param>
-    public static void CopyResponseHeadersStatic(HttpResponseMessage responseMessage, NHttpResponse httpResponse)
-    {
-        string contentType = responseMessage.GetContentType();
-        if( contentType.IsNullOrEmpty() == false ) {
-            httpResponse.ContentType = contentType;
-        }
 
-        foreach( KeyValuePair<string, IEnumerable<string>> kv in responseMessage.Headers ) {
-            if( HttpProxyModule.IgnoreResponseHeaders.Contains(kv.Key) )
-                continue;
-
-            httpResponse.SetResponseHeaders(kv.Key, kv.Value.ToArray());
-        }
-
-        if( responseMessage.Content != null ) {
-            foreach( KeyValuePair<string, IEnumerable<string>> kv2 in responseMessage.Content.Headers ) {
-                if( HttpProxyModule.IgnoreResponseHeaders.Contains(kv2.Key) )
-                    continue;
-
-                //if( HttpHeaders.Response.ContentType.Is(kv2.Key) )  // HttpProxyModule.IgnoreResponseHeaders 已包含
-                //    continue;
-
-                httpResponse.SetResponseHeaders(kv2.Key, kv2.Value.ToArray());
-            }
-        }
-    }
 
     /// <summary>
     /// 复制响应体
