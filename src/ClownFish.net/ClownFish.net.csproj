@@ -10,7 +10,8 @@
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
-        <LangVersion>13.0</LangVersion>
+        <!--<LangVersion>13.0</LangVersion>-->
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -47,8 +48,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
         <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     </ItemGroup>
 
@@ -58,8 +57,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.6" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
         <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     </ItemGroup>
 
@@ -70,8 +67,6 @@
         <PackageReference Include="System.CodeDom" Version="6.0.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.0" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
         <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     </ItemGroup>
 

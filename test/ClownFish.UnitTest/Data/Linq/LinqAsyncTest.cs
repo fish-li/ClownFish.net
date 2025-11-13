@@ -415,22 +415,21 @@ WHERE (CategoryID = @p1)
 
             MyAssert.IsError<NotSupportedException>(() => {
 
-                var query = from t in db.Entity.Query<Product>()
-                            where t.ProductName.Contains(this.GetStringValue())  // 不支持这样方法调用
-                            select t;
+                var query2 = from t in db.Entity.Query<Product>()
+                             where t.ProductName.Contains(this.GetStringValue())  // 不支持这样方法调用
+                             select t;
 
-                Product p = query.FirstOrDefault();
+                Product p2 = query2.FirstOrDefault();
             });
 
             MyAssert.IsError<NotSupportedException>(() => {
 
-                var query = from t in db.Entity.Query<Product>()
-                            where this.GetIntArray().Contains(t.CategoryID)   // 不支持这样方法调用
-                            select t;
+                var query3 = from t in db.Entity.Query<Product>()
+                             where this.GetIntArray().Contains(t.CategoryID)   // 不支持这样方法调用
+                             select t;
 
-                Product p = query.FirstOrDefault();
+                Product p3 = query3.FirstOrDefault();
             });
-
         }
     }
 

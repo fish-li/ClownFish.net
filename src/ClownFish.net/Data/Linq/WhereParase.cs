@@ -39,20 +39,29 @@ internal class WhereParase : ExpressionVisitor
 
     private bool TryGetExpressionValue(Expression node, out object value)
     {
-        if( node is ConstantExpression ) {
-            value = (node as ConstantExpression).Value;
+        if( node is ConstantExpression node1 ) {
+            value = node1.Value;
             return true;
         }
-        else if( node is MemberExpression ) {
-            value = GetMemberExpressionValue(node as MemberExpression);
+        else if( node is MemberExpression node2 ) {
+            value = GetMemberExpressionValue(node2);
             return true;
         }
-        else if( node is UnaryExpression ) {
-            UnaryExpression unaryExpression = node as UnaryExpression;
-            if( unaryExpression.NodeType == ExpressionType.Convert ) {
+        else if( node is UnaryExpression node3 ) {
+            if( node3.NodeType == ExpressionType.Convert ) {
 
-                return TryGetExpressionValue(unaryExpression.Operand, out value);
+                return TryGetExpressionValue(node3.Operand, out value);
             }
+        }
+        else if( node is MethodCallExpression node4 ) {
+            if( node4.Method.Name == "op_Implicit" ) {
+                TryGetExpressionValue(node4.Arguments[0], out value);
+                return true;
+            }
+            //else {     // 不要取消这段注释，否则会出现新问题
+            //    value = GetMethodCallExpressionValue(node4);
+            //    return true;
+            //}
         }
 
         value = null;
@@ -89,6 +98,23 @@ internal class WhereParase : ExpressionVisitor
         }
     }
 
+    //private object GetMethodCallExpressionValue(MethodCallExpression node)
+    //{
+    //    object instance = null;
+
+    //    if( node.Method.IsStatic == false ) {
+    //        TryGetExpressionValue(node.Object, out instance);
+    //    }
+
+    //    List<object> arguments = new List<object>(node.Arguments.Count);
+    //    foreach( Expression argument in node.Arguments ) {
+    //        TryGetExpressionValue(argument, out object xx);
+    //        arguments.Add(xx);
+    //    }
+
+    //    return node.Method.Invoke(instance, arguments.ToArray());
+    //}
+
     protected override Expression VisitUnary(UnaryExpression node)
     {
         if( node.Operand is LambdaExpression )
@@ -113,7 +139,12 @@ internal class WhereParase : ExpressionVisitor
             // EndsWith 对应的 like '%xxx' 没有任何意义，就不实现了
         }
         else if( node.Method.Name == "Contains" ) {
-            if( node.Method.DeclaringType == typeof(System.Linq.Enumerable) ) {
+            if( node.Method.DeclaringType == typeof(System.Linq.Enumerable)
+#if NETCOREAPP  // C# 14 会将 Array.Contains 翻译成调用下面的方法，同时还会做隐式转换
+                // https://learn.microsoft.com/zh-cn/dotnet/core/compatibility/core-libraries/10.0/csharp-overload-resolution
+                || node.Method.DeclaringType == typeof(System.MemoryExtensions) 
+#endif
+                ) {
                 return In(node);
             }
             else if( node.Method.DeclaringType == typeof(string) ) {
@@ -129,7 +160,7 @@ internal class WhereParase : ExpressionVisitor
     {
         object value;
         if( TryGetExpressionValue(node.Arguments[0], out value) == false )
-            throw new NotSupportedException("不支持的表达式，StartsWith的参数必须是常量。");
+            throw new NotSupportedException("不支持的表达式，StartsWith的参数必须是常量");
 
         _query.AppendSql("(");
         Visit(node.Object);
@@ -146,15 +177,18 @@ internal class WhereParase : ExpressionVisitor
     {
         object value;
         if( TryGetExpressionValue(node.Arguments[0], out value) == false )
-            throw new NotSupportedException("不支持的表达式，Contains的参数必须是常量。");
+            throw new NotSupportedException("不支持的表达式，Contains的参数必须是常量");
+
+        if( false == (value is ICollection collection) ) {
+            throw new NotSupportedException("不支持的表达式，Contains的参数必须是常量-2");
+        }
 
         _query.AppendSql("(");
         Visit(node.Arguments[1]);
 
         _query.AppendSql(" IN (");
-        _query.AppendArrayParameter(value as ICollection);
+        _query.AppendArrayParameter(collection);
         _query.AppendSql("))");
-
 
         return node;
     }

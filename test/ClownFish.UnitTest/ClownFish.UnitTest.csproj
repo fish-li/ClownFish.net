@@ -5,6 +5,7 @@
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <IsPackable>false</IsPackable>
         <OutputPath>bin</OutputPath>
+        <!--<LangVersion>13.0</LangVersion>-->
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
