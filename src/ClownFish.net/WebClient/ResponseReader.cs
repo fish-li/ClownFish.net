@@ -246,6 +246,10 @@ public sealed class ResponseReader : IDisposable
 #if NETCOREAPP
     [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
 #endif
+#if NET10_0_OR_GREATER
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: XmlSerializer")]
+#endif
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static T ReturnObjectFromXmlStream<T>(Stream responseStream, Encoding encoding)
     {

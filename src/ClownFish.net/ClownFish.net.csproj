@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>9.25.1107.3</Version>
-        <FileVersion>9.25.1107.3</FileVersion>
+        <AssemblyVersion>10.0.0.0</AssemblyVersion>
+        <Version>10.25.1117.1</Version>
+        <FileVersion>10.25.1117.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -42,6 +42,15 @@
         <PackageReference Include="Cronos" Version="0.8.4" />
     </ItemGroup>
 
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
+        <PackageReference Include="Cronos" Version="0.11.1" />
+        <PackageReference Include="System.CodeDom" Version="10.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.0" />
+        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+    </ItemGroup>
+    
     <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
         <PackageReference Include="Cronos" Version="0.8.4" />
         <PackageReference Include="System.CodeDom" Version="9.0.0" />

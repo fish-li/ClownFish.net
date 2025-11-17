@@ -1,16 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net45;net462;net48;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net45;net462;net48;net8.0;net9.0;net10.0</TargetFrameworks>
         <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>9.0.0.0</AssemblyVersion>
-        <Version>8.22.805.100</Version>
-        <FileVersion>8.22.805.100</FileVersion>
+        <AssemblyVersion>10.0.0.0</AssemblyVersion>
+        <Version>10.25.1117.1</Version>
+        <FileVersion>10.25.1117.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <DocumentationFile>bin\ClownFish.netfx.xml</DocumentationFile>
-        <LangVersion>13.0</LangVersion>
+        <!--<LangVersion>13.0</LangVersion>-->
+        <LangVersion>latest</LangVersion>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 

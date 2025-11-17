@@ -18,26 +18,16 @@ public abstract class BaseTest
     }
 
 
-#if NET9_0
+#if NET10_0
     // 【国产数据库】不是想运行就能运行的，它们有license限制，没办法一直对它测试！
     public static readonly string[] ConnNames = new string[] { "sqlserver", "mysql", "postgresql",
-#if TEST_KINGBASE2
-        "kingbase2",    // 人大金仓，使用 Kdbndp 驱动
-#endif
-#if TEST_KINGBASE
-        "kingbase",     // 人大金仓，使用 Npgsql 驱动
-#endif
-#if TEST_DM
-        "dm",           // 达梦
-#endif
-#if TEST_VASTBASE
-        "vastbase"      // 海量
-#endif
+            //"kingbase2",    // 人大金仓，使用 Kdbndp 驱动
+            //"kingbase",     // 人大金仓，使用 Npgsql 驱动
+            //"dm",           // 达梦
+            //"vastbase"      // 海量
     };
-#elif NET8_0
-    public static readonly string[] ConnNames = new string[] { "sqlserver", "mysql" };
 #else
-    public static readonly string[] ConnNames = new string[] { "sqlserver" };
+    public static readonly string[] ConnNames = new string[] { "sqlserver", "mysql" };
 #endif
 
 

@@ -29,7 +29,10 @@ internal static class JsonSerializerSettingsUtils
             return Get0(style);
         }
     }
-
+#if NET10_0_OR_GREATER
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: JsonSerializer")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: JsonSerializer")]
+#endif
     private static JsonSerializerSettings Get0(JsonStyle style)
     {
         JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -80,7 +83,10 @@ internal static class JsonSerializerSettingsUtils
         return settings;
     }
 
-
+#if NET10_0_OR_GREATER
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: JsonSerializer")]
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: JsonSerializer")]
+#endif
     internal class LowerCaseContractResolver : DefaultContractResolver
     {
         protected override string ResolvePropertyName(string propertyName)
