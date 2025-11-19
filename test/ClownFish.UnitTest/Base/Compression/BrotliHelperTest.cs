@@ -31,7 +31,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestMethod]
-    [Obsolete]
     public void Test_Brotli压缩二进制字节()
     {
         string s = @"
@@ -44,11 +43,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 ";
         byte[] bb = Encoding.UTF8.GetBytes(s);
 
-        byte[] b1 = BrotliHelper.Compress(bb);
+        byte[] b1 = BrotliHelper.ToBrotli(bb);
 
         Assert.IsTrue(b1.Length < bb.Length);
 
-        byte[] b2 = BrotliHelper.Decompress(b1);
+        byte[] b2 = BrotliHelper.UnBrotli(b1);
 
         Assert.AreEqual(bb.Length, b2.Length);
 

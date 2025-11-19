@@ -114,29 +114,4 @@ public static class GzipHelper
         }
     }
 
-
-    /// <summary>
-    /// 压缩一个二进制数组
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [SuppressMessage("Microsoft.Usage", "CA2202")]
-    [Obsolete("请使用 ToGzip 方法代替当前方法")]
-    public static byte[] Compress(byte[] input)
-    {
-        return ToGzip(input);
-    }
-
-
-    /// <summary>
-    /// 解压缩一个二进制数组
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [SuppressMessage("Microsoft.Usage", "CA2202")]
-    [Obsolete("请使用 UnGzip 方法代替当前方法")]
-    public static byte[] Decompress(byte[] input)
-    {
-        return UnGzip(input);
-    }
 }

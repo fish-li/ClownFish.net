@@ -108,30 +108,5 @@ public static class BrotliHelper
         }
     }
 
-
-    /// <summary>
-    /// 压缩一个二进制数组
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [SuppressMessage("Microsoft.Usage", "CA2202")]
-    [Obsolete("请使用 ToBrotli 方法代替当前方法")]
-    public static byte[] Compress(byte[] input)
-    {
-        return ToBrotli(input);
-    }
-
-
-    /// <summary>
-    /// 解压缩一个二进制数组
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [SuppressMessage("Microsoft.Usage", "CA2202")]
-    [Obsolete("请使用 UnBrotli 方法代替当前方法")]
-    public static byte[] Decompress(byte[] input)
-    {
-        return UnBrotli(input);
-    }
 }
 #endif

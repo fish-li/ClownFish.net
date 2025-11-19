@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.Data;
 
 /// <summary>
-/// 实体插入相关扩展方法
+/// 【已废弃】的扩展方法，不建议使用
 /// </summary>
 public static partial class EntityExtensions
 {
@@ -119,9 +119,6 @@ public static partial class EntityExtensions
 
 
 
-    #region  过时的兼容方法       
-
-
 
     /// <summary>
     /// 将一个【实体对象】的属性值（非NULL值）更新数据库
@@ -227,7 +224,5 @@ public static partial class EntityExtensions
     }
 
 
-
-    #endregion
 
 }

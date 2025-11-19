@@ -5,64 +5,6 @@
 /// </summary>
 public static class NdJsonExtensions
 {
-    #region 已废弃的方法
-
-    /// <summary>
-    /// 已废弃的方法
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="settings"></param>
-    /// <returns></returns>
-    [Obsolete("请用 ToNdjson 方法来代替")]
-    public static string ToMultiLineJson(this ICollection list, JsonSerializerSettings settings = null)
-    {
-        return ToNdjson(list, settings);
-    }
-
-    /// <summary>
-    /// 已废弃的方法
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="writer"></param>
-    /// <param name="settings"></param>
-    /// <returns></returns>
-    [Obsolete("请用 ToNdjson 方法来代替")]
-    public static int ToMultiLineJson(this ICollection list, TextWriter writer, JsonSerializerSettings settings = null)
-    {
-        return ToNdjson(list, writer, settings);
-    }
-
-    /// <summary>
-    /// 已废弃的方法
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="ndjson"></param>
-    /// <param name="capacity"></param>
-    /// <param name="settings"></param>
-    /// <returns></returns>
-    [Obsolete("请用 FromNdjson 方法来代替")]
-    public static List<T> FromMultiLineJson<T>(this string ndjson, int capacity = 100, JsonSerializerSettings settings = null)
-    {
-        return FromNdjson<T>(ndjson, capacity, settings);
-    }
-
-    /// <summary>
-    /// 已废弃的方法
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="reader"></param>
-    /// <param name="capacity"></param>
-    /// <param name="settings"></param>
-    /// <returns></returns>
-    [Obsolete("请用 FromNdjson 方法来代替")]
-    public static List<T> FromMultiLineJson<T>(this TextReader reader, int capacity = 100, JsonSerializerSettings settings = null)
-    {
-        return FromNdjson<T>(reader, capacity, settings);
-    }
-
-    #endregion
-
-
     /// <summary>
     /// 将一个对象序列化为 ndjson 字符串。
     /// </summary>
@@ -195,6 +137,11 @@ public static class NdJsonExtensions
             string line = reader.ReadLine();
             if( line == null )
                 break;
+
+            // 忽略注释行
+            // 有时候为了方便，可以添加一些注释信息用于内部诊断用途
+            if( line.Length > 2 && line[0] == '/' && line[1] == '/' )
+                continue;
 
             if( line.Length > 0 ) {
 

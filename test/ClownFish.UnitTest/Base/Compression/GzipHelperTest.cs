@@ -24,7 +24,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestMethod]
-    [Obsolete]
     public void Test_Gzip压缩二进制字节()
     {
         string s = @"
@@ -37,11 +36,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 ";
         byte[] bb = Encoding.UTF8.GetBytes(s);
 
-        byte[] b1 = GzipHelper.Compress(bb);
+        byte[] b1 = GzipHelper.ToGzip(bb);
 
         Assert.IsTrue(b1.Length < bb.Length);
 
-        byte[] b2 = GzipHelper.Decompress(b1);
+        byte[] b2 = GzipHelper.UnGzip(b1);
 
         Assert.AreEqual(bb.Length, b2.Length);
 

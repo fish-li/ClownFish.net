@@ -21,9 +21,9 @@
 //[JsonSerializable(typeof(EndClientUserInfo))]
 //internal partial class FidesClientObjectJsonContext : JsonSerializerContext { }
 
-////[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Serialization)]
-////[JsonSerializable(typeof(EndClientUserInfo))]
-////internal partial class EndClientUserInfoJsonContext : JsonSerializerContext { }
+//[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Serialization)]
+//[JsonSerializable(typeof(EndClientUserInfo))]
+//internal partial class EndClientUserInfoJsonContext : JsonSerializerContext { }
 
 
 //[TestClass]
