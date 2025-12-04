@@ -46,7 +46,7 @@ public abstract class NHttpContext
     /// 是否启用日志(OprLog + InvokeLog)，如果日志不启用，那么将不会统计调用次数，Venus界面看不到统计结果。
     /// 默认值：true
     /// </summary>
-    public bool EnableLog { get; set; } = ClownFish.Log.LoggingOptions.HttpActionEnableLog;
+    public bool EnableLog { get; set; } = LoggingOptions.HttpActionEnableLog && LogConfig.IsInited;
 
     // ### 说明：public bool MustLogRequest 定义在 OprLogScope 类型中，因为 HttpAction/MessageHander 这2个场景都需要
 

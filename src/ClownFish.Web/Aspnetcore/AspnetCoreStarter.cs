@@ -222,7 +222,7 @@ public static class AspnetCoreStarter
     private static void LoadModules()
     {
         // 先注册框架内部的Http模块
-        if( LoggingOptions.HttpActionEnableLog ) {
+        if( LoggingOptions.HttpActionEnableLog && LogConfig.IsInited ) {
             NHttpModuleFactory.RegisterModule<OprLogModule>();
         }
 

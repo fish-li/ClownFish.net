@@ -13,8 +13,14 @@ public static class ClownFishWebInit
 
     internal static void InitAuth()
     {
+        string hashName = Settings.GetSetting("ClownFish_JwtToken_AlgorithmName");
+        if( hashName.IsNullOrEmpty() ) {
+            hashName = JwtUtils.DefaultAlgorithm;
+            Console2.Info("####################### 没有指定参数 ClownFish_JwtToken_AlgorithmName, ClownFish 将使用默认值：" + hashName);
+        }
+
         JwtOptions jwtOptions = new JwtOptions {
-            AlgorithmName = LocalSettings.GetSetting("ClownFish_JwtToken_AlgorithmName").IfEmpty(JwtUtils.DefaultAlgorithm),
+            AlgorithmName = hashName,
             IssuerName = LocalSettings.GetSetting("ClownFish_JwtToken_IssuerName").IfEmpty(EnvUtils.GetAppName()),
             ShortTime = LocalSettings.GetBool("ClownFish_JwtToken_ShortTimeFormat", 1),
             ShortTypeName = LocalSettings.GetBool("ClownFish_JwtToken_ShortTypeName", 1),
@@ -24,7 +30,12 @@ public static class ClownFishWebInit
 
         // HMACSHA 系列HASH算法，它们只需要一个密钥就可以了
         if( jwtOptions.AlgorithmName.StartsWith0("HS") ) {
-            string secretKey = LocalSettings.GetSetting("ClownFish_Authentication_SecretKey", "defaultkey_618475f68e044243a3352881f1ab5c60");
+            string secretKey = Settings.GetSetting("ClownFish_Authentication_SecretKey");
+            if( secretKey.IsNullOrEmpty() ) {
+                Console2.Info("####################### 没有指定参数 ClownFish_Authentication_SecretKey, ClownFish 将使用随机密钥！");
+                secretKey = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+            }
+
             jwtOptions.HashKeyBytes = Encoding.UTF8.GetBytes(secretKey);
         }
         else {
