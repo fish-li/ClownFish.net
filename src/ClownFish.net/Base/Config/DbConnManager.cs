@@ -34,10 +34,10 @@ public interface IDbConnManager
     /// 创建应用库的数据库连接
     /// </summary>
     /// <param name="connName"></param>
-    /// <param name="longConnection"></param>
+    /// <param name="includeDatabase"></param>
     /// <param name="providerName"></param>
     /// <returns></returns>
-    DbContext CreateAppDb(string connName, bool longConnection, string providerName);
+    DbContext CreateAppDb(string connName, bool includeDatabase, string providerName);
 
     /// <summary>
     /// 创建租户库的数据库连接
@@ -93,11 +93,11 @@ internal sealed class DefaultDbConnManagerImpl : IDbConnManager
         return CreateAppDb(DbConnManager.Master, false, null);
     }
 
-    public DbContext CreateAppDb(string connName, bool longConnection, string providerName)
+    public DbContext CreateAppDb(string connName, bool includeDatabase, string providerName)
     {
         DbConfig dbConfig = GetAppDbConfig(connName, true);
 
-        return dbConfig.CreateDbContext(longConnection, providerName);
+        return dbConfig.CreateDbContext(includeDatabase, providerName);
     }
 
     public DbContext CreateTenant(string tenantId, bool readonlyDB, string providerName)
@@ -176,12 +176,12 @@ public static class DbConnManager
     /// 根据 连接名称 创建对应的数据库连接
     /// </summary>
     /// <param name="connName">数据库连接名称</param>
-    /// <param name="longConnection">是否用于“长连接”</param>
+    /// <param name="includeDatabase">在连接数据库时是否包含“数据库名”</param>
     /// <param name="providerName"></param>
     /// <returns></returns>
-    public static DbContext CreateAppDb(string connName, bool longConnection = false, string providerName = null)
+    public static DbContext CreateAppDb(string connName, bool includeDatabase = false, string providerName = null)
     {
-        return s_instance.CreateAppDb(connName, longConnection, providerName);
+        return s_instance.CreateAppDb(connName, includeDatabase, providerName);
     }
 
 

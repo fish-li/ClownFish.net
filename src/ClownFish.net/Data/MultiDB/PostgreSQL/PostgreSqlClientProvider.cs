@@ -100,4 +100,13 @@ internal class PostgreSqlClientProvider : BaseClientProvider
             StringBuilderPool.Return(sb);
         }
     }
+
+    //public override void ChangeDatabase(DbContext dbContext, string databaseName)
+    //{
+    //    // 注意：这个种做法对 Npgsql/PostgreSQL 来说非常低效，
+    //    // Npgsql的切换数据库是先“关闭连接”再修改连接字符串，再“打开连接”，非常SB~~~~~ 
+    //    // 只能是尽量不要调用这个方法
+
+    //    base.ChangeDatabase(dbContext, databaseName);
+    //}
 }

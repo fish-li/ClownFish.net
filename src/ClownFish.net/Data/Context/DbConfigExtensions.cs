@@ -20,22 +20,36 @@ public static class DbConfigExtensions
     // 2、连接打开后，再切换到指定的租户库上。
 
 
+    // ####################################################################
+    // 注意：上面的思路对于 Npgsql/PostgreSQL 来说就很不合适了~~~
+    // PostgreSQL 的 wire protocol 在连接初始化阶段就确定了目标数据库。一旦连接建立，就没有类似于 USE database 的协议命令来改变这个绑定。
+    // Npgsql的切换数据库是先“关闭连接”再修改连接字符串，再“打开连接”，所以显得非常SB~~~~~ 
+    // 所以，在基于PostgreSQL数据库设计SaaS架构时，可采用  schema 替代多个数据库，例如：
+    // CREATE SCHEMA tenant1;  CREATE SCHEMA tenant2;
+    // 然后在连接内切换 schema 来实现 **切换租户库** 的需求，SET search_path TO tenant1;
+    // 使用切换 schema 只能解决连接问题，这样做又将面临新的挑战，例如：备份恢复~~~
+
+
     /// <summary>
     /// 根据IDbConfig的实例创建对应的DbContext实例
     /// </summary>
     /// <param name="dbConfig"></param>
-    /// <param name="longConnection">是否用于“长连接”</param>
+    /// <param name="includeDatabase">在连接数据库时是否包含“数据库名”</param>
     /// <param name="providerName"></param>
     /// <returns></returns>
-    public static DbContext CreateDbContext(this IDbConfig dbConfig, bool longConnection = false, string providerName = null)
+    public static DbContext CreateDbContext(this IDbConfig dbConfig, bool includeDatabase = false, string providerName = null)
     {
         if( dbConfig == null )
             throw new ArgumentNullException(nameof(dbConfig));
 
         var regInfo = DbClientFactory.GetRegisterInfo(dbConfig.DbType);
 
-        if( longConnection ) {
-            string connectionString = regInfo.ClientProvider.GetConnectionString(dbConfig, true);   // 连接字符串包含 “数据库名称”
+        // PostgreSQL不支持 USE database 协议命令，所以在构造连接字符串时始终包含数据库名称
+        if( dbConfig.DbType == DatabaseType.PostgreSQL )
+            includeDatabase = true;
+
+        if( includeDatabase ) {
+            string connectionString = regInfo.ClientProvider.GetConnectionString(dbConfig, true);   // 连接字符串【包含】 “数据库名称”
 
             if( providerName.IsNullOrEmpty() )
                 providerName = regInfo.ProviderName;
@@ -80,6 +94,9 @@ public static class DbConfigExtensions
         if( dbConfig == null )
             throw new ArgumentNullException(nameof(dbConfig));
 
+        // PostgreSQL不支持 USE database 协议命令，所以在构造连接字符串时始终包含数据库名称
+        if( dbConfig.DbType == DatabaseType.PostgreSQL )
+            includeDatabase = true;
 
         return DbClientFactory.GetRegisterInfo(dbConfig.DbType).ClientProvider.GetConnectionString(dbConfig, includeDatabase);
     }

@@ -117,7 +117,7 @@ internal sealed class XDbConnManagerImpl : IDbConnManager
         throw new NotImplementedException();
     }
 
-    public DbContext CreateAppDb(string connName, bool longConnection, string providerName)
+    public DbContext CreateAppDb(string connName, bool includeDatabase, string providerName)
     {
         throw new NotImplementedException();
     }
