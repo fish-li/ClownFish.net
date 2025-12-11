@@ -363,7 +363,7 @@ public sealed class OprLogScope : IDisposable
             }
         }
 
-        this.OprLog.Logs = GetLogsText();
+        this.OprLog.Logs = GetLogsText(context);
 
         // 检查并截断一些较长的文本字段
         this.OprLog.TruncateTextFields();
@@ -404,17 +404,19 @@ public sealed class OprLogScope : IDisposable
         }
     }
 
-    private string GetLogsText()
+    private string GetLogsText(BasePipelineContext context)
     {
         if( _logs == null ) {
             return null;
         }
         else {
+            DateTime lastTime = context.StartTime;
             StringBuilder sb = StringBuilderPool.Get();
             try {
-                foreach( var x in _logs )
-                    sb.AppendLineRN(x.Time.ToTime23String() + ": " + x.Name);
-
+                foreach( var x in _logs ) {
+                    sb.AppendLineRN($"{x.Time.ToTime23String()} ({x.Time - lastTime}): {x.Name}");
+                    lastTime = x.Time;
+                }
                 return sb.ToString();
             }
             finally {
