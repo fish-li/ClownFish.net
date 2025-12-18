@@ -28,6 +28,44 @@ public partial class OprLog
         return oprLog;
     }
 
+
+    /// <summary>
+    /// 根据异常对象构造一错误日志
+    /// </summary>
+    /// <param name="ex">Exception实例（必选）</param>
+    /// <param name="httpContext">HttpContext实例（可选）</param>
+    /// <returns></returns>
+    public static OprLog CreateErrLog(Exception ex, NHttpContext httpContext = null)
+    {
+        if( ex == null )
+            throw new ArgumentNullException(nameof(ex));
+
+        // Nebula.LogGate 对 OprLog 的数据要求，6个字段不能为空：OprId,AppName,HostName,OprKind,Action,OprName
+
+        OprLog log = new OprLog();
+        log.SetBaseInfo();  // set OprId,AppName,HostName,Status
+
+        log.OprKind = OprKinds.Error;
+        log.OprName = "err";
+        log.Action = "err";
+        log.Controller = "None";
+        log.Addition = "OprLog.CreateErrLog";
+
+        if( httpContext != null ) {
+            log.SetHttpFields(httpContext);
+            log.SetRequest(httpContext);
+        }
+        else {
+            log.Url = "error://" + ex.GetType().Name;
+        }
+
+        log.SetException(ex);
+        log.TruncateTextFields();
+        return log;
+    }
+
+
+
     internal static OprLog CreateNew(BasePipelineContext context)
     {
         OprLog log = new OprLog();
@@ -392,41 +430,6 @@ public partial class OprLog
 #else
         this.OprDetails = GzipHelper.Compress(this.OprDetails);
 #endif
-    }
-
-    /// <summary>
-    /// 根据异常对象构造一错误日志
-    /// </summary>
-    /// <param name="ex">Exception实例（必选）</param>
-    /// <param name="httpContext">HttpContext实例（可选）</param>
-    /// <returns></returns>
-    public static OprLog CreateErrLog(Exception ex, NHttpContext httpContext = null)
-    {
-        if( ex == null )
-            throw new ArgumentNullException(nameof(ex));
-
-        // Nebula.LogGate 对 OprLog 的数据要求，6个字段不能为空：OprId,AppName,HostName,OprKind,Action,OprName
-
-        OprLog log = new OprLog();
-        log.SetBaseInfo();  // set OprId,AppName,HostName,Status
-
-        log.OprKind = OprKinds.Error;
-        log.OprName = "err";
-        log.Action = "err";
-        log.Controller = "None";
-        log.Addition = "OprLog.CreateErrLog";
-
-        if( httpContext != null ) {
-            log.SetHttpFields(httpContext);
-            log.SetRequest(httpContext);
-        }
-        else {
-            log.Url = "error://" + ex.GetType().Name;
-        }
-
-        log.SetException(ex);
-        log.TruncateTextFields();
-        return log;
     }
 
 
