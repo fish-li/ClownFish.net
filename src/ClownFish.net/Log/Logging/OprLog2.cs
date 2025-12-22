@@ -375,11 +375,11 @@ public partial class OprLog
         if( this.Response != null && this.Response.Length > LoggingLimit.HttpBodyMaxLen )
             this.Response = this.Response.SubstringN(LoggingLimit.HttpBodyMaxLen);
 
-        if( this.CtxData != null && this.CtxData.Length > LoggingLimit.OprLog.TextnMaxLen )
-            this.CtxData = this.CtxData.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
+        if( this.CtxData != null && this.CtxData.Length > LoggingLimit.HttpBodyMaxLen )
+            this.CtxData = this.CtxData.SubstringN(LoggingLimit.HttpBodyMaxLen);
 
-        if( this.Addition != null && this.Addition.Length > LoggingLimit.OprLog.TextnMaxLen )
-            this.Addition = this.Addition.SubstringN(LoggingLimit.OprLog.TextnMaxLen);
+        if( this.Addition != null && this.Addition.Length > LoggingLimit.HttpBodyMaxLen )
+            this.Addition = this.Addition.SubstringN(LoggingLimit.HttpBodyMaxLen);
 
 
 

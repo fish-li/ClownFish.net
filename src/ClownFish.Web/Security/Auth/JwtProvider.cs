@@ -56,9 +56,9 @@ public sealed class JwtProvider
 
     public string CreateToken(IUserInfo data, long expirationSeconds)
     {
-        DateTime expiration = expirationSeconds > 0
-                                ? DateTime.Now.AddSeconds(expirationSeconds)
-                                : DateTime.Now.AddDays(7);
+        DateTime expiration = expirationSeconds == 0
+                                ? DateTime.Now.AddDays(7)
+                                : DateTime.Now.AddSeconds(expirationSeconds);
 
         return CreateToken(data, DateTime.Now, expiration);
     }
@@ -73,14 +73,15 @@ public sealed class JwtProvider
         if( string.IsNullOrEmpty(token) )
             throw new ArgumentNullException(nameof(token));
 
-
         string json = _options.IsAsymmetricAlgorithm
                         ? DecodePayload2(token, _options.X509Cert)
                         : DecodePayload(token, _options.HashKeyBytes);
 
         if( json == null ) {
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodeToken()--json=null");
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg("[身份认证失败] DecodePayload return null");
+            }
+            return null;
         }
 
         return DecodeJson(token, json, true);
@@ -109,7 +110,7 @@ public sealed class JwtProvider
     /// <param name="token"></param>
     /// <param name="x509">如果不指定此参数，将不会签名验证</param>
     /// <returns></returns>
-    internal string DecodePayload2(string token, X509Certificate2 x509 = null)
+    private string DecodePayload2(string token, X509Certificate2 x509)
     {
         if( string.IsNullOrEmpty(token) )
             throw new ArgumentNullException(nameof(token));
@@ -118,8 +119,9 @@ public sealed class JwtProvider
             return JwtUtils.Decode2(token, x509, _options.AlgorithmName);
         }
         catch( Exception ex ) {
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodePayload2()--catch-Exception: " + ex.ToString());
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg($"[身份认证失败] DecodePayload2: catch-Exception: {ex.GetType().FullName}, {ex.Message}");
+            }
         }
 
         return null;
@@ -134,8 +136,9 @@ public sealed class JwtProvider
             return JwtUtils.Decode(token, secretKey, _options.AlgorithmName);
         }
         catch( Exception ex ) {
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodePayload()--catch-Exception: " + ex.ToString());
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg($"[身份认证失败] DecodePayload: catch-Exception: {ex.GetType().FullName}, {ex.Message}");
+            }
         }
 
         return null;
@@ -156,7 +159,7 @@ public sealed class JwtProvider
         catch( Exception ex ) {
             // 忽略所有错误，防止攻击
             if( ClownFishWebOptions.ShowAuthFailedMsg ) {
-                AuthenticationManager.OnAuthFailed(token, "DecodeJson()--catch-Exception: " + ex.ToString());
+                AuthLogger.LogMsg($"[身份认证失败] DecodeJson: catch-Exception: {ex.GetType().FullName}, {ex.Message}");
             }
             return null;
         }
@@ -165,15 +168,16 @@ public sealed class JwtProvider
             // 检查过期时间
             if( ticket.VerifyExpiration() == false ) {
                 if( ClownFishWebOptions.ShowAuthFailedMsg ) {
-                    AuthenticationManager.OnAuthFailed(token, "DecodeJson()--VerifyExpiration=false");
+                    AuthLogger.LogMsg("[身份认证失败] DecodeJson: VerifyExpiration=false");
                 }
                 return null;
             }
         }
 
         if( ticket == null ) {
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodeJson()--ticket=null");
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg("[身份认证失败] DecodeJson: ticket=null");
+            }
         }
         return ticket;
     }
@@ -187,8 +191,9 @@ public sealed class JwtProvider
         }
         catch( JsonSerializationException ex ) {
             // 有可能是 IUserInfo 的实现类型找不到，所以忽略这个异常，下面按无类型方式处理
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodeJson1()--catch-Exception: " + ex.ToString());
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg($"[身份认证失败] DecodeJson1: catch-Exception: {ex.GetType().FullName}, {ex.Message}");
+            }
         }
         return null;
     }
@@ -204,13 +209,17 @@ public sealed class JwtProvider
             t2 = json.FromJson<LoginTicketUnknown>();
         }
         catch( JsonSerializationException ex ) {  // JSON格式无法识别
-            if( ClownFishWebOptions.ShowAuthFailedMsg )
-                AuthenticationManager.OnAuthFailed(token, "DecodeJson2()--catch-Exception: " + ex.ToString());
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg($"[身份认证失败] DecodeJson2: catch-Exception: {ex.GetType().FullName}, {ex.Message}");
+            }
         }
 
         if( t2 == null )
             return null;
 
+        if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+            AuthLogger.LogMsg("[身份认证消息] load token as UnknownUserInfo");
+        }
 
         // 构造一个特殊的用户身份凭证
         return new LoginTicket {

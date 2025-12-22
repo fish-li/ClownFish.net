@@ -34,7 +34,7 @@ internal static class TokenHelper
         // Bearer 会导致频繁的字符串拼接和拆分影响性能，所以直接用一个单独的请求头
         string token = httpContext.Request.Header(AuthOptions.HeaderName);
         if( string.IsNullOrEmpty(token) == false ) {
-            SetContextUser(httpContext, token, LoginTicketSource.Header);
+            SetContextUser(httpContext, token, LoginTicketSource.Header, AuthOptions.HeaderName);
 
             // 只要存在请求头，就认为是有效
             return;
@@ -45,7 +45,7 @@ internal static class TokenHelper
         if( string.IsNullOrEmpty(token) == false && token.StartsWith0("Bearer ") ) {
             token = token.Substring(7);  // 去掉 schema 前缀
             if( string.IsNullOrEmpty(token) == false ) {
-                SetContextUser(httpContext, token, LoginTicketSource.Header);
+                SetContextUser(httpContext, token, LoginTicketSource.Header, "Authorization");
                 return;
             }
         }
@@ -53,7 +53,7 @@ internal static class TokenHelper
         // 尝试从Cookie中查找 JWT Token
         token = httpContext.Request.Cookie(AuthOptions.CookieName);
         if( string.IsNullOrEmpty(token) == false ) {
-            SetContextUser(httpContext, token, LoginTicketSource.Cookie);
+            SetContextUser(httpContext, token, LoginTicketSource.Cookie, AuthOptions.CookieName);
             return;
         }
 
@@ -62,7 +62,7 @@ internal static class TokenHelper
         if( authHeaderName.HasValue() ) {
             token = httpContext.Request.Header(authHeaderName);
             if( string.IsNullOrEmpty(token) == false ) {
-                SetContextUser(httpContext, token, LoginTicketSource.Header);
+                SetContextUser(httpContext, token, LoginTicketSource.Header, authHeaderName);
                 return;
             }
         }
@@ -71,19 +71,27 @@ internal static class TokenHelper
         if( authCookiename.HasValue() ) {
             token = httpContext.Request.Cookie(authCookiename);
             if( string.IsNullOrEmpty(token) == false ) {
-                SetContextUser(httpContext, token, LoginTicketSource.Cookie);
+                SetContextUser(httpContext, token, LoginTicketSource.Cookie, authCookiename);
                 return;
             }
         }
 
+        if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+            AuthLogger.LogMsg("[身份认证失败] not found auth-token");
+        }
     }
 
 
-    private static void SetContextUser(NHttpContext httpContext, string token, LoginTicketSource source)
+    private static void SetContextUser(NHttpContext httpContext, string token, LoginTicketSource source, string sourceName)
     {
         LoginTicket ticket = AuthenticationManager.DecodeToken(token);
-        if( ticket == null || ticket.User == null )
+        if( ticket == null || ticket.User == null ) {
+
+            if( ClownFishWebOptions.ShowAuthFailedMsg ) {
+                AuthLogger.LogMsg($"[身份凭证来源] {source}={sourceName} token={token}");
+            }
             return;
+        }
 
         httpContext.User = new NbPrincipal(ticket, source, token);
     }

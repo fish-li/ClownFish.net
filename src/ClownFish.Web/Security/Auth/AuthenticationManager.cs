@@ -15,7 +15,7 @@ public static class AuthenticationManager
     {
         if( provider == null )
             throw new ArgumentNullException(nameof(provider));
-                
+
         s_jwtImpl = provider;
 
         if( checkRights != null ) {
@@ -57,7 +57,7 @@ public static class AuthenticationManager
 
         userInfo.Validate();
 
-        if( expirationSeconds < 0 )
+        if( expirationSeconds < 0 && EnvUtils.IsProdEnv )
             throw new ArgumentOutOfRangeException(nameof(expirationSeconds));
 
         return GetJwtProvider().CreateToken(userInfo, expirationSeconds);
@@ -92,39 +92,12 @@ public static class AuthenticationManager
     /// <param name="httpContext"></param>
     public static void AuthenticationUser(NHttpContext httpContext)
     {
-        if( httpContext == null)
+        if( httpContext == null )
             throw new ArgumentNullException(nameof(httpContext));
 
         TokenHelper.LoadToken(httpContext);
     }
-        
 
-    internal static void OnAuthFailed(string token, string reason)
-    {
-        NHttpContext httpContext = HttpPipelineContext.Get()?.HttpContext;
-        if( httpContext == null )
-            return;
-
-        OprLogScope scope = httpContext.PipelineContext.OprLogScope;
-        if( scope.IsNull )
-            return;
-
-        if( ClownFishWebOptions.ShowAuthFailedMsg ) {
-            OprLog log = scope.OprLog;
-
-            if( log.CtxData.IsNullOrEmpty() || log.CtxData.Contains(token) == false ) {
-
-                // 有可能请求中有多个 token，所以需要在日志中体现出：框架最终取的是哪一个 token
-
-                string message = $"{DateTime.Now.ToTime23String()} 身份认证失败消息\ntoken={token}\n【失败原因】{reason}\n\n";
-                log.CtxData += message;
-            }
-            else {
-                string message = $"{DateTime.Now.ToTime23String()} 身份认证失败消息\n【失败原因】{reason}\n\n";
-                log.CtxData += message;
-            }
-        }
-    }
 
 
     /// <summary>
@@ -161,7 +134,7 @@ public static class AuthenticationManager
 
         NHttpResponse response = ctx.HttpContext.Response;
 
-        response.SetCookie2(AuthOptions.CookieName, string.Empty, new DateTime(2000, 1,1));
+        response.SetCookie2(AuthOptions.CookieName, string.Empty, new DateTime(2000, 1, 1));
     }
 
 

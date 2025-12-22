@@ -221,7 +221,7 @@ public sealed class OprLogScope : IDisposable
                 _logs = new List<NameTime>(32);
 
             if( _logs.Count < LoggingLimit.OprLog.LogsMaxCount ) {
-                _logs.Add(new NameTime(message.SubstringN(LoggingLimit.OprLog.LogsTextMaxLen), DateTime.Now));
+                _logs.Add(new NameTime(message.SubstringN(LoggingLimit.OprLog.LogLineMaxLen), DateTime.Now));
                 return 1;
             }
             else {
@@ -404,7 +404,7 @@ public sealed class OprLogScope : IDisposable
         }
     }
 
-    private string GetLogsText(BasePipelineContext context)
+    internal string GetLogsText(BasePipelineContext context)
     {
         if( _logs == null ) {
             return null;

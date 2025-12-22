@@ -55,7 +55,7 @@ public static class LoggingLimit
         /// <summary>
         /// Log(string message) 参数中 message 允许的最大长度。
         /// </summary>
-        public static int LogsTextMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_OprLog_LogsTextMaxLen", 500);
+        public static int LogLineMaxLen { get; set; } = LocalSettings.GetInt("ClownFish_LogLimit_OprLog_LogLineMaxLen", 1024);
 
         /// <summary>
         /// 一次顶层调用(HttpAction/MessageHandler/BackgroundTask)过程中 TimeEvents列表 的最大长度
