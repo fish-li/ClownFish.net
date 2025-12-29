@@ -102,22 +102,22 @@ internal static class TypeList
     [DataField(CsName = "decimal?", Method = "ToDecimalNull")]
     public static readonly Type _decimal_null = typeof(decimal?);
 
-    [DataField(CsName = "DateTime", Method = "ToDateTime")]
+    [DataField(CsName = "System.DateTime", Method = "ToDateTime")]
     public static readonly Type _DateTime = typeof(DateTime);
 
-    [DataField(CsName = "DateTime?", Method = "ToDateTimeNull")]
+    [DataField(CsName = "System.DateTime?", Method = "ToDateTimeNull")]
     public static readonly Type _DateTime_null = typeof(DateTime?);
 
-    [DataField(CsName = "TimeSpan", Method = "ToTimeSpan")]
+    [DataField(CsName = "System.TimeSpan", Method = "ToTimeSpan")]
     public static readonly Type _TimeSpan = typeof(TimeSpan);
 
-    [DataField(CsName = "TimeSpan?", Method = "ToTimeSpanNull")]
+    [DataField(CsName = "System.TimeSpan?", Method = "ToTimeSpanNull")]
     public static readonly Type _TimeSpan_null = typeof(TimeSpan?);
 
-    [DataField(CsName = "Guid", Method = "ToGuid")]
+    [DataField(CsName = "System.Guid", Method = "ToGuid")]
     public static readonly Type _Guid = typeof(Guid);
 
-    [DataField(CsName = "Guid?", Method = "ToGuidNull")]
+    [DataField(CsName = "System.Guid?", Method = "ToGuidNull")]
     public static readonly Type _Guid_null = typeof(Guid?);
 
 //#if NET6_0_OR_GREATER

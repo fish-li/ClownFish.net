@@ -1,4 +1,5 @@
 ﻿using ClownFish.Data.CodeDom;
+using ClownFish.UnitTest.Data._DEMO;
 using ClownFish.UnitTest.Data.Models;
 
 namespace ClownFish.UnitTest.Data.CodeDom;
@@ -9,14 +10,26 @@ public class EntityGeneratorTest
     [TestMethod]
     public void Test_生成实体代理类型代码()
     {
+        string outPath = Path.Combine(AppContext.BaseDirectory, "temp", "CodeDom_EntityGenerator");
+
+        GenCodeFile<Category>(outPath);
+        GenCodeFile<ComplexEntity>(outPath);
+        GenCodeFile<ComplexEntity2>(outPath);
+        GenCodeFile<Customer>(outPath);
+        GenCodeFile<Model11>(outPath);
+        GenCodeFile<ModelX>(outPath);
+        GenCodeFile<MsSqlDataType>(outPath);
+        GenCodeFile<MySqlDataType>(outPath);
+        GenCodeFile<Product>(outPath);
+        GenCodeFile<TestDateTimeTable>(outPath);
+    }
+
+    private static void GenCodeFile<T>(string outPath) where T: Entity, new()
+    {
         EntityGenerator g = new EntityGenerator();
-        string code = g.GetCode<Product>();
-
-        code = EntityGenerator.UsingCodeBlock + code;
-
-        string tempPath = Path.Combine(AppContext.BaseDirectory, "temp");
-        string outFile = Path.Combine(tempPath, "EntityGeneratorTest_code.cs");
-
+        string code = g.GetCode<T>();
+        //code = EntityGenerator.UsingCodeBlock + code;
+        string outFile = Path.Combine(outPath, typeof(T).Name + ".gen.cs");
         RetryFile.WriteAllText(outFile, code, Encoding.UTF8);
     }
 
@@ -27,7 +40,7 @@ public class EntityGeneratorTest
         Type[] entityTypes = new Type[] { typeof(Product), typeof(Customer) };
 
         string tempPath = Path.Combine(AppContext.BaseDirectory, "temp");
-        string dllFilePath = Path.Combine(tempPath, "Test.EntityProxy.dll");
+        string dllFilePath = Path.Combine(tempPath, "Test_Product_Customer.EntityProxy.dll");
 
         RetryFile.Delete(dllFilePath);
 

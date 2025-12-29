@@ -63,12 +63,12 @@ public class ReflectionExtensionsTest : BaseTest
         Assert.AreEqual("long?", typeof(long?).ToTypeString());
         Assert.AreEqual("bool", typeof(bool).ToTypeString());
         Assert.AreEqual("bool?", typeof(bool?).ToTypeString());
-        Assert.AreEqual("DateTime", typeof(DateTime).ToTypeString());
-        Assert.AreEqual("DateTime?", typeof(DateTime?).ToTypeString());
-        Assert.AreEqual("TimeSpan", typeof(TimeSpan).ToTypeString());
-        Assert.AreEqual("TimeSpan?", typeof(TimeSpan?).ToTypeString());
-        Assert.AreEqual("Guid", typeof(Guid).ToTypeString());
-        Assert.AreEqual("Guid?", typeof(Guid?).ToTypeString());
+        Assert.AreEqual("System.DateTime", typeof(DateTime).ToTypeString());
+        Assert.AreEqual("System.DateTime?", typeof(DateTime?).ToTypeString());
+        Assert.AreEqual("System.TimeSpan", typeof(TimeSpan).ToTypeString());
+        Assert.AreEqual("System.TimeSpan?", typeof(TimeSpan?).ToTypeString());
+        Assert.AreEqual("System.Guid", typeof(Guid).ToTypeString());
+        Assert.AreEqual("System.Guid?", typeof(Guid?).ToTypeString());
         Assert.AreEqual("decimal", typeof(decimal).ToTypeString());
         Assert.AreEqual("decimal?", typeof(decimal?).ToTypeString());
         Assert.AreEqual("double", typeof(double).ToTypeString());
