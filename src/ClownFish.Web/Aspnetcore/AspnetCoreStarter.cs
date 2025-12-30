@@ -7,7 +7,7 @@ namespace ClownFish.Web.Aspnetcore;
 /// </summary>
 public static class AspnetCoreStarter
 {
-    internal static WebApplication WebApplication { get; private set; }
+    internal static WebApplication WebAppInstance { get; private set; }
 
     public static void Run(WebApplicationStartup startup = null)
     {
@@ -92,7 +92,7 @@ public static class AspnetCoreStarter
         app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来放在第一位!
         startup.ConfigureWeb(app);
 
-        WebApplication = app;
+        WebAppInstance = app;
         app.Lifetime.ApplicationStopping.Register(ClownFishInit.ApplicationEnd);
         return app;
     }
@@ -156,7 +156,7 @@ public static class AspnetCoreStarter
         // 进入ASP.NET CORE的启动过程
         // 注意：执行下面这行代码后，主线程会被阻塞，直到 Ctrl+C
 
-        WebApplication.Run();
+        WebAppInstance.Run();
 
         // 注意：这后面的代码将不会立即执行！
     }
@@ -174,12 +174,12 @@ public static class AspnetCoreStarter
             return url1;
 
 
-        var url4 = WebApplication.Urls;
+        var url4 = WebAppInstance.Urls;
         if( url4 != null && url4.Count > 0 )
             return string.Join(",", url4);
 
 
-        string url3 = WebApplication.Configuration["urls"];
+        string url3 = WebAppInstance.Configuration["urls"];
         if( url3.HasValue() )
             return url3;
 
@@ -192,8 +192,8 @@ public static class AspnetCoreStarter
 
         string GetKestrelUrl()
         {
-            string url1 = WebApplication.Configuration["Kestrel:Endpoints:Http:Url"];
-            string url2 = WebApplication.Configuration["Kestrel:Endpoints:Https:Url"];
+            string url1 = WebAppInstance.Configuration["Kestrel:Endpoints:Http:Url"];
+            string url2 = WebAppInstance.Configuration["Kestrel:Endpoints:Https:Url"];
 
             if( url1.HasValue() && url2.HasValue() )
                 return url1 + ";" + url2;
