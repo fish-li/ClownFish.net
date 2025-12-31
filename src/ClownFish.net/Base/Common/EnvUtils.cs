@@ -242,6 +242,62 @@ public static class EnvUtils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetHostName() => EnvUtils.HostName;
 
+
+#if NETCOREAPP
+
+    /// <summary>
+    /// 显示系统环境信息
+    /// </summary>
+    public static void ShowSysEnvInfo(Dictionary<string, string> dict = null)
+    {
+        Console2.WriteSeparatedLine();
+        ShowSysEnvInfoItem("ApplicationName", EnvUtils.GetAppName());
+        ShowSysEnvInfoItem("AppRuntimeId", EnvUtils.AppRuntimeId);
+        ShowSysEnvInfoItem("ProcessId", Environment.ProcessId.ToString());        
+        ShowSysEnvInfoItem("AppStartTime", EnvUtils.AppStartTime.ToTime23String());
+
+        ShowSysEnvInfoItem("IsInDocker", EnvUtils.IsInDocker.ToString2());
+        if( EnvUtils.IsInK8s ) {
+            ShowSysEnvInfoItem("K8S Namespace", EnvUtils.K8sNamespace);
+        }
+        ShowSysEnvInfoItem("IsNativeAOT", EnvArgs0.IsAot.ToString2());
+        ShowSysEnvInfoItem("IsSingleFileDeploy", AsmHelper.IsSingleFileDeploy.ToString2());
+        ShowSysEnvInfoItem("CLUSTER_ENVIRONMENT", EnvUtils.GetClusterName());
+        ShowSysEnvInfoItem("RUNTIME_ENVIRONMENT", EnvUtils.GetRunEnv());
+        ShowSysEnvInfoItem("HostName", EnvUtils.GetHostName());
+        ShowSysEnvInfoItem("OS Name", OsUtils.GetOsName());
+        ShowSysEnvInfoItem("OSArchitecture", System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString());
+        ShowSysEnvInfoItem("ProcessorCount", Environment.ProcessorCount.ToString());
+        ShowSysEnvInfoItem("TimeZone", MyTimeZone.CurrentTZ);
+        ShowSysEnvInfoItem("CurrentCulture", System.Globalization.CultureInfo.CurrentCulture?.Name);
+        ShowSysEnvInfoItem("GC Mode", (System.Runtime.GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        ShowSysEnvInfoItem("Framework Info", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+        ShowSysEnvInfoItem("ClownFishVer", AsmHelper.GetFileVersion(typeof(EnvUtils)).IfEmpty(ConstValues.CurrentVersion));
+
+        if( dict != null ) {
+            foreach( var kvp in dict ) {
+                ShowSysEnvInfoItem(kvp.Key, kvp.Value);
+            }
+        }
+
+        ShowSysEnvInfoItem("EntryAssembly", AsmHelper.GetExeFilePath());
+        ShowSysEnvInfoItem("BaseDirectory", AppContext.BaseDirectory);
+        ShowSysEnvInfoItem("CurrentDirectory", Environment.CurrentDirectory);
+        ShowSysEnvInfoItem("TempPath", EnvUtils.GetTempPath());
+
+       
+
+        Console2.WriteSeparatedLine();
+    }
+
+    private static void ShowSysEnvInfoItem(string name, string value)
+    {
+        Console2.WriteLine(name.PadRight(30) + ": " + value);
+    }
+#endif
+
+
+
 }
 
 

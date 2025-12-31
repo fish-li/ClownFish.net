@@ -37,7 +37,11 @@ public static class AppConfig
                 if( s_inited == false ) {
 
                     string filePath = GetAppConfigFilePath();
-                    Console2.Info("AppConfig filePath: " + filePath);
+
+                    // AOT 模式下不使用 AppConfig，下面的代码其实是 “空跑”
+                    if( EnvArgs0.IsAot == false ) {
+                        Console2.Info("AppConfig filePath: " + filePath);
+                    }
 
                     InitConfig(filePath);
                 }

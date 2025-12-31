@@ -22,7 +22,9 @@ public static class AspnetCoreStarter
         ConfigClownFish();
         TypeHelper.Init();
 
-        ShowSysEnvInfo();
+        Dictionary<string, string> envDict = new Dictionary<string, string> { 
+                                    { "ClownFishWebVer", AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty("0.0") } };
+        EnvUtils.ShowSysEnvInfo(envDict);
 
         startup.ConfigDAL0();
         startup.ConfigLog0();
@@ -97,37 +99,7 @@ public static class AspnetCoreStarter
         return app;
     }
 
-    internal static void ShowSysEnvInfo()
-    {
-        Console2.WriteSeparatedLine();
-        Console2.WriteLine("ApplicationName          : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId             : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("ProcessId                : " + Environment.ProcessId.ToString());
-        Console2.WriteLine("EntryAssembly            : " + AsmHelper.GetExeFilePath());
-        Console2.WriteLine("AppStartTime             : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
-        if( EnvUtils.IsInK8s ) {
-            Console2.WriteLine("K8S Namespace            : " + EnvUtils.K8sNamespace);
-        }
-        Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
-        Console2.WriteLine("CLUSTER_ENVIRONMENT      : " + EnvUtils.GetClusterName());
-        Console2.WriteLine("RUNTIME_ENVIRONMENT      : " + EnvUtils.GetRunEnv());
-        Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
-        Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
-        Console2.WriteLine("OSArchitecture           : " + System.Runtime.InteropServices.RuntimeInformation.OSArchitecture);
-        Console2.WriteLine("ProcessorCount           : " + Environment.ProcessorCount.ToString());
-        Console2.WriteLine("TimeZone                 : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture           : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("GC Mode                  : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
-        Console2.WriteLine("Framework Info           : " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        Console2.WriteLine("ClownFishWebVer          : " + AsmHelper.GetFileVersion(typeof(AspnetCoreStarter)).IfEmpty(ConstValues.CurrentVersion));
-        Console2.WriteLine("BaseDirectory            : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
-
-        Console2.WriteSeparatedLine();
-    }
-
+   
     /// <summary>
     /// 启动asp.netcore的监听，接受HTTP请求
     /// </summary>
