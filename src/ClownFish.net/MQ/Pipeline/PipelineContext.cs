@@ -43,7 +43,7 @@ public class PipelineContext<T> : BasePipelineContext, IDisposable where T : cla
     /// </summary>
     internal PipelineContext(MqRequest request, BaseMessageHandlerObject<T> handler, bool isAsync, int retryN)
     {
-        this.PerformanceThresholdMs = ClownFish.Log.LogConfig.Instance.Performance.HandleMessage;
+        this.PerformanceThresholdMs = ClownFish.Log.LogConfig.Instance?.Performance?.HandleMessage ?? 0;
 
         this.Request = request;
         this.Handler = handler;

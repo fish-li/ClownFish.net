@@ -107,7 +107,7 @@ public static class MemoryConfig
     /// 设置 AppConfig 的文件内容
     /// </summary>
     /// <param name="xml"></param>
-    public static void SetAppConfig(string xml)
+    public static void SetAppConfig(string xml)  // TODO: 支持其它格式的配置文件
     {
         if( xml == null )
             throw new ArgumentNullException(nameof(xml));

@@ -6,7 +6,7 @@ internal class PostgreSqlClientProvider : BaseClientProvider
 
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
-    private readonly IGetValue _getter;
+    private readonly PropertyInfo _exNumber;
 
 #if NETCOREAPP
     [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
@@ -25,7 +25,7 @@ internal class PostgreSqlClientProvider : BaseClientProvider
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：Npgsql.PostgresException.SqlState");
 
-        _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
+        _exNumber = p;
     }
 
     public override DatabaseType DatabaseType => DatabaseType.PostgreSQL;
@@ -51,7 +51,7 @@ internal class PostgreSqlClientProvider : BaseClientProvider
         //}
 
         if( ex.GetType().IsCompatible(_exceptionType) ) {
-            return (string)_getter.Get(ex) == "23505";
+            return (string)_exNumber.FastGetValue(ex) == "23505";
         }
 
         return false;

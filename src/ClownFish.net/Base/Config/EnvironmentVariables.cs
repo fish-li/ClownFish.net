@@ -5,15 +5,6 @@
 /// </summary>
 public static class EnvironmentVariables
 {
-    //========================================================================
-    // 说明：由于历史原因，早期的配置参数名称的风格是：x.y.z
-    // 后来感觉不方便：1，不能双击全选，2，“不符合”环境变量的约定命名风格，
-    // 所以后面采用新的命名风格：x_y_z
-    // 但是为了向后兼容，配置API要支持：用 x_y_z 的风格去读取 x.y.z 的配置参数
-    // 因此，在API实现时，会在内存中保存2种风格的配置参数对象
-    //========================================================================
-
-
     /// <summary>
     /// 环境变量数据集合
     /// </summary>
@@ -59,15 +50,6 @@ public static class EnvironmentVariables
         if( count3 > 0 ) {
             Console2.Info($"已从文件 {localEnvFilePath} 加载到 {count3} 个环境变量");
         }
-
-
-        // 增加兼容KEY查找项
-        List<string> names = s_dict.Where(x => x.Key.Contains('.')).Select(x => x.Key).ToList();
-        foreach( var x in names ) {
-            string key2 = x.GetConfName();
-            string value = s_dict[x];
-            s_dict[key2] = value;   // 供新命名风格查找
-        }
     }
 
     /// <summary>
@@ -77,8 +59,7 @@ public static class EnvironmentVariables
     public static IEnumerable<KeyValuePair<string, string>> GetAll()
     {
         foreach( var x in s_dict ) {
-            if( x.Key.Contains('.') == false )
-                yield return new KeyValuePair<string, string>(x.Key, x.Value);
+            yield return new KeyValuePair<string, string>(x.Key, x.Value);
         }
     }
 
@@ -176,7 +157,6 @@ public static class EnvironmentVariables
         value = value ?? string.Empty;
 
         s_dict[name] = value;
-        s_dict[name.GetConfName()] = value;
     }
 
 }

@@ -33,7 +33,7 @@ internal static class EnvArgs0
     /// <summary>
     /// 当前程序是否以“NativeAOT”方式运行。需要2个条件：1，单文件部署，2，已设置AOT标记（ClownFish不能自行判断）
     /// </summary>
-    public static readonly bool IsAot = IsSingleFileDeploy && IsSetAotFlag();
+    public static readonly bool IsAot = IsSetAotFlag();
 
     // NativeAOT有以下限制：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/native-aot/?tabs=windows%2Cnet8#limitations-of-native-aot-deployment
 

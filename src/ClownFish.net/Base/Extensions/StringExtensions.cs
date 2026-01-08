@@ -746,19 +746,19 @@ public static class StringExtensions
     }
 
 
-    /// <summary>
-    /// 仅供框架内部使用
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public static string GetConfName(this string name)
-    {
-        if( name.IsNullOrEmpty() || name.Contains('.') == false )
-            return name;
+    ///// <summary>
+    ///// 仅供框架内部使用
+    ///// </summary>
+    ///// <param name="name"></param>
+    ///// <returns></returns>
+    //public static string GetConfName(this string name)
+    //{
+    //    if( name.IsNullOrEmpty() || name.Contains('.') == false )
+    //        return name;
 
-        // x.y.z  =>  x_y_z
-        return name.Replace('.', '_');
-    }
+    //    // x.y.z  =>  x_y_z
+    //    return name.Replace('.', '_');
+    //}
 
 
 #if NETCOREAPP

@@ -7,7 +7,7 @@ internal sealed class MsSqlClientProvider : BaseMsSqlClientProvider
 
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
-    private readonly IGetValue _getter;
+    private readonly PropertyInfo _exNumber;
 
 #if NETCOREAPP
     [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
@@ -25,7 +25,7 @@ internal sealed class MsSqlClientProvider : BaseMsSqlClientProvider
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：System.Data.SqlClient.SqlException.Number");
 
-        _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
+        _exNumber = p;
     }
 
     public override DbProviderFactory ProviderFactory => _dbProviderFactory;
@@ -33,7 +33,7 @@ internal sealed class MsSqlClientProvider : BaseMsSqlClientProvider
     public override bool IsDuplicateInsertException(Exception ex)
     {
         if( ex.GetType().IsCompatible(_exceptionType) ) {
-            int number = (int)_getter.Get(ex);
+            int number = (int)_exNumber.FastGetValue(ex);
 
             return number == 2601 || number == 2627;
         }

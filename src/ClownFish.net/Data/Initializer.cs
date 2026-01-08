@@ -187,6 +187,18 @@ public sealed class Initializer
 
 
     /// <summary>
+    /// 注册已存在的实体代理类型
+    /// </summary>
+    /// <returns></returns>
+    public Initializer RegisterProxyTypes()
+    {
+        List<EntityCompileResult> existCompileResult = ProxyLoader.SearchExistEntityCompileResult();
+        ProxyLoader.RegisterCompileResult(existCompileResult);
+        return this;
+    }
+
+
+    /// <summary>
     /// 注册IDataFieldTypeHandler
     /// </summary>
     /// <param name="dataType"></param>

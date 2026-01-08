@@ -226,7 +226,7 @@ public class AppConfigTest
     [TestMethod]
     public void Test_GetDefaultAppconfigFilePath()
     {
-        string path1 = AppConfig.GetDefaultAppconfigFilePath();
+        string path1 = AppConfig.GetDefaultAppconfigFilePath(".appconfig");
         Console.WriteLine(path1);
         Assert.IsTrue(path1.EndsWith1("ClownFish.UnitTest.appconfig"));
     }

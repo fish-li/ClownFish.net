@@ -28,26 +28,38 @@ public static class AppConfig
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AppConfiguration))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AppSetting))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ConnectionStringSetting))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlDbConfig))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DbConfig))]
 #endif
     internal static void Init()
     {
         if( s_inited == false ) {
             lock( s_lock ) {
                 if( s_inited == false ) {
-
-                    string filePath = GetAppConfigFilePath();
-
-                    // AOT 模式下不使用 AppConfig，下面的代码其实是 “空跑”
-                    if( EnvArgs0.IsAot == false ) {
-                        Console2.Info("AppConfig filePath: " + filePath);
-                    }
-
-                    InitConfig(filePath);
+                    InitConfig();
                 }
             }
         }
     }
+
+#if NETCOREAPP
+    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
+#endif
+    private static void InitConfig()
+    {
+        string filePath = GetAppConfigFilePath();
+
+        if( File.Exists(filePath) ) {
+            Console2.Info("AppConfig filePath: " + filePath);
+        }
+
+        AppConfiguration config = AppConfiguration.LoadFromFile(filePath, false)
+                                ?? AppConfiguration.LoadFromSysConfiguration()
+                                ?? new AppConfiguration();
+
+        s_configuration = new AppConfigObject(config);
+        s_inited = true;
+    }
+
 
     /// <summary>
     /// 设置 App.config 的名称。 【强烈建议】：这个方法的调用做为程序运行的 【第一行】代码。
@@ -76,33 +88,26 @@ public static class AppConfig
         // 2, 根据程序入口程序集来确定 配置文件的名称
         // 假如当前程序是 abc.exe or abc.dll
         // 那么默认的配置文件名称为：abc.appconfig
-        string filePath2 = GetDefaultAppconfigFilePath();
+        string filePath2 = GetDefaultAppconfigFilePath(".Appconfig");
         if( File.Exists(filePath2) )
             return filePath2;
+
+        string filePath3 = GetDefaultAppconfigFilePath(".appconfig.json");
+        if( File.Exists(filePath3) )
+            return filePath3;
 
         // 3, 使用 【统一名称】的配置文件
         return ConfigHelper.GetFileAbsolutePath(ClownFishAppconfig);
     }
 
-    internal static string GetDefaultAppconfigFilePath()
+    internal static string GetDefaultAppconfigFilePath(string extName)
     {
         string asmName = Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
-        string confName = asmName + ".Appconfig";
+        string confName = asmName + extName;
         return ConfigHelper.GetFileAbsolutePath(confName);
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-#endif
-    internal static void InitConfig(string filePath)
-    {
-        AppConfiguration config = AppConfiguration.LoadFromFile(filePath, false)
-                                ?? AppConfiguration.LoadFromSysConfiguration()
-                                ?? new AppConfiguration();
 
-        s_configuration = new AppConfigObject(config);
-        s_inited = true;
-    }
 
 
     /// <summary>
@@ -118,6 +123,21 @@ public static class AppConfig
         Console2.Info("###### AppConfig 配置内容正在从XML文本中加载");
 
         AppConfiguration config = AppConfiguration.LoadFromXml(xml);
+        s_configuration = new AppConfigObject(config);
+        s_inited = true;
+    }
+
+
+    /// <summary>
+    /// 根据一段JSON配置内容加载配置对象，
+    /// 此方法不是线程安全的，必须在程序初始化时调用。
+    /// </summary>
+    /// <param name="json"></param>
+    public static void ReLoadFromJson(string json)
+    {
+        Console2.Info("###### AppConfig 配置内容正在从JSON文本中加载");
+
+        AppConfiguration config = AppConfiguration.LoadFromJson(json);
         s_configuration = new AppConfigObject(config);
         s_inited = true;
     }
@@ -146,6 +166,7 @@ public static class AppConfig
     }
 
 
+
     /// <summary>
     /// 获取一个与指定名称匹配的connectionString配置
     /// </summary>
@@ -161,6 +182,35 @@ public static class AppConfig
 
 
     /// <summary>
+    /// [非线程安全操作] 添加一个数据库连接字符串配置
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="providerName"></param>
+    /// <param name="connectionString"></param>
+    public static void AddConnectionString(string name, string providerName, string connectionString)
+    {
+        if( string.IsNullOrEmpty(name) )
+            throw new ArgumentNullException(nameof(name));
+        if( string.IsNullOrEmpty(providerName) )
+            throw new ArgumentNullException(nameof(providerName));
+        if( connectionString == null )
+            throw new ArgumentNullException(nameof(connectionString));
+
+
+        if( s_inited == false )
+            Init();
+
+        ConnectionStringSetting connConf = new ConnectionStringSetting {
+            Name = name,
+            ProviderName = providerName,
+            ConnectionString = connectionString
+        };
+
+        s_configuration.AddConnectionString(name, connConf);
+    }
+
+
+    /// <summary>
     /// 获取一个数据库连接配置
     /// </summary>
     /// <param name="name"></param>
@@ -171,6 +221,25 @@ public static class AppConfig
             Init();
 
         return s_configuration.GetDbConfig(name);
+    }
+
+
+    /// <summary>
+    /// [非线程安全操作] 添加一个数据库连接配置
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="dbConfig"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void AddDbConfig(string name, DbConfig dbConfig)
+    {
+        if( string.IsNullOrEmpty(name) )
+            throw new ArgumentNullException(nameof(name));
+        if( dbConfig == null )
+            throw new ArgumentNullException(nameof(dbConfig));
+
+        if( s_inited == false )
+            Init();
+        s_configuration.AddDbConfig(name, dbConfig);
     }
 
     // 说明：提供 GetKeys 方法，而不是直接返回 AppConfiguration 对象是不希望在运行时配置参数被修改

@@ -6,7 +6,7 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
 
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
-    private readonly IGetValue _getter;
+    private readonly PropertyInfo _exNumber;
 
 #if NETCOREAPP
     [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
@@ -25,7 +25,7 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：MySql.Data.MySqlClient.MySqlException.Number");
 
-        _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
+        _exNumber = p;
     }
 
     public override DbProviderFactory ProviderFactory => _dbProviderFactory;
@@ -38,7 +38,7 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
         //}
 
         if( ex.GetType().IsCompatible(_exceptionType) ) {
-            return (int)_getter.Get(ex) == 1062;
+            return (int)_exNumber.FastGetValue(ex) == 1062;
         }
 
         return false;

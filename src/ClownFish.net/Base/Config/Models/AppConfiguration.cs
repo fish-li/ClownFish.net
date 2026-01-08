@@ -1,36 +1,45 @@
 ﻿
 namespace ClownFish.Base.Config.Models;
 
+
+/// <summary>
+/// key/value 配置项
+/// </summary>
+public sealed class AppSetting
+{
+    /// <summary>
+    /// key
+    /// </summary>
+    public string Key { get; set; }
+
+    /// <summary>
+    /// value
+    /// </summary>
+    public string Value { get; set; }
+}
+
+
 /// <summary>
 /// 与 app.config 对应的实体类型，用于反序列读取配置文件。
 /// </summary>
-[XmlRoot("configuration")]
 public sealed class AppConfiguration
 {
     /// <summary>
     /// appSettings参数
     /// </summary>
-    [XmlArray("appSettings")]
-    [XmlArrayItem("add")]
     public AppSetting[] AppSettings { get; set; }
 
 
     /// <summary>
     /// connectionStrings参数
     /// </summary>
-    [XmlArray("connectionStrings")]
-    [XmlArrayItem("add")]
     public ConnectionStringSetting[] ConnectionStrings { get; set; }
-
 
 
     /// <summary>
     /// dbConfigs参数
     /// </summary>
-    [XmlArray("dbConfigs")]
-    [XmlArrayItem("add")]
-    public XmlDbConfig[] DbConfigs { get; set; }
-
+    public DbConfig[] DbConfigs { get; set; }
 
 
 
@@ -43,7 +52,7 @@ public sealed class AppConfiguration
             this.ConnectionStrings = new ConnectionStringSetting[0];
 
         if( this.DbConfigs == null )
-            this.DbConfigs = new XmlDbConfig[0];
+            this.DbConfigs = new DbConfig[0];
 
 
         foreach( var x in this.ConnectionStrings ) {
@@ -51,6 +60,8 @@ public sealed class AppConfiguration
                 x.ProviderName = ClownFish.Data.DatabaseClients.SqlClient;
         }
     }
+
+
 
 
     /// <summary>
@@ -75,7 +86,19 @@ public sealed class AppConfiguration
                 return null;
         }
 
-        return XmlHelper.XmlDeserializeFromFile<AppConfiguration>(filePath);
+        // TODO; 应该调用 ConfigFile 来获取文件内容，然后再反序列化~~
+        // app1.Appconfig   or  ClownFish.App.config  ,  .xml 这个扩展名其实没有用过~~
+        if( filePath.EndsWithIgnoreCase(".Appconfig") || filePath.EndsWithIgnoreCase(".App.config") || filePath.EndsWithIgnoreCase(".xml") ) {
+            var xmlObject = XmlHelper.XmlDeserializeFromFile<XmlAppConfiguration>(filePath);
+            return xmlObject.ToAppConfiguration();
+        }
+        else if( filePath.EndsWithIgnoreCase(".appconfig.json") ) {
+            string json = RetryFile.ReadAllText(filePath);
+            return json.FromJson<AppConfiguration>();
+        }
+        else {
+            throw new NotSupportedException("不支持的配置文件格式。filePath: " + filePath);
+        }
     }
 
 
@@ -92,7 +115,17 @@ public sealed class AppConfiguration
         if( xml.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(xml));
 
-        return XmlHelper.XmlDeserialize<AppConfiguration>(xml);
+        var xmlObject = XmlHelper.XmlDeserialize<XmlAppConfiguration>(xml);
+        return xmlObject.ToAppConfiguration();
+    }
+
+
+    internal static AppConfiguration LoadFromJson(string json)
+    {
+        if( json.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(json));
+
+        return json.FromJson<AppConfiguration>();
     }
 
     /// <summary>

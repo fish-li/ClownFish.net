@@ -16,7 +16,12 @@ public static class PropertyInfoExtensions
         if( propertyInfo == null )
             throw new ArgumentNullException("propertyInfo");
 
-        return GetterSetterFactory.GetPropertyGetterWrapper(propertyInfo).Get(instance);
+        if( EnvArgs0.IsAot ) {
+            return propertyInfo.GetValue(instance);
+        }
+        else {
+            return GetterSetterFactory.GetPropertyGetterWrapper(propertyInfo).Get(instance);
+        }
     }
 
     /// <summary>
@@ -30,7 +35,12 @@ public static class PropertyInfoExtensions
         if( propertyInfo == null )
             throw new ArgumentNullException("propertyInfo");
 
-        GetterSetterFactory.GetPropertySetterWrapper(propertyInfo).Set(instance, value);
+        if( EnvArgs0.IsAot ) {
+            propertyInfo.SetValue(instance, value);
+        }
+        else {
+            GetterSetterFactory.GetPropertySetterWrapper(propertyInfo).Set(instance, value);
+        }
     }
 }
 

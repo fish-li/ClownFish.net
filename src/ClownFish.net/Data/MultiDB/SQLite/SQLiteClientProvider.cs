@@ -6,7 +6,7 @@ internal class SQLiteClientProvider : BaseClientProvider
 
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
-    private readonly IGetValue _getter;
+    private readonly PropertyInfo _exNumber;
 
     // 说明：SQLite有2个驱动库：System.Data.SQLite,  Microsoft.Data.Sqlite
     // 这们不是一个东西！ 分别由不同的团队在维护。
@@ -30,7 +30,7 @@ internal class SQLiteClientProvider : BaseClientProvider
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：System.Data.SQLite.SQLiteException.ErrorCode");
 
-        _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
+        _exNumber = p;
     }
 
 
@@ -51,7 +51,7 @@ internal class SQLiteClientProvider : BaseClientProvider
     public override bool IsDuplicateInsertException(Exception ex)
     {
         if( ex.GetType().IsCompatible(_exceptionType) ) {
-            return (int)_getter.Get(ex) == 2067;
+            return (int)_exNumber.FastGetValue(ex) == 2067;
         }
 
         return false;

@@ -6,7 +6,7 @@ internal class DaMengClientProvider : BaseClientProvider
 
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
-    private readonly IGetValue _getter;
+    private readonly PropertyInfo _exNumber;
 
 #if NETCOREAPP
     [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
@@ -29,7 +29,7 @@ internal class DaMengClientProvider : BaseClientProvider
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：Dm.DmException.Number");
 
-        _getter = GetterSetterFactory.GetPropertyGetterWrapper(p);
+        _exNumber = p;
     }
 
     public override DatabaseType DatabaseType => DatabaseType.DaMeng;
@@ -95,7 +95,7 @@ internal class DaMengClientProvider : BaseClientProvider
         // https://www.cndba.cn/dave/article/3738
 
         if( ex.GetType().IsCompatible(_exceptionType) ) {
-            return (int)_getter.Get(ex) == -6602;
+            return (int)_exNumber.FastGetValue(ex) == -6602;
         }
 
         return false;
