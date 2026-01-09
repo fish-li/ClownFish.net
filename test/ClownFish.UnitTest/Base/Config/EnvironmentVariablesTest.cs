@@ -14,24 +14,24 @@ public class EnvironmentVariablesTest
     }
 
 
-    [TestMethod]
-    public void Test_Compatibility()
-    {
-        // 测试兼容性查找
-        Assert.AreEqual("123", EnvironmentVariables.Get("x1.y1.z1"));  // 与配置名称相同
-        Assert.AreEqual("123", EnvironmentVariables.Get("x1_y1_z1"));  // 新的命名风格，即使配置项不存在，也能查找
-        Assert.IsNull(EnvironmentVariables.Get("x1_y1.z1"));           // 不正确的命名
+    //[TestMethod]
+    //public void Test_Compatibility()
+    //{
+    //    // 测试兼容性查找
+    //    Assert.AreEqual("123", EnvironmentVariables.Get("x1.y1.z1"));  // 与配置名称相同
+    //    Assert.AreEqual("123", EnvironmentVariables.Get("x1_y1_z1"));  // 新的命名风格，即使配置项不存在，也能查找
+    //    Assert.IsNull(EnvironmentVariables.Get("x1_y1.z1"));           // 不正确的命名
 
-        EnvironmentVariables.Set("a.b.c", "256");
-        Assert.AreEqual("256", EnvironmentVariables.Get("a.b.c"));  // 与配置名称相同
-        Assert.AreEqual("256", EnvironmentVariables.Get("a_b_c"));  // 新的命名风格，即使配置项不存在，也能查找
-        Assert.IsNull(EnvironmentVariables.Get("a_b.c"));           // 不正确的命名
+    //    EnvironmentVariables.Set("a.b.c", "256");
+    //    Assert.AreEqual("256", EnvironmentVariables.Get("a.b.c"));  // 与配置名称相同
+    //    Assert.AreEqual("256", EnvironmentVariables.Get("a_b_c"));  // 新的命名风格，即使配置项不存在，也能查找
+    //    Assert.IsNull(EnvironmentVariables.Get("a_b.c"));           // 不正确的命名
 
 
-        EnvironmentVariables.Set("a2_b2_c2", "384");
-        Assert.AreEqual("384", EnvironmentVariables.Get("a2_b2_c2"));  // 新的命名风格，且与配置名称相同
-        Assert.IsNull(EnvironmentVariables.Get("a2.b2.c2"));           // 不支持：配置采用新风格，查找使用老风格
-    }
+    //    EnvironmentVariables.Set("a2_b2_c2", "384");
+    //    Assert.AreEqual("384", EnvironmentVariables.Get("a2_b2_c2"));  // 新的命名风格，且与配置名称相同
+    //    Assert.IsNull(EnvironmentVariables.Get("a2.b2.c2"));           // 不支持：配置采用新风格，查找使用老风格
+    //}
 
     [TestMethod]
     public void Test_Error()

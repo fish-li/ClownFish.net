@@ -33,9 +33,9 @@ public class AppConfigurationTest
             };
 
         config.DbConfigs = new[] {
-                new XmlDbConfig { Name = "s1", Server="localhost1" },
-                new XmlDbConfig { Name = "s2", Server="" },          // 无效数据
-                new XmlDbConfig { Name = "", Server="localhost3" },  // 无效数据
+                new DbConfig { Name = "s1", Server="localhost1" },
+                new DbConfig { Name = "s2", Server="" },          // 无效数据
+                new DbConfig { Name = "", Server="localhost3" },  // 无效数据
             };
 
 

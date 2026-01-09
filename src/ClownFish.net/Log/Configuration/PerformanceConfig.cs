@@ -18,6 +18,12 @@ public sealed class PerformanceConfig
     [XmlAttribute]
     public int HandleMessage { get; set; } = int.MinValue;
 
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return $"HttpExecute={HttpExecute}; HandleMessage={HandleMessage}";
+    }
+
 
     // 上面2个属性默认值取 int.MinValue 原因：
     // 如果某个应用程序不需要计算慢请求，可以设置 HttpExecute="0" or HttpExecute="-1"

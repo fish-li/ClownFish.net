@@ -11,6 +11,6 @@ public class TypeItemConfigTest
             Writers = "xml,json"
         };
 
-        Assert.AreEqual("abc => xml,json", config.ToString());
+        Assert.AreEqual("abc=xml,json", config.ToString());
     }
 }

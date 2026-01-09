@@ -55,6 +55,14 @@ namespace ClownFish.UnitTest.Base.Debug
             Assert.IsTrue(s5.HasValue());
             Assert.IsTrue(s6.HasValue());
             Assert.AreEqual("_NULL_", s7);
+
+
+            string savePath = Path.Combine(AppContext.BaseDirectory, "temp/ClownFish.UnitTest.cfconfig.ini");
+            List<DebugReportBlock> list = new List<DebugReportBlock>(2);
+            list.Add(AppConfig.GetDebugReportBlock());
+            list.Add(LogConfig.GetDebugReportBlock());
+            string text = list.ToText(false);
+            RetryFile.WriteAllText(savePath, text, Encoding.UTF8);
         }
 
         [TestMethod]

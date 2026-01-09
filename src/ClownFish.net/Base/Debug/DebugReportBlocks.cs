@@ -238,10 +238,10 @@ internal static class DebugReportBlocks
 #endif
     internal static DebugReportBlock GetDebugReportBlock(this AppConfiguration appconfig)
     {
-        DebugReportBlock block = new DebugReportBlock { Category = "AppConfig", Order = 100 };
+        DebugReportBlock block = new DebugReportBlock { Category = "ClownFish.AppConfig", Order = 100 };
 
         // 按照开发要求，app.config 中是不允许有敏感信息参数的，所以这里不做过滤，直接用XML展示
-        block.AppendLine(appconfig.ToXml2());
+        block.AppendLine(appconfig.ToLoggingText());
         return block;
     }
 
@@ -250,9 +250,9 @@ internal static class DebugReportBlocks
 #endif
     internal static DebugReportBlock GetDebugReportBlock(this LogConfiguration logconfig)
     {
-        DebugReportBlock block = new DebugReportBlock { Category = LogConfig.ConfigFileName, Order = 100 };
+        DebugReportBlock block = new DebugReportBlock { Category = "ClownFish.LogConfig", Order = 100 };
 
-        block.AppendLine(logconfig.ToXml2());
+        block.AppendLine(logconfig.ToLoggingText());
         return block;
     }
 

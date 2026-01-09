@@ -25,13 +25,10 @@ public sealed class TypeItemConfig
     [XmlIgnore]
     internal Type TypeObject { get; set; }
 
-    /// <summary>
-    /// ToString
-    /// </summary>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public override string ToString()
     {
-        return this.DataType + " => " + this.Writers;
+        return $"{DataType}={Writers}";
     }
 
     /// <summary>

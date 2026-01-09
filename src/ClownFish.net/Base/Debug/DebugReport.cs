@@ -261,11 +261,13 @@ public static class DebugReport
         return GetStatusInfo().AddRange2(s_sysInfoList).AddRange2(s_configList).AddRange2(s_asmInfoList);
     }
 
-    internal static string ToText(this List<DebugReportBlock> blocks)
+    internal static string ToText(this List<DebugReportBlock> blocks, bool includeHeader = true)
     {
         StringBuilder sb = StringBuilderPool.Get();
         try {
-            sb.AppendLineRN(HeaderText);
+            if( includeHeader ) {
+                sb.AppendLineRN(HeaderText);
+            }
 
             foreach( var b in blocks.Where(x => x != null).OrderBy(x => x.Order) ) {
                 b.GetText(sb);

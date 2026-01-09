@@ -53,7 +53,6 @@ public static class LogConfig
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(PerformanceConfig))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FileConfig))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WriterConfig))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WriterOption))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TypeItemConfig))]
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLog))]

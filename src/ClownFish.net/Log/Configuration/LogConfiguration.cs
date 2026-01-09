@@ -4,7 +4,7 @@
 /// 日志的配置数据结构
 /// </summary>
 [XmlRoot("LogConfig")]
-public sealed class LogConfiguration
+public sealed class LogConfiguration : ILoggingObject
 {
     /// <summary>
     /// 是否启用
@@ -153,6 +153,41 @@ public sealed class LogConfiguration
             NameValue nv = items.FirstOrDefault(x => x.Name == typename);
             if( nv != null )
                 t.Writers = nv.Value;
+        }
+    }
+
+    /// <inheritdoc/>
+    public string ToLoggingText()
+    {
+        StringBuilder sb = StringBuilderPool.Get();
+
+        try {
+            sb.AppendLineRN("[Logging]");
+            sb.AppendLineRN($"Enable={this.Enable.ToString2()}");
+            sb.AppendLineRN($"TimerPeriod={this.TimerPeriod}");
+            if( this.Performance != null ) {
+                sb.AppendLineRN($"Performance={this.Performance.ToString()}");
+            }
+            if( this.File != null ) {
+                sb.AppendLineRN($"File={this.File.ToString()}");
+            }
+            sb.AppendLineRN();
+            if( this.Writers.HasValue() ) {
+                foreach( var w in this.Writers ) {
+                    sb.AppendLineRN(w.ToString());
+                }
+            }
+            sb.AppendLineRN();
+            if( this.Types.HasValue() ) {
+                foreach( var t in this.Types ) {
+                    sb.AppendLineRN(t.ToString());
+                }
+            }
+            sb.AppendLineRN();
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
         }
     }
 

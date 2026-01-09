@@ -8,7 +8,7 @@ public sealed class DbConfig : IDbConfig
     /// <summary>
     /// id
     /// </summary>
-    [DbColumn(PrimaryKey = true)]
+    //[DbColumn(PrimaryKey = true)]
     public int Id { get; set; }
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed class DbConfig : IDbConfig
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{DbType}/{Server}/{Database}";
+        return $"Name={Name}; DbType={DbType}; Server={Server}; Port={Port}; Database={Database}; UserName={UserName}; Password={Password}";
     }
 
     //internal void Validate()

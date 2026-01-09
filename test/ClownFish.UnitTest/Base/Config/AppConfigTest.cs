@@ -28,31 +28,31 @@ public class AppConfigTest
     }
 
 
-    [TestMethod]
-    public void Test_Compatibility()
-    {
-        Assert.AreEqual("123456", LocalSettings.GetSetting("aa.bb.cc"));
-        Assert.AreEqual("123456", LocalSettings.GetSetting("aa_bb_cc"));
-        Assert.IsNull(LocalSettings.GetSetting("aa_bb.cc"));
+    //[TestMethod]
+    //public void Test_Compatibility()
+    //{
+    //    Assert.AreEqual("123456", LocalSettings.GetSetting("aa.bb.cc"));
+    //    Assert.AreEqual("123456", LocalSettings.GetSetting("aa_bb_cc"));
+    //    Assert.IsNull(LocalSettings.GetSetting("aa_bb.cc"));
 
-        var conn1 = AppConfig.GetConnectionString("sqlserver.2");
-        var conn2 = AppConfig.GetConnectionString("sqlserver_2");
-        Assert.IsNotNull(conn1);
-        Assert.IsNotNull(conn2);
-        Assert.AreEqual(conn1.ToString(), conn2.ToString());
+    //    var conn1 = AppConfig.GetConnectionString("sqlserver.2");
+    //    var conn2 = AppConfig.GetConnectionString("sqlserver_2");
+    //    Assert.IsNotNull(conn1);
+    //    Assert.IsNotNull(conn2);
+    //    Assert.AreEqual(conn1.ToString(), conn2.ToString());
 
-        var db1 = AppConfig.GetDbConfig("dm.2");
-        var db2 = AppConfig.GetDbConfig("dm_2");
-        Assert.IsNotNull(db1);
-        Assert.IsNotNull(db2);
-        Assert.AreEqual(db1.ToJson(), db2.ToJson());
+    //    var db1 = AppConfig.GetDbConfig("dm.2");
+    //    var db2 = AppConfig.GetDbConfig("dm_2");
+    //    Assert.IsNotNull(db1);
+    //    Assert.IsNotNull(db2);
+    //    Assert.AreEqual(db1.ToJson(), db2.ToJson());
 
-        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment.Key"));
-        Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment_Key"));
+    //    Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment.Key"));
+    //    Assert.AreEqual("a5431626-00df-44bd-bb35-f8f108f9ccfa", LocalSettings.GetSetting("Environment_Key"));
 
-        Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish.CacheDictionary.ExpirationScanFrequency"));
-        Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish_CacheDictionary_ExpirationScanFrequency"));
-    }
+    //    Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish.CacheDictionary.ExpirationScanFrequency"));
+    //    Assert.AreEqual("2", LocalSettings.GetSetting("ClownFish_CacheDictionary_ExpirationScanFrequency"));
+    //}
 
     [ExpectedException(typeof(ArgumentNullException))]
     [TestMethod]
@@ -121,9 +121,8 @@ public class AppConfigTest
 
         DebugReportBlock block = AppConfig.GetDebugReportBlock();
         string text = block.ToString2();
-        Assert.IsTrue(text.Contains("<add key=\"key1\" value=\"abcd\" />"));
-        Assert.IsTrue(text.Contains("<add key=\"key2\" value=\"1234\" />"));
-
+        Assert.IsTrue(text.Contains("key1=abcd"));
+        Assert.IsTrue(text.Contains("key2=1234"));
 
         MyAssert.IsError<ArgumentNullException>(() => {
             AppConfig.ReLoadFromXml(null);

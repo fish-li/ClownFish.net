@@ -16,13 +16,19 @@ public sealed class AppSetting
     /// value
     /// </summary>
     public string Value { get; set; }
+
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return $"Key={Key}; Value={Value}";
+    }
 }
 
 
 /// <summary>
 /// 与 app.config 对应的实体类型，用于反序列读取配置文件。
 /// </summary>
-public sealed class AppConfiguration
+public sealed class AppConfiguration : ILoggingObject
 {
     /// <summary>
     /// appSettings参数
@@ -61,7 +67,39 @@ public sealed class AppConfiguration
         }
     }
 
+    /// <inheritdoc/>
+    public string ToLoggingText()
+    {
+        StringBuilder sb = StringBuilderPool.Get();
+        try {
+            sb.AppendLineRN("[AppSettings]");
+            foreach( var x in this.AppSettings ) {
+                sb.AppendLineRN($"{x.Key}={x.Value}");
+            }
+            
+            foreach( var x in this.ConnectionStrings ) {
+                sb.AppendLineRN();
+                sb.AppendLineRN($"[ConnectionStrings:{x.Name}]");
+                sb.AppendLineRN($"ProviderName={x.ProviderName}");
+                sb.AppendLineRN($"ConnectionString={x.ConnectionString}");
+            }
 
+            
+            foreach( var x in this.DbConfigs ) {
+                sb.AppendLineRN();
+                sb.AppendLineRN($"[DbConfig:{x.Name}]");
+                sb.AppendLineRN($"all={x.ToString()}");
+                if( x.Args.HasValue() ) {
+                    sb.AppendLineRN($"Args={x.Args}");
+                }
+            }
+            sb.AppendLineRN();
+            return sb.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(sb);
+        }
+    }
 
 
     /// <summary>
@@ -87,8 +125,8 @@ public sealed class AppConfiguration
         }
 
         // TODO; 应该调用 ConfigFile 来获取文件内容，然后再反序列化~~
-        // app1.Appconfig   or  ClownFish.App.config  ,  .xml 这个扩展名其实没有用过~~
-        if( filePath.EndsWithIgnoreCase(".Appconfig") || filePath.EndsWithIgnoreCase(".App.config") || filePath.EndsWithIgnoreCase(".xml") ) {
+        // app1.Appconfig   or  ClownFish.App.config 
+        if( filePath.EndsWithIgnoreCase(".Appconfig") || filePath.EndsWithIgnoreCase(".App.config") ) {
             var xmlObject = XmlHelper.XmlDeserializeFromFile<XmlAppConfiguration>(filePath);
             return xmlObject.ToAppConfiguration();
         }
@@ -155,8 +193,6 @@ public sealed class AppConfiguration
         return null;
 #endif
     }
-
-
 
 }
 

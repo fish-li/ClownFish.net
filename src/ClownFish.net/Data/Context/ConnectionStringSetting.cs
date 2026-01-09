@@ -3,27 +3,23 @@
 /// <summary>
 /// 数据库连接配置类型
 /// </summary>
-[Serializable]
 public sealed class ConnectionStringSetting
 {
     /// <summary>
     /// 数据库连接名称
     /// </summary>
-    [XmlAttribute("name")]
     public string Name { get; set; }
 
 
     /// <summary>
     /// 连接字符串
     /// </summary>
-    [XmlAttribute("connectionString")]
     public string ConnectionString { get; set; }
 
 
     /// <summary>
     /// 数据驱动的提供者名称
     /// </summary>
-    [XmlAttribute("providerName")]
     public string ProviderName { get; set; }
 
     /// <summary>
@@ -32,7 +28,7 @@ public sealed class ConnectionStringSetting
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Name={Name}\nProviderName={ProviderName}\nConnectionString={ConnectionString}";
+        return $"Name={Name}; ProviderName={ProviderName}; ConnectionString={ConnectionString}";
     }
 
     ///// <summary>

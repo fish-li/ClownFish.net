@@ -39,16 +39,19 @@ public sealed class XmlAppConfiguration
 
         if( this.AppSettings != null && this.AppSettings.Length > 0 ) {
             config.AppSettings = this.AppSettings
+                .Where(x => x.Key.HasValue())
                 .Select(item => item.ToAppSetting())
                 .ToArray();
         }
         if( this.ConnectionStrings != null && this.ConnectionStrings.Length > 0 ) {
             config.ConnectionStrings = this.ConnectionStrings
+                .Where(x => x.Name.HasValue())
                 .Select(item => item.ToConnectionStringSetting())
                 .ToArray();
         }
         if( this.DbConfigs != null && this.DbConfigs.Length > 0 ) {
             config.DbConfigs = this.DbConfigs
+                .Where(x => x.Name.HasValue() && x.Server.HasValue())
                 .Select(item => item.ToDbConfig())
                 .ToArray();
         }

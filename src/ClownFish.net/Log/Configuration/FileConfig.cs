@@ -24,6 +24,12 @@ public sealed class FileConfig
     [XmlAttribute]
     public int MaxCount { get; set; }
 
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return $"RootPath={RootPath}, MaxLength={MaxLength}, MaxCount={MaxCount}";
+    }
+
 
     internal void CheckOrSetDefault()
     {

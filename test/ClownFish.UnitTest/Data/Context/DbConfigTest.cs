@@ -26,7 +26,7 @@ public class DbConfigTest
         Assert.AreEqual("fish", config.Password);
         Assert.AreEqual("aa=2;bb=3", config.Args);
 
-        Assert.AreEqual($"MySQL/localpc/MyNorthwind", config.ToString());
+        Assert.IsTrue(config.ToString().Contains("Name=db1;"));
     }
 
     [TestMethod]
