@@ -7,12 +7,7 @@ internal abstract class FileWriter : ILogWriter
 {
     private string _currentFile;
 
-    /// <summary>
-    /// 初始化
-    /// </summary>
-    /// <param name="config"></param>
-    /// <param name="section"></param>
-    public virtual void Init(LogConfiguration config, WriterConfig section)
+    public virtual void Init(LogConfiguration config, Type dataType)
     {
         // 初始化目录
         FileUtils.InitDirectory(config);
@@ -23,6 +18,11 @@ internal abstract class FileWriter : ILogWriter
     /// 文件扩展名
     /// </summary>
     protected virtual string FileExtName => ".log";
+
+    /// <summary>
+    /// 日志之间是否需要添加分隔行，默认为 false，如果需要添加分隔行，子类重写为 true 即可。
+    /// </summary>
+    protected virtual bool NeedFlagLine => false;
 
     /// <summary>
     /// 将对象转成要保存的文本
@@ -52,6 +52,7 @@ internal abstract class FileWriter : ILogWriter
         return string.Concat(FileUtils.RootPath, datatype, "/", datatype, "_", timeString, this.FileExtName);
     }
 
+    private static readonly string s_flagLine = "----------------9af955fc890b403b9be4f58a88b022f1--";
 
     /// <summary>
     /// 写入单条日志信息
@@ -62,6 +63,10 @@ internal abstract class FileWriter : ILogWriter
     {
         // 数据对象序列化
         string text = ObjectToText(msg);
+
+        if( this.NeedFlagLine ) {  // 添加分隔行          
+            text = text + Environment.NewLine + s_flagLine + Environment.NewLine;
+        }
 
         // 数据日志内容写入到文件
         WriteToFile<T>(text, true);
@@ -83,6 +88,10 @@ internal abstract class FileWriter : ILogWriter
             foreach( T msg in list ) {
                 string line = ObjectToText(msg);
                 sb.AppendLine(line);
+
+                if( this.NeedFlagLine ) {
+                    sb.AppendLine(s_flagLine);
+                }
             }
             block = sb.ToString();
         }
@@ -121,9 +130,10 @@ internal abstract class FileWriter : ILogWriter
             // 清理老旧的文件
             DeleteOldFile();
 
-            // 再次写入文件，此时【当前文件】已不存在，会自动创建
+            // _currentFile 文件已经超过最大长度了，不能再继续追加了，所以必须生成一个新的文件名
             _currentFile = GetFilePath(typeof(T), DateTime.Now);
 
+            // 再次写入文件，此时【当前文件】已不存在，会自动创建
             bool flag = FileHelper.AppendAllText(_currentFile, text, addNewLine, FileUtils.MaxLength);
             return flag ? 2 : 3;
         }

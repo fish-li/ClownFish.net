@@ -7,10 +7,10 @@ public class ConfigHelperTest
     public void Test_GetFilePath()
     {
         string name = "abc.txt";
-        Assert.IsTrue(ConfigHelper.GetFileAbsolutePath(name).EndsWith1(name));  // not found
+        Assert.IsTrue(PathUtils.GetFileAbsolutePath(name).EndsWith1(name));  // not found
 
         string name2 = "ClownFish.App.config";
-        string path2 = ConfigHelper.GetFileAbsolutePath(name2);
+        string path2 = PathUtils.GetFileAbsolutePath(name2);
         Assert.AreNotEqual(name2, path2);
         Assert.IsTrue(path2.EndsWith(name2));
     }
@@ -20,7 +20,7 @@ public class ConfigHelperTest
     [TestMethod]
     public void Test_GetFilePath_ArgumentNullException()
     {
-        string path2 = ConfigHelper.GetFileAbsolutePath(null);
+        string path2 = PathUtils.GetFileAbsolutePath(null);
     }
 
 
@@ -28,10 +28,10 @@ public class ConfigHelperTest
     public void Test_GetDirectoryPath()
     {
         string name = "abc";
-        Assert.IsTrue(ConfigHelper.GetDirectoryAbsolutePath(name).EndsWith1(name));  // not found
+        Assert.IsTrue(PathUtils.GetDirectoryAbsolutePath(name).EndsWith1(name));  // not found
 
         string name2 = "Logs";
-        string path2 = ConfigHelper.GetDirectoryAbsolutePath(name2);
+        string path2 = PathUtils.GetDirectoryAbsolutePath(name2);
         Assert.AreNotEqual(name2, path2);
         Assert.IsTrue(path2.EndsWith(name2));
     }
@@ -41,6 +41,6 @@ public class ConfigHelperTest
     [TestMethod]
     public void Test_GetDirectoryPath_ArgumentNullException()
     {
-        string path2 = ConfigHelper.GetDirectoryAbsolutePath(string.Empty);
+        string path2 = PathUtils.GetDirectoryAbsolutePath(string.Empty);
     }
 }

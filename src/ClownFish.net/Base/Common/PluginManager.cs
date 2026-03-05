@@ -5,9 +5,7 @@
 /// </summary>
 /// <typeparam name="T">包含插件的对象类型</typeparam>
 /// <typeparam name="P">插件基类</typeparam>
-#if NETCOREAPP
 [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
-#endif
 internal static class PluginManager<T, P>
 {
     private static readonly List<Type> s_pluginList = new List<Type>();

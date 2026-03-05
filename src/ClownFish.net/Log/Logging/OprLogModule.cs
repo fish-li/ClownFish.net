@@ -3,7 +3,7 @@
 /// <summary>
 /// 用于产生操作日志的HTTP模块
 /// </summary>
-public sealed class OprLogModule : NHttpModule, IEnd2Request
+public sealed class OprLogModule : NHttpModule, IFxLogRequest
 {
     /// <summary>
     /// Order
@@ -32,11 +32,8 @@ public sealed class OprLogModule : NHttpModule, IEnd2Request
         httpContext.PipelineContext.OprLogScope.SetException(httpContext.LastException);
     }
 
-    /// <summary>
-    /// End2Request
-    /// </summary>
-    /// <param name="httpContext"></param>
-    public void End2Request(NHttpContext httpContext)
+
+    void IFxLogRequest.FxLogRequest(NHttpContext httpContext)
     {
         // EnableLog 属性允许在请求处理过程中修改，所以在这里判断要不要写日志
         if( httpContext.EnableLog == false )

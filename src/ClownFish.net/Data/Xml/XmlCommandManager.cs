@@ -3,9 +3,6 @@
 /// <summary>
 /// 用于维护配置文件中数据库访问命令的管理类
 /// </summary>
-#if NETCOREAPP
-[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
 public sealed class XmlCommandManager
 {
     /// <summary>

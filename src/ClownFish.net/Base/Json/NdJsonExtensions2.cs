@@ -8,8 +8,8 @@
 ///// <summary>
 ///// NdJSON序列化的工具类
 ///// </summary>
-//[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: JsonSerializer")]
-//[UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: JsonSerializer")]
+//[UnconditionalSuppressMessage("Trimming", "IL2026: JsonSerializer")]
+//[UnconditionalSuppressMessage("AOT", "IL3050: JsonSerializer")]
 //public static class NdJsonExtensions2
 //{
 //    /// <summary>

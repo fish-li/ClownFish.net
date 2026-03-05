@@ -49,7 +49,7 @@ internal class TestHttpClient : BaseHttpClient
         throw new NotImplementedException();
     }
 
-    public T GetResult2<T>(HttpWebResponse response)
+    public T GetResult2<T>(HttpWebResponse response) where T : class
     {
         return base.GetResult<T>(response);
     }

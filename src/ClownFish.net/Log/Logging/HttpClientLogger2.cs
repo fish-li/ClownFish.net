@@ -1,6 +1,6 @@
 ﻿#if NETCOREAPP
+
 using System.Net.Http;
-using ClownFish.Log;
 using ClownFish.WebClient.V2;
 
 namespace ClownFish.Log.Logging;
@@ -17,17 +17,9 @@ public static class HttpClientLogger2
     /// </summary>
     public static void Init()
     {
-        int mode = LocalSettings.GetInt("ClownFish_HttpClient_TraceMode", 2);
-        if( mode == 2 ) {
-            DiagnosticListener.AllListeners.Subscribe(new HttpClientEventSubscriber());
-        }
-        if( mode == 1 ) {
-            HttpClientLogger.Init();
-        }
+        DiagnosticListener.AllListeners.Subscribe(new HttpClientEventSubscriber());
     }
 }
-
-
 
 internal class HttpClientEventSubscriber : IObserver<DiagnosticListener>
 {
@@ -79,9 +71,7 @@ internal class HttpClientEventData : ILoggingObject
 }
 
 
-#if NETCOREAPP
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: eventData.Get")]
-#endif
+[UnconditionalSuppressMessage("Trimming", "IL2026: eventData.Get")]
 internal class HttpClientEventObserver : IObserver<KeyValuePair<string, object>>
 {
     private static readonly AsyncLocal<HttpClientEventData> s_local = new AsyncLocal<HttpClientEventData>();

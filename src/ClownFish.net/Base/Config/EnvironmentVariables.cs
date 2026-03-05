@@ -46,7 +46,7 @@ public static class EnvironmentVariables
         // app.evn 这个名字想过，但是想到或许未来会被MS采用，所以还是尽早避开了吧~~·
 
         string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "_local.env");
-        int count3 = KvConfigFile.LoadFromFile(localEnvFilePath, s_dict);
+        int count3 = KvConfigFile.LoadFile(localEnvFilePath, s_dict);
         if( count3 > 0 ) {
             Console2.Info($"已从文件 {localEnvFilePath} 加载到 {count3} 个环境变量");
         }

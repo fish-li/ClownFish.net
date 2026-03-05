@@ -5,7 +5,6 @@ namespace ClownFish.Data.Xml;
 /// <summary>
 /// XmlCommand的命令参数。
 /// </summary>
-[Serializable]
 public sealed class XmlCmdParameter
 {
     /// <summary>

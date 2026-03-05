@@ -7,27 +7,41 @@
 public sealed class TransparentOutStream : Stream
 {
     private readonly Stream _stream;
+    private readonly OprLog _oprlog;
     private long _outLen = 0;
 
     /// <summary>
     /// 构造方法
     /// </summary>
     /// <param name="stream"></param>
-    public TransparentOutStream(Stream stream)
+    /// <param name="oprLog"></param>
+    public TransparentOutStream(Stream stream, OprLog oprLog = null)
     {
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
+        _oprlog = oprLog;
     }
 
-//#if DEBUG
-//    private bool _disposed;
-//    internal bool IsDisposed => _disposed;
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
 
-//    /// <inheritdoc/>
-//    protected override void Dispose(bool disposing)
-//    {
-//        _disposed = true;
-//    }
-//#endif
+        // 使用这个类的场景都会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
+        if( _oprlog != null ) {
+            _oprlog.OutSize = this.GetOutSize();
+        }
+    }
+
+    //#if DEBUG
+    //    private bool _disposed;
+    //    internal bool IsDisposed => _disposed;
+
+    //    /// <inheritdoc/>
+    //    protected override void Dispose(bool disposing)
+    //    {
+    //        _disposed = true;
+    //    }
+    //#endif
 
     /// <summary>
     /// 获取累计的写入长度
@@ -92,7 +106,5 @@ public sealed class TransparentOutStream : Stream
         _outLen += count;
         return _stream.WriteAsync(buffer, offset, count, cancellationToken);
     }
-
-
 
 }

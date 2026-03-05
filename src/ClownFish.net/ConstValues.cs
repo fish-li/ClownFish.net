@@ -8,7 +8,7 @@ public static class ConstValues
     /// <summary>
     /// 
     /// </summary>
-    public static readonly string CurrentVersion;
+    public static readonly string CurrentVersion = "10.26.305.1";
 
     /// <summary>
     /// 
@@ -17,9 +17,7 @@ public static class ConstValues
 
     static ConstValues()
     {
-        CurrentVersion = AsmHelper.GetFileVersion(typeof(ConstValues)).IfEmpty("10.25.1222.1");
-
-        // 示例：ClownFish.HttpClient/10.25.1222.1
+        // 示例：ClownFish.HttpClient/10.26.305.1
         HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}";
     }
 

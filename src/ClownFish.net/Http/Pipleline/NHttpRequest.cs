@@ -114,7 +114,16 @@ public abstract partial class NHttpRequest
     /// </summary>
     public abstract string UserAgent { get; }
 
-    internal Match RegexMatch { get; set; }
+    private Match _routeResult { get; set; }
+
+    /// <summary>
+    /// 【框架内部使用】设置URL路由匹配结果，供 Route(string name) 方法使用
+    /// </summary>
+    /// <param name="match"></param>
+    public void SetRouteResult(Match match)
+    {
+        _routeResult = match;
+    }
 
     /// <summary>
     /// 根据指定的名称，从URL路由匹配结果中获取对应的值
@@ -123,9 +132,9 @@ public abstract partial class NHttpRequest
     /// <returns></returns>
     public virtual string Route(string name)
     {
-        if( this.RegexMatch != null ) {
+        if( _routeResult != null ) {
 
-            Group g = this.RegexMatch.Groups[name];
+            Group g = _routeResult.Groups[name];
             if( g != null && g.Success )
                 return g.Value;
         }

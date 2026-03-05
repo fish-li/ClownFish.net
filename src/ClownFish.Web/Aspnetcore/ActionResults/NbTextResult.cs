@@ -1,9 +1,12 @@
-﻿namespace ClownFish.Web.AspnetCore.ActionResults;
+﻿using ClownFish.Base.Xml;
+using ClownFish.Web.Aspnetcore.ActionResults;
+
+namespace ClownFish.Web.AspnetCore.ActionResults;
 
 /// <summary>
 /// 表示一个响应体内容为文本字符串的 ActionResult
 /// </summary>
-public sealed class NbTextResult : ActionResult
+public sealed class NbTextResult : ActionResult, IOutActionResult
 {
     /// <summary>
     /// 响应体内容
@@ -19,6 +22,8 @@ public sealed class NbTextResult : ActionResult
     /// StatusCode
     /// </summary>
     public int StatusCode { get; set; } = 200;
+
+    private object _data;
 
 
     /// <summary>
@@ -36,7 +41,7 @@ public sealed class NbTextResult : ActionResult
         if( data == null )
             return Result204;
 
-        return new NbTextResult { Content = data.ToJson(), ContentType = ResponseContentType.JsonUtf8 };
+        return new NbTextResult { _data = data, ContentType = ResponseContentType.JsonUtf8 };
     }
 
     /// <summary>
@@ -49,7 +54,7 @@ public sealed class NbTextResult : ActionResult
         if( data == null )
             return Result204;
 
-        return new NbTextResult { Content = data.ToXml(), ContentType = ResponseContentType.XmlUtf8 };
+        return new NbTextResult { _data = data, ContentType = ResponseContentType.XmlUtf8 };
     }
 
     /// <summary>
@@ -87,7 +92,7 @@ public sealed class NbTextResult : ActionResult
     public override async Task ExecuteResultAsync(ActionContext context)
     {
         NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
-        await httpContextNetCore.HttpReplyAsync(this.StatusCode, this.Content, this.ContentType);
+        await OutResultAsync(httpContextNetCore);
     }
 
     /// <summary>
@@ -100,4 +105,26 @@ public sealed class NbTextResult : ActionResult
         throw new NotImplementedException();
     }
 
+    public async Task OutResultAsync(NHttpContext httpContext)
+    {
+        if( this.Content != null ) {
+            await httpContext.HttpReplyAsync(this.StatusCode, this.Content, this.ContentType);
+            return;
+        }
+
+        if( _data != null && ContentType == ResponseContentType.JsonUtf8 ) {
+            await httpContext.HttpJsonReplyAsync(_data);
+            return;
+        }
+
+        if( _data != null && ContentType == ResponseContentType.XmlUtf8 ) {
+            using( TransparentOutStream stream = new TransparentOutStream(httpContext.Response.OutputStream, httpContext.OprLog) ) {
+                XmlHelper.XmlSerializeNoNamespace(stream, _data, EncodingUtils.UTF8NoBOM);
+                await stream.FlushAsync();
+            }
+            return;
+        }
+
+        await httpContext.HttpReplyAsync(this.StatusCode, string.Empty, this.ContentType);
+    }
 }

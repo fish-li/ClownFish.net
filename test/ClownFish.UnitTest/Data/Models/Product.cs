@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-[Serializable]
 [DbEntity(Alias = "Products")]
 public class Product : Entity
 {

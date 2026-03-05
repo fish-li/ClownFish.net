@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示一个 【名称/值】 数值对
 /// </summary>
-[Serializable]
 public sealed class NameValue
 {
     /// <summary>

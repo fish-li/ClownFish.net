@@ -34,11 +34,6 @@ public enum SequentialGuidType
 /// </summary>
 public static class GuidHelper
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060")]
-    [DllImport("rpcrt4.dll", SetLastError = true)]
-    private static extern int UuidCreateSequential(out Guid guid);
-
-
     // 参考链接 https://github.com/jhtodd/SequentialGuid/blob/master/SequentialGuid/Classes/SequentialGuid.cs
     private static readonly RandomNumberGenerator s_randomGenerator = RandomNumberGenerator.Create();
 
@@ -172,6 +167,11 @@ public static class GuidHelper
     {
         return CreateSeqGuid(SequentialGuidType.AsString);
     }
+
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060")]
+    [DllImport("rpcrt4.dll", SetLastError = true)]
+    private static extern int UuidCreateSequential(out Guid guid);
 
     internal static Guid NewSeqGuidWindows()
     {

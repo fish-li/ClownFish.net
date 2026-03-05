@@ -5,13 +5,9 @@ namespace ClownFish.Base;
 /// <summary>
 /// DataTable相关扩展工具类
 /// </summary>
-#if NETCOREAPP
 [RequiresUnreferencedCode("This method uses DataTable and XmlSerializer, incompatible with trimming.")]
-#endif
-#if NET10_0_OR_GREATER
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: XmlSerializer")]
-#endif
+[UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerializer")]
+[UnconditionalSuppressMessage("AOT", "IL3050: XmlSerializer")]
 public static class DataTableExtensions
 {
     /// <summary>

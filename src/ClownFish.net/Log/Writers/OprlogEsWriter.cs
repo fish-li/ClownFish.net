@@ -12,7 +12,7 @@ internal sealed class OprlogEsWriter : ILogWriter
     private bool _inited = false;
 
 
-    public void Init(LogConfiguration config, WriterConfig section)
+    public void Init(LogConfiguration config, Type dataType)
     {
         InternalInit(LoggingOptions.EsSettingName);
     }
@@ -22,7 +22,7 @@ internal sealed class OprlogEsWriter : ILogWriter
         EsConnOption opt1 = EsConnOption.Create(settingName, false);
 
         if( opt1 == null ) {
-            Console2.Info($"ElasticsearchWriter 不能初始化，因为没有找到 {settingName} 连接配置参数。");
+            Console2.Info($"##### OprlogEsWriter 不能完成初始化，因为没有找到 {settingName} 连接配置参数！");
             return false;
         }
 

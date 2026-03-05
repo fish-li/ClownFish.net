@@ -16,9 +16,7 @@ public static class ClownFishCounters
         ResetCounters(typeof(ClownFishCounters.Status));
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: type.GetFields")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2070: type.GetFields")]
     internal static void ResetCounters(Type type)
     {
         FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
@@ -45,9 +43,7 @@ public static class ClownFishCounters
         return list;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: type.GetFields")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2070: type.GetFields")]
     internal static void FillValues(Type type, List<NameInt64> list)
     {
         FieldInfo[] fields = type.GetFields(BindingFlags.Static | BindingFlags.Public);
@@ -195,6 +191,10 @@ public static class ClownFishCounters
         /// </summary>
         public static readonly ValueCounter FatalErrorCount = new ValueCounter("FatalErrorCount");
 
+        /// <summary>
+        /// TxtWriter 处理的日志数量
+        /// </summary>
+        public static readonly ValueCounter TxtWriteCount = new ValueCounter("TxtWriteCount");
         /// <summary>
         /// XmlWriter 处理的日志数量
         /// </summary>

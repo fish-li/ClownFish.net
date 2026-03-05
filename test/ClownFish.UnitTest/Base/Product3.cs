@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Base;
 
-[Serializable]
 public class Product3
 {
     public int ProductID { get; set; }

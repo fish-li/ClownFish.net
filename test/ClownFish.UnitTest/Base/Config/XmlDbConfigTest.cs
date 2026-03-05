@@ -14,7 +14,14 @@ public class XmlDbConfigTest
             Server = "localhost"
         };
 
-        Assert.AreEqual("PostgreSQL/localhost/MyNorthwind", conf.ToString());
+        string value = conf.ToString();
+        Assert.IsTrue(value.Contains("Name=test1"));
+        Assert.IsTrue(value.Contains("DbType=PostgreSQL"));
+        Assert.IsTrue(value.Contains("Server=localhost"));
+        Assert.IsTrue(value.Contains("Port=0"));
+        Assert.IsTrue(value.Contains("Database=MyNorthwind"));
+        Assert.IsTrue(value.Contains("UserName="));
+        Assert.IsTrue(value.Contains("Password="));
 
     }
 }

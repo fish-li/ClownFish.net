@@ -96,7 +96,7 @@ public static class HttpOptionExtensions
     }
 #endif
 
-    private static T Send0<T>(HttpOption option)
+    private static T GetResult0<T>(HttpOption option) where T : class
     {
         // 用于单元测试场景，从“模拟结果”中直接返回
         object mockResult = HttpClientMockResults.GetMockResult(option.Id);
@@ -116,7 +116,7 @@ public static class HttpOptionExtensions
     /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL则不启用重试</param>
     /// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
     /// <exception cref="RemoteWebException"></exception>
-    public static T GetResult<T>(this HttpOption option, Retry retry = null)
+    public static T GetResult<T>(this HttpOption option, Retry retry = null) where T : class
     {
         if( option == null )
             return default(T);
@@ -128,11 +128,11 @@ public static class HttpOptionExtensions
         ClownFishCounters.Concurrents.HttpCallCount.Increment();
         try {
             if( retry == null ) {
-                return Send0<T>(option);
+                return GetResult0<T>(option);
             }
             else {
                 return retry.Run(() => {
-                    return Send0<T>(option);
+                    return GetResult0<T>(option);
                 });
             }
         }
@@ -143,7 +143,7 @@ public static class HttpOptionExtensions
     }
 
 
-    private static Task<T> SendAsync0<T>(HttpOption option)
+    private static Task<T> GetResultAsync0<T>(HttpOption option) where T : class
     {
         // 用于单元测试场景，从“模拟结果”中直接返回
         object mockResult = HttpClientMockResults.GetMockResult(option.Id);
@@ -164,7 +164,7 @@ public static class HttpOptionExtensions
     /// <param name="retry">提供一个Retry实例，用于指示如何执行重试。如果此参数为NULL则不启用重试</param>
     /// <returns>返回服务端的调用结果，并转换成指定的类型</returns>
     /// <exception cref="RemoteWebException"></exception>
-    public async static Task<T> GetResultAsync<T>(this HttpOption option, Retry retry = null)
+    public async static Task<T> GetResultAsync<T>(this HttpOption option, Retry retry = null) where T : class
     {
         if( option == null )
             return default(T);
@@ -176,11 +176,11 @@ public static class HttpOptionExtensions
         ClownFishCounters.Concurrents.HttpCallCount.Increment();
         try {
             if( retry == null ) {
-                return await SendAsync0<T>(option);
+                return await GetResultAsync0<T>(option);
             }
             else {
                 return await retry.RunAsync(async () => {
-                    return await SendAsync0<T>(option);
+                    return await GetResultAsync0<T>(option);
                 });
             }
         }

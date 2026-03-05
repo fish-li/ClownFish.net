@@ -1,11 +1,9 @@
 ﻿namespace ClownFish.Base;
 
+
 /// <summary>
 /// XML序列化与反序列化的扩展方法类
 /// </summary>
-#if NETCOREAPP
-[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
 public static class XmlExtensions
 {
 
@@ -56,3 +54,4 @@ public static class XmlExtensions
 
 
 }
+

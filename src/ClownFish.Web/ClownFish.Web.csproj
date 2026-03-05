@@ -1,55 +1,56 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
-        <RootNamespace>ClownFish.Web</RootNamespace>
-        <AssemblyVersion>10.0.0.0</AssemblyVersion>
-        <Version>10.25.1222.1</Version>
-        <FileVersion>10.25.1222.1</FileVersion>
-        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn>$(NoWarn);1591</NoWarn>
-        <DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net10.0;net8.0</TargetFrameworks>
+		<RootNamespace>ClownFish.Web</RootNamespace>
+		<AssemblyVersion>10.0.0.0</AssemblyVersion>
+		<Version>10.26.305.1</Version>
+		<FileVersion>10.26.305.1</FileVersion>
+		<SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<LangVersion>latest</LangVersion>
+		<OutputPath>bin</OutputPath>
+		<DocumentationFile>bin\ClownFish.Web.xml</DocumentationFile>
+		<IsAotCompatible>true</IsAotCompatible>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-    <PropertyGroup>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <PackageId>ClownFish.Web</PackageId>
-        <Authors>Fish Li</Authors>
-        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
-        <Description>一个“小而美”的.NET工具类库</Description>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Authors>Fish Li</Authors>
+		<PackageId>ClownFish.Web</PackageId>
+		<Description>一个“小而美”的.NET工具类库</Description>
+		<PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <None Remove="files\ExecHttp.html" />
-      <None Remove="files\http403-not-login.html" />
-      <None Remove="files\http404-url-error.html" />
-      <None Remove="files\favicon.ico" />
-      <None Remove="files\UserLogin.html" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Remove="files\ExecHttp.html" />
+		<None Remove="files\http403-not-login.html" />
+		<None Remove="files\http404-url-error.html" />
+		<None Remove="files\favicon.ico" />
+		<None Remove="files\UserLogin.html" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="files\ExecHttp.html" />
-      <EmbeddedResource Include="files\http403-not-login.html" />
-      <EmbeddedResource Include="files\http404-url-error.html" />
-      <EmbeddedResource Include="files\favicon.ico" />
-      <EmbeddedResource Include="files\UserLogin.html" />
-    </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="files\ExecHttp.html" />
+		<EmbeddedResource Include="files\http403-not-login.html" />
+		<EmbeddedResource Include="files\http404-url-error.html" />
+		<EmbeddedResource Include="files\favicon.ico" />
+		<EmbeddedResource Include="files\UserLogin.html" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ClownFish.net\ClownFish.net.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -4,9 +4,7 @@
 /// 实现文件的可靠读取工具类。
 /// 可靠性的要求：写-读，过程中，允许何意时刻断电，最终都可以提供一个可用的文件（最坏情况就是上一个版本）。
 /// </summary>
-#if NETCOREAPP
 [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
 public static class ReliableFile
 {
     /// <summary>

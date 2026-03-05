@@ -1,9 +1,11 @@
-﻿namespace ClownFish.Web.AspnetCore.ActionResults;
+﻿using ClownFish.Web.Aspnetcore.ActionResults;
+
+namespace ClownFish.Web.AspnetCore.ActionResults;
 
 /// <summary>
 /// NbErrorResult
 /// </summary>
-public sealed class NbErrorResult : ActionResult
+public sealed class NbErrorResult : ActionResult, IOutActionResult
 {
     private readonly Exception _exception;
 
@@ -27,8 +29,7 @@ public sealed class NbErrorResult : ActionResult
     public override async Task ExecuteResultAsync(ActionContext context)
     {
         NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
-
-        await httpContextNetCore.Http500Async(_exception);
+        await OutResultAsync(httpContextNetCore);
     }
 
     /// <summary>
@@ -40,4 +41,8 @@ public sealed class NbErrorResult : ActionResult
         throw new NotImplementedException();
     }
 
+    public async Task OutResultAsync(NHttpContext httpContext)
+    {
+        await httpContext.Http500Async(_exception);
+    }
 }

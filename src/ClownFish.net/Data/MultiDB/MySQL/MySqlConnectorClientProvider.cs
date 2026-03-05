@@ -3,46 +3,28 @@
 internal sealed class MySqlConnectorClientProvider : BaseMySqlClientProvider
 {
     public static readonly BaseClientProvider Instance = new MySqlConnectorClientProvider();
-    
+
     private readonly DbProviderFactory _dbProviderFactory;
-    private readonly string _namespace;
     private readonly Type _exceptionType;
     private readonly PropertyInfo _exNumber;
+    private readonly Type _connStringBuilderType;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: exceptionType.GetProperty")]
     internal MySqlConnectorClientProvider()
     {
-        Type factoryType = Type.GetType("MySqlConnector.MySqlConnectorFactory, MySqlConnector", false, false);
+        // 在 0.x 版本中，命名空间是 MySql.Data.MySqlClient， ClownFish 从 10.26.xx 版本开始不再支持老版本
 
-        if( factoryType != null ) {
-            _namespace = "MySqlConnector";
-        }
-        else {
-            // 再按老版本的方式尝试查找
-            // 在 0.x 版本中，命名空间是 MySql.Data.MySqlClient
-            factoryType = Type.GetType("MySql.Data.MySqlClient.MySqlClientFactory, MySqlConnector", false, false);
-
-            if( factoryType != null ) {
-                _namespace = "MySql.Data.MySqlClient";
-            }
-            else {
-                // 抛出异常，注意第2个参数
-                _ = Type.GetType("MySqlConnector.MySqlConnectorFactory, MySqlConnector", true, false);
-            }
-        }
-
+        Type factoryType = Type.GetType("MySqlConnector.MySqlConnectorFactory, MySqlConnector", true, false);
 
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
 
+        _connStringBuilderType = Type.GetType("MySqlConnector.MySqlConnectionStringBuilder, MySqlConnector", true, false);
 
-        _exceptionType = Type.GetType(_namespace + ".MySqlException, MySqlConnector", true, false);
+        _exceptionType = Type.GetType("MySqlConnector.MySqlException, MySqlConnector", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number", BindingFlags.Instance | BindingFlags.Public);
         if( p == null )
-            throw new RuntimeReflectionException($"没有找到属性：{_namespace}.MySqlException.Number");
+            throw new RuntimeReflectionException($"没有找到属性：MySqlConnector.MySqlException.Number");
 
         _exNumber = p;
     }
@@ -60,5 +42,12 @@ internal sealed class MySqlConnectorClientProvider : BaseMySqlClientProvider
         }
 
         return false;
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2077: Activator.CreateInstance")]
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        DbConnectionStringBuilder sb = (DbConnectionStringBuilder)Activator.CreateInstance(_connStringBuilderType);
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 }

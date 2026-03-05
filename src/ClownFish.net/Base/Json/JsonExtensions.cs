@@ -23,10 +23,8 @@ public static class JsonExtensions
     }
 
 
-#if NET10_0_OR_GREATER
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: JsonSerializer")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: JsonSerializer")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: JsonSerializer")]
+    [UnconditionalSuppressMessage("AOT", "IL3050: JsonSerializer")]
     internal static JsonSerializer CreateJsonSerializer(this JsonSerializerSettings settings)
     {
         JsonSerializerSettings settings2 = settings ?? JsonSerializerSettingsUtils.Get(JsonStyle.None);
@@ -128,10 +126,8 @@ public static class JsonExtensions
     /// <param name="destType">反序列的对象类型参数</param>
     /// <param name="settings">反序列化参数</param>
     /// <returns>反序列化得到的结果</returns>
-#if NET10_0_OR_GREATER
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: JsonSerializer")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: JsonSerializer")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: JsonSerializer")]
+    [UnconditionalSuppressMessage("AOT", "IL3050: JsonSerializer")]
     public static object FromJson(this string json, Type destType, JsonSerializerSettings settings = null)
     {
         if( string.IsNullOrEmpty(json) )

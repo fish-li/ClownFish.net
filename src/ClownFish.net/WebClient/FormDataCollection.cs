@@ -349,9 +349,7 @@ public sealed class FormDataCollection
         return collection;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperties")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2075: GetProperties")]
     private static FormDataCollection CreateFromObject(object obj)
     {
         FormDataCollection collection = new FormDataCollection();

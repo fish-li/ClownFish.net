@@ -4,7 +4,7 @@ namespace ClownFish.UnitTest.Log.Writers;
 
 public class ErrorWriter : ILogWriter
 {
-    public void Init(LogConfiguration config, WriterConfig section)
+    public void Init(LogConfiguration config, Type dataType)
     {
     }
 

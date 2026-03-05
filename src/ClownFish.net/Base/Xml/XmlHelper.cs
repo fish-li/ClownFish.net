@@ -5,18 +5,33 @@
 
 namespace ClownFish.Base.Xml;
 
+
 /// <summary>
 /// 实现XML序列化与反序列化的包装工具类
 /// </summary>
-#if NETCOREAPP
-[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
-#if NET10_0_OR_GREATER
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: XmlSerializer")]
-#endif
+[UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerializer")]
+[UnconditionalSuppressMessage("AOT", "IL3050: XmlSerializer")]
 public static class XmlHelper
 {
+    /// <summary>
+    /// 将一个对象序列化为XML字符串，并且生成XML文档声明头。
+    /// </summary>
+    /// <param name="obj">要序列化的对象</param>
+    /// <param name="encoding">编码方式</param>
+    /// <returns>序列化产生的XML字符串</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
+    public static string XmlSerialize(object obj, Encoding encoding)
+    {
+        encoding = encoding ?? Encoding.UTF8;
+        using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
+
+            XmlSerializeWithNamespace(stream, obj, encoding);
+
+            return stream.ReadAsString();
+        }
+    }
+
+
     /// <summary>
     /// 将一个对象序列化为XML字符串。这个方法将不生成XML文档声明头。
     /// </summary>
@@ -29,40 +44,29 @@ public static class XmlHelper
             throw new ArgumentNullException(nameof(obj));
 
         Encoding encoding = Encoding.UTF8;
-        XmlSerializer serializer = new XmlSerializer(obj.GetType());
         using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineChars = "\r\n";
-            settings.Encoding = encoding;
-            settings.OmitXmlDeclaration = true;
-            settings.IndentChars = "    ";
 
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
+            XmlSerializeNoNamespace(stream, obj, encoding);
 
-            using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
-                serializer.Serialize(writer, obj, ns);
-                writer.Close();
-            }
-            //return Encoding.UTF8.GetString(stream.ToArray());
-
-            stream.Position = 0;
-            using( StreamReader reader = new StreamReader(stream, encoding) ) {
-                return reader.ReadToEnd();
-            }
+            return stream.ReadAsString();
         }
     }
 
-    private static void XmlSerializeInternal(Stream stream, object obj, Encoding encoding)
+   
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="obj"></param>
+    /// <param name="encoding"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void XmlSerializeWithNamespace(Stream stream, object obj, Encoding encoding = null)
     {
         if( obj == null )
             throw new ArgumentNullException(nameof(obj));
-        if( encoding == null )
-            throw new ArgumentNullException(nameof(encoding));
 
+        encoding = encoding ?? Encoding.UTF8;
         XmlSerializer serializer = new XmlSerializer(obj.GetType());
-
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.NewLineChars = "\r\n";
@@ -71,39 +75,40 @@ public static class XmlHelper
 
         using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
             serializer.Serialize(writer, obj);
+            writer.Close();
         }
     }
 
-
     /// <summary>
-    /// 将一个对象序列化为XML字符串
+    /// 
     /// </summary>
-    /// <param name="obj">要序列化的对象</param>
-    /// <param name="encoding">编码方式</param>
-    /// <returns>序列化产生的XML字符串</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202")]
-    public static string XmlSerialize(object obj, Encoding encoding)
+    /// <param name="stream"></param>
+    /// <param name="obj"></param>
+    /// <param name="encoding"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void XmlSerializeNoNamespace(Stream stream, object obj, Encoding encoding = null)
     {
-        using( MemoryStream stream = MemoryStreamPool.GetStream() ) {
-            XmlSerializeInternal(stream, obj, encoding);
+        if( obj == null )
+            throw new ArgumentNullException(nameof(obj));
 
-            stream.Position = 0;
-            using( StreamReader reader = new StreamReader(stream, encoding) ) {
-                return reader.ReadToEnd();
-            }
+        encoding = encoding ?? Encoding.UTF8;
+        XmlSerializer serializer = new XmlSerializer(obj.GetType());
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Indent = true;
+        settings.NewLineChars = "\r\n";
+        settings.Encoding = encoding;        
+        settings.IndentChars = "    ";
+
+        settings.OmitXmlDeclaration = true;
+        XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+        ns.Add("", "");
+
+        using( XmlWriter writer = XmlWriter.Create(stream, settings) ) {
+            serializer.Serialize(writer, obj, ns);
+            writer.Close();
         }
     }
 
-
-    /// <summary>
-    /// 将一个对象按XML序列化的方式写入到一个文件（采用UTF8编码）
-    /// </summary>
-    /// <param name="obj">要序列化的对象</param>
-    /// <param name="filePath">保存文件路径</param>
-    public static void XmlSerializeToFile(object obj, string filePath)
-    {
-        XmlSerializeToFile(obj, filePath, Encoding.UTF8);
-    }
 
     /// <summary>
     /// 将一个对象按XML序列化的方式写入到一个文件
@@ -111,13 +116,13 @@ public static class XmlHelper
     /// <param name="obj">要序列化的对象</param>
     /// <param name="filePath">保存文件路径</param>
     /// <param name="encoding">编码方式</param>
-    public static void XmlSerializeToFile(object obj, string filePath, Encoding encoding)
+    public static void XmlSerializeToFile(object obj, string filePath, Encoding encoding = null)
     {
         if( string.IsNullOrEmpty(filePath) )
             throw new ArgumentNullException(nameof(filePath));
 
         using( FileStream file = RetryFile.Create(filePath) ) {
-            XmlSerializeInternal(file, obj, encoding);
+            XmlSerializeWithNamespace(file, obj, encoding);
         }
     }
 
@@ -202,4 +207,8 @@ public static class XmlHelper
             throw new InvalidDataException("XML反序列失败，当前文件：" + filePath, ex);
         }
     }
+
+
 }
+
+

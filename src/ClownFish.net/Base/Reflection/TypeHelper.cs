@@ -12,13 +12,13 @@ public static class TypeHelper
     /// </summary>
     public static void Init()
     {
-        string configValues = ConfigFile.GetFile("ClownFish_Public_TypeAliasMaps.txt", false);
-        InitFormText(configValues);
+        if( EnvArgs0.IsAot == false ) {
+            string configValues = ConfigFile.GetFile("ClownFish_Public_TypeAliasMaps.txt", false);
+            InitFormText(configValues);
+        }
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: Type.GetType")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2057: Type.GetType")]
     internal static void InitFormText(string configValues)
     {
         if( configValues.IsNullOrEmpty() )
@@ -39,7 +39,6 @@ public static class TypeHelper
             RegisterAlias(x.Name, type);
         }
     }
-    
 
     /// <summary>
     /// 注册类型的别名
@@ -61,18 +60,17 @@ public static class TypeHelper
     /// </summary>
     /// <param name="typeName"></param>
     /// <param name="throwOnError"></param>
+    /// <param name="ignoreCase"></param>
     /// <returns></returns>
-#if NETCOREAPP
     [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
-#endif
-    public static Type GetType(string typeName, bool throwOnError)
+    public static Type GetType(string typeName, bool throwOnError, bool ignoreCase = false)
     {
         if( string.IsNullOrEmpty(typeName) )
             throw new ArgumentNullException(nameof(typeName));
 
         Type type = s_dictionary.TryGet(typeName);
 
-        return type ?? Type.GetType(typeName, throwOnError);
+        return type ?? Type.GetType(typeName, throwOnError, ignoreCase);
     }
 
 

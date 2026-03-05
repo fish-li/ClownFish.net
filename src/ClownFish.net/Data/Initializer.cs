@@ -34,7 +34,7 @@ public sealed class Initializer
         return this;
     }
 
-    
+
 
     /// <summary>
     /// 注册 SQLSERVER 客户端提供者
@@ -136,14 +136,11 @@ public sealed class Initializer
     /// </summary>
     /// <param name="directoryPath">包含XmlCommand配置文件的目录，如果不指定就表示接受XmlCommand规范的默认目录</param>
     /// <returns></returns>
-#if NETCOREAPP
-    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
     public Initializer LoadXmlCommandFromDirectory(string directoryPath = null)
     {
         // 如果不指定目录，就采用XmlCommand规范的默认目录
         if( string.IsNullOrEmpty(directoryPath) )
-            directoryPath = ConfigHelper.GetDirectoryAbsolutePath(@"App_Data/XmlCommand");
+            directoryPath = PathUtils.GetDirectoryAbsolutePath(@"App_Data/XmlCommand");
 
         if( Directory.Exists(directoryPath) )
             XmlCommandManager.Instance.LoadFromDirectory(directoryPath);
@@ -159,9 +156,6 @@ public sealed class Initializer
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
     public Initializer LoadXmlCommandFromText(string xml)
     {
         XmlCommandManager.Instance.LoadFromText(xml);
@@ -176,11 +170,10 @@ public sealed class Initializer
     /// </summary>
     /// <param name="dllOutPath"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [RequiresUnreferencedCode("application published as single-file is not supported")]
-#endif
     public Initializer CompileAllEntityProxy(string dllOutPath)
     {
+        // if( EnvArgs0.IsAot || EnvArgs0.IsSingleFileDeploy )  会退化为下面的 RegisterProxyTypes 方法
+
         ProxyBuilder.CompileAllEntityProxy(dllOutPath);
         return this;
     }

@@ -55,7 +55,6 @@ public sealed class QueueInfo
 /// <summary>
 /// 表示RabbitMQ结果无效导致的异常
 /// </summary>
-[Serializable]
 public sealed class RabbitResultException : Exception
 {
     /// <summary>

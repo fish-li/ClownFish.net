@@ -5,7 +5,6 @@ namespace ClownFish.WebHost.Config;
 /// <summary>
 /// 站点参数
 /// </summary>
-[Serializable]
 public sealed class WebsiteOption
 {
     /// <summary>

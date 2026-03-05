@@ -1,18 +1,16 @@
-﻿using ClownFish.Base.Config.Models;
+﻿namespace ClownFish.Base.Config.Models;
 
-namespace ClownFish.Base;
-
-internal class AppConfigObject
+internal class AppConfigAccessor
 {
     private readonly AppConfiguration _config;
 
-    internal AppConfiguration GetConfiguration() => _config;
+    internal AppConfiguration GetConfObject() => _config;
 
     private readonly Dictionary<string, string> _settings;
     private readonly Dictionary<string, ConnectionStringSetting> _conns;
     private readonly Dictionary<string, DbConfig> _dbConfigs;
 
-    public AppConfigObject(AppConfiguration config)
+    public AppConfigAccessor(AppConfiguration config)
     {
         if( config == null )
             throw new ArgumentNullException(nameof(config));
@@ -73,13 +71,4 @@ internal class AppConfigObject
     }
 
 
-    internal void AddDbConfig(string name, DbConfig dbConfig)
-    {
-        _dbConfigs[name] = dbConfig;
-    }
-
-    internal void AddConnectionString(string name, ConnectionStringSetting connConf)
-    {
-        _conns[name] = connConf;
-    }
 }

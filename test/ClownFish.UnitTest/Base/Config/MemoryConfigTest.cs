@@ -50,6 +50,9 @@ public class MemoryConfigTest
         });
 
         Assert.IsNotNull(MemoryConfig.GetDbConfig("conn1"));
+
+        bool b1 = MemoryConfig.RemoveDbConfig("conn1");
+        Assert.IsTrue(b1);
     }
 
     [TestMethod]
@@ -77,18 +80,18 @@ public class MemoryConfigTest
     public void Test_SetAppConfig()
     {
         MyAssert.IsError<ArgumentNullException>(() => {
-            MemoryConfig.SetAppConfig(null);
+            MemoryConfig.AddFile(ConfigFile.AppConfigFileName, null);
         });
         MyAssert.IsError<ArgumentNullException>(() => {
-            MemoryConfig.SetLogConfig(null);
+            MemoryConfig.AddFile("", "XXXXXXXXXXX");
         });
 
 
         Assert.IsNull(MemoryConfig.GetFile("ClownFish.UnitTest.App.Config"));
         Assert.IsNull(MemoryConfig.GetFile("ClownFish.UnitTest.Log.Config"));
 
-        MemoryConfig.SetAppConfig("xml_1111111111");
-        MemoryConfig.SetLogConfig("xml_2222222222");
+        MemoryConfig.AddFile("ClownFish.UnitTest.App.Config", "xml_1111111111");
+        MemoryConfig.AddFile("ClownFish.UnitTest.Log.Config", "xml_2222222222");
 
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.App.Config"));
         Assert.IsNotNull(MemoryConfig.GetFile("ClownFish.UnitTest.Log.Config"));

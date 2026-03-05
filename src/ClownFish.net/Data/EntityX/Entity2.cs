@@ -11,9 +11,7 @@ public partial class Entity
     /// </summary>
     /// <param name="context">DbContext实例</param>
     /// <returns>与实体相关的代理对象</returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: FastNew")]
     internal IEntityProxy CreateProxy(DbContext context)
     {
         if( context == null )

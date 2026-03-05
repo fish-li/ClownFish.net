@@ -3,7 +3,6 @@
 /// <summary>
 /// 数据实体的基类
 /// </summary>
-[Serializable]
 public abstract partial class Entity
 {
     private string _targetTableName;

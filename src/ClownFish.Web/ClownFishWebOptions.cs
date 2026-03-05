@@ -1,6 +1,8 @@
 ﻿namespace ClownFish.Web;
 internal static class ClownFishWebOptions
 {
+    internal static readonly bool IsAot = RuntimeFeature.IsDynamicCodeSupported == false;
+
     public static readonly int Framework_PerformanceThresholdMs = LocalSettings.GetInt("ASPNET_FrameworkBefore_PerformanceThresholdMs", 10);
 
     public static readonly bool DebugHttpLine = LocalSettings.GetBool("ClownFish_Aspnet_DebugHttpLine");
@@ -22,4 +24,6 @@ internal static class ClownFishWebOptions
 
     public static readonly int BlockIpMinWaitMs = LocalSettings.GetInt("ClownFishWeb_BlockIp_MinWaitMs", 3000);
     public static readonly int BlockIpMaxWaitMs = LocalSettings.GetInt("ClownFishWeb_BlockIp_MaxWaitMs", 9999);
+
+    public static readonly int ShutdownTimeoutSeconds = LocalSettings.GetInt("ClownFishWeb_AppHost_ShutdownTimeoutSeconds", 0);
 }

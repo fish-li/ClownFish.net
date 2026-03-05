@@ -8,11 +8,6 @@ namespace ClownFish.Log;
 public static class LogConfig
 {
     /// <summary>
-    /// 默认的配置文件名称："ClownFish.Log.config"
-    /// </summary>
-    public static readonly string ConfigFileName = "ClownFish.Log.config";
-
-    /// <summary>
     /// 配置对象的静态引用
     /// </summary>
     internal static LogConfiguration Instance { get; private set; }
@@ -31,11 +26,10 @@ public static class LogConfig
     public static bool IsInited => s_inited;
 
 
-
     /// <summary>
     /// 初始化日志组件
     /// </summary>
-    /// <param name="config">LogConfiguration实例。可以从配置文件ClownFish.Log.config中加载</param>
+    /// <param name="config">LogConfiguration实例</param>
 #if NETCOREAPP    // 下面几个类型不参与裁剪，它们全是内部类型只能反射使用
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ILogWriter))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ElasticsearchWriter))]
@@ -46,8 +40,9 @@ public static class LogConfig
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NullWriter))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprlogEsWriter))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RabbitHttpWriter))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlWriter))]
-	
+    //[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlWriter))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TxtWriter))]
+
     // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LogConfiguration))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(PerformanceConfig))]
@@ -60,7 +55,7 @@ public static class LogConfig
 #endif
     public static void Init(LogConfiguration config)
     {
-        if( config == null ) 
+        if( config == null )
             throw new ArgumentNullException(nameof(config));
 
 
@@ -91,7 +86,7 @@ public static class LogConfig
         var list = loader.Load(config);
 
         WriterFactory.Init(list);
-        
+
         LogConfig.Instance = config;
 
         // 创建后台写入线程
@@ -109,6 +104,8 @@ public static class LogConfig
     }
 
 
+
+
     internal static DebugReportBlock GetDebugReportBlock()
     {
         if( s_inited == false )
@@ -118,17 +115,12 @@ public static class LogConfig
     }
 
 
-
-
     /// <summary>
-    /// 从文件中加载LogConfiguration
+    /// 从文件中加载LogConfiguration对象
     /// </summary>
     /// <param name="filePath"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
     public static LogConfiguration LoadFromFile(string filePath, bool checkExist = true)
     {
         if( filePath.IsNullOrEmpty() )
@@ -142,27 +134,45 @@ public static class LogConfig
                 return null;
         }
 
-        return XmlHelper.XmlDeserializeFromFile<LogConfiguration>(filePath);
+        string text = System.IO.File.ReadAllText(filePath, Encoding.UTF8);
+
+        if( filePath.EndsWith1(".ini") )
+            return LoadFromIni(text);
+
+        if( EnvArgs0.IsAot == false ) {
+            if( filePath.EndsWith1(".config") )
+                return LoadFromXml(text);
+        }
+
+        throw new NotSupportedException("不支持的配置文件格式，filePath: " + filePath);
+    }
+
+
+
+    /// <summary>
+    /// 从INI文本中加载LogConfiguration对象
+    /// </summary>
+    /// <param name="ini"></param>
+    /// <returns></returns>
+    public static LogConfiguration LoadFromIni(string ini)
+    {
+        return LogConfigIni.LoadIni(ini);
     }
 
 
     /// <summary>
-    /// 从XML文本中加载LogConfiguration
+    /// 【不建议使用】从XML文本中加载LogConfiguration对象
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
-    public static LogConfiguration LoadFromXml(string xml)
+    //[Obsolete("不建议使用XML格式的配置文件，NativeAOT模式下不支持XML格式的配置文件，请使用INI格式的配置文件")]
+    internal static LogConfiguration LoadFromXml(string xml)
     {
         if( xml.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(xml));
 
         return XmlHelper.XmlDeserialize<LogConfiguration>(xml);
     }
-
-
 
 
 }

@@ -9,7 +9,7 @@ namespace ClownFish.Data.SqlClient;
 /// <summary>
 /// SQLSERVER相关的工具类
 /// </summary>
-public static class MsSqlHelper
+public static partial class MsSqlHelper
 {
     private static readonly DbProviderFactory s_dbProviderFactory;
 
@@ -500,12 +500,17 @@ ORDER  BY [Schema],
         }
     }
 
-
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline, "en-US")]
+    private static partial Regex GetGoRegex();
+#else
 
     /// <summary>
     /// 拆分TSQL批脚本的正则表达式， 分割符：GO
     /// </summary>
     private static readonly Regex s_regexGO = new Regex(@"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+    private static Regex GetGoRegex() => s_regexGO;
+#endif
 
     /// <summary>
     /// 运行一段 T-SQL脚本（不使用ADO.NET的事务）
@@ -521,7 +526,7 @@ ORDER  BY [Schema],
             return;
 
 
-        string[] lines = s_regexGO.Split(script);
+        string[] lines = GetGoRegex().Split(script);
 
         foreach( string line in lines ) {
             string query = line.Trim();

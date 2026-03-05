@@ -1,6 +1,4 @@
-﻿using ClownFish.Http.Proxy;
-
-namespace ClownFish.Http.Utils;
+﻿namespace ClownFish.Http.Utils;
 
 public static partial class ResponseUtils
 {

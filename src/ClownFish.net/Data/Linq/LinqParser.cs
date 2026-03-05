@@ -301,10 +301,8 @@ internal class LinqParser
         return query;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2081: MakeGenericMethod")]
     private object ToSingle()
     {
         CPQuery query = GetFirstOrDefaultQuery();
@@ -317,11 +315,9 @@ internal class LinqParser
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperty")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2081: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075: GetProperty")]
     private async Task<object> ToSingleAsync()
     {
         CPQuery query = GetFirstOrDefaultQuery();
@@ -412,10 +408,8 @@ internal class LinqParser
         return query;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2081: MakeGenericMethod")]
     private object ToList()
     {
         CPQuery query = GetToListQuery();
@@ -427,11 +421,9 @@ internal class LinqParser
         return method.FastInvoke(query, null);
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2081: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: GetProperty")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2081: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075: GetProperty")]
     private async Task<object> ToListAsync()
     {
         CPQuery query = GetToListQuery();

@@ -8,10 +8,10 @@ public static class HttpContextUtils
     public static void LogExecutTime(HttpContext httpContext)
     {
         httpContext.Items["x_ClownFish_Web_Aspnetcore_startTime"] = DateTime.Now;
-        httpContext.Response.OnStarting(ResponseOnStarting, httpContext);
+        httpContext.Response.OnStarting(LogExecutTime0, httpContext);
     }
 
-    private static Task ResponseOnStarting(object state)
+    private static Task LogExecutTime0(object state)
     {
         HttpContext httpContext = (HttpContext)state;
 
@@ -29,10 +29,13 @@ public static class HttpContextUtils
     }
 
 
-
     public static async Task ShowHomePage(HttpContext httpContext)
     {
-        string text = $"This is {EnvUtils.GetAppName()}, It's worked! \nServer time: {DateTime.Now.ToTime23String()}";
+        // 供其它项目调用： app.MapGet("/test/app/now", HttpContextUtils.ShowHomePage);
+
+        HttpPipelineContext.Get().HttpContext.EnableLog = false;
+
+        string text = $"This is {EnvUtils.GetAppName()}, It's worked!  \nServer time: {DateTime.Now.ToTime23String()}";
 
         await httpContext.Response.WriteAllAsync(text);
     }

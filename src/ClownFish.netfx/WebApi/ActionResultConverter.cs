@@ -24,7 +24,7 @@ internal static class ActionResultConverter
 
         Type t = value.GetType();
 
-        if( t.IsPrimitive || t.IsSimpleValueType() )
+        if( t.IsSimpleValueType() )
             return ConvertString(value);
 
         if( t == typeof(byte[]) )

@@ -20,17 +20,24 @@ internal interface IEsIndexNameTimeFormat
     string TimeToString(DateTime time);
 }
 
-internal static class EsIndexNameTimeFormat
+internal static partial class EsIndexNameTimeFormat
 {
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"^-(?<len>\d*)(?<unit>d|h)$", RegexOptions.None, "en-US")]
+    private static partial Regex GetLenUnitRegex();
+#else
+
     // 匹配字符串格式： "-5d" ,  "-4h"
     private static readonly Regex s_regex = new Regex(@"^-(?<len>\d*)(?<unit>d|h)$", RegexOptions.Compiled);
+    private static Regex GetLenUnitRegex() => s_regex;
+#endif
 
     public static IEsIndexNameTimeFormat GetImpl(string format)
     {
         if( format.IsNullOrEmpty() )
             return null;
 
-        Match match = s_regex.Match(format);
+        Match match = GetLenUnitRegex().Match(format);
         if( match.Success ) {
             string unit = match.Groups["unit"].Value;
             int len = match.Groups["len"].Value.TryToInt();

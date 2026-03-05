@@ -3,9 +3,7 @@
 /// <summary>
 /// FieldInfo 相关的扩展方法，用于性能优化。
 /// </summary>
-#if NETCOREAPP
 [RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
-#endif
 public static class FieldInfoExtensions
 {
     private static readonly Hashtable s_getterDict = Hashtable.Synchronized(new Hashtable(10240));
@@ -20,7 +18,7 @@ public static class FieldInfoExtensions
     public static object FastGetValue(this FieldInfo fieldInfo, object instance)
     {
         if( fieldInfo == null )
-            throw new ArgumentNullException("fieldInfo");
+            throw new ArgumentNullException(nameof(fieldInfo));
 
         if( EnvArgs0.IsAot ) {
             return fieldInfo.GetValue(instance);
@@ -44,7 +42,7 @@ public static class FieldInfoExtensions
     public static void FastSetValue(this FieldInfo fieldInfo, object instance, object value)
     {
         if( fieldInfo == null )
-            throw new ArgumentNullException("fieldInfo");
+            throw new ArgumentNullException(nameof(fieldInfo));
 
         if( EnvArgs0.IsAot ) {
             fieldInfo.SetValue(instance, value);

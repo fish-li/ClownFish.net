@@ -32,7 +32,7 @@ public sealed class StepItem
     /// </summary>
     public DateTime EndTime { get; set; }
 
-    
+
 
     /// <summary>
     /// 步骤的执行时间，单位：毫秒
@@ -123,7 +123,7 @@ public sealed class StepItem
     public void End(DateTime? endTime = null)
     {
         DateTime end2 = endTime.HasValue ? endTime.Value : DateTime.Now;
-        TimeSpan time = end2  - this.StartTime;
+        TimeSpan time = end2 - this.StartTime;
         this.Duration = (long)time.TotalMilliseconds;
     }
 
@@ -168,7 +168,7 @@ public sealed class StepItem
             if( this.Detail.IsNullOrEmpty() == false ) {
                 sb.AppendLineRN(this.Detail.SubstringN(LoggingLimit.OprLog.StepDetailMaxLen));
             }
-            else  {
+            else {
                 sb.AppendLineRN(this.GetCmdxText().SubstringN(LoggingLimit.OprLog.StepDetailMaxLen));
             }
 
@@ -193,5 +193,5 @@ public sealed class StepItem
 
         return this.ToJson(JsonStyle.Indented);
     }
-        
+
 }

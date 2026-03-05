@@ -25,7 +25,7 @@ public static class ConsoleAppStarter
         ClownFishInit.InitBase();
         TypeHelper.Init();
 
-        ShowSysEnvInfo();
+        EnvUtils.ShowSysEnvInfo();
 
         startup.ConfigDAL0();
         startup.ConfigLog0();
@@ -77,61 +77,6 @@ public static class ConsoleAppStarter
 #endif
     }
 
-
-    internal static void ShowSysEnvInfo()
-    {
-        Console2.WriteSeparatedLine();
-        Console2.WriteLine("ApplicationName          : " + EnvUtils.GetAppName());
-        Console2.WriteLine("AppRuntimeId             : " + EnvUtils.AppRuntimeId);
-        Console2.WriteLine("ProcessId                : " + GetProcessId().ToString());
-        Console2.WriteLine("EntryAssembly            : " + AsmHelper.GetExeFilePath());
-        Console2.WriteLine("AppStartTime             : " + EnvUtils.AppStartTime.ToTime23String());
-        Console2.WriteLine("IsInDocker               : " + EnvUtils.IsInDocker.ToString2());
-        Console2.WriteLine("IsSingleFileDeploy       : " + AsmHelper.IsSingleFileDeploy.ToString2());
-        Console2.WriteLine("CLUSTER_ENVIRONMENT      : " + EnvUtils.GetClusterName());
-        Console2.WriteLine("RUNTIME_ENVIRONMENT      : " + EnvUtils.GetRunEnv());
-        Console2.WriteLine("HostName                 : " + EnvUtils.GetHostName());
-        Console2.WriteLine("OS Name                  : " + OsUtils.GetOsName());
-        Console2.WriteLine("OSArchitecture           : " + GetOSArchitecture());
-        Console2.WriteLine("ProcessorCount           : " + Environment.ProcessorCount.ToString());
-        Console2.WriteLine("TimeZone                 : " + MyTimeZone.CurrentTZ);
-        Console2.WriteLine("CurrentCulture           : " + System.Globalization.CultureInfo.CurrentCulture?.Name);
-        Console2.WriteLine("GC Mode                  : " + (GCSettings.IsServerGC ? "Server" : "WorkStation"));
-        Console2.WriteLine("Framework  Info          : " + GetFrameworkInfo());
-        Console2.WriteLine("ClownFishVer             : " + AsmHelper.GetFileVersion(typeof(ClownFishInit)).IfEmpty(ConstValues.CurrentVersion));
-        Console2.WriteLine("BaseDirectory            : " + AppContext.BaseDirectory);
-        Console2.WriteLine("CurrentDirectory         : " + Environment.CurrentDirectory);
-        Console2.WriteLine("TempPath                 : " + EnvUtils.GetTempPath());
-        Console2.WriteSeparatedLine();
-    }
-
-
-    private static string GetFrameworkInfo()
-    {
-#if NETCOREAPP
-        return System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
-#else
-        return System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
-#endif
-    }
-
-    private static string GetOSArchitecture()
-    {
-#if NETCOREAPP
-        return System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
-#else
-        return Environment.Is64BitOperatingSystem ? "X64" : "X86";
-#endif
-    }
-
-    private static int GetProcessId()
-    {
-#if NET6_0_OR_GREATER
-        return Environment.ProcessId;
-#else
-        return Process.GetCurrentProcess().Id;
-#endif
-    }
 
     ///// <summary>
     ///// 创建WebApplication实例

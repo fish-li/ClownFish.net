@@ -4,7 +4,6 @@
 // 注意：这个类型的  【命名空间，类型名称，方法名称】，都不能改名，因为它们被 ClownFish.CodeGen 在反射调用。
 // *****************************
 
-
 internal static class CodeGenUtils
 {
     internal static int CompileEntityProxyAsm(string binPath, string dllSaveFilePath, bool deleteTempFile)
@@ -34,9 +33,7 @@ internal static class CodeGenUtils
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.LoadFrom")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.LoadFrom")]
     internal static List<Type> SearchEntityTypes(string binPath)
     {
         string[] files = Directory.GetFiles(binPath, "*.dll", SearchOption.TopDirectoryOnly);

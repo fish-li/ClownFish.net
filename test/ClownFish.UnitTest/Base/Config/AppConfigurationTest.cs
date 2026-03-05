@@ -39,7 +39,7 @@ public class AppConfigurationTest
             };
 
 
-        AppConfigObject appConfig = new AppConfigObject(config);
+        AppConfigAccessor appConfig = new AppConfigAccessor(config);
 
         Dictionary<string, string> settings = (Dictionary<string, string>)appConfig.GetFieldValue("_settings");
         Dictionary<string, ConnectionStringSetting> conns = (Dictionary<string, ConnectionStringSetting>)appConfig.GetFieldValue("_conns");
@@ -89,7 +89,7 @@ public class AppConfigurationTest
 
         Assert.IsNull(AppConfiguration.LoadFromFile("abc.xml", false));
 
-        Assert.IsNotNull(AppConfiguration.LoadFromFile("ClownFish.App.config", true));
+        Assert.IsNotNull(AppConfiguration.LoadFromFile("ClownFish.UnitTest.config.ini", true));
     }
 
 }

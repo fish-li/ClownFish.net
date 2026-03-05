@@ -1,4 +1,5 @@
 ﻿using ClownFish.UnitTest.Base;
+using ClownFish.WebClient;
 
 namespace ClownFish.Base.DEMO;
 
@@ -74,7 +75,7 @@ public class HttpClient_DEMO
         //Console.WriteLine(httpOption.ToRawText());
 
         string text = httpOption.GetResult();
-        Console.WriteLine(text);
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Url: http://www.fish-test.com/show-request2.aspx?id=2&name=abc"));
     }
@@ -82,12 +83,14 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_提交表单数据()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request2.aspx",
             Data = new { id = 2, name = "abc" }
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Url: http://www.fish-test.com/show-request2.aspx"));
         Assert.IsTrue(text.Contains("Content-Type: application/x-www-form-urlencoded"));
@@ -96,13 +99,15 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_JSON方式提交数据()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-body.aspx",
             Data = new { id = 2, name = "abc" },
             Format = SerializeFormat.Json     // 注意这里
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type: application/json"));
     }
@@ -112,13 +117,15 @@ public class HttpClient_DEMO
     {
         List<Product3> list = Product3.CreateTestDataList(20);
 
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-body.aspx",
             Data = list,
             Format = SerializeFormat.Ndjson     // 注意这里
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type: application/x-ndjson"));
     }
@@ -127,13 +134,15 @@ public class HttpClient_DEMO
     [TestMethod]
     public void POST_以XML方式提交数据()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-body.aspx",
             Data = new NameValue { Name = "abc", Value = "123" },
             Format = SerializeFormat.Xml     // 注意这里
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type: application/xml"));
     }
@@ -146,13 +155,15 @@ public class HttpClient_DEMO
         string json = data.ToJson();
         byte[] bytes = Encoding.UTF8.GetBytes(json);
 
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-body.aspx",
             Data = bytes,
             Format = SerializeFormat.Binary     // 注意这里
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type: application/octet-stream"));
     }
@@ -172,7 +183,7 @@ public class HttpClient_DEMO
         };
 
         string text = httpOption.GetResult();
-        Console.WriteLine(text);
+        //Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type = application/json"));
         Assert.IsTrue(text.Contains("Content-Encoding = gzip"));
@@ -191,14 +202,16 @@ public class HttpClient_DEMO
 
         using( MemoryStream ms = new MemoryStream(bytes, false) ) {
 
-            string text = new HttpOption {
+            HttpOption httpOption = new HttpOption {
                 Method = "POST",
                 Url = "http://www.fish-test.com/show-body.aspx",
                 UserAgent = "ClownFish.UnitTest",
                 Data = ms,
                 Format = SerializeFormat.Binary     // 注意这里
-            }.GetResult();
-            Console.WriteLine(text);
+            };
+
+            string text = httpOption.GetResult();
+            //Console.WriteLine(text);
 
             Assert.IsTrue(text.Contains("Content-Type: application/octet-stream"));
         }
@@ -209,7 +222,7 @@ public class HttpClient_DEMO
     {
         string filePath1 = s_small_file_txt;
         string filePath2 = s_small_file_bin;
-        string filePath3 = "ClownFish.Log.config";
+        string filePath3 = "ClownFish.UnitTest.config.ini";
 
         string cnText = "文件上传模式@##$R$#&$^*^%@#$@$~@!$!";
 
@@ -273,10 +286,10 @@ Cache-Control: no-cache
 
 input=Fish+Li&Base64=%E8%BD%AC%E6%8D%A2%E6%88%90Base64%E7%BC%96%E7%A0%81
 ";
-        string text = 
+        string text =
             HttpOption.FromRawText(request)     // 构建 HttpOption 实例
             .GetResult();                       // 发送请求
-        
+
         Console.WriteLine(text);
 
         Assert.IsTrue(text.Contains("Content-Type: application/x-www-form-urlencoded"));
@@ -318,44 +331,49 @@ Cache-Control: no-cache
     [TestMethod]
     public void 设置请求超时时间()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request.aspx",
             Data = new { id = 2, name = "abc" },
             Timeout = 3000     // 3 秒超时
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
 
 
 
-        string text2 = new HttpOption {
+        HttpOption httpOption2 = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request.aspx",
             Data = new { id = 2, name = "abc" },
             Timeout = 0     // 无限等待
-        }.GetResult();
+        };
+        string text2 = httpOption2.GetResult();
     }
 
 
     [TestMethod]
     public void 发送时指定请求头()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request2.aspx",
             Data = new { id = 2, name = "abc" },
             Headers = new Dictionary<string, string>() {
                         { "X-Requested-With", "XMLHttpRequest" },
                         { "User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64)"} }
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
     }
 
 
     [TestMethod]
     public void 处理请求头与响应头()
     {
-        HttpResult<string> result = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/test-header.aspx",
             Data = new { id = 2, name = "abc" },
@@ -364,7 +382,9 @@ Cache-Control: no-cache
                 X_a = "a1",     // 对应请求头：X-a: a1
                 X_b = "b2"      // 对应请求头：X-b: b2
             }
-        }.GetResult<HttpResult<string>>();
+        };
+
+        HttpResult<string> result = httpOption.GetResult<HttpResult<string>>();
 
         // 注意调用上面方法时指定的泛型参数
         // 如果需要读取响应头，需要指定 HttpResult<T> 的类型参数
@@ -376,47 +396,53 @@ Cache-Control: no-cache
         string header = result.Headers["X-add-result"];
         Assert.AreEqual("a1b2", header);
 
-        Console.WriteLine(responseText);
+        //Console.WriteLine(responseText);
     }
 
     //[TestMethod]
     public void 发送请求时指定身份信息()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Url = "http://RabbitHost:15672/api/queues",
             Credentials = new NetworkCredential("username", "password"),
             Timeout = 6 * 1000,
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
     }
 
 
     [TestMethod]
     public void 发送当前进程的身份到服务端_服务端采用Windows身份认证()
     {
-        string text = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Method = "POST",
             Url = "http://www.fish-test.com/show-request.aspx",
             Data = new { id = 2, name = "abc" },
             Credentials = CredentialCache.DefaultNetworkCredentials     // 注意这里
-        }.GetResult();
-        Console.WriteLine(text);
+        };
+
+        string text = httpOption.GetResult();
+        //Console.WriteLine(text);
     }
 
     [TestMethod]
     public void 检验Gzip解压缩()
     {
-        HttpResult<string> result = new HttpOption {
+        HttpOption httpOption = new HttpOption {
             Url = "http://www.fish-test.com/gzip-page.aspx",
-        }.GetResult<HttpResult<string>>();
+        };
+
+        HttpResult<string> result = httpOption.GetResult<HttpResult<string>>();
 
         string responseText = result.Result;
-        Console.WriteLine(responseText);
+        //Console.WriteLine(responseText);
 
         // 服务端返回的结果是GZIP内容，所以如果不自动解压缩，结果会是“乱码”
         Assert.IsTrue(responseText.IndexOf("HttpClient 和生存期管理") >= 0);
 
-        
+
     }
 
 
@@ -501,6 +527,24 @@ Cache-Control: no-cache
     }
 
 
+    private static int GetStatusCode(HttpOption option)
+    {
+        try {
+            var xx = option.GetResult();
+            return 200;
+        }
+        catch( RemoteWebException remoteWebException ) {
+            return remoteWebException.StatusCode;
+        }
+        catch( WebException ex ) {
+            return (int)(ex.Response as HttpWebResponse).StatusCode;
+        }
+        catch( Exception ) {
+            return 500;
+        }
+    }
+
+
     [TestMethod]
     public void TestCookieContainer()
     {
@@ -521,25 +565,6 @@ Cache-Control: no-cache
     }
 
 
-    private static int GetStatusCode(HttpOption option)
-    {
-        try {
-            var xx = option.GetResult();
-            return 200;
-        }
-        catch( RemoteWebException remoteWebException ) {
-            return remoteWebException.StatusCode;
-        }
-        catch( WebException ex ) {
-            return (int)(ex.Response as HttpWebResponse).StatusCode;
-        }
-        catch( Exception ) {
-            return 500;
-        }
-    }
-
-
-
     [TestMethod]
     public void 仅仅发送请求_不需要读取结果()
     {
@@ -547,7 +572,7 @@ Cache-Control: no-cache
             Url = "http://www.fish-test.com/show-request2.aspx",
         };
 
-        httpOption.GetResult<ClownFish.Base.Void>();  // 注意这里的类型参数
+        httpOption.Send();
     }
 
 

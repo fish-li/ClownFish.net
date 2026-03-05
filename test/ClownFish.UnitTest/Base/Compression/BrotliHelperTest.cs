@@ -96,7 +96,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
     [TestMethod]
     public void Compare_Gzip_Brotli()
     {
-        string text = File.ReadAllText("ClownFish.Log.config", Encoding.UTF8);
+        string text = File.ReadAllText("ClownFish.UnitTest.config.ini", Encoding.UTF8);
         string s1 = GzipHelper.Compress(text);
         string s2 = BrotliHelper.Compress(text);
         Console.WriteLine($"input.Length: {text.Length},  gzip.Length: {s1.Length}, br.Length: {s2.Length}");

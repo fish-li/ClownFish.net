@@ -5,7 +5,7 @@ namespace ClownFish.WebClient;
 /// <summary>
 /// 读取HttpWebResponse的工具类
 /// </summary>
-public sealed class ResponseReader : IDisposable
+public sealed partial class ResponseReader : IDisposable
 {
     private readonly HttpWebResponse _response;
 
@@ -48,12 +48,10 @@ public sealed class ResponseReader : IDisposable
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2060: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2037: GetHttpResult000")]
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2060: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2037: GetHttpResult000")]
     [DynamicDependency(nameof(GetHttpResult000), typeof(ResponseReader))]
-#endif
     public T Read<T>()
     {
         _responseStream = GetResponseStream(typeof(T));
@@ -177,9 +175,6 @@ public sealed class ResponseReader : IDisposable
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-#endif
     internal static T ReturnResultFromTextStream<T>(Stream responseStream, string contentType)
     {
         HttpUtils.ParseContentType(contentType, out string mediaType, out Encoding encoding);
@@ -243,13 +238,9 @@ public sealed class ResponseReader : IDisposable
         return typeof(T).IsSuitableDeserialize();
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-#endif
-#if NET10_0_OR_GREATER
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: XmlSerializer")]
-#endif
+
+    [UnconditionalSuppressMessage("AOT", "IL3050: XmlSerializer")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerializer")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static T ReturnObjectFromXmlStream<T>(Stream responseStream, Encoding encoding)
     {
@@ -261,9 +252,7 @@ public sealed class ResponseReader : IDisposable
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerializer")]
     internal static T ConvertResult<T>(string responseText, string mediaType, string contentType)
     {
         // 优先判断 “返回值类型” 可以起到【纠错】的作用
@@ -285,10 +274,8 @@ public sealed class ResponseReader : IDisposable
         if( mediaType.Is(ResponseContentType.Json) )
             return JsonExtensions.FromJson<T>(responseText);
 
-
         if( mediaType.Is(ResponseContentType.Xml) )
             return XmlHelper.XmlDeserialize<T>(responseText);
-
 
         if( mediaType.Is(ResponseContentType.Text) )
             return (T)StringConverter.ChangeType(responseText, typeof(T));
@@ -413,20 +400,36 @@ public sealed class ResponseReader : IDisposable
         }
     }
 
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"<meta\s+http-equiv=[\'\""]charset[\'\""]\s+content=[\'\""](?<chartset>[\w-]+)[\'\""]\s*\/?>", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetHtmlCharsetRegex1();
+
+    [GeneratedRegex(@"<meta\s+charset=[\'\""](?<chartset>[\w-]+)[\'\""]\s*\/?>", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetHtmlCharsetRegex2();
+
+    [GeneratedRegex(@"<meta\s+http-equiv=[\'\""]content-Type[\'\""]\s+content=[\'\""][\w\/]+;\s*charset=(?<chartset>[\w-]+)[\'\""]\s*\/?>", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetHtmlCharsetRegex3();
+#else
+
     // <meta http-equiv="charset"  content="iso-8859-1">
     private static readonly Regex s_htmlCharsetRegex = new Regex(
-                @"<meta\s+http-equiv=[\'\#]charset[\'\#]\s+content=[\'\#](?<chartset>[\w-]+)[\'\#]\s*\/?>".Replace('#', '\"'),
+                @"<meta\s+http-equiv=[\'\""]charset[\'\""]\s+content=[\'\""](?<chartset>[\w-]+)[\'\""]\s*\/?>",
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // <meta charset="utf-8">
     private static readonly Regex s_htmlCharsetRegex2 = new Regex(
-                @"<meta\s+charset=[\'\#](?<chartset>[\w-]+)[\'\#]\s*\/?>".Replace('#', '\"'),
+                @"<meta\s+charset=[\'\""](?<chartset>[\w-]+)[\'\""]\s*\/?>",
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     private static readonly Regex s_htmlContentTypeRegex = new Regex(
-                @"<meta\s+http-equiv=[\'\#]content-Type[\'\#]\s+content=[\'\#][\w\/]+;\s*charset=(?<chartset>[\w-]+)[\'\#]\s*\/?>".Replace('#', '\"'),
+                @"<meta\s+http-equiv=[\'\""]content-Type[\'\""]\s+content=[\'\""][\w\/]+;\s*charset=(?<chartset>[\w-]+)[\'\""]\s*\/?>",
                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static Regex GetHtmlCharsetRegex1() => s_htmlCharsetRegex;
+    private static Regex GetHtmlCharsetRegex2() => s_htmlCharsetRegex2;
+    private static Regex GetHtmlCharsetRegex3() => s_htmlContentTypeRegex;
+#endif
 
 
     internal static Encoding GetEncodingFromHtmlHeader(string text)
@@ -434,14 +437,14 @@ public sealed class ResponseReader : IDisposable
         if( string.IsNullOrEmpty(text) )
             return null;
 
-        Match m = s_htmlCharsetRegex.Match(text);
+        Match m = GetHtmlCharsetRegex1().Match(text);
         if( m.Success == false )
             // 再匹配一次
-            m = s_htmlCharsetRegex2.Match(text);
+            m = GetHtmlCharsetRegex2().Match(text);
 
         if( m.Success == false )
             // 再匹配一次
-            m = s_htmlContentTypeRegex.Match(text);
+            m = GetHtmlCharsetRegex3().Match(text);
 
         if( m.Success ) {
             string charset = m.Groups["chartset"].Value;

@@ -5,6 +5,17 @@ namespace ClownFish.UnitTest.Base.Config;
 [TestClass]
 public class AppConfigTest
 {
+    // https://learn.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes?view=vs-2022#class-level
+
+    [ClassCleanup]
+    public static void ClassCleanup() // Starting with MSTest 3.8, it can be ClassCleanup(TestContext testContext)
+    {
+        FieldInfo field = typeof(AppConfig).GetField("s_inited", BindingFlags.Static | BindingFlags.NonPublic);
+        field.SetValue(null, false);
+        AppConfig.Init();
+    }
+
+
     [TestMethod]
     public void Test_GetSetting()
     {
@@ -71,8 +82,8 @@ public class AppConfigTest
     [TestMethod]
     public void Test_GetConnectionStrings()
     {
-        string keys = string.Join(",", (from x in AppConfig.GetConfigObject().GetConfiguration().ConnectionStrings select x.Name).ToArray());
-        string[] values = (from x in AppConfig.GetConfigObject().GetConfiguration().ConnectionStrings select x.ConnectionString).ToArray();
+        string keys = string.Join(",", (from x in AppConfig.GetAccessor().GetConfObject().ConnectionStrings select x.Name).ToArray());
+        string[] values = (from x in AppConfig.GetAccessor().GetConfObject().ConnectionStrings select x.ConnectionString).ToArray();
 
 
         Assert.IsTrue(keys.Contains("sqlserver"));
@@ -96,7 +107,7 @@ public class AppConfigTest
     [TestMethod]
     public void Test_AppConfigObject_ctor_ArgumentNullException1()
     {
-        var x = new AppConfigObject(null);
+        var x = new AppConfigAccessor(null);
     }
 
 
@@ -104,29 +115,24 @@ public class AppConfigTest
     [TestMethod]
     public void Test_LoadFromXml()
     {
-        typeof(AppConfig).InvokeMember("s_configuration",
-                                    BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.SetField, null, null, new object[] { null });
-
-
-        string filePath = ConfigHelper.GetFileAbsolutePath(AppConfig.ClownFishAppconfig);
+        string filePath = PathUtils.GetFileAbsolutePath("ClownFish.Appconfig.xml");
         string xml = File.ReadAllText(filePath, Encoding.UTF8);
 
-        AppConfig.ReLoadFromXml(xml);
-        AppConfiguration config1 = AppConfig.GetConfigObject().GetConfiguration();
+        AppConfig.ReLoadFromString(xml, "xml");
+        AppConfiguration config1 = AppConfig.GetAccessor().GetConfObject();
 
         Assert.IsNotNull(config1);
-        Assert.AreEqual("abcd", config1.AppSettings.First(x => x.Key == "key1").Value);
-        Assert.AreEqual("1234", config1.AppSettings.First(x => x.Key == "key2").Value);
+        Assert.AreEqual("00abcd", config1.AppSettings.First(x => x.Key == "key1").Value);
+        Assert.AreEqual("001234", config1.AppSettings.First(x => x.Key == "key2").Value);
 
 
         DebugReportBlock block = AppConfig.GetDebugReportBlock();
         string text = block.ToString2();
-        Assert.IsTrue(text.Contains("key1=abcd"));
-        Assert.IsTrue(text.Contains("key2=1234"));
+        Assert.IsTrue(text.Contains("key1=00abcd"));
+        Assert.IsTrue(text.Contains("key2=001234"));
 
-        MyAssert.IsError<ArgumentNullException>(() => {
-            AppConfig.ReLoadFromXml(null);
-        });
+        // 无效参数，忽略调用
+        AppConfig.ReLoadFromString(null, "ini");
     }
 
 
@@ -210,7 +216,7 @@ public class AppConfigTest
 
         string path1 = AppConfig.GetAppConfigFilePath();
         Console.WriteLine(path1);
-        Assert.IsTrue(path1.EndsWith1(AppConfig.ClownFishAppconfig));
+        Assert.IsTrue(path1.EndsWith1("ClownFish.UnitTest.config.ini"));
 
         AppConfig.SetAppConfigFileName("111.conf");
         string path2 = AppConfig.GetAppConfigFilePath();

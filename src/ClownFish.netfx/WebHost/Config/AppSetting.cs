@@ -3,7 +3,6 @@
 /// <summary>
 /// key/value 配置项
 /// </summary>
-[Serializable]
 public sealed class AppSetting
 {
     /// <summary>

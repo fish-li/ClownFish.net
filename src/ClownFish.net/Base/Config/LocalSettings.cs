@@ -51,9 +51,11 @@ internal sealed class DefaultLocalSettingsImpl : ILocalSettings
             return value;
 
         // 4，从AppConfig中读取
-        value = AppConfig.GetSetting(name);
-        if( string.IsNullOrEmpty(value) == false )
-            return value;
+        if( AppConfig.Inited ) {  // 防止死循环调用
+            value = AppConfig.GetSetting(name);
+            if( string.IsNullOrEmpty(value) == false )
+                return value;
+        }
 
 
         if( checkExist )
@@ -66,7 +68,7 @@ internal sealed class DefaultLocalSettingsImpl : ILocalSettings
 /// <summary>
 /// 供应用程序在运行时获取配置的工具类。
 /// 
-/// 参数项的读取顺序：环境变量，App.config
+/// 参数项的读取顺序：环境变量，MemoryConfig, AppConfig
 /// </summary>
 public static class LocalSettings
 {

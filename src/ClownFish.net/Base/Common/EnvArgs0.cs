@@ -1,37 +1,18 @@
 ﻿namespace ClownFish.Base;
 
-// ### 注意：这个类只依赖于 .NET API，不能依赖 LocalSettings/Settings，避免产生循环依赖
+// ### 注意：这个类只依赖于 .NET BCL API，不能依赖 LocalSettings/Settings，避免产生循环依赖
 
 internal static class EnvArgs0
 {
     /// <summary>
     /// 当前程序是否以“单文件部署”方式运行
     /// </summary>
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
+    public static readonly bool IsSingleFileDeploy = typeof(EnvArgs0).Assembly.Location.IsNullOrEmpty();
 
-    public static readonly bool IsSingleFileDeploy = IsRunningAsSingleFile();
-    //public static readonly bool IsSingleFileDeploy = typeof(EnvArgs0).Assembly.Location.IsNullOrEmpty();
-
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
-    private static bool IsRunningAsSingleFile()
-    {
-#if NETCOREAPP
-        // Assembly.Location 在单文件部署时总是返回空字符串
-        // 推荐的判断方式是：AppContext.GetData("IsSingleFile")，但需要 .NET 5+
-        object isSingleFile = AppContext.GetData("IsSingleFile");
-        if (isSingleFile is bool b)
-            return b;
-
-        // 兼容旧逻辑
-        return typeof(EnvArgs0).Assembly.Location.IsNullOrEmpty();
-#else
-        return typeof(EnvArgs0).Assembly.Location.IsNullOrEmpty();
-#endif
-    }
 
     /// <summary>
-    /// 当前程序是否以“NativeAOT”方式运行。需要2个条件：1，单文件部署，2，已设置AOT标记（ClownFish不能自行判断）
+    /// 当前程序是否以“NativeAOT”方式运行。需要2个条件：1，单文件部署，2，设置AOT标记（ClownFish不能自行判断）
     /// </summary>
     public static readonly bool IsAot = IsSetAotFlag();
 
@@ -73,17 +54,14 @@ internal static class EnvArgs0
 
 
 
-    private  static bool IsSetAotFlag()
+    private static bool IsSetAotFlag()
     {
 #if NETCOREAPP
-        if( EnvironmentVariables.Get("ClownFish_RUNNING_IsAot").TryToBool() )
-            return true;
-
-        if( AppContext.TryGetSwitch("ClownFish_RUNNING_IsAot", out bool isEnabled) && isEnabled )
-            return true;
-#endif
-
+        // https://github.com/dotnet/runtime/pull/80246
+        return RuntimeFeature.IsDynamicCodeSupported == false;
+#else
         return false;
+#endif
     }
 
 

@@ -17,23 +17,17 @@ public static class MethodInfoExtensions
         if( methodInfo == null )
             throw new ArgumentNullException(nameof(methodInfo));
 
-        if( EnvArgs0.IsAot ) {
-            try {
+        try {
+            if( EnvArgs0.IsAot ) {
                 return methodInfo.Invoke(instance, parameters);
             }
-            catch( TargetInvocationException ex1 ) when( ex1.InnerException != null ) {
-                throw ex1.InnerException;
-            }
-        }
-        else {
-
-            IInvokeMethod method = MethodInvokerFactory.GetMethodInvokerWrapper(methodInfo);
-            try {
+            else {
+                IInvokeMethod method = MethodInvokerFactory.GetMethodInvokerWrapper(methodInfo);
                 return method.Invoke(instance, parameters);
             }
-            catch( TargetInvocationException ex1 ) when( ex1.InnerException != null ) {
-                throw ex1.InnerException;
-            }
+        }
+        catch( TargetInvocationException ex1 ) when( ex1.InnerException != null ) {
+            throw ex1.InnerException;
         }
     }
 

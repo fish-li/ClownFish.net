@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-[Serializable]
 [DbEntity(Alias = "TestDateTimeTable")]
 public partial class TestDateTimeTable : Entity
 {

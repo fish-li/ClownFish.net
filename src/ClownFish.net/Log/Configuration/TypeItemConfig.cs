@@ -35,5 +35,5 @@ public sealed class TypeItemConfig
     /// 
     /// </summary>
     /// <returns></returns>
-    public Type GetDataTypeTypeObject() => this.TypeObject;
+    public Type GetTypeObject() => this.TypeObject;
 }

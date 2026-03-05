@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.Web.Aspnetcore.ActionResults;
 
-public sealed class NdjsonResult : ActionResult
+public sealed class NdjsonResult : ActionResult, IOutActionResult
 {
     private readonly ICollection _list;
 
@@ -17,7 +17,7 @@ public sealed class NdjsonResult : ActionResult
     public override async Task ExecuteResultAsync(ActionContext context)
     {
         NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
-        await httpContextNetCore.HttpGzipNdjsonReply(_list);
+        await OutResultAsync(httpContextNetCore);
     }
 
     /// <summary>
@@ -30,4 +30,8 @@ public sealed class NdjsonResult : ActionResult
         throw new NotImplementedException();
     }
 
+    public async Task OutResultAsync(NHttpContext httpContext)
+    {
+        await httpContext.HttpGzipNdjsonReply(_list);
+    }
 }

@@ -33,22 +33,17 @@ internal static class BaseInitUtils
             s_baseInited = true;
 
             // 注意：下面这段代码【不要】移动到 AppConfig.Init() ，那样会造成死循环
-            ShowClownFishAppConfig();
+            ShowAppConfig();
         }
     }
 
-    internal static void ShowClownFishAppConfig()
+    internal static void ShowAppConfig()
     {
-        if( LocalSettings.GetBool("Show_ClownFish_App_Config") ) {
-            string filePath = AppConfig.GetAppConfigFilePath();
-            if( File.Exists(filePath) ) {
-                Console2.WriteLine($"----------------------- {Path.GetFileName(filePath)} ----------------------------");
-                Console2.WriteLine(File.ReadAllText(filePath, Encoding.UTF8));
-                Console2.WriteLine("-------------------------------------------------------------------------");
-            }
-            else {
-                Console2.Info($"[{filePath}] not found!");
-            }
+        if( LocalSettings.GetBool("Show_ClownFish_AppConfig") ) {
+            string configText = AppConfig.GetAccessor().GetConfObject().ToLoggingText();
+            Console2.WriteLine("----------------------- ClownFish.Appconfig ----------------------------");
+            Console2.WriteLine(configText);
+            Console2.WriteLine("-------------------------------------------------------------------------");
         }
     }
 

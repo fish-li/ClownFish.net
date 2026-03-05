@@ -1,6 +1,4 @@
-﻿using ClownFish.WebClient;
-
-namespace ClownFish.Web.Modules;
+﻿namespace ClownFish.Web.Modules;
 
 public sealed class ExecHttpUiModule : NHttpModule
 {

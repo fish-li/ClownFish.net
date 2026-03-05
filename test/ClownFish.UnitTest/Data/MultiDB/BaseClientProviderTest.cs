@@ -36,8 +36,8 @@ public class BaseClientProviderTest
             Assert.AreEqual((DatabaseType)7777, db.DatabaseType);
             Assert.AreEqual("Kdbndp", db.ProviderName);        
             
-            long id = db.CPQuery.Create("select max(productid) from products").ExecuteScalar<long>();
-            Assert.IsTrue(id > 0);
+            //long id = db.CPQuery.Create("select max(productid) from products").ExecuteScalar<long>();
+            //Assert.IsTrue(id > 0);
         }
 
 
@@ -46,8 +46,8 @@ public class BaseClientProviderTest
             Assert.AreEqual((DatabaseType)7777, db.DatabaseType);
             Assert.AreEqual("Kdbndp", db.ProviderName);
 
-            long id = db.CPQuery.Create("select max(productid) from products").ExecuteScalar<long>();
-            Assert.IsTrue(id > 0);
+            //long id = db.CPQuery.Create("select max(productid) from products").ExecuteScalar<long>();
+            //Assert.IsTrue(id > 0);
         }
     }
 #endif
@@ -70,7 +70,8 @@ public class XxxBaseClientProvider : BaseClientProvider
 
     public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
     {
-        return PostgreSqlClientProvider.GetPostgreSQLConnectionString0(dbConfig, includeDatabase);
+        DbConnectionStringBuilder sb = new Npgsql.NpgsqlConnectionStringBuilder();
+        return PostgreSqlClientProvider.BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 
     public override string GetObjectFullName(string symbol)

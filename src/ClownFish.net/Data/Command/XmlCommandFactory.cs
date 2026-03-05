@@ -3,9 +3,6 @@
 /// <summary>
 /// XmlCommand工厂
 /// </summary>
-#if NETCOREAPP
-[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
 public sealed class XmlCommandFactory
 {
     private readonly DbContext _dbContext;

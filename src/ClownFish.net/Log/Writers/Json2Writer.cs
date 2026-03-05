@@ -7,6 +7,8 @@ internal sealed class Json2Writer : FileWriter
 {
     protected override string FileExtName => ".json2.log";
 
+    protected override bool NeedFlagLine => true;
+
     protected override ValueCounter WriteCounter => ClownFishCounters.Logging.Json2WriteCount;
 
     /// <summary>

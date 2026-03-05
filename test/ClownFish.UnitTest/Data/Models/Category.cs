@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-[Serializable]
 [DbEntity(Alias = "Categories")]
 public partial class Category : Entity
 {

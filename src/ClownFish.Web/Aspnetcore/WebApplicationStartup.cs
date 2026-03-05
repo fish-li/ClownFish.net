@@ -117,6 +117,11 @@ public class WebApplicationStartup
     }
 
 
+    public virtual WebApplicationBuilder CreateWebApplicationBuilder()
+    {
+        return WebApplication.CreateSlimBuilder();
+    }
+
 
     /// <summary>
     /// 调用appBuilder.Build()之前触发。 默认行为：什么也不做。

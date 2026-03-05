@@ -5,9 +5,15 @@ namespace ClownFish.Http.Utils;
 /// <summary>
 /// Url相关处理的工具类
 /// </summary>
-public static class Urls
+public static partial class Urls
 {
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"\w+://[^/]+", RegexOptions.None, "en-US")]
+    private static partial Regex GetUrlRootRegex();
+#else
     private static readonly Regex s_urlRootRegex = new Regex(@"\w+://[^/]+", RegexOptions.Compiled);
+    private static Regex GetUrlRootRegex() => s_urlRootRegex;
+#endif
 
     /// <summary>
     /// 从一个URL中获取网站的根地址，也就是提取：http://xxx.xxxx.com 部分。
@@ -19,7 +25,7 @@ public static class Urls
         if( absoluteUrl.IsNullOrEmpty() )
             return absoluteUrl;
 
-        Match m = s_urlRootRegex.Match(absoluteUrl);
+        Match m = GetUrlRootRegex().Match(absoluteUrl);
 
         if( m.Success )
             return m.Groups[0].Value;

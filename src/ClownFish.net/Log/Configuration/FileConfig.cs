@@ -30,6 +30,17 @@ public sealed class FileConfig
         return $"RootPath={RootPath}, MaxLength={MaxLength}, MaxCount={MaxCount}";
     }
 
+    internal void WriteToInit(StringBuilder sb)
+    {
+        if( this.RootPath.HasValue() )
+            sb.Append("File_RootPath=").AppendLineRN(this.RootPath);
+
+        if( this.MaxLength.HasValue() )
+            sb.Append("File_MaxLength=").AppendLineRN(this.MaxLength);
+
+        if( this.MaxCount > 0 )
+            sb.Append("File_MaxCount=").AppendLineRN(this.MaxCount.ToString());
+    }
 
     internal void CheckOrSetDefault()
     {

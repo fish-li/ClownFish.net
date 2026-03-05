@@ -43,9 +43,7 @@ public static class StringConverter
     /// <typeparam name="T"></typeparam>
     /// <param name="obj">将要被赋值的对象</param>
     /// <param name="keyValues">key=value;key=value 格式的字符串</param>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2090: typeof(T).GetProperties")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2090: Type.GetProperties")]
     public static void SetObjectValues<T>(T obj, string keyValues) where T : class, new()
     {
         if( obj == null )
@@ -148,9 +146,7 @@ public static class StringConverter
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: Enum.GetValues")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: Enum.GetValues")]
     internal static object ParseEnumName(string value, Type conversionType)
     {
         Array values = Enum.GetValues(conversionType);
@@ -173,9 +169,7 @@ public static class StringConverter
     /// </summary>
     /// <param name="conversionType"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: conversionType.GetMethod")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2070: conversionType.GetMethod")]
     private static MethodInfo GetStringImplicit(Type conversionType)
     {
         MethodInfo m = conversionType.GetMethod("op_Implicit",

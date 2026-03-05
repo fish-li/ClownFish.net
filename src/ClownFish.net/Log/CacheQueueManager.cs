@@ -7,20 +7,25 @@ internal static class CacheQueueManager
     /// </summary>
     private static readonly Dictionary<Type, ICacheQueue> s_queueDict = new Dictionary<Type, ICacheQueue>(128);
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericType")]
     internal static void Start(List<DataTypeWriterMap> list)
     {
         if( list.IsNullOrEmpty() )
             return;
 
         foreach( var x in list ) {
+            // https://github.com/dotnet/runtime/issues/71625
             Type type = typeof(CacheQueue<>).MakeGenericType(x.DataType);
             ICacheQueue queue = (ICacheQueue)Activator.CreateInstance(type);
             s_queueDict[x.DataType] = queue;
         }
 
+        bool show = LocalSettings.GetBool("Show_ClownFish_Log_CacheQueueManager");
+        if( show ) {
+            foreach( var kv in s_queueDict ) {
+                Console2.Info("ClownFish_Log_CacheQueueManager.CacheQueue: " + kv.Value.GetType().GetTypeCodeText());
+            }
+        }
 
         ThreadUtils.Run2("CacheQueueManager_Flush", "ClownFishLogWriter", ThreadWorker);
     }

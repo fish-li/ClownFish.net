@@ -9,11 +9,25 @@ namespace ClownFish.Data.CodeDom;
 
 internal static class CodeCompilerHelper
 {
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.LoadFrom")]
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.GetType")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075: asm.GetMethod")]
     public static Assembly CompileCode(string code, string dllOutPath)
+    {
+        // 不直接调用 CompileCode 这个方法，让它在AOT编译时被裁剪掉
+        // 因为它依赖一大堆 Microsoft.CodeAnalysis.CSharp 类型，如果不裁剪掉，会导致生成的文件过大
+
+        MethodInfo method = typeof(CodeCompilerHelper).Assembly.GetType("ClownFish.Data.CodeDom.CodeCompilerHelper0")
+                                .GetMethod("CompileCode", BindingFlags.NonPublic | BindingFlags.Static);
+        return (Assembly)method.Invoke(null, new object[] { code, dllOutPath });
+    }
+}
+
+
+internal static class CodeCompilerHelper0
+{
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.LoadFrom")]
+    private static Assembly CompileCode(string code, string dllOutPath)
     {
         if( string.IsNullOrEmpty(code) )
             throw new ArgumentNullException(nameof(code));
@@ -31,7 +45,7 @@ internal static class CodeCompilerHelper
         MetadataReference[] refs =
             (from x in AsmHelper.GetLoadAssemblies()
              let path = x.Location
-             where path.IndexOfIgnoreCase("VisualStudio") ==  -1        // 排除 MsTest 相关程序集
+             where path.IndexOfIgnoreCase("VisualStudio") == -1        // 排除 MsTest 相关程序集
              select MetadataReference.CreateFromFile(path)).ToArray();
 
         // 说明：如果不加 where 过滤，会出现下面的异常
@@ -81,7 +95,7 @@ internal static class CodeCompilerHelper
     }
 
 
-    internal static void SaveTempCode(string code, string codeFilePath)
+    private static void SaveTempCode(string code, string codeFilePath)
     {
         if( File.Exists(codeFilePath) )
             RetryFile.Delete(codeFilePath);
@@ -89,7 +103,7 @@ internal static class CodeCompilerHelper
         RetryFile.WriteAllText(codeFilePath, code, Encoding.UTF8);
     }
 
-    internal static void SaveError(EmitResult eResult, string errorFilePath)
+    private static void SaveError(EmitResult eResult, string errorFilePath)
     {
         StringBuilder sb = new StringBuilder();
 

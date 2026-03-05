@@ -2,7 +2,6 @@
 
 namespace ClownFish.Base.Config.Models;
 
-
 /// <summary>
 /// 与 app.config 对应的实体类型，用于反序列读取配置文件。
 /// </summary>
@@ -206,7 +205,7 @@ public class XmlDbConfig
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{DbType}/{Server}/{Database}";
+        return $"Name={Name};DbType={DbType};Server={Server};Port={Port};Database={Database};UserName={UserName};Password={Password}";
     }
 
     internal DbConfig ToDbConfig()
@@ -225,4 +224,3 @@ public class XmlDbConfig
 
 
 }
-

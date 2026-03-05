@@ -13,7 +13,7 @@ public sealed class MemoryWriter : ILogWriter
         return newList;
     }
 
-    public void Init(LogConfiguration config, WriterConfig section)
+    public void Init(LogConfiguration config, Type dataType)
     {
 
     }

@@ -121,11 +121,9 @@ internal static class MethodInvokerFactory
     /// </summary>
     /// <param name="method"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericType")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2055: MakeGenericType")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2067: Activator.CreateInstance")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericType")]
+    [UnconditionalSuppressMessage("Trimming", "IL2055: MakeGenericType")]
+    [UnconditionalSuppressMessage("Trimming", "IL2067: Activator.CreateInstance")]
     public static IInvokeMethod CreateMethodInvokerWrapper(MethodInfo method)
     {
         Init();
@@ -221,7 +219,7 @@ internal abstract class ReflectMethodBase<TDelegate> : IInvokeMethod, IBindMetho
     public void BindMethod(MethodInfo method)
     {
         if( method == null )
-            throw new ArgumentNullException("method");
+            throw new ArgumentNullException(nameof(method));
 
         if( method.IsStatic )
             _caller = Delegate.CreateDelegate(typeof(TDelegate), method) as TDelegate;
@@ -730,4 +728,3 @@ internal partial class FunctionWrapper<TTarget, A1, A2, A3, TResult>
 }
 
 #endregion
-

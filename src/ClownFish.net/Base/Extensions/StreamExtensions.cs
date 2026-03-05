@@ -124,6 +124,23 @@ public static class StreamExtensions
 
 
     /// <summary>
+    /// 按字符串的方式读取流对象中的所有内容，默认使用UTF-8编码
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="encoding"></param>
+    /// <returns></returns>
+    public static string ReadAsString(this Stream stream, Encoding encoding = null)
+    {
+        CheckStreamRead(stream);
+
+        encoding = encoding ?? Encoding.UTF8;
+        using( StreamReader reader = new StreamReader(stream, encoding, true, -1, true) ) {
+            return reader.ReadToEnd();
+        }
+    }
+
+
+    /// <summary>
     /// 在2个流对象之间复制数据
     /// </summary>
     /// <param name="source"></param>
@@ -201,12 +218,22 @@ public static class StreamExtensions
     /// <param name="httpStream">请求流或者响应流</param>
     /// <param name="bufferSize">缓冲区大小</param>
     /// <returns></returns>
-    public static StreamWriter CreateGzipWriter(this Stream httpStream, int bufferSize = 1024)
+    public static StreamWriter CreateGzipWriter(this Stream httpStream, int bufferSize = 4096)
     {
         GZipStream zipStream = new GZipStream(httpStream, CompressionMode.Compress, true);
         return new StreamWriter(zipStream, EncodingUtils.UTF8NoBOM, bufferSize, false);
     }
 
+    /// <summary>
+    /// 为数据流创建StreamWriter
+    /// </summary>
+    /// <param name="httpStream"></param>
+    /// <param name="bufferSize"></param>
+    /// <returns></returns>
+    public static StreamWriter CreateWriter(this Stream httpStream, int bufferSize = 4096)
+    {
+        return new StreamWriter(httpStream, EncodingUtils.UTF8NoBOM, bufferSize, false);
+    }
 
     /// <summary>
     /// 为数据流创建StreamReader，并可以添加解压缩包装
@@ -214,7 +241,7 @@ public static class StreamExtensions
     /// <param name="httpStream">请求流或者响应流</param>
     /// <param name="bufferSize">缓冲区大小</param>
     /// <returns></returns>
-    public static StreamReader CreateGzipReader(this Stream httpStream, int bufferSize = 1024)
+    public static StreamReader CreateGzipReader(this Stream httpStream, int bufferSize = 4096)
     {
         GZipStream zipStream = new GZipStream(httpStream, CompressionMode.Decompress, true);
         return new StreamReader(zipStream, Encoding.UTF8, true, bufferSize, false);

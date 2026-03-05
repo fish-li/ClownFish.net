@@ -19,10 +19,10 @@ public class LogConfigTest
         });
 
 
-        string filePath = ConfigHelper.GetFileAbsolutePath("ClownFish.Log.config");
-        string xml = File.ReadAllText(filePath, Encoding.UTF8);
+        string filePath = PathUtils.GetFileAbsolutePath("ClownFish.UnitTest.config.ini");
+        string ini = File.ReadAllText(filePath, Encoding.UTF8);
 
-        LogConfiguration cfg1 = LogConfig.LoadFromXml(xml);
+        LogConfiguration cfg1 = LogConfig.LoadFromIni(ini);
         LogConfiguration cfg2 = LogConfig.LoadFromFile(filePath, true);
     }
 

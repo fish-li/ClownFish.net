@@ -14,13 +14,12 @@ internal class HttpJsonWriter : ILogWriter
     private static readonly int s_batchSize = Settings.GetUInt("ClownFish_Log_HttpJsonWriter_BatchSize", 3 * 1024 * 1024);
     private static readonly bool s_showError = Settings.GetBool("ClownFish_Log_HttpJsonWriter_ShowError", 1);
 
-    void ILogWriter.Init(LogConfiguration config, WriterConfig section)
+    void ILogWriter.Init(LogConfiguration config, Type dataType)
     {
-        string configValue = Settings.GetSetting("Nebula_LogGate_Url")   // 优先采用 Nebula.LogGate 做为服务端接收日志数据
-                             ?? Settings.GetSetting("HttpJsonWriter_Target_Url");   // 兼容以前的老参数名称
+        string configValue = Settings.GetSetting("ClownFish_Log_HttpJsonWriter_UploadUrl") ?? Settings.GetSetting("Nebula_LogGate_Url");
 
         if( InitUrl(configValue) == 0 ) {
-            Console2.Info("##### 由于没有配置 Nebula_LogGate_Url 参数，HttpJsonWriter 将忽略所有调用！#####");
+            Console2.Info("##### 由于没有配置 ClownFish_Log_HttpJsonWriter_UploadUrl 参数，HttpJsonWriter 将忽略所有调用！");
             return;
         }
 

@@ -58,7 +58,28 @@ public sealed class DbConfig : IDbConfig
     /// <returns></returns>
     public override string ToString()
     {
-        return $"Name={Name}; DbType={DbType}; Server={Server}; Port={Port}; Database={Database}; UserName={UserName}; Password={Password}";
+        return $"Name={Name};DbType={DbType};Server={Server};Port={Port};Database={Database};UserName={UserName};Password={Password}";
+    }
+
+    internal void WriteToInit(StringBuilder sb)
+    {
+        sb.Append("DbType=").AppendLineRN(this.DbType.ToString());
+        sb.Append("Server=").AppendLineRN(this.Server);
+        if( this.Port.HasValue ) {
+            sb.Append("Port=").AppendLineRN(this.Port.Value.ToString());
+        }
+        if( this.Database.HasValue() ) {
+            sb.Append("Database=").AppendLineRN(this.Database);
+        }
+        if( this.UserName.HasValue() ) {
+            sb.Append("UserName=").AppendLineRN(this.UserName);
+        }
+        if( this.Password.HasValue() ) {
+            sb.Append("Password=").AppendLineRN(this.Password);
+        }
+        if( this.Args.HasValue() ) {
+            sb.Append("Args=").AppendLineRN(this.Args);
+        }
     }
 
     //internal void Validate()
@@ -93,7 +114,7 @@ public sealed class DbConfig : IDbConfig
     /// <returns></returns>
     public static DbConfig Parse(string value)
     {
-        if( value.IsNullOrEmpty())
+        if( value.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(value));
 
         return value.ToObject<DbConfig>();

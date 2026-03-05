@@ -48,12 +48,14 @@ public static class AsmHelper
     /// 获取当前进程的入口程序集路径
     /// </summary>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
     public static string GetExeFilePath()
     {
         // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
+
+        //#if NET6_0_OR_GREATER
+        //        return Environment.ProcessPath;     // 这个属性对单元测试不友好！！
+        //#else
 
         if( AsmHelper.IsSingleFileDeploy ) {
             return Environment.GetCommandLineArgs()[0];
@@ -63,15 +65,24 @@ public static class AsmHelper
         }
     }
 
+
+    private static string s_exeName;
+
+    internal static string GetExeName()
+    {
+        if( s_exeName == null ) {
+            string filePath = GetExeFilePath();
+            s_exeName = Path.GetFileNameWithoutExtension(filePath);
+        }
+        return s_exeName;
+    }
+
     /// <summary>
     /// 获取某个类型所在程序集文件的文件版本号
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
     public static string GetFileVersion(Type type)
     {
         // 参考：https://learn.microsoft.com/zh-cn/dotnet/core/deploying/single-file/overview?tabs=cli#api-incompatibility
@@ -92,9 +103,7 @@ public static class AsmHelper
     /// 加载所有DLL文件。
     /// 在启动时，如果不显式加载，就有可能在反射时取不到没有访问到的类型
     /// </summary>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.LoadFrom")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.LoadFrom")]
     private static void LoadAllAssemblies()
     {
         if( AsmHelper.IsSingleFileDeploy )
@@ -136,9 +145,7 @@ public static class AsmHelper
     /// </summary>
     /// <param name="ignoreSystemAssembly">是否忽略系统（微软提供的）程序集，通常反射时不需要分析它们。</param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
     public static Assembly[] GetLoadAssemblies(bool ignoreSystemAssembly = false)
     {
         Assembly[] assemblies = GetCurrentDomainAssemblies();

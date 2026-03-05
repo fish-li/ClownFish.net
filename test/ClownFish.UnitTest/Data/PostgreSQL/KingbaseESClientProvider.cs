@@ -70,7 +70,8 @@ internal class KingbaseESClientProvider : BaseClientProvider
 
     public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
     {
-        return PostgreSqlClientProvider.GetPostgreSQLConnectionString0(dbConfig, includeDatabase);
+        DbConnectionStringBuilder sb = new Npgsql.NpgsqlConnectionStringBuilder();
+        return PostgreSqlClientProvider.BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 }
 

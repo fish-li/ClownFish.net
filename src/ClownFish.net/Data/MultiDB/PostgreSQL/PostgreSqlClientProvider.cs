@@ -7,11 +7,9 @@ internal class PostgreSqlClientProvider : BaseClientProvider
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
     private readonly PropertyInfo _exNumber;
+    private readonly Type _connStringBuilderType;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: exceptionType.GetProperty")]
     internal PostgreSqlClientProvider()
     {
         Type factoryType = Type.GetType("Npgsql.NpgsqlFactory, Npgsql", true, false);
@@ -19,6 +17,7 @@ internal class PostgreSqlClientProvider : BaseClientProvider
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
 
+        _connStringBuilderType = Type.GetType("Npgsql.NpgsqlConnectionStringBuilder, Npgsql", true, false);
 
         _exceptionType = Type.GetType("Npgsql.PostgresException, Npgsql", true, false);
         PropertyInfo p = _exceptionType.GetProperty("SqlState");
@@ -67,38 +66,65 @@ internal class PostgreSqlClientProvider : BaseClientProvider
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2077: Activator.CreateInstance")]
     public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
     {
-        return GetPostgreSQLConnectionString0(dbConfig, includeDatabase);
+        DbConnectionStringBuilder sb = (DbConnectionStringBuilder)Activator.CreateInstance(_connStringBuilderType);
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string GetPostgreSQLConnectionString0(IDbConfig dbConfig, bool includeDatabase)
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //internal static string GetPostgreSQLConnectionString0(IDbConfig dbConfig, bool includeDatabase)
+    //{
+    //    // PostgreSQL 连接参数
+    //    // https://www.npgsql.org/doc/connection-string-parameters.html
+
+    //    StringBuilder sb = StringBuilderPool.Get();
+    //    try {
+    //        sb.Append("Host=").Append(dbConfig.Server);
+
+    //        if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+    //            sb.Append(";Port=").Append(dbConfig.Port.Value);
+
+    //        if( includeDatabase && dbConfig.Database.HasValue() )
+    //            sb.Append(";Database=").Append(dbConfig.Database);
+
+    //        sb.Append(";Username=").Append(dbConfig.UserName)
+    //            .Append(";Password=").Append(dbConfig.Password)
+    //            .Append(";Application Name=").Append(EnvUtils.GetAppName())
+    //            .Append(';').Append(dbConfig.Args);
+
+    //        return sb.ToString();
+    //    }
+    //    finally {
+    //        StringBuilderPool.Return(sb);
+    //    }
+    //}
+
+
+    internal static string BuildConnectionString(DbConnectionStringBuilder sb, IDbConfig dbConfig, bool includeDatabase)
     {
-        // PostgreSQL 连接参数
-        // https://www.npgsql.org/doc/connection-string-parameters.html
+        sb["Host"] = dbConfig.Server;
 
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            sb.Append("Host=").Append(dbConfig.Server);
+        if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+            sb["Port"] = dbConfig.Port.Value;
 
-            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
-                sb.Append(";Port=").Append(dbConfig.Port.Value);
+        if( includeDatabase && dbConfig.Database.HasValue() )
+            sb["Database"] = dbConfig.Database;
 
-            if( includeDatabase && dbConfig.Database.HasValue() )
-                sb.Append(";Database=").Append(dbConfig.Database);
+        sb["Username"] = dbConfig.UserName;
+        sb["Password"] = dbConfig.Password;
 
-            sb.Append(";Username=").Append(dbConfig.UserName)
-                .Append(";Password=").Append(dbConfig.Password)
-                .Append(";Application Name=").Append(EnvUtils.GetAppName())
-                .Append(';').Append(dbConfig.Args);
+        sb["Application Name"] = EnvUtils.GetAppName();
 
-            return sb.ToString();
+        string value = sb.ConnectionString;
+
+        if( dbConfig.Args.HasValue() ) {
+            value += ";" + dbConfig.Args;
         }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
+
+        return value;
     }
 
     //public override void ChangeDatabase(DbContext dbContext, string databaseName)

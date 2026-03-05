@@ -1,15 +1,22 @@
 ﻿namespace ClownFish.Data.MultiDB.MsSQL;
 
-internal abstract class BaseMsSqlClientProvider : BaseClientProvider
+internal abstract partial class BaseMsSqlClientProvider : BaseClientProvider
 {
     public override DatabaseType DatabaseType => DatabaseType.SQLSERVER;
 
- 
+
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"\border\s+by\b", RegexOptions.IgnoreCase | RegexOptions.Multiline, "en-US")]
+    private static partial Regex GetOrderbyRegex();
+#else
     /// <summary>
     /// 用于匹配SQL中的 order by 关键字
     /// </summary>
     private static readonly Regex s_regexOrderBy = new Regex(@"\border\s+by\b",
                                         RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Multiline);
+
+    private static Regex GetOrderbyRegex() => s_regexOrderBy;
+#endif
 
     public override string GetObjectFullName(string symbol)
     {
@@ -57,7 +64,7 @@ internal abstract class BaseMsSqlClientProvider : BaseClientProvider
         string countSql = null;
 
         if( pagingInfo.NeedCount ) {
-            Match m = s_regexOrderBy.Match(srcSql);
+            Match m = GetOrderbyRegex().Match(srcSql);
             if( m.Success == false )
                 throw new InvalidOperationException("SQL查询不符合要求，没有找到 'ORDER BY' 子句，请确保查询语句中包含 'ORDER BY'。");
 
@@ -85,31 +92,54 @@ internal abstract class BaseMsSqlClientProvider : BaseClientProvider
     }
 
 
-    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    //public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    //{
+    //    // SQLSERVER端口号格式： server=192.168.11.100,1433;
+    //    // https://docs.microsoft.com/zh-cn/dotnet/api/system.data.sqlclient.sqlconnection.connectionstring
+    //    // format: server=xxx,port;database=xxxx;uid=xxx
+
+    //    StringBuilder sb = StringBuilderPool.Get();
+    //    try {
+    //        sb.Append("Server=").Append(dbConfig.Server);
+
+    //        if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+    //            sb.Append(',').Append(dbConfig.Port.Value);
+
+    //        if( includeDatabase && dbConfig.Database.HasValue() )
+    //            sb.Append(";Database=").Append(dbConfig.Database);
+
+    //        sb.Append(";Uid=").Append(dbConfig.UserName)
+    //            .Append(";Pwd=").Append(dbConfig.Password)
+    //            .Append(";Application Name=").Append(EnvUtils.GetAppName())
+    //            .Append(';').Append(dbConfig.Args);
+
+    //        return sb.ToString();
+    //    }
+    //    finally {
+    //        StringBuilderPool.Return(sb);
+    //    }
+    //}
+
+    internal string BuildConnectionString(DbConnectionStringBuilder sb, IDbConfig dbConfig, bool includeDatabase)
     {
-        // SQLSERVER端口号格式： server=192.168.11.100,1433;
-        // https://docs.microsoft.com/zh-cn/dotnet/api/system.data.sqlclient.sqlconnection.connectionstring
-        // format: server=xxx,port;database=xxxx;uid=xxx
+        string server = dbConfig.Port.HasValue && dbConfig.Port.Value > 0 ?  dbConfig.Server + "," + dbConfig.Port.Value.ToString() : dbConfig.Server;
 
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            sb.Append("Server=").Append(dbConfig.Server);
+        sb["Server"] = server;
 
-            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
-                sb.Append(',').Append(dbConfig.Port.Value);
+        if( includeDatabase && dbConfig.Database.HasValue() )
+            sb["Database"] = dbConfig.Database;
 
-            if( includeDatabase && dbConfig.Database.HasValue() )
-                sb.Append(";Database=").Append(dbConfig.Database);
+        sb["User ID"] = dbConfig.UserName;
+        sb["Password"] = dbConfig.Password;
 
-            sb.Append(";Uid=").Append(dbConfig.UserName)
-                .Append(";Pwd=").Append(dbConfig.Password)
-                .Append(";Application Name=").Append(EnvUtils.GetAppName())
-                .Append(';').Append(dbConfig.Args);
+        sb["Application Name"] = EnvUtils.GetAppName();
 
-            return sb.ToString();
+        string value = sb.ConnectionString;
+
+        if( dbConfig.Args.HasValue() ) {
+            value += ";" + dbConfig.Args;
         }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
+
+        return value;
     }
 }

@@ -147,9 +147,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     /// 注意：一定要在MVC Action执行前调用此方法。
     /// </summary>
     /// <param name="handler"></param>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: controllerType.GetMethod")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2075: controllerType.GetMethod")]
     public void SetHttpHandler(IAsyncNHttpHandler handler)
     {
         if( handler == null )

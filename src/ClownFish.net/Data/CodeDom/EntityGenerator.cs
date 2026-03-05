@@ -3,7 +3,7 @@
 /// <summary>
 /// 实体代理类型的代码生成器
 /// </summary>
-public sealed class EntityGenerator
+internal sealed class EntityGenerator
 {
     /// <summary>
     /// 默认的代码文件头上的 using 语句块
@@ -126,7 +126,7 @@ using ClownFish.Data.Internals;
     /// 生成实体的代理类型代码，将用于编译成代理类型
     /// </summary>
     /// <returns></returns>
-    public string GetCode<T>() where T : Entity, new()
+    public string GetCode<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>() where T : Entity, new()
     {
         return GetCode(typeof(T));
     }

@@ -10,13 +10,14 @@ namespace ClownFish.Base.Reflection;
 public static class TypeExtensionsCF
 {
     /// <summary>
-    /// 判断指定的类型是不是常见的值类型，范围：DateTime, TimeSpan，Guid，decimal， Enum
+    /// 判断指定的类型是不是常见的值类型，范围：int, long, float, double, DateTime, TimeSpan，Guid，decimal，Enum
     /// </summary>
     /// <param name="t"></param>
     /// <returns></returns>
     public static bool IsSimpleValueType(this Type t)
     {
-        return t == typeof(DateTime)
+        return t.IsPrimitive
+            || t == typeof(DateTime)
             || t == typeof(TimeSpan)
             || t == typeof(Guid)
             || t == typeof(decimal)
@@ -90,7 +91,7 @@ public static class TypeExtensionsCF
 
 
     /// <summary>
-    /// 获取一个类型的完整的名称，包含程序集名称，返回的结果可用于调用Type.GetType(...)
+    /// 获取一个类型的完整的名称，包含程序集名称，返回的结果可用于调用 Type.GetType(...)
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -113,12 +114,32 @@ public static class TypeExtensionsCF
         if( type == null )
             throw new ArgumentNullException(nameof(type));
 
-        using( CSharpCodeProvider csharpProvider = new CSharpCodeProvider() ) {
-            CodeTypeReference typeReference = new CodeTypeReference(type);
-            return csharpProvider.GetTypeOutput(typeReference);
+        if( type.IsGenericType ) {
+            string genericTypeName = type.GetGenericTypeDefinition().FullName;
+            genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
+            Type[] genericArgs = type.GetGenericArguments();
+            string argsText = string.Join(", ", genericArgs.Select(t => GetTypeCodeText(t)));
+            return $"{genericTypeName}<{argsText}>";
+        }
+        else if( type.IsArray ) {
+            return GetTypeCodeText(type.GetElementType()) + "[]";
+        }
+        else {
+            return type.FullName;
         }
     }
 
+
+    //internal static string GetTypeCodeText(this Type type)
+    //{
+    //    if( type == null )
+    //        throw new ArgumentNullException(nameof(type));
+
+    //    using( CSharpCodeProvider csharpProvider = new CSharpCodeProvider() ) {
+    //        CodeTypeReference typeReference = new CodeTypeReference(type);
+    //        return csharpProvider.GetTypeOutput(typeReference);
+    //    }
+    //}
 
     /// <summary>
     /// 获取一个封闭泛型的类型参数
@@ -150,9 +171,7 @@ public static class TypeExtensionsCF
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-#if NETCOREAPP
     [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
-#endif
     public static bool CanNew(this Type type)
     {
         if( type == null )
@@ -172,9 +191,7 @@ public static class TypeExtensionsCF
     /// <param name="type"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-#if NETCOREAPP
     [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
-#endif
     public static MethodInfo GetInstanceMethod(this Type type, string name)
     {
         if( type == null )
@@ -192,9 +209,7 @@ public static class TypeExtensionsCF
     /// <param name="type"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-#if NETCOREAPP
     [RequiresUnreferencedCode("This method uses reflection, incompatible with trimming.")]
-#endif
     public static MethodInfo GetStaticMethod(this Type type, string name)
     {
         if( type == null )

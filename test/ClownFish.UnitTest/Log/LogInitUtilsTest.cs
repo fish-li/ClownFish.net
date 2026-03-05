@@ -20,7 +20,7 @@ public class LogInitUtilsTest
         });
 
         EnvironmentVariables.Set("ClownFish_Log_WritersMap", "*=NULL");
-        EnvironmentVariables.Set("Show_ClownFish_Log_Config", "1");
+        EnvironmentVariables.Set("Show_ClownFish_LogConfig", "1");
 
         typeof(LogConfig).SetFieldValue("s_inited", false);
         ClownFishInit.InitLogAsDefault();
@@ -28,18 +28,18 @@ public class LogInitUtilsTest
 
 
         typeof(LogConfig).SetFieldValue("s_inited", false);
-        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.Log.config", true);
+        LogConfiguration config = LogConfig.LoadFromFile("ClownFish.UnitTest.config.ini", true);
         ClownFishInit.InitLog(config);
         ClownFishInit.InitLog(config);
 
 
         EnvironmentVariables.Set("ClownFish_Log_WritersMap", "");
-        EnvironmentVariables.Set("Show_ClownFish_Log_Config", "1");
+        EnvironmentVariables.Set("Show_ClownFish_LogConfig", "1");
         typeof(LogConfig).SetFieldValue("s_inited", false);
-        ClownFishInit.InitLog("ClownFish.Log.config");
-        ClownFishInit.InitLog("ClownFish.Log.config");
+        ClownFishInit.InitLog("ClownFish.UnitTest.config.ini");
+        ClownFishInit.InitLog("ClownFish.UnitTest.config.ini");
 
-        EnvironmentVariables.Set("Show_ClownFish_Log_Config", "0");
+        EnvironmentVariables.Set("Show_ClownFish_LogConfig", "0");
     }
 
     [TestMethod]
@@ -56,11 +56,10 @@ public class LogInitUtilsTest
     [TestMethod]
     public void Test_LoadFromConfigService()
     {
-        Console.WriteLine("LogConfigFileName: " + ConfigFile.LogConfigFileName);
-
-        LogConfiguration config = LogInitUtils.LoadFromConfigService();
+        LogConfiguration config = LogInitUtils.LoadFile(ConfigFile.LogConfigFileName);
         Assert.IsNotNull(config);
 
+        // 下面这些值是从 _config/ClownFish.UnitTest.Logconfig.ini 这个文件中读取的
         Assert.AreEqual(123, config.TimerPeriod);
         Assert.AreEqual(456, config.Performance.HttpExecute);
         Assert.AreEqual(789, config.Performance.HandleMessage);
@@ -69,7 +68,7 @@ public class LogInitUtilsTest
     [TestMethod]
     public void Test_LoadFromLocalFile()
     {
-        LogConfiguration config = LogInitUtils.LoadFromLocalFile();
+        LogConfiguration config = LogInitUtils.LoadFile("ClownFish.UnitTest.config.ini");
         Assert.IsNotNull(config);
 
         Assert.AreEqual(100, config.TimerPeriod);

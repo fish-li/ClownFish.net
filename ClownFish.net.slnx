@@ -1,0 +1,45 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ClownFish.CodeGen/ClownFish.CodeGen.csproj" />
+    <Project Path="src/ClownFish.Email/ClownFish.Email.csproj" />
+    <Project Path="src/ClownFish.ImClients/ClownFish.ImClients.csproj" />
+    <Project Path="src/ClownFish.net/ClownFish.net.csproj" />
+    <Project Path="src/ClownFish.netfx/ClownFish.netfx.csproj" />
+    <Project Path="src/ClownFish.Office/ClownFish.Office.csproj" />
+    <Project Path="src/ClownFish.Rabbit/ClownFish.Rabbit.csproj" />
+    <Project Path="src/ClownFish.Redis/ClownFish.Redis.csproj" />
+    <Project Path="src/ClownFish.Web/ClownFish.Web.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/ClownFish.UnitTest/ClownFish.UnitTest.csproj">
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="test/ClownFish.Web.UnitTest/ClownFish.Web.UnitTest.csproj" />
+    <Project Path="test/PerformanceTest/PerformanceTest.csproj">
+      <Build Solution="Release|*" Project="false" />
+    </Project>
+    <Project Path="test/TestWebSite1/" Type="Website" DisplayName="TestWebSite1" Id="7ce6ac9d-272e-4472-a66f-f1447b340620">
+      <BuildType Project="Debug" />
+      <Build Solution="Release|*" Project="false" />
+      <Properties Name="WebsiteProperties">
+        <Property Name="Debug.AspNetCompiler.Debug" Value="&quot;True&quot;" />
+        <Property Name="Debug.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+        <Property Name="Debug.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+        <Property Name="Debug.AspNetCompiler.PhysicalPath" Value="&quot;test\TestWebSite1\&quot;" />
+        <Property Name="Debug.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_51778\&quot;" />
+        <Property Name="Debug.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+        <Property Name="Debug.AspNetCompiler.VirtualPath" Value="&quot;/localhost_51778&quot;" />
+        <Property Name="Release.AspNetCompiler.Debug" Value="&quot;False&quot;" />
+        <Property Name="Release.AspNetCompiler.FixedNames" Value="&quot;false&quot;" />
+        <Property Name="Release.AspNetCompiler.ForceOverwrite" Value="&quot;true&quot;" />
+        <Property Name="Release.AspNetCompiler.PhysicalPath" Value="&quot;test\TestWebSite1\&quot;" />
+        <Property Name="Release.AspNetCompiler.TargetPath" Value="&quot;PrecompiledWeb\localhost_51778\&quot;" />
+        <Property Name="Release.AspNetCompiler.Updateable" Value="&quot;true&quot;" />
+        <Property Name="Release.AspNetCompiler.VirtualPath" Value="&quot;/localhost_51778&quot;" />
+        <Property Name="SlnRelativePath" Value="&quot;test\TestWebSite1\&quot;" />
+        <Property Name="TargetFrameworkMoniker" Value="&quot;.NETFramework,Version%3Dv4.8&quot;" />
+        <Property Name="VWDPort" Value="&quot;51778&quot;" />
+      </Properties>
+    </Project>
+  </Folder>
+</Solution>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <TargetFrameworks>net10.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <RootNamespace>ClownFish.Web.UnitTest</RootNamespace>
         <AssemblyName>ClownFish.Web.UnitTest</AssemblyName>
@@ -37,8 +37,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="ClownFish.App.config">
+        <None Update="ClownFish.Appconfig.xml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="ClownFish.Web.UnitTest.config.ini">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Test_ProxyMapRule.xml">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

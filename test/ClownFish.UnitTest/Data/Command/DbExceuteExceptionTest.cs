@@ -14,9 +14,7 @@ public class DbExceuteExceptionTest
         Assert.AreEqual("message1xxxxxxx", ex2.Message);
         Assert.AreEqual("select * from table1", ex2.Command.CommandText);
         
-        Console.WriteLine(ex2.ConnectionString);
-        Assert.IsNotNull(ex2.ConnectionString);
-        Assert.IsTrue(ex2.ConnectionString.Contains("Server=MsSqlHost;Database=MyNorthwind;Uid=user1;"));
+        Assert.AreEqual("Data Source=MsSqlHost;Initial Catalog=MyNorthwind;User ID=user1;Password=qaz1@wsx;Application Name=ClownFish.UnitTest", ex2.ConnectionString);
 
 
 

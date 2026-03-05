@@ -6,7 +6,6 @@ namespace ClownFish.Data.Xml;
 /// 表示*.XmlCommand.config文件中的一个XmlCommand配置项。
 /// </summary>
 [XmlType("XmlCommand")]
-[Serializable]
 public sealed class XmlCommandItem
 {
     /// <summary>
@@ -49,5 +48,4 @@ public sealed class XmlCommandItem
     [XmlAttribute]
     public string Database { get; set; }
 }
-
 

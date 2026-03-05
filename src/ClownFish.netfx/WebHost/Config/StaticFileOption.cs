@@ -5,7 +5,6 @@ namespace ClownFish.WebHost.Config;
 /// <summary>
 /// 静态文件参数
 /// </summary>
-[Serializable]
 public sealed class StaticFileOption
 {
     /// <summary>

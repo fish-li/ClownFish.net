@@ -3,9 +3,17 @@
 /// <summary>
 /// 简单模板工具类
 /// </summary>
-public sealed class TextTemplate
+public sealed partial class TextTemplate
 {
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"\{(?<name>[\w\.\(\)]+)\}", RegexOptions.None, "en-US")]
+    private static partial Regex GetNameRegex();
+#else
     private static readonly Regex s_regex = new Regex(@"\{(?<name>[\w\.\(\)]+)\}", RegexOptions.Compiled);
+
+    private static Regex GetNameRegex() => s_regex;
+#endif
+
 
     private IDictionary<string, object> _data;
     private string _json;
@@ -21,7 +29,7 @@ public sealed class TextTemplate
         if( template.IsNullOrEmpty() )
             return Empty.Array<string>();
 
-        MatchCollection matchs = s_regex.Matches(template);
+        MatchCollection matchs = GetNameRegex().Matches(template);
         if( matchs.Count == 0 )
             return Empty.Array<string>();
 

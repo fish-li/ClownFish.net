@@ -5,9 +5,7 @@ namespace ClownFish.Base.Reflection;
 /// <summary>
 /// Type 相关的扩展方法，用于性能优化。
 /// </summary>
-#if NETCOREAPP
 [RequiresUnreferencedCode("This class uses reflection, incompatible with trimming.")]
-#endif
 public static class CtorExtensions
 {
     private static readonly Hashtable s_methodDict = Hashtable.Synchronized(new Hashtable(10240));
@@ -21,7 +19,7 @@ public static class CtorExtensions
     public static object FastNew(this Type instanceType)
     {
         if( instanceType == null )
-            throw new ArgumentNullException("instanceType");
+            throw new ArgumentNullException(nameof(instanceType));
 
         if( EnvArgs0.IsAot ) {
             return Activator.CreateInstance(instanceType);

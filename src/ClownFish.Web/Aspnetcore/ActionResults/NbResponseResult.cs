@@ -1,13 +1,15 @@
 ﻿using System.Net;
+using ClownFish.Web.Aspnetcore.ActionResults;
 
 namespace ClownFish.Web.AspnetCore.ActionResults;
 
 /// <summary>
 /// 
 /// </summary>
-public sealed class NbResponseResult : ActionResult
+public sealed class NbResponseResult : ActionResult, IOutActionResult
 {
     private readonly HttpResult<string> _httpResult;
+    private readonly HttpResult<byte[]> _httpResult2;
     private readonly HttpResponseMessage _responseMessage;
 
     /// <summary>
@@ -21,6 +23,19 @@ public sealed class NbResponseResult : ActionResult
 
         _httpResult = httpResult;
     }
+
+    /// <summary>
+    /// 构造方法
+    /// </summary>
+    /// <param name="httpResult"></param>
+    public NbResponseResult(HttpResult<byte[]> httpResult)
+    {
+        if( httpResult == null )
+            throw new ArgumentNullException(nameof(httpResult));
+
+        _httpResult2 = httpResult;
+    }
+
 
     /// <summary>
     /// 构造方法
@@ -54,16 +69,7 @@ public sealed class NbResponseResult : ActionResult
     public override async Task ExecuteResultAsync(ActionContext context)
     {
         NHttpContext httpContextNetCore = HttpPipelineContext.Get2().HttpContext;
-
-        if( _httpResult != null ) {
-            await httpContextNetCore.HttpReplyAsync(_httpResult);
-            return;
-        }
-
-        if( _responseMessage != null ) {
-            await httpContextNetCore.HttpReplyAsync(_responseMessage);
-            return;
-        }
+        await OutResultAsync(httpContextNetCore);
     }
 
 
@@ -77,4 +83,21 @@ public sealed class NbResponseResult : ActionResult
         throw new NotImplementedException();
     }
 
- }
+    public async Task OutResultAsync(NHttpContext httpContext)
+    {
+        if( _httpResult != null ) {
+            await httpContext.HttpReplyAsync(_httpResult);
+            return;
+        }
+
+        if( _httpResult2 != null ) {
+            await httpContext.HttpReplyAsync(_httpResult2);
+            return;
+        }
+
+        if( _responseMessage != null ) {
+            await httpContext.HttpReplyAsync(_responseMessage);
+            return;
+        }
+    }
+}

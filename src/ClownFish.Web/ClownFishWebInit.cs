@@ -11,7 +11,7 @@ public static class ClownFishWebInit
         DebugReport.RegisterOptionsType(typeof(ClownFish.Web.ClownFishWebOptions));
     }
 
-    internal static void InitAuth()
+    public static void InitAuth()
     {
         string hashName = Settings.GetSetting("ClownFish_JwtToken_AlgorithmName");
         if( hashName.IsNullOrEmpty() ) {

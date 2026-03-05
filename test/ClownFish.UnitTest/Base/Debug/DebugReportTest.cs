@@ -55,8 +55,12 @@ namespace ClownFish.UnitTest.Base.Debug
             Assert.IsTrue(s5.HasValue());
             Assert.IsTrue(s6.HasValue());
             Assert.AreEqual("_NULL_", s7);
+        }
 
 
+        [TestMethod]
+        public void Test_Gen_cfconfig_ini()
+        {
             string savePath = Path.Combine(AppContext.BaseDirectory, "temp/ClownFish.UnitTest.cfconfig.ini");
             List<DebugReportBlock> list = new List<DebugReportBlock>(2);
             list.Add(AppConfig.GetDebugReportBlock());
@@ -64,6 +68,7 @@ namespace ClownFish.UnitTest.Base.Debug
             string text = list.ToText(false);
             RetryFile.WriteAllText(savePath, text, Encoding.UTF8);
         }
+
 
         [TestMethod]
         public void Test_GetEnvironmentVariables()
@@ -87,7 +92,7 @@ namespace ClownFish.UnitTest.Base.Debug
             Console.WriteLine(text);
 
             Assert.IsFalse(text.Contains("3f3144a9ff6d4782818ee8d60f0cd09e"));
-            Assert.IsTrue(text.Contains("aaaaaaa_ConnectionString: Server=a72d23afd3b24ef6ac83cd339d5977c9;Uid=root;Pwd=********;"));
+            Assert.IsTrue(text.Contains("aaaaaaa_ConnectionString: Server=a72d23afd3b24ef6ac83cd339d5977c9;User ID=root;Password=********"));
 
             Assert.IsFalse(text.Contains("9534ea5a3a074b688d94a8e777c6f119"));
             Assert.IsTrue(text.Contains("bbbbbbb_Password: ********"));

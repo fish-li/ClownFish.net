@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示一条操作日志
 /// </summary>
-[Serializable]
 public partial class OprLog : IMsgObject, IMsgBeforeWrite
 {
     /// <summary>
@@ -21,6 +20,29 @@ public partial class OprLog : IMsgObject, IMsgBeforeWrite
     /// </summary>
     public string OprName { get; set; }
 
+    #region 部署环境相关数据
+
+    /// <summary>
+    /// 应用程序名称
+    /// </summary>
+    public string AppName { get; set; }
+
+    /// <summary>
+    /// 应用程序类别。一个数字，用于日志过滤。
+    /// </summary>
+    public int AppKind { get; set; }
+
+    /// <summary>
+    /// 机器名称
+    /// </summary>
+    public string HostName { get; set; }
+
+    /// <summary>
+    /// 部署/集群 环境名称
+    /// </summary>
+    public string EnvName { get; set; }
+
+    #endregion
 
     #region 链路字段
 
@@ -261,30 +283,6 @@ public partial class OprLog : IMsgObject, IMsgBeforeWrite
 
     #endregion
 
-
-    #region 部署环境相关数据
-
-    /// <summary>
-    /// 应用程序名称
-    /// </summary>
-    public string AppName { get; set; }
-
-    /// <summary>
-    /// 应用程序类别。一个数字，用于日志过滤。
-    /// </summary>
-    public int AppKind { get; set; }
-
-    /// <summary>
-    /// 机器名称
-    /// </summary>
-    public string HostName { get; set; }
-
-    /// <summary>
-    /// 部署/集群 环境名称
-    /// </summary>
-    public string EnvName { get; set; }
-
-    #endregion
 
 
     string IMsgObject.GetId() => this.OprId;

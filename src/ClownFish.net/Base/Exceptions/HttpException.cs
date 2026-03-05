@@ -3,7 +3,6 @@
 /// <summary>
 /// 
 /// </summary>
-//[Serializable]
 public sealed class HttpException : Exception, IErrorCode
 {
     /// <summary>

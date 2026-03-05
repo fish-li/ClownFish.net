@@ -3,7 +3,6 @@
 /// <summary>
 /// 目录浏览相关参数
 /// </summary>
-[Serializable]
 public sealed class DirectoryBrowseOption
 {
     /// <summary>

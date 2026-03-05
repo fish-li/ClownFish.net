@@ -1,24 +1,7 @@
 ﻿namespace ClownFish.WebApi.Routing;
 
-internal static class RouteHelper
+internal static partial class RouteHelper
 {
-    private static readonly Regex s_regex = new Regex(@"{(\w+)}", RegexOptions.Compiled);
-
-    /// <summary>
-    /// 将包含了占位符模式的字符串翻译成等效的正则表达式
-    /// </summary>
-    /// <param name="pattern"></param>
-    /// <returns></returns>
-    public static Regex CreateRegex(string pattern)
-    {
-        string newString = s_regex.Replace(pattern, @"(?<$1>\w+)");
-        return new Regex(newString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-
-        // input:   /page/{id}/{year}-{month}-{day}.aspx
-        // output:  /page/(?<id>\w+)/(?<year>\w+)-(?<month>\w+)-(?<day>\w+).aspx
-    }
-
 
     public static RoutingObject CreateRoutingObject(Type t, MethodInfo m, RouteAttribute a1, RouteAttribute a2)
     {
@@ -40,7 +23,7 @@ internal static class RouteHelper
         }
 
         if( routing.Url.IndexOf('{') >= 0 )
-            routing.UrlRegex = RouteHelper.CreateRegex(routing.Url);
+            routing.UrlRegex = RegexUtils.CreateRouteRegex(routing.Url);
 
         return routing;
     }

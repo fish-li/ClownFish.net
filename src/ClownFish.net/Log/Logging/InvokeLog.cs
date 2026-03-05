@@ -4,7 +4,6 @@
 /// <summary>
 /// 一条简单的执行统计信息（根据OprLog的数据创建）
 /// </summary>
-[Serializable]
 [BatchWritable(Ndjson = true)]
 public sealed class InvokeLog : IMsgObject
 {

@@ -5,9 +5,6 @@ namespace ClownFish.Data;
 /// <summary>
 /// 一种将SQL语句配置在XML中数据库操作命令
 /// </summary>
-#if NETCOREAPP
-[RequiresUnreferencedCode("This method uses XmlSerializer, incompatible with trimming.")]
-#endif
 public sealed class XmlCommand : BaseCommand
 {
     private XmlCommandItem _item;
@@ -25,6 +22,7 @@ public sealed class XmlCommand : BaseCommand
     }
 
 
+    [UnconditionalSuppressMessage("Trimming", "IL2075: Type.GetProperties(BindingFlags)")]
     internal void Init(string name, object argsObject)
     {
         SetCommand(name);

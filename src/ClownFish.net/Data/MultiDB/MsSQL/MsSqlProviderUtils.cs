@@ -31,6 +31,7 @@ internal static class MsSqlProviderUtils
 
         if( flag == 1 ) {
             DbClientFactory.RegisterProvider(DatabaseClients.SqlClient, MsSqlClientProvider.Instance);
+            CurrentProviderName = "System.Data.SqlClient";
         }
 
         if( flag == 2 ) {

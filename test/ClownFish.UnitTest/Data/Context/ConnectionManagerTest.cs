@@ -25,11 +25,6 @@ public class ConnectionManagerTest : BaseTest
         MyAssert.IsError<ArgumentOutOfRangeException>(() => {
             _ = ConnectionManager.GetConnection("xxxxx");
         });
-
-
-        MyAssert.IsError<ArgumentOutOfRangeException>(() => {
-            _ = ConnectionManager.GetDbConfig("xxxxx");
-        });
     }
 
 
@@ -62,7 +57,7 @@ public class ConnectionManagerTest : BaseTest
     [TestMethod]
     public void Test_DbConfigs()
     {
-        var configs = AppConfig.GetConfigObject().GetConfiguration().DbConfigs;
+        var configs = AppConfig.GetAccessor().GetConfObject().DbConfigs;
         Assert.IsNotNull(AppConfig.GetDbConfig("s1"));
         Assert.IsNotNull(AppConfig.GetDbConfig("s2"));
         Assert.IsNotNull(AppConfig.GetDbConfig("m1"));
@@ -87,8 +82,9 @@ public class ConnectionManagerTest : BaseTest
         Assert.AreEqual(0, m2.Port);
         Assert.AreEqual("MyNorthwind", m2.Database);
         Assert.AreEqual("user1", m2.UserName);
-        Assert.AreEqual("qaz1@wsx", m2.Password);
+        Assert.AreEqual("qaz1=;@wsx", m2.Password);
         Assert.AreEqual("Allow Zero Datetime=True;Convert Zero Datetime=True;", m2.Args);
+
 
         DbConfig dm1 = AppConfig.GetDbConfig("dm1");
         Assert.AreEqual("dm1", dm1.Name);

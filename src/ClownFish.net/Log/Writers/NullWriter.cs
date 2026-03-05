@@ -5,22 +5,12 @@
 /// </summary>
 internal sealed class NullWriter : ILogWriter
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="config"></param>
-    /// <param name="section"></param>
-    public void Init(LogConfiguration config, WriterConfig section)
+
+    public void Init(LogConfiguration config, Type dataType)
     {
     }
 
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="list"></param>
     public void WriteList<T>(List<T> list) where T : class, IMsgObject
     {
         // 不执行写入操作

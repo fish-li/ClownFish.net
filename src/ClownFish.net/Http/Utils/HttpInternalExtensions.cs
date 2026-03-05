@@ -5,8 +5,10 @@
 /// </summary>
 public static class HttpInternalExtensions
 {
+
 #pragma warning disable IDE1006 // 命名样式
-    private static readonly ActionWrapper<WebHeaderCollection, string, string> s_AddWithoutValidateInvoker;
+    private static readonly MethodInfo s_AddMethod;
+    private static readonly ActionWrapper<WebHeaderCollection, string, string> s_AddMethodWrapper;
 #pragma warning restore IDE1006 // 命名样式
 
     static HttpInternalExtensions()
@@ -18,8 +20,12 @@ public static class HttpInternalExtensions
             BindingFlags.Instance | BindingFlags.NonPublic, null,
             new Type[] { typeof(string), typeof(string) }, null);
 
-        s_AddWithoutValidateInvoker = new ActionWrapper<WebHeaderCollection, string, string>();
-        s_AddWithoutValidateInvoker.BindMethod(method);
+        s_AddMethod = method;
+
+        if( EnvArgs0.IsAot == false ) {
+            s_AddMethodWrapper = new ActionWrapper<WebHeaderCollection, string, string>();
+            s_AddMethodWrapper.BindMethod(method);
+        }
     }
 
     /// <summary>
@@ -31,7 +37,12 @@ public static class HttpInternalExtensions
     public static void InternalAdd(this WebHeaderCollection headers, string name, string value)
     {
         try {
-            s_AddWithoutValidateInvoker.Call(headers, name, value);
+            if( s_AddMethodWrapper != null ) {
+                s_AddMethodWrapper.Call(headers, name, value);
+            }
+            else {
+                s_AddMethod.Invoke(headers, new object[] { name, value });
+            }
         }
         catch( Exception ex ) {
             throw new ApplicationException($"添加请求头失败：[{name}={value}]", ex);

@@ -11,9 +11,7 @@ public static class BackgroundTaskManager
     /// 搜索所有的 public BackgroundTask/AsyncBackgroundTask 类型
     /// </summary>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: CanNew")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: CanNew")]
     public static List<Type> SearchBackgroundTaskTypes()
     {
         List<Type> types1 = (from asm in AppPartUtils.GetApplicationPartAsmList()
@@ -62,9 +60,7 @@ public static class BackgroundTaskManager
         return s_taskList.Count;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2067: Activator.CreateInstance")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2067: Activator.CreateInstance")]
     private static void StartSyncTask(Type t)
     {
         BackgroundTask task = Activator.CreateInstance(t) as BackgroundTask;
@@ -76,15 +72,13 @@ public static class BackgroundTaskManager
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2067: Activator.CreateInstance")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2067: Activator.CreateInstance")]
     private static void StartAsyncTask(Type t)
     {
         AsyncBackgroundTask task = Activator.CreateInstance(t) as AsyncBackgroundTask;
         s_taskList.Add(task);
 
-        Console2.Info("Start BackgroundTask: " + t.FullName);
+        Console2.Info("Start AsyncBackgroundTask: " + t.FullName);
 
         ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);        
     }

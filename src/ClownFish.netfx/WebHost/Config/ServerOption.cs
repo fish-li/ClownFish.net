@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示整个服务实例的运行参数
 /// </summary>
-[Serializable]
 public sealed class ServerOption
 {
     /// <summary>

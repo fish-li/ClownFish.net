@@ -11,10 +11,6 @@ public static partial class ResponseUtils
     private static readonly object s_lock = new object();
     private static bool s_inited = false;
 
-    private static FieldInfo s_field;
-    private static GetValueDelegate s_httpResponseMessageGetter;
-
-
     private static void Init()
     {
         if( s_inited == false ) {
@@ -26,13 +22,11 @@ public static partial class ResponseUtils
                 }
             }
         }
-        
+
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: DynamicMethodFactory")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026: DynamicMethodFactory")]
     [DynamicDependency("_httpResponseMessage", typeof(HttpWebResponse))]
-#endif
     private static void Init0()
     {
         s_field = typeof(HttpWebResponse).GetField("_httpResponseMessage", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -43,7 +37,9 @@ public static partial class ResponseUtils
             s_httpResponseMessageGetter = DynamicMethodFactory.CreateFieldGetter(s_field);
         }
     }
-    
+
+    private static FieldInfo s_field;
+    private static GetValueDelegate s_httpResponseMessageGetter;
 
     /// <summary>
     /// 获取HttpWebResponse对象中的原始HttpResponseMessage对象
@@ -57,9 +53,9 @@ public static partial class ResponseUtils
 
         Init();
 
-        HttpResponseMessage responseMessage = EnvArgs0.IsAot
-                    ? (HttpResponseMessage)s_field.GetValue(httpWebResponse)
-                    : (HttpResponseMessage)s_httpResponseMessageGetter.Invoke(httpWebResponse);
+        HttpResponseMessage responseMessage = (s_httpResponseMessageGetter != null)
+           ? (HttpResponseMessage)s_httpResponseMessageGetter.Invoke(httpWebResponse)
+           : (HttpResponseMessage)s_field.GetValue(httpWebResponse);
 
         if( responseMessage == null )
             throw new ObjectDisposedException(nameof(HttpWebResponse));

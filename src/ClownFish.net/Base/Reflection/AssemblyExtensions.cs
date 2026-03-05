@@ -42,9 +42,7 @@ public static class AssemblyExtensions
     /// </summary>
     /// <param name="assembly"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: assembly.GetExportedTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: assembly.GetExportedTypes")]
     public static Type[] GetPublicTypes(this Assembly assembly)
     {
         if( assembly == null )
@@ -83,9 +81,7 @@ public static class AssemblyExtensions
     /// </summary>
     /// <param name="assembly"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: assembly.GetTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: assembly.GetTypes")]
     public static Type[] GetAllTypes(this Assembly assembly)
     {
         if( assembly == null )

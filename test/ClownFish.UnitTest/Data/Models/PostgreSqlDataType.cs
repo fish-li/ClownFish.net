@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-[Serializable]
 [DbEntity(Alias = "testtype")]
 public partial class PostgreSqlDataType : Entity
 {

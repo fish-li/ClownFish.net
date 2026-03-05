@@ -8,7 +8,7 @@ namespace ClownFish.Base;
 /// </summary>
 internal static class WinRegSetting
 {
-    internal static readonly string DefaultRegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
+    internal static readonly string DefaultRegPath = @"HKEY_CURRENT_USER\SOFTWARE\ClownFish_LocalSettings\" + AsmHelper.GetExeName();
 
     private static string s_regPath = DefaultRegPath;
 

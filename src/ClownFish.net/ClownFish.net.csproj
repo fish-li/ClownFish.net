@@ -1,93 +1,78 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>net10.0;net9.0;net8.0;net7.0;net6.0;net48;net462;net45</TargetFrameworks>
-        <RootNamespace>ClownFish</RootNamespace>
-        <AssemblyVersion>10.0.0.0</AssemblyVersion>
-        <Version>10.25.1222.1</Version>
-        <FileVersion>10.25.1222.1</FileVersion>
-        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
-        <OutputPath>bin</OutputPath>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
-        <!--<LangVersion>13.0</LangVersion>-->
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net10.0;net8.0;net462</TargetFrameworks>
+		<RootNamespace>ClownFish</RootNamespace>
+		<AssemblyVersion>10.0.0.0</AssemblyVersion>
+		<Version>10.26.305.1</Version>
+		<FileVersion>10.26.305.1</FileVersion>
+		<SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<LangVersion>latest</LangVersion>
+		<OutputPath>bin</OutputPath>
+		<DocumentationFile>bin\ClownFish.net.xml</DocumentationFile>
+		<IsAotCompatible>true</IsAotCompatible>
+	</PropertyGroup>
 
-    <PropertyGroup>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <PackageId>ClownFish.net</PackageId>
-        <Authors>Fish Li</Authors>
-        <PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
-        <Description>一个“小而美”的.NET工具类库</Description>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Authors>Fish Li</Authors>
+		<PackageId>ClownFish.net</PackageId>
+		<Description>一个“小而美”的.NET工具类库</Description>
+		<PackageProjectUrl>https://github.com/fish-li/ClownFish.net</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-    <PropertyGroup>
-        <IsAotCompatible>true</IsAotCompatible>
-    </PropertyGroup>
+	<!--<PropertyGroup Condition="'$(Configuration)'=='ReleaseAOT'">
+		<TargetFrameworks>net10.0</TargetFrameworks>
+		<DefineConstants>$(DefineConstants);IS_AOT</DefineConstants>
+		<OutputPath>bin\aot\</OutputPath>
+		<IsAotCompatible>true</IsAotCompatible>
+		<DebugSymbols>false</DebugSymbols>
+		<DocumentationFile>bin\aot\ClownFish.net.xml</DocumentationFile>
+		<PackageId>ClownFish.net-aot</PackageId>
+		<Description>一个“小而美”的.NET工具类库(AOT版本)</Description>
+	</PropertyGroup>-->
 
-    <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48' ">
-        <Reference Include="System.Web" />
-        <Reference Include="System.Configuration" />
-        <Reference Include="System.IO.Compression" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-        <PackageReference Include="Cronos" Version="0.8.4" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net48' ">
+		<Reference Include="System.Web" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.IO.Compression" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+		<PackageReference Include="Cronos" Version="0.8.4" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
-        <PackageReference Include="Cronos" Version="0.11.1" />
-        <PackageReference Include="System.CodeDom" Version="10.0.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.0" />
-        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-    </ItemGroup>
-    
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-        <PackageReference Include="Cronos" Version="0.8.4" />
-        <PackageReference Include="System.CodeDom" Version="9.0.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
-        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' or '$(TargetFramework)' == 'net9.0' ">
+		<PackageReference Include="Cronos" Version="0.11.1" />
+		<PackageReference Include="System.CodeDom" Version="10.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.0" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' ">
-        <PackageReference Include="Cronos" Version="0.8.4" />
-        <PackageReference Include="System.CodeDom" Version="8.0.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.6" />
-        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net7.0' or '$(TargetFramework)' == 'net8.0' ">
+		<PackageReference Include="Cronos" Version="0.8.4" />
+		<PackageReference Include="System.CodeDom" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
+		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.6" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <!--下面这些包永不升级！！！-->
-        <PackageReference Include="Cronos" Version="0.8.4" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="System.CodeDom" Version="6.0.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.0" />
-        <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Remove="WindowsLinuxTimeZone.json" />
+	</ItemGroup>
 
-
-    <ItemGroup>
-        <None Remove="ClownFish.Log.config" />
-        <None Remove="WindowsLinuxTimeZone.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="ClownFish.Log.config" />
-        <EmbeddedResource Include="WindowsLinuxTimeZone.json" />
-    </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="ClownFish.logconfig.ini" />
+		<EmbeddedResource Include="WindowsLinuxTimeZone.json" />
+	</ItemGroup>
 
 </Project>

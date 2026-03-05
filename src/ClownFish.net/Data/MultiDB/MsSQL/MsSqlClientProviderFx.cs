@@ -29,6 +29,13 @@ internal class MsSqlClientProvider : BaseMsSqlClientProvider
 
         return false;
     }
+
+
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        DbConnectionStringBuilder sb = new System.Data.SqlClient.SqlConnectionStringBuilder();
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
+    }
 }
 
 #endif

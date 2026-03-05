@@ -1,4 +1,4 @@
-﻿//HTTP管线模型，可用于三种运行环境：
+﻿//HTTP管线模型，可用于三种运行模式：
 //1、WebHost + WebApi： 用于.NET FX 下的 Console, WinForm, WindowsService 项目
 //2、ASP.NET + WebApi ：用于经典的 IIS/ASP.NET 运行环境。
 //3、ASP.NET CORE 环境
@@ -51,6 +51,7 @@ public sealed class NHttpApplication
         if( Instance != null )
             throw new InvalidOperationException("此方法不允许多次调用！");
 
+        // 在构造函数中会调用 CreateModuleList() 来创建模块列表，并调用每个模块的 Init() 方法进行初始化。
         NHttpApplication app = new NHttpApplication();
 
         if( onlyOnce ) {
@@ -207,6 +208,19 @@ public sealed class NHttpApplication
     }
 
     /// <summary>
+    /// MapRequestHandler
+    /// </summary>
+    /// <param name="httpContext"></param>
+    public void MapRequestHandler(NHttpContext httpContext)
+    {
+        httpContext.LogFxEvent(new NameTime(nameof(MapRequestHandler)));
+
+        foreach( NHttpModule module in _modules ) {
+            module.MapRequestHandler(httpContext);
+        }
+    }
+
+    /// <summary>
     /// PreFindAction
     /// </summary>
     /// <param name="httpContext"></param>
@@ -311,9 +325,9 @@ public sealed class NHttpApplication
         // 对于日志来说，End 阶段不够用，所以再增加一个【内部阶段】
         // 目前主要是 OprLogModule 在用
         foreach( NHttpModule module in _modules ) {
-            if( module is IEnd2Request module2 ) {
+            if( module is IFxLogRequest module2 ) {
                 try {
-                    module2.End2Request(httpContext);
+                    module2.FxLogRequest(httpContext);
                 }
                 catch( Exception ex2 ) {
                     Console2.Error("NHttpApplication.End2Request ERROR.", ex2);

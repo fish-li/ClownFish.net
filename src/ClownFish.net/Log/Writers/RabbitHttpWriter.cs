@@ -12,24 +12,23 @@ internal sealed class RabbitHttpWriter : ILogWriter
 
     private RabbitHttpClient _client;
 
-    public void Init(LogConfiguration config, WriterConfig section)
+    public void Init(LogConfiguration config, Type dataType)
     {
-        InternalInit(config, LoggingOptions.RabbitSettingName);
+        InternalInit(dataType, LoggingOptions.RabbitSettingName);
     }
 
-
-    internal int InternalInit(LogConfiguration config, string settingName)
+    internal int InternalInit(Type dataType, string settingName)
     {
         string configValue = Settings.GetSetting(settingName);
 
         if( configValue.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitHttpWriter 不能初始化，因为没有找到 {settingName} 的连接配置参数。");
+            Console2.Info($"##### RabbitHttpWriter 不能完成初始化，因为没有找到 {settingName} 的连接配置参数！");
             return -1;
         }
 
         RabbitOption option = configValue.ToObject<RabbitOption>();
         if( option.Server.IsNullOrEmpty() ) {
-            Console2.Info($"RabbitHttpWriter 不能初始化，因为连接配置参数 {settingName} 的 Server 为空。");
+            Console2.Info($"##### RabbitHttpWriter 不能完成初始化，因为连接配置参数 {settingName} 的 Server 为空！");
             return -2;
         }
 
@@ -41,27 +40,33 @@ internal sealed class RabbitHttpWriter : ILogWriter
         _client.TestConnection();
 
         // 为每种日志的数据类型创建对应的队列
-        AutoCreateQueue(config);
+        AutoCreateQueue(dataType);
 
         Console2.Info(this.GetType().FullName + " Init OK, config: " + option.ToString());
         return 1;
     }
 
-
-    private void AutoCreateQueue(LogConfiguration config)
+    private void AutoCreateQueue(Type dataType)
     {
-        // 检查每种数据类型，判断它们有没有要求写入到Rabbit
-        foreach( var item in config.Types ) {
-
-            // for example:  <Type DataType="xxxxxx" Writers="Json,Rabbit" />
-            if( item.Writers.ToArray2().Contains("RabbitHttp", StringComparer.OrdinalIgnoreCase) ) {
-
-                string queue = item.TypeObject.GetQueueName();
-                string bindingKey = queue;
-                _client.CreateQueueBind(queue, null, bindingKey, null);
-            }
-        }
+        string queue = dataType.GetQueueName();
+        string bindingKey = queue;
+        _client.CreateQueueBind(queue, null, bindingKey, null);
     }
+
+    //private void AutoCreateQueue(LogConfiguration config)
+    //{
+    //    // 检查每种数据类型，判断它们有没有要求写入到Rabbit
+    //    foreach( var item in config.Types ) {
+
+    //        // for example:  <Type DataType="xxxxxx" Writers="Json,Rabbit" />
+    //        if( item.Writers.ToArray2().Contains("RabbitHttp", StringComparer.OrdinalIgnoreCase) ) {
+
+    //            string queue = item.TypeObject.GetQueueName();
+    //            string bindingKey = queue;
+    //            _client.CreateQueueBind(queue, null, bindingKey, null);
+    //        }
+    //    }
+    //}
 
 
 

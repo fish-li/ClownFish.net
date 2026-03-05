@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ClownFish.Base;   // 很多项目会引用这个命名空间，所以用它会省事
+﻿namespace ClownFish.Base;   // 很多项目会引用这个命名空间，所以用它会省事
 
 /// <summary>
 /// ClownFish初始化辅助工具类
@@ -69,7 +67,7 @@ public static class ClownFishInit
     /// <summary>
     /// 初始化 ClownFish.Log
     /// </summary>
-    /// <param name="filePath">ClownFish.Log.config的完整路径</param>
+    /// <param name="filePath">ClownFish.Logconfig的完整路径</param>
     public static void InitLog(string filePath)
     {
         LogInitUtils.InitLog(filePath);

@@ -68,9 +68,7 @@ internal class WhereParase : ExpressionVisitor
         return false;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastGetValue")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: FastGetValue")]
     private object GetMemberExpressionValue(MemberExpression node)
     {
         object instance = null;

@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示需要上传的文件数据结构
 /// </summary>
-[Serializable]
 public sealed class HttpFile
 {
     ///// <summary>

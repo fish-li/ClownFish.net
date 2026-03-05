@@ -14,14 +14,14 @@ public class KvConfigFileTest
         string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "files/_local2.env");
 
         Dictionary<string, string> dict = new Dictionary<string, string>();
-        int count = KvConfigFile.LoadFromFile(localEnvFilePath, dict);
+        int count = KvConfigFile.LoadFile(localEnvFilePath, dict);
         CheckResult(count, dict);
 
 
         string text = RetryFile.ReadAllText(localEnvFilePath);
 
         Dictionary<string, string> dict2 = new Dictionary<string, string>();
-        int count2 = KvConfigFile.LoadFromText(text, dict2);
+        int count2 = KvConfigFile.LoadText(text, dict2);
         CheckResult(count2, dict2);
 
 
@@ -47,16 +47,16 @@ public class KvConfigFileTest
     public void Test_2()
     {
         Dictionary<string, string> dict = new Dictionary<string, string>();
-        Assert.AreEqual(-1, KvConfigFile.LoadFromFile("./xxxxxxxxxxx.abc", dict));
+        Assert.AreEqual(-1, KvConfigFile.LoadFile("./xxxxxxxxxxx.abc", dict));
 
 
         string localEnvFilePath = Path.Combine(AppContext.BaseDirectory, "files/_local2.env");
         Dictionary<string, string> nullDict = null;
-        Assert.AreEqual(-2, KvConfigFile.LoadFromFile(localEnvFilePath, nullDict));
+        Assert.AreEqual(-2, KvConfigFile.LoadFile(localEnvFilePath, nullDict));
 
 
-        Assert.AreEqual(-1, KvConfigFile.LoadFromText("", dict));
-        Assert.AreEqual(-2, KvConfigFile.LoadFromText("aaa=11", nullDict));
+        Assert.AreEqual(-1, KvConfigFile.LoadText("", dict));
+        Assert.AreEqual(-2, KvConfigFile.LoadText("aaa=11", nullDict));
 
     }
 

@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示日志配置中存在的错误
 /// </summary>
-[Serializable]
 public sealed class LogConfigException : Exception
 {
     /// <summary>

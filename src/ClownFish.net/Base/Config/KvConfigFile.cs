@@ -11,7 +11,7 @@ public static class KvConfigFile
     /// <param name="configFilePath"></param>
     /// <param name="dict"></param>
     /// <returns></returns>
-    public static int LoadFromFile(string configFilePath, Dictionary<string, string> dict)
+    public static int LoadFile(string configFilePath, Dictionary<string, string> dict)
     {
         if( File.Exists(configFilePath) == false )
             return -1;
@@ -32,7 +32,7 @@ public static class KvConfigFile
     /// <param name="text"></param>
     /// <param name="dict"></param>
     /// <returns></returns>
-    public static int LoadFromText(string text, Dictionary<string, string> dict)
+    public static int LoadText(string text, Dictionary<string, string> dict)
     {
         if( text.IsNullOrEmpty() )
             return -1;
@@ -63,16 +63,11 @@ public static class KvConfigFile
             if( line[0] == '#' || line.StartsWith0("//") )   // 注释行
                 continue;
 
-            int p = line.IndexOf('=');
-
-            if( p < 1 )   // 无效的数据行
-                continue;
-
-            string name = line.Substring(0, p).Trim();
-            string value = line.Substring(p + 1).Trim();
-
-            dict[name] = value;    // 如果 KEY 重复，【后出现】的配置会 覆盖【前面出现】的配置
-            count++;
+            NameValue nv = NameValue.Parse(line, '=');
+            if( nv != null ) {
+                dict[nv.Name] = nv.Value;    // 如果 KEY 重复，【后出现】的配置会 覆盖【前面出现】的配置
+                count++;
+            }
         }
         return count;
     }

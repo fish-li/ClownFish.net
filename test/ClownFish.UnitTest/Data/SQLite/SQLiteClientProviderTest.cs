@@ -36,7 +36,7 @@ public class SQLiteClientProviderTest
         query = query.Context.ClientProvider.GetNewIdQuery(query, null);
 
         string sql2 = query.Command.CommandText;
-        Assert.IsTrue(sql2.EndsWith0("; SELECT last_insert_rowid();"));
+        Assert.IsTrue(sql2.EndsWith0("; SELECT last_insert_rowid();"));   // 只校验生成的SQL语句，并不实际执行
     }
 
 
@@ -50,7 +50,7 @@ public class SQLiteClientProviderTest
         CPQuery query = dbContext.CPQuery.Create("select * from table1 where id = @id", args);
 
         var query2 = provider.SetPagedQuery(query, 5, 10);
-        Assert.IsTrue(query2.Command.CommandText.EndsWith("LIMIT 10 OFFSET 5"));
+        Assert.IsTrue(query2.Command.CommandText.EndsWith("LIMIT 10 OFFSET 5"));   // 只校验生成的SQL语句，并不实际执行
     }
 
 
@@ -68,7 +68,7 @@ public class SQLiteClientProviderTest
             PageSize = 10
         };
 
-        var query2 = provider.GetPagedCommand(query, pagingInfo);
+        var query2 = provider.GetPagedCommand(query, pagingInfo);   // 只校验生成的SQL语句，并不实际执行
         Console.WriteLine(query2.ListQuery.Command.CommandText);
         Console.WriteLine(query2.CountQuery.Command.CommandText);
 

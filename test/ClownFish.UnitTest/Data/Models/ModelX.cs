@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-[Serializable]
 [DbEntity(Alias = "TestTable1")]
 public class ModelX : Entity
 {
@@ -45,7 +44,6 @@ public class ModelX : Entity
 }
 
 
-[Serializable]
 public class Model1Proxy : ModelX, IEntityProxy
 {
 #pragma warning disable IDE0044 // 添加只读修饰符

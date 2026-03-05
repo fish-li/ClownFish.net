@@ -60,6 +60,15 @@ public abstract class NHttpModule
 
 
     /// <summary>
+    /// MapRequestHandler
+    /// </summary>
+    /// <param name="httpContext"></param>
+    public virtual void MapRequestHandler(NHttpContext httpContext)
+    {
+    }
+
+
+    /// <summary>
     /// PreFindAction
     /// </summary>
     /// <param name="httpContext"></param>

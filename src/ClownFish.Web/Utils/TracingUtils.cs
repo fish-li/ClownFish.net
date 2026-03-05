@@ -1,7 +1,10 @@
-﻿namespace ClownFish.Web.Utils;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ClownFish.Web.Utils;
 
 internal static class TracingUtils
 {
+    [UnconditionalSuppressMessage("Trimming", "IL2026: ReflectionUtils.CallStaticMethod")]
     public static void Init()
     {
         if( LoggingOptions.TracingEnabled == false ) {
@@ -10,16 +13,22 @@ internal static class TracingUtils
         }
 
         DbLogger.Init();
-        EFLogger.Init();
-        HttpClientLogger2.Init();
+        List<string> flags = new List<string>() { "DbLogger"};
 
-        List<string> flags = new List<string>() { "DbLogger", "EFLogger", "HttpClientLogger2" };
+        if( EFLogger.Init() ) {
+            flags.Add("EFLogger");
+        }
+
+        HttpClientLogger2.Init();
+        flags.Add("HttpClientLogger2");
+
+        // AOT编译后，ClownFish.Email、ClownFish.Redis、ClownFish.Rabbit 这3个dll会被剔除掉，所以这里不调用它们的 Init 方法了
 
         if( ReflectionUtils.CallStaticMethod("ClownFish.Email.MailLogger, ClownFish.Email", "Init") == 1 )
             flags.Add("MailLogger");
 
-        if( ReflectionUtils.CallStaticMethod("ClownFish.NRedis.RedisLogger, ClownFish.Redis", "Init") != 1 )
-            flags.Add("MailLogger");
+        if( ReflectionUtils.CallStaticMethod("ClownFish.NRedis.RedisLogger, ClownFish.Redis", "Init") == 1 )
+            flags.Add("RedisLogger");
 
         if( ReflectionUtils.CallStaticMethod("ClownFish.Rabbit.RabbitLogger, ClownFish.Rabbit", "Init") == 1 )
             flags.Add("RabbitLogger");

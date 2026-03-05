@@ -9,9 +9,7 @@ internal static class ProxyLoader
     /// 说明：已经存在的代理类型是用工具提前生成好的。
     /// </summary>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: FastNew")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: FastNew")]
     internal static List<EntityCompileResult> SearchExistEntityCompileResult()
     {
         // 工具生成的程序集一定会使用EntityProxyAssemblyAttribute，所以用它做过滤
@@ -32,7 +30,7 @@ internal static class ProxyLoader
                 // 所以，在查找时，先找【实体加载器类型】，并根据EntityAdditionAttribute来查找配对的【实体代理类型】
 
                 // 【实体加载器类型】的样例代码请参考 \test\ClownFish.Data.UnitTest\AutoCode1.cs
-                if( t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(BaseDataLoader<>) ) {
+                if( t.BaseType != null && t.BaseType.IsGenericType && t.BaseType.GetGenericTypeDefinition() == typeof(BaseDataLoader<>) ) {
 
                     EntityCompileResult cr = new EntityCompileResult();
                     cr.EntityType = t.BaseType.GetGenericArguments()[0];
@@ -53,9 +51,7 @@ internal static class ProxyLoader
         return list;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
     private static void LogDebugInfo(List<Assembly> proxyAsmList)
     {
         DebugReportBlock block = new DebugReportBlock { Category = "EntityProxy Assembly List", Order = 1002 };

@@ -33,8 +33,12 @@ public class InsertTest
             Assert.IsNotNull(exception);
             Console.WriteLine(exception.ToString());
 
+            // exception.Message:
+            // 23505: duplicate key value violates unique constraint "ix_categoryname"
+            // 23505: 重复键违反唯一约束"ix_categoryname"
+
             Assert.IsTrue(exception.GetBaseException() is PostgresException);
-            Assert.IsTrue(exception.Message.Contains("23505: duplicate key value violates unique constraint \"ix_categoryname\""));
+            Assert.IsTrue(exception.Message.Contains("23505:"));
 
             Assert.IsTrue(dbContext.IsDuplicateInsert(exception));
         }

@@ -7,11 +7,9 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
     private readonly PropertyInfo _exNumber;
+    private readonly Type _connStringBuilderType;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: exceptionType.GetProperty")]
     internal MySqlDataClientProvider()
     {
         Type factoryType = Type.GetType("MySql.Data.MySqlClient.MySqlClientFactory, MySql.Data", true, false);
@@ -19,11 +17,14 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
 
+        _connStringBuilderType = Type.GetType("MySql.Data.MySqlClient.MySqlConnectionStringBuilder, MySql.Data", true, false);
 
         _exceptionType = Type.GetType("MySql.Data.MySqlClient.MySqlException, MySql.Data", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：MySql.Data.MySqlClient.MySqlException.Number");
+
+        
 
         _exNumber = p;
     }
@@ -42,5 +43,12 @@ internal sealed class MySqlDataClientProvider : BaseMySqlClientProvider
         }
 
         return false;
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2077: Activator.CreateInstance")]
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        DbConnectionStringBuilder sb = (DbConnectionStringBuilder)Activator.CreateInstance(_connStringBuilderType);
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 }

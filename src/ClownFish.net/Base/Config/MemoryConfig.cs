@@ -1,7 +1,7 @@
 ﻿namespace ClownFish.Base;
 
 /// <summary>
-/// 内存中的配置参数，用于配置服务不启用的场景。
+/// 内存中的配置参数。
 /// </summary>
 public static class MemoryConfig
 {
@@ -26,13 +26,18 @@ public static class MemoryConfig
         s_settings.Set(name, value);
     }
 
-    internal static bool RemoveSetting(string name)
+    /// <summary>
+    /// 删除指定名称的配置参数
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static bool RemoveSetting(string name)
     {
         return s_settings.TryRemove(name, out var _);
     }
 
     /// <summary>
-    /// 获取某个配置参数
+    /// 获取指定名称的配置参数
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
@@ -60,9 +65,18 @@ public static class MemoryConfig
         s_db.Set(name, config);
     }
 
+    /// <summary>
+    /// 删除指定名称的数据库连接配置
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static bool RemoveDbConfig(string name)
+    {
+        return s_db.TryRemove(name, out var _);
+    }
 
     /// <summary>
-    /// 获取一个数据库连接配置
+    /// 获取指定名称的数据库连接配置
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
@@ -102,39 +116,15 @@ public static class MemoryConfig
         return s_files.TryGet(name);
     }
 
-
     /// <summary>
-    /// 设置 AppConfig 的文件内容
+    /// 删除指定名称的配置文件
     /// </summary>
-    /// <param name="xml"></param>
-    public static void SetAppConfig(string xml)  // TODO: 支持其它格式的配置文件
-    {
-        if( xml == null )
-            throw new ArgumentNullException(nameof(xml));
-
-        string filename = ConfigFile.AppConfigFileName;
-        AddFile(filename, xml);
-    }
-
-
-    /// <summary>
-    /// 设置 LogConfig 的文件内容
-    /// </summary>
-    /// <param name="xml"></param>
-    public static void SetLogConfig(string xml)
-    {
-        if( xml == null )
-            throw new ArgumentNullException(nameof(xml));
-
-        string filename = ConfigFile.LogConfigFileName;
-        AddFile(filename, xml);
-    }
-
-
-    internal static void RemoveFile(string filename)
+    /// <param name="filename"></param>
+    public static void RemoveFile(string filename)
     {
         s_files.TryRemove(filename, out string _);
     }
+
 
     internal static DebugReportBlock GetDebugReportBlock()
     {
@@ -148,6 +138,11 @@ public static class MemoryConfig
         block.AppendLine("---DbConfig---");
         foreach( var name in s_db.GetKeys() ) {
             block.AppendLine($"{name} = {s_db[name]?.ToString()}");
+        }
+
+        block.AppendLine("---Files---");
+        foreach( var name in s_files.GetKeys() ) {
+            block.AppendLine(name);
         }
 
         return block;

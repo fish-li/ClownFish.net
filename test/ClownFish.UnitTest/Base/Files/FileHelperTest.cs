@@ -60,10 +60,10 @@ namespace ClownFish.UnitTest.Base.Files
                 FileHelper.EncryptFile((string)null, "destFilePath", "password");
             });
             MyAssert.IsError<ArgumentNullException>(() => {
-                FileHelper.EncryptFile("ClownFish.App.config", (string)null, "password");
+                FileHelper.EncryptFile("_local.env", (string)null, "password");
             });
             MyAssert.IsError<ArgumentNullException>(() => {
-                FileHelper.EncryptFile("ClownFish.App.config", "destFilePath", (string)null);
+                FileHelper.EncryptFile("_local.env", "destFilePath", (string)null);
             });
 
 
@@ -72,10 +72,10 @@ namespace ClownFish.UnitTest.Base.Files
                 FileHelper.DecryptFile((string)null, "destFilePath", "password");
             });
             MyAssert.IsError<ArgumentNullException>(() => {
-                FileHelper.DecryptFile("ClownFish.App.config", (string)null, "password");
+                FileHelper.DecryptFile("_local.env", (string)null, "password");
             });
             MyAssert.IsError<ArgumentNullException>(() => {
-                FileHelper.DecryptFile("ClownFish.App.config", "destFilePath", (string)null);
+                FileHelper.DecryptFile("_local.env", "destFilePath", (string)null);
             });
         }
 

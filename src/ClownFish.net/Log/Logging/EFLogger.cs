@@ -5,12 +5,30 @@ namespace ClownFish.Log.Logging;
 /// <summary>
 /// 
 /// </summary>
+[UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.GetType")]
+[UnconditionalSuppressMessage("Trimming", "IL2075: asm.GetMethod")]
 public static class EFLogger
 {
     /// <summary>
     /// 
     /// </summary>
-    public static void Init()
+    public static bool Init()
+    {
+        // 不直接调用 Init 这个方法，让它在AOT编译时被裁剪掉
+
+        MethodInfo method = typeof(OprLog).Assembly.GetType("ClownFish.Log.Logging.EFLogger_0", false, false)
+                                ?.GetMethod("Init", BindingFlags.NonPublic | BindingFlags.Static);
+        method?.Invoke(null, null);
+        return method != null;
+
+        //DiagnosticListener.AllListeners.Subscribe(new EFEventSubscriber());
+    }
+}
+
+
+internal static class EFLogger_0
+{
+    private static void Init()
     {
         DiagnosticListener.AllListeners.Subscribe(new EFEventSubscriber());
     }
@@ -37,10 +55,8 @@ internal class EFEventSubscriber : IObserver<DiagnosticListener>
     }
 }
 
-#if NETCOREAPP
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: eventData.Get")]
-#endif
-internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
+[UnconditionalSuppressMessage("Trimming", "IL2026: eventData.Get")]
+internal partial class EFEventObserver : IObserver<KeyValuePair<string, object>>
 {
     public void OnCompleted()
     {
@@ -143,8 +159,19 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
         scope.AddStep(step);
     }
 
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"^set\s+\w+\s+[^;]+;\s*(?<name>\w+)\s+", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetRegex1();
+
+    [GeneratedRegex(@"^\s*(?<name>\w+)\s+", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetRegex2();
+#else
     private static readonly Regex s_regex1 = new Regex(@"^set\s+\w+\s+[^;]+;\s*(?<name>\w+)\s+", RegexOptions.IgnoreCase| RegexOptions.Compiled);
     private static readonly Regex s_regex2 = new Regex(@"^\s*(?<name>\w+)\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static Regex GetRegex1() => s_regex1;
+    private static Regex GetRegex2() => s_regex2;
+#endif
 
     private string GetStepName(DbCommand command)
     {
@@ -154,11 +181,11 @@ internal class EFEventObserver : IObserver<KeyValuePair<string, object>>
         if( sql.StartsWithIgnoreCase("SET ") ) {
             // EF 在生成 INSERT, UPDATE, DELETE 时，可能会添加设置，所以为了能知道到底执行的是什么操作，就要去掉这个设置
             // 可能会出现的内容   "SET NOCOUNT ON;"  or   "SET AUTOCOMMIT = 1;"
-            Match m = s_regex1.Match(sql);
+            Match m = GetRegex1().Match(sql);
             return GetStepName(m, transFlag);
         }
         else {
-            Match m = s_regex2.Match(sql);
+            Match m = GetRegex2().Match(sql);
             return GetStepName(m, transFlag);
         }
     }

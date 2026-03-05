@@ -15,100 +15,20 @@ public interface IConfigFile
 }
 
 
-internal sealed class DefaultConfigFileImpl : IConfigFile
-{
-    public static readonly DefaultConfigFileImpl Instance = new DefaultConfigFileImpl();
-
-    public string GetFile(string filename, bool checkExist)
-    {
-        if( string.IsNullOrEmpty(filename) )
-            throw new ArgumentNullException(nameof(filename));
-
-        // 先从内存中读取
-        string fileBody = MemoryConfig.GetFile(filename);
-        if( fileBody.HasValue() ) {
-            return fileBody;
-        }
-
-        // 从配置服务中读取
-        fileBody = ConfigClient.Instance.GetConfigFile(filename);
-        if( fileBody.HasValue() ) {
-            return fileBody;
-        }
-
-        // 再尝试从本地目录中读取配置文件
-        fileBody = GetLocalFile(filename);
-        if( fileBody.HasValue() ) {
-            return fileBody;
-        }
-
-        // 按简化的文件名再查找一次，主要是为了兼顾配置服务和本地文件名称不同的情况
-        // 例如：ApplicationName = "Nebula.Venus"   ，本地配置文件名：MonitorConfig.xml
-        // 在配置服务中的文件名，为了方便识别，就会注册成：Nebula.Venus.MonitorConfig.xml
-        // 程序代码调用时，会写成：string xmlBody = ConfigFile.GetFile("Nebula.Venus.MonitorConfig.xml", false);
-        string prefix = EnvUtils.GetAppName() + ".";
-        if( filename.StartsWithIgnoreCase(prefix) ) {
-            string filename2 = filename.Substring(prefix.Length);
-
-            fileBody = GetLocalFile(filename2);
-            if( fileBody.HasValue() ) {
-                return fileBody;
-            }
-        }
-
-        if( checkExist ) {
-            throw new FileNotFoundException($"没有找到配置文件: {filename}");
-        }
-        else {
-            return null;
-        }
-    }
-
-
-    internal static string GetLocalFile(string filename)
-    {
-        return GetLocalFile2(filename, out string _);
-    }
-
-    internal static string GetLocalFile2(string filename, out string readFilePath)
-    {
-        string fileBody = null;
-
-        // 尝试用绝对路径
-        string filePath = ConfigHelper.GetFileAbsolutePath(filename);
-
-        if( File.Exists(filePath) ) {
-            fileBody = RetryFile.ReadAllText(filePath, Encoding.UTF8);
-        }
-
-        if( fileBody.IsNullOrEmpty() ) {
-
-            // 第二次使用绝对路径，并且加上一个固定的目录
-            filePath = Path.Combine(AppContext.BaseDirectory, "_config", filename);
-
-            if( File.Exists(filePath) )
-                fileBody = RetryFile.ReadAllText(filePath, Encoding.UTF8);
-        }
-
-        readFilePath = fileBody.HasValue() ? filePath : null;
-        return fileBody;
-    }
-}
-
 /// <summary>
 /// 与配置文件相关的工具类
 /// </summary>
 public static class ConfigFile
 {
     /// <summary>
-    /// 默认的 App.Config 文件名
+    /// 默认的 AppConfig 文件名
     /// </summary>
-    public static string AppConfigFileName => EnvUtils.GetAppName() + ".App.Config";
+    public static string AppConfigFileName => AsmHelper.GetExeName() + ".config.ini";
 
     /// <summary>
-    /// 默认的 Log.Config 文件名
+    /// 默认的 LogConfig 文件名
     /// </summary>
-    public static string LogConfigFileName => EnvUtils.GetAppName() + ".Log.Config";
+    public static string LogConfigFileName => AsmHelper.GetExeName() + ".logconfig.ini";
 
 
     private static IConfigFile s_instance = DefaultConfigFileImpl.Instance;
@@ -136,3 +56,68 @@ public static class ConfigFile
     }
 
 }
+
+
+internal sealed class DefaultConfigFileImpl : IConfigFile
+{
+    public static readonly DefaultConfigFileImpl Instance = new DefaultConfigFileImpl();
+
+    public string GetFile(string filename, bool checkExist)
+    {
+        if( string.IsNullOrEmpty(filename) )
+            throw new ArgumentNullException(nameof(filename));
+
+        // 先从内存中读取
+        string fileBody = MemoryConfig.GetFile(filename);
+        if( fileBody.HasValue() ) {
+            return fileBody;
+        }
+
+        // 从配置服务中读取
+        fileBody = ConfigClient.Instance.GetConfigFile(filename);
+        if( fileBody.HasValue() ) {
+            return fileBody;
+        }
+
+        // 再尝试从本地目录中读取配置文件
+        fileBody = GetLocalFile(filename);
+        if( fileBody.HasValue() ) {
+            return fileBody;
+        }
+
+        if( checkExist ) {
+            throw new FileNotFoundException($"没有找到配置文件: {filename}");
+        }
+        else {
+            return null;
+        }
+    }
+
+
+    internal static string GetLocalFile(string filename)
+    {
+        return GetLocalFile2(filename, out string _);
+    }
+
+    internal static string GetLocalFile2(string filename, out string readFilePath)
+    {
+        // 尝试用绝对路径
+        string filePath = PathUtils.GetFileAbsolutePath(filename);
+        if( File.Exists(filePath) ) {
+            readFilePath = filePath;
+            return RetryFile.ReadAllText(filePath, Encoding.UTF8);
+        }
+
+
+        // 第二次使用绝对路径，并且加上一个固定的目录
+        string filePath2 = Path.Combine(AppContext.BaseDirectory, "_config", filename);
+        if( File.Exists(filePath2) ) {
+            readFilePath = filePath2;
+            return RetryFile.ReadAllText(filePath2, Encoding.UTF8);
+        }
+
+        readFilePath = null;
+        return null;
+    }
+}
+

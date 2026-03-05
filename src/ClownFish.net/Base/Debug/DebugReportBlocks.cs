@@ -180,9 +180,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("SingleFileAnalyzer", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
-#endif
+    [UnconditionalSuppressMessage("SingleFile", "IL3000: Assembly.Location always returns an empty string for assemblies embedded in a single-file app")]
     public static DebugReportBlock GetAssemblyListInfo()
     {
         DebugReportBlock block = new DebugReportBlock { Category = "Load Assembly List", Order = 1004 };
@@ -233,9 +231,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: ToXml2")]
-#endif
+
     internal static DebugReportBlock GetDebugReportBlock(this AppConfiguration appconfig)
     {
         DebugReportBlock block = new DebugReportBlock { Category = "ClownFish.AppConfig", Order = 100 };
@@ -245,9 +241,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: ToXml2")]
-#endif
+
     internal static DebugReportBlock GetDebugReportBlock(this LogConfiguration logconfig)
     {
         DebugReportBlock block = new DebugReportBlock { Category = "ClownFish.LogConfig", Order = 100 };
@@ -298,9 +292,7 @@ internal static class DebugReportBlocks
         return block;
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2070: optType.GetProperties")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2070: optType.GetProperties")]
     internal static void AddFieldValues1(DebugReportBlock block, Type optType)
     {
         PropertyInfo[] ps = optType.GetProperties(BindingFlags.Static | BindingFlags.Public);
@@ -317,9 +309,7 @@ internal static class DebugReportBlocks
         }
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: optType.GetProperties")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2075: optType.GetProperties")]
     internal static void AddFieldValues2(DebugReportBlock block, object opt)
     {
         Type optType = opt.GetType();

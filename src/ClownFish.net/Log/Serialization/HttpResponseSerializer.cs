@@ -83,15 +83,11 @@ internal static class HttpResponseSerializer
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.GetType")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.GetType")]
     private static readonly Type s_type = typeof(HttpContent).Assembly.GetType("System.Net.Http.DecompressionHandler+DecompressedContent", false, false);
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: s_type.GetField")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: s_type.GetField")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static HttpContent TryGetRealContent(HttpContent content)
     {

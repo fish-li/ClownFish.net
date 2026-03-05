@@ -9,7 +9,7 @@ public static class AuthenticationManager
 
     internal static JwtOptions GetJwtOptions() => s_jwtImpl?.GetJwtOptions();
 
-    internal static bool Inited => s_jwtImpl != null;
+    public static bool Inited => s_jwtImpl != null;
 
     public static void Init(JwtProvider provider, ICheckRights checkRights)
     {

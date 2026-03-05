@@ -41,18 +41,12 @@ public class CacheQueueTest
     public void Test2()
     {
         CacheQueue<XMessage> queue = new CacheQueue<XMessage>();
-        queue.SetFieldValue("_writers", null);
-
-        // 队列为空
-        Assert.AreEqual(0, queue.Flush());
-
-        // 没有关联的写入器
-        queue.Add((object)new XMessage(123));
-        Assert.AreEqual(-1, queue.Flush());
-
 
         ILogWriter[] writers = new ILogWriter[] { new NullWriter() };
         queue.SetFieldValue("_writers", writers);
+
+        // 队列为空
+        Assert.AreEqual(0, queue.Flush());
 
         // 写入成功
         queue.Add((object)new XMessage(123));

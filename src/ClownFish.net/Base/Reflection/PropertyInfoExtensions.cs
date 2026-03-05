@@ -14,14 +14,13 @@ public static class PropertyInfoExtensions
     public static object FastGetValue(this PropertyInfo propertyInfo, object instance)
     {
         if( propertyInfo == null )
-            throw new ArgumentNullException("propertyInfo");
+            throw new ArgumentNullException(nameof(propertyInfo));
 
         if( EnvArgs0.IsAot ) {
             return propertyInfo.GetValue(instance);
         }
-        else {
-            return GetterSetterFactory.GetPropertyGetterWrapper(propertyInfo).Get(instance);
-        }
+
+        return GetterSetterFactory.GetPropertyGetterWrapper(propertyInfo).Get(instance);
     }
 
     /// <summary>
@@ -33,14 +32,14 @@ public static class PropertyInfoExtensions
     public static void FastSetValue(this PropertyInfo propertyInfo, object instance, object value)
     {
         if( propertyInfo == null )
-            throw new ArgumentNullException("propertyInfo");
+            throw new ArgumentNullException(nameof(propertyInfo));
 
         if( EnvArgs0.IsAot ) {
             propertyInfo.SetValue(instance, value);
+            return;
         }
-        else {
-            GetterSetterFactory.GetPropertySetterWrapper(propertyInfo).Set(instance, value);
-        }
+
+        GetterSetterFactory.GetPropertySetterWrapper(propertyInfo).Set(instance, value);
     }
 }
 

@@ -67,9 +67,9 @@ public class ZipHelperTest
             FullName = "aa/",
         });
 
-        string configFile = Path.Combine(Environment.CurrentDirectory, "ClownFish.App.config");
+        string configFile = Path.Combine(Environment.CurrentDirectory, "_local.env");
         list.Add(new ZipItem {
-            FullName = "aa/ClownFish.App.config",
+            FullName = "aa/_local.env",
             LocalFilePath = configFile
         });
 
@@ -79,7 +79,7 @@ public class ZipHelperTest
 
 
         List<ZipItem> list2 = ZipHelper.Read(zipFile2);
-        var item2 = list2.Find(x => x.FullName == @"aa/ClownFish.App.config");
+        var item2 = list2.Find(x => x.FullName == @"aa/_local.env");
         Assert.IsNotNull(item2);
 
         byte[] body = File.ReadAllBytes(configFile);            

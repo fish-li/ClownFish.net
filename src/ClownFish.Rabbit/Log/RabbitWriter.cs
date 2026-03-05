@@ -9,12 +9,7 @@ internal sealed class RabbitWriter : ILogWriter
     private bool _inited;
     private RabbitClient _client;
 
-    public void Init(LogConfiguration config, WriterConfig section)
-    {
-        InternalInit(config);
-    }
-
-    private void InternalInit(LogConfiguration config)
+    public void Init(LogConfiguration config, Type dataType)
     {
         string configValue = Settings.GetSetting(LoggingOptions.RabbitSettingName);
 
@@ -37,24 +32,24 @@ internal sealed class RabbitWriter : ILogWriter
         _client.TestConnection();
 
         // 为每种日志的数据类型创建对应的队列
-        AutoCreateQueue(config);
+        _client.CreateQueueBind(dataType);
 
         Console2.Info(this.GetType().FullName + " Init OK, config: " + option.ToString());
         _inited = true;
     }
 
 
-    private void AutoCreateQueue(LogConfiguration config)
-    {
-        // 检查每种数据类型，判断它们有没有要求写入到Rabbit
-        foreach( var item in config.Types ) {
+    //private void AutoCreateQueue(LogConfiguration config)
+    //{
+    //    // 检查每种数据类型，判断它们有没有要求写入到Rabbit
+    //    foreach( var item in config.Types ) {
 
-            // for example:  <Type DataType="xxxxxx" Writers="Json,Rabbit" />
-            if( item.Writers.ToArray2().Contains("Rabbit", StringComparer.OrdinalIgnoreCase) ) {
-                _client.CreateQueueBind(item.GetDataTypeTypeObject());
-            }
-        }
-    }
+    //        // for example:  <Type DataType="xxxxxx" Writers="Json,Rabbit" />
+    //        if( item.Writers.ToArray2().Contains("Rabbit", StringComparer.OrdinalIgnoreCase) ) {
+    //            _client.CreateQueueBind(item.GetTypeObject());
+    //        }
+    //    }
+    //}
 
 
 

@@ -19,11 +19,11 @@ public class ProxyBuilderTest
     }
 
     [TestMethod]
-    public void Test_SearchAllEntityTypes()
+    public void Test_SearchEntityTypesForCompile()
     {
         List<EntityCompileResult> existCompileResult = ProxyLoader.SearchExistEntityCompileResult();
 
-        List<Type> list1 = ProxyBuilder.SearchAllEntityTypes(existCompileResult);
+        List<Type> list1 = ProxyBuilder.SearchEntityTypesForCompile(existCompileResult);
 
 
         string block = ProxyBuilder.CompileEntityListReportBlock.ToString2();

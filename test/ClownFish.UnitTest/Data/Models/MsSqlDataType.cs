@@ -3,7 +3,6 @@
 // 用于测试 SQLSERVER 数据类型的实体，与MySQL相比去掉了一些无意义的数据类型
 
 
-[Serializable]
 [DbEntity(Alias = "TestType")]
 public partial class MsSqlDataType : Entity
 {

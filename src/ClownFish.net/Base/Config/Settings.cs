@@ -1,10 +1,11 @@
 ﻿namespace ClownFish.Base;
 
 // 4个“配置源”优先级的原因：
-// App.config： 用于开发环境，避免暴露生产环境相关敏感信息。
-// 配置服务：可用于在生产环境中【全局共享】的参数配置，它会覆盖开发环境的配置，用于保护敏感信息不泄漏
-// 内存配置：从第三方配置服务中读取的设置，等同于“配置服务”
 // 环境变量：每个应用【最终运行时】可指定的参数，用于覆盖全局共享的参数配置
+// 内存配置：从第三方配置服务中读取的设置，等同于“配置服务”
+// 配置服务：可用于在生产环境中【全局共享】的参数配置，它会覆盖开发环境的配置，用于保护敏感信息不泄漏
+// AppConfig： 用于开发环境，避免暴露生产环境相关敏感信息
+
 
 
 /// <summary>
@@ -62,9 +63,11 @@ internal sealed class DefaultSettingsImpl : ISettings
             return value;
 
         // 5，从AppConfig中读取
-        value = AppConfig.GetSetting(name);
-        if( string.IsNullOrEmpty(value) == false )
-            return value;
+        if( AppConfig.Inited ) {  // 防止死循环调用
+            value = AppConfig.GetSetting(name);
+            if( string.IsNullOrEmpty(value) == false )
+                return value;
+        }
 
 
         if( value.IsNullOrEmpty() && checkExist )
@@ -77,7 +80,7 @@ internal sealed class DefaultSettingsImpl : ISettings
 
 /// <summary>
 /// 供应用程序在运行时获取配置的工具类。
-/// 参数项的读取顺序：环境变量，配置服务，App.config
+/// 参数项的读取顺序：环境变量，MemoryConfig，配置服务，AppConfig
 /// </summary>
 public static class Settings
 {

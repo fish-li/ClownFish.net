@@ -1,4 +1,5 @@
-﻿namespace ClownFish.UnitTest.Base.Config;
+﻿namespace ClownFish.UnitTest.Data.Context;
+
 [TestClass]
 public class DbConnManagerTest
 {

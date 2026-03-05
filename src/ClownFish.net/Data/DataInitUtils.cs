@@ -1,6 +1,5 @@
-﻿using ClownFish.Data.Xml;
+﻿namespace ClownFish.Data;
 
-namespace ClownFish.Data;
 internal static class DataInitUtils
 {
     private static bool s_dalInited = false;
@@ -10,10 +9,7 @@ internal static class DataInitUtils
     /// 初始化 ClownFish.Data
     /// </summary>
 #if NETCOREAPP     // 下面几个类型不参与裁剪，保留无参构造函数，确保可序列化
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: xml")]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlCmdParameter))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(XmlCommandItem))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFish.Base.Xml.XmlCdata))]
+    //[UnconditionalSuppressMessage("Trimming", "IL2026: xml")]
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Entity))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IDataLoader<>))]
@@ -32,14 +28,15 @@ internal static class DataInitUtils
         if( s_dalInited == false ) {
             AutoRegisterDbProviders();
 
-            Initializer.Instance.LoadXmlCommandFromDirectory();
+            if( EnvArgs0.IsAot == false ) {
+                Initializer.Instance.LoadXmlCommandFromDirectory();
 
-            // 【单文件部署】场景下，不允许在运行时生成代理程序集，因为Assembly相关的API有限制
-            if( AsmHelper.IsSingleFileDeploy == false ) {
-                string exePath = AsmHelper.GetExeFilePath();
-                string newName = Path.GetFileNameWithoutExtension(exePath) + ".EntityProxy.dll";
-                string dllOutPath = Path.Combine(EnvUtils.GetTempPath(), newName);
-                Initializer.Instance.CompileAllEntityProxy(dllOutPath);
+                // 【单文件部署】场景下，不允许在运行时生成代理程序集
+                if( AsmHelper.IsSingleFileDeploy == false ) {
+                    string newName = AsmHelper.GetExeName() + ".EntityProxy.dll";
+                    string dllOutPath = Path.Combine(EnvUtils.GetTempPath(), newName);
+                    Initializer.Instance.CompileAllEntityProxy(dllOutPath);
+                }
             }
 
             s_dalInited = true;
@@ -68,7 +65,7 @@ internal static class DataInitUtils
         }
 
         // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider
-        if( asmList.Contains("DmProvider") || asmList.Contains("DM.DmProvider") ) {
+        if( asmList.Contains("DM.DmProvider") ) {
             Initializer.Instance.RegisterDamengProvider();
         }
 

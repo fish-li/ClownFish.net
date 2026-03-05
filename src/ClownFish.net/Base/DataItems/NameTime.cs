@@ -3,7 +3,6 @@
 /// <summary>
 /// 表示一个 【名称/时间】 数值对
 /// </summary>
-[Serializable]
 public struct NameTime
 {
     /// <summary>

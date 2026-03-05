@@ -1,4 +1,5 @@
-﻿namespace ClownFish.Data.CodeDom;
+﻿
+namespace ClownFish.Data.CodeDom;
 
 /// <summary>
 /// 用于生成并编译实体的代理类的工具类
@@ -30,19 +31,22 @@ internal static class ProxyBuilder
         if( s_inited )
             throw new InvalidOperationException("CompileAllEntityProxy方法不允许重复调用。");
 
+        s_inited = true;
 
         if( RetryFile.Exists(dllOutPath) )
             RetryFile.Delete(dllOutPath);
 
-        // add to debug report
 
         // 获取所有已生成的实体代理类型编译结果
         List<EntityCompileResult> existCompileResult = ProxyLoader.SearchExistEntityCompileResult();
         ProxyLoader.RegisterCompileResult(existCompileResult);
 
+        if( EnvArgs0.IsAot || EnvArgs0.IsSingleFileDeploy )
+            return new List<Type>(0);   // AOT环境不生成代理类型
+
 
         // 搜索所有需要编译的实体类型
-        List<Type> listTypes = SearchAllEntityTypes(existCompileResult);
+        List<Type> listTypes = SearchEntityTypesForCompile(existCompileResult);
         LogDebugInfo(listTypes);
 
 
@@ -50,7 +54,6 @@ internal static class ProxyBuilder
         List<EntityCompileResult> compileResult = Compile(listTypes.ToArray(), dllOutPath);
         ProxyLoader.RegisterCompileResult(compileResult);
 
-        s_inited = true;
         return listTypes;
     }
 
@@ -71,13 +74,12 @@ internal static class ProxyBuilder
     }
 
 
-
     /// <summary>
-    /// 查找当前进程加载的程序集中所有的实体类型
+    /// 查找当前进程加载的程序集中**没有代理**的实体类型，用于后续编译生成代理类型。
     /// </summary>
     /// <param name="existCompileResult"></param>
     /// <returns></returns>
-    internal static List<Type> SearchAllEntityTypes(List<EntityCompileResult> existCompileResult)
+    internal static List<Type> SearchEntityTypesForCompile(List<EntityCompileResult> existCompileResult)
     {
         List<Type> listTypes = new List<Type>();
 
@@ -112,7 +114,10 @@ internal static class ProxyBuilder
         List<Type> list = new List<Type>();
 
         foreach( Type t in asm.GetPublicTypes() ) {
-            if( t.IsSubclassOf(TypeList.Entity) ) {   // TODO：判断是不是实体不使用 [DbEntity] + Entity-BaseClass 是个错误想法~~~
+
+            DbEntityAttribute attr = t.GetCustomAttribute<DbEntityAttribute>();
+
+            if( attr != null && t.IsSubclassOf(TypeList.Entity) ) {
 
                 // 排除抽象类
                 if( t.IsAbstract )
@@ -135,16 +140,13 @@ internal static class ProxyBuilder
     }
 
 
-
     /// <summary>
     /// 生成并编译指定类型的代理类型
     /// </summary>
     /// <param name="entityTypes"></param>
     /// <param name="dllOutPath"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: asm.GetType")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.GetType")]
     internal static List<EntityCompileResult> Compile(Type[] entityTypes, string dllOutPath)
     {
         if( entityTypes == null )
@@ -153,12 +155,16 @@ internal static class ProxyBuilder
         if( entityTypes.Length == 0 )
             return new List<EntityCompileResult>(0);
 
+        List<EntityCompileResult> result = new List<EntityCompileResult>(entityTypes.Length);
+
+        if( EnvArgs0.IsAot || EnvArgs0.IsSingleFileDeploy )   // AOT环境不生成代理类型
+            return result;
+
 
         StringBuilder sb = new StringBuilder(1024 * 64);
         sb.AppendLine(EntityGenerator.UsingCodeBlock);
         EntityGenerator.LoadAssembly();
 
-        List<EntityCompileResult> result = new List<EntityCompileResult>(entityTypes.Length);
 
         for( int i = 0; i < entityTypes.Length; i++ ) {
             EntityGenerator g = new EntityGenerator();
@@ -176,13 +182,16 @@ internal static class ProxyBuilder
         string allCode = sb.ToString();
         Assembly asm = CodeCompilerHelper.CompileCode(allCode, dllOutPath);
 
-        foreach( var cr in result ) {
-            cr.ProxyType = asm.GetType(cr.ProxyName);
-            cr.LoaderType = asm.GetType(cr.LoaderName);
-            cr.LoaderInstnace = cr.LoaderType.FastNew();       // 创建加载器的实例，供后面注册使用
+        if( asm != null ) {
+            foreach( var cr in result ) {
+                cr.ProxyType = asm.GetType(cr.ProxyName);
+                cr.LoaderType = asm.GetType(cr.LoaderName);
+                cr.LoaderInstnace = cr.LoaderType.FastNew();       // 创建加载器的实例，供后面注册使用
+            }
         }
 
         return result;
     }
+
 
 }

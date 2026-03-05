@@ -7,24 +7,23 @@ internal class DaMengClientProvider : BaseClientProvider
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
     private readonly PropertyInfo _exNumber;
+    private readonly Type _connStringBuilderType;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: exceptionType.GetProperty")]
     internal DaMengClientProvider()
     {
-        // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider
-        string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).ToArray();
-        string asmName = asmList.Contains("DM.DmProvider") ? "DM.DmProvider" : "DmProvider";
+        // 达梦早期的程序集名称叫：DmProvider ，最新版本已改名：DM.DmProvider， ClownFish 从 10.26.xx 版本开始不再支持老版本
+        //string[] asmList = AsmHelper.GetCurrentDomainAssemblies().Select(x => x.GetName().Name).ToArray();
+        //string asmName = asmList.Contains("DM.DmProvider") ? "DM.DmProvider" : "DmProvider";
 
-        Type factoryType = Type.GetType("Dm.DmClientFactory, " + asmName, true, false);
+        Type factoryType = Type.GetType("Dm.DmClientFactory, DM.DmProvider", true, false);
 
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
 
+        _connStringBuilderType = Type.GetType("Dm.DmConnectionStringBuilder, DM.DmProvider", true, false);
 
-        _exceptionType = Type.GetType("Dm.DmException, " + asmName, true, false);
+        _exceptionType = Type.GetType("Dm.DmException, DM.DmProvider", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
         if( p == null )
             throw new RuntimeReflectionException("没有找到属性：Dm.DmException.Number");
@@ -112,26 +111,60 @@ internal class DaMengClientProvider : BaseClientProvider
         return StdClientProvider.GetPagedCommand(query, pagingInfo);
     }
 
+    //public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    //{
+    //    StringBuilder sb = StringBuilderPool.Get();
+    //    try {
+    //        sb.Append("server=").Append(dbConfig.Server);
+
+    //        if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+    //            sb.Append(";port=").Append(dbConfig.Port.Value);
+
+    //        if( includeDatabase && dbConfig.Database.HasValue() )
+    //            sb.Append(";schema=").Append(dbConfig.Database);
+
+    //        sb.Append(";user=").Append(dbConfig.UserName)
+    //            .Append(";password=").Append(dbConfig.Password)
+    //            .Append(';').Append(dbConfig.Args);
+
+    //        return sb.ToString();
+    //    }
+    //    finally {
+    //        StringBuilderPool.Return(sb);
+    //    }
+    //}
+
+    [UnconditionalSuppressMessage("Trimming", "IL2077: Activator.CreateInstance")]
     public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
     {
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            sb.Append("server=").Append(dbConfig.Server);
-
-            if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
-                sb.Append(";port=").Append(dbConfig.Port.Value);
-
-            if( includeDatabase && dbConfig.Database.HasValue() )
-                sb.Append(";schema=").Append(dbConfig.Database);
-
-            sb.Append(";user=").Append(dbConfig.UserName)
-                .Append(";password=").Append(dbConfig.Password)
-                .Append(';').Append(dbConfig.Args);
-
-            return sb.ToString();
-        }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
+        DbConnectionStringBuilder sb = (DbConnectionStringBuilder)Activator.CreateInstance(_connStringBuilderType);
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
     }
+
+
+    internal static string BuildConnectionString(DbConnectionStringBuilder sb, IDbConfig dbConfig, bool includeDatabase)
+    {
+        sb["server"] = dbConfig.Server;
+
+        if( dbConfig.Port.HasValue && dbConfig.Port.Value > 0 )
+            sb["port"] = dbConfig.Port.Value;
+
+        if( includeDatabase && dbConfig.Database.HasValue() )
+            sb["database"] = dbConfig.Database;
+
+        sb["user"] = dbConfig.UserName;
+        sb["password"] = dbConfig.Password;
+
+        sb["app_name"] = EnvUtils.GetAppName();
+
+        string value = sb.ConnectionString;
+
+        if( dbConfig.Args.HasValue() ) {
+            value += ";" + dbConfig.Args;
+        }
+
+        return value;
+    }
+
+
 }

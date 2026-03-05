@@ -8,7 +8,7 @@ public class ConfigLoaderTest
 {
     internal static LogConfiguration GetLogConfiguration()
     {
-        string filePath = ConfigHelper.GetFileAbsolutePath("ClownFish.Log.config");
+        string filePath = PathUtils.GetFileAbsolutePath("ClownFish.UnitTest.config.ini");
         return LogConfig.LoadFromFile(filePath, true);
     }
 
@@ -24,21 +24,21 @@ public class ConfigLoaderTest
         Assert.AreEqual(4, list.Count);
 
         Assert.AreEqual(typeof(OprLog), list[0].DataType);
-        Assert.AreEqual(2, list[0].WriteTypes.Length);
-        Assert.AreEqual(typeof(XmlWriter), list[0].WriteTypes[0]);
-        Assert.AreEqual(typeof(ClownFish.Log.Writers.JsonWriter), list[0].WriteTypes[1]);
+        Assert.AreEqual(3, list[0].WriterTypes.Length);   // Xml,Json,txt
+        Assert.AreEqual(typeof(XmlWriter), list[0].WriterTypes[0]);
+        Assert.AreEqual(typeof(ClownFish.Log.Writers.JsonWriter), list[0].WriterTypes[1]);
 
         Assert.AreEqual(typeof(InvokeLog), list[1].DataType);
-        Assert.AreEqual(4, list[1].WriteTypes.Length);
-        Assert.AreEqual(typeof(XmlWriter), list[1].WriteTypes[0]);
-        Assert.AreEqual(typeof(ClownFish.Log.Writers.JsonWriter), list[1].WriteTypes[1]);
-        Assert.AreEqual(typeof(Json2Writer), list[1].WriteTypes[2]);
-        Assert.AreEqual(typeof(HttpJsonWriter), list[1].WriteTypes[3]);
+        Assert.AreEqual(5, list[1].WriterTypes.Length);   // Xml,Json,Json2,http,txt
+        Assert.AreEqual(typeof(XmlWriter), list[1].WriterTypes[0]);
+        Assert.AreEqual(typeof(ClownFish.Log.Writers.JsonWriter), list[1].WriterTypes[1]);
+        Assert.AreEqual(typeof(Json2Writer), list[1].WriterTypes[2]);
+        Assert.AreEqual(typeof(HttpJsonWriter), list[1].WriterTypes[3]);
 
         Assert.AreEqual(typeof(XMessage), list[2].DataType);
-        Assert.AreEqual(2, list[2].WriteTypes.Length);
-        Assert.AreEqual(typeof(MemoryWriter), list[2].WriteTypes[0]);
-        Assert.AreEqual(typeof(NullWriter), list[2].WriteTypes[1]);
+        Assert.AreEqual(2, list[2].WriterTypes.Length);
+        Assert.AreEqual(typeof(MemoryWriter), list[2].WriterTypes[0]);
+        Assert.AreEqual(typeof(NullWriter), list[2].WriterTypes[1]);
     }
 
     [TestMethod]
@@ -205,7 +205,7 @@ public class ConfigLoaderTest
     internal class TestWriterInit : ILogWriter
     {
         public static int InitCount { get; private set; }
-        public void Init(LogConfiguration config, WriterConfig section)
+        public void Init(LogConfiguration config, Type dataType)
         {
             InitCount++;
         }

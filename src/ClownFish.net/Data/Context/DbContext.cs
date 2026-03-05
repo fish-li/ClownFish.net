@@ -99,12 +99,10 @@ public sealed class DbContext : IDisposable
         }
     }
 
+
     /// <summary>
     /// XmlCommand工厂实例引用
     /// </summary>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: xml")]
-#endif
     public XmlCommandFactory XmlCommand {
         get {
             if( _factoryXmlCommand == null )
@@ -186,10 +184,8 @@ public sealed class DbContext : IDisposable
     /// <returns></returns>
     public static DbContext Create(string connectionName)
     {
-        if( connectionName.IsNullOrEmpty() ) {
-            ConnectionInfo connectionInfo1 = ConnectionManager.GetFirstConnection();
-            return new DbContext(connectionInfo1);
-        }
+        if( connectionName.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(connectionName));
 
 
         ConnectionInfo connectionInfo2 = ConnectionManager.GetConnection(connectionName, false);
@@ -198,7 +194,7 @@ public sealed class DbContext : IDisposable
         }
 
 
-        DbConfig dbConfig = ConnectionManager.GetDbConfig(connectionName, true);   // 如果查找失败就抛异常
+        DbConfig dbConfig = DbConnManager.GetAppDbConfig(connectionName, true);   // 如果查找失败就抛异常
         return Create(dbConfig);
     }
 

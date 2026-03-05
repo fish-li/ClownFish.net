@@ -18,9 +18,7 @@ public static class ApplicationInitializer
         ExecuteAppInit();
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: type.GetMethod")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2075: type.GetMethod")]
     private static void ExecuteAppInit()
     {
         List<Type> list = (from asm in AppPartUtils.GetApplicationPartAsmList()

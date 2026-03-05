@@ -1,4 +1,7 @@
-﻿namespace ClownFish.UnitTest.Data.Context;
+﻿using MySql.Data.MySqlClient;
+using Npgsql;
+
+namespace ClownFish.UnitTest.Data.Context;
 [TestClass]
 public class DbConfigExtensionsTest
 {
@@ -80,52 +83,49 @@ public class DbConfigExtensionsTest
     public void Test_GetMsSqlConnectionString()
     {
         DbConfig s1 = AppConfig.GetDbConfig("s1");
-        Console.WriteLine(s1.GetConnectionString(true));
 
-        Assert.IsTrue(s1.GetConnectionString(true).Contains("Server=MsSqlHost;"));
-        Assert.IsTrue(s1.GetConnectionString(true).Contains("Database=MyNorthwind;"));
-        Assert.IsTrue(s1.GetConnectionString(true).Contains("Uid=user1;"));
-        Assert.IsTrue(s1.GetConnectionString(true).Contains("Pwd=qaz1@wsx;"));
-        Assert.IsTrue(s1.GetConnectionString(true).Contains("Application Name=ClownFish.UnitTest;"));
-        Assert.IsFalse(s1.GetConnectionString(false).Contains("Database="));
+        string connectionString1 = s1.GetConnectionString(true);
+        Assert.AreEqual("Data Source=MsSqlHost;Initial Catalog=MyNorthwind;User ID=user1;Password=qaz1@wsx;Application Name=ClownFish.UnitTest", connectionString1);
+
+
+        string connectionString2 = s1.GetConnectionString(false);
+        Assert.AreEqual("Data Source=MsSqlHost;User ID=user1;Password=qaz1@wsx;Application Name=ClownFish.UnitTest", connectionString2);
+
 
 
         DbConfig s2 = AppConfig.GetDbConfig("s1");
         s2.Port = 1025;
-        Console.WriteLine(s2.GetConnectionString(true));
 
-        Assert.IsTrue(s2.GetConnectionString(true).Contains("Server=MsSqlHost,1025;"));
-        Assert.IsTrue(s2.GetConnectionString(true).Contains("Database=MyNorthwind;"));
-        Assert.IsTrue(s2.GetConnectionString(true).Contains("Uid=user1;"));
-        Assert.IsTrue(s2.GetConnectionString(true).Contains("Pwd=qaz1@wsx;"));
-        Assert.IsTrue(s2.GetConnectionString(true).Contains("Application Name=ClownFish.UnitTest;"));
-        Assert.IsFalse(s2.GetConnectionString(false).Contains("Database="));
+        string connectionString3 = s2.GetConnectionString(true);
+        Assert.AreEqual("Data Source=MsSqlHost,1025;Initial Catalog=MyNorthwind;User ID=user1;Password=qaz1@wsx;Application Name=ClownFish.UnitTest", connectionString3);
+
+
+        string connectionString4 = s2.GetConnectionString(false);
+        Assert.AreEqual("Data Source=MsSqlHost,1025;User ID=user1;Password=qaz1@wsx;Application Name=ClownFish.UnitTest", connectionString4);
     }
 
     [TestMethod]
     public void Test_GetMySqlConnectionString()
     {
         DbConfig m1 = AppConfig.GetDbConfig("m1");
-        Console.WriteLine(m1.GetConnectionString(true));
-        
-        Assert.IsTrue(m1.GetConnectionString(true).Contains("Server=MySqlHost;"));
-        Assert.IsTrue(m1.GetConnectionString(true).Contains("Database=MyNorthwind;"));
-        Assert.IsTrue(m1.GetConnectionString(true).Contains("Uid=user1;"));
-        Assert.IsTrue(m1.GetConnectionString(true).Contains("Pwd=qaz1@wsx;"));
-        Assert.IsFalse(m1.GetConnectionString(false).Contains("Database="));
+
+        string connectionString1 = m1.GetConnectionString(true);
+        Assert.AreEqual("Server=MySqlHost;User ID=user1;Password=qaz1@wsx;Database=MyNorthwind", connectionString1);
+
+
+        string connectionString2 = m1.GetConnectionString(false);
+        Assert.AreEqual("Server=MySqlHost;User ID=user1;Password=qaz1@wsx", connectionString2);
 
 
 
         DbConfig m2 = AppConfig.GetDbConfig("m2");
-        Console.WriteLine(m2.GetConnectionString(true));
 
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Server=MySqlHost;"));
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Database=MyNorthwind;"));
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Uid=user1;"));
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Pwd=qaz1@wsx;"));
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Allow Zero Datetime=True;"));
-        Assert.IsTrue(m2.GetConnectionString(true).Contains("Convert Zero Datetime=True;"));
-        Assert.IsFalse(m2.GetConnectionString(false).Contains("Database="));
+        string connectionString3 = m2.GetConnectionString(true);
+        Assert.AreEqual("Server=MySqlHost;User ID=user1;Password=\"qaz1=;@wsx\";Database=MyNorthwind;Allow Zero Datetime=True;Convert Zero Datetime=True;", connectionString3);
+
+
+        string connectionString4 = m2.GetConnectionString(false);
+        Assert.AreEqual("Server=MySqlHost;User ID=user1;Password=\"qaz1=;@wsx\";Allow Zero Datetime=True;Convert Zero Datetime=True;", connectionString4);
 
 
         DbConfig m3 = AppConfig.GetDbConfig("m1");
@@ -137,20 +137,25 @@ public class DbConfigExtensionsTest
     public void Test_GetPostgreSQLConnectionString()
     {
         DbConfig pg1 = AppConfig.GetDbConfig("pg1");
-        Console.WriteLine(pg1.GetConnectionString(true));
 
-        Assert.IsTrue(pg1.GetConnectionString(true).Contains("Host=PgSqlHost;"));
-        Assert.IsTrue(pg1.GetConnectionString(true).Contains("Database=mynorthwind;"));
-        Assert.IsTrue(pg1.GetConnectionString(true).Contains("Username=postgres;"));
-        Assert.IsTrue(pg1.GetConnectionString(true).Contains("Password=1qaz7410;"));
-        Assert.IsTrue(pg1.GetConnectionString(true).Contains("Application Name=ClownFish.UnitTest;"));
-        Assert.IsTrue(pg1.GetConnectionString(false).Contains("Database=mynorthwind"));   //始终包含数据库名
+        string connectionString1 = pg1.GetConnectionString(true);
+        Assert.AreEqual("Host=PgSqlHost;Port=5432;Database=mynorthwind;Username=postgres;Password=1qaz7410;Application Name=ClownFish.UnitTest", connectionString1);
+
+
+        string connectionString2 = pg1.GetConnectionString(false);
+        Assert.AreEqual("Host=PgSqlHost;Port=5432;Database=mynorthwind;Username=postgres;Password=1qaz7410;Application Name=ClownFish.UnitTest", connectionString2);
 
 
 
         DbConfig pg3 = AppConfig.GetDbConfig("pg1");
         pg3.Port = 1025;
-        Assert.IsTrue(pg3.GetConnectionString(true).Contains("Port=1025;"));
+
+        string connectionString3 = pg3.GetConnectionString(true);
+        Assert.AreEqual("Host=PgSqlHost;Port=1025;Database=mynorthwind;Username=postgres;Password=1qaz7410;Application Name=ClownFish.UnitTest", connectionString3);
+
+
+        string connectionString4 = pg3.GetConnectionString(false);
+        Assert.AreEqual("Host=PgSqlHost;Port=1025;Database=mynorthwind;Username=postgres;Password=1qaz7410;Application Name=ClownFish.UnitTest", connectionString4);
     }
 
 
@@ -208,14 +213,13 @@ public class DbConfigExtensionsTest
         };
 
 
-        string expected1 = "Server=server1;Database=db12;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string expected1 = "Data Source=server1;Initial Catalog=db12;User ID=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString1 = config.GetConnectionString(true);
-        Console.WriteLine(connectionString1);
         Assert.AreEqual(expected1, connectionString1);
 
-        string expected2 = "Server=server1;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+
+        string expected2 = "Data Source=server1;User ID=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString2 = config.GetConnectionString(false);
-        Console.WriteLine(connectionString2);
         Assert.AreEqual(expected2, connectionString2);
     }
 
@@ -232,14 +236,12 @@ public class DbConfigExtensionsTest
         };
 
 
-        string expected1 = "Server=server1,123;Database=db12;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string expected1 = "Data Source=server1,123;Initial Catalog=db12;User ID=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString1 = config.GetConnectionString(true);
-        Console.WriteLine(connectionString1);
         Assert.AreEqual(expected1, connectionString1);
 
-        string expected2 = "Server=server1,123;Uid=user1;Pwd=xxx;Application Name=ClownFish.UnitTest;";
+        string expected2 = "Data Source=server1,123;User ID=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString2 = config.GetConnectionString(false);
-        Console.WriteLine(connectionString2);
         Assert.AreEqual(expected2, connectionString2);
     }
 
@@ -256,12 +258,12 @@ public class DbConfigExtensionsTest
         };
 
 
-        string expected1 = "Host=server1;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string expected1 = "Host=server1;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString1 = config.GetConnectionString(true);
-        Console.WriteLine(connectionString1);
         Assert.AreEqual(expected1, connectionString1);
 
-        //string expected2 = "Host=server1;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+
+        //string expected2 = "Host=server1;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         //string connectionString2 = config.GetConnectionString(false);
         //Console.WriteLine(connectionString2);
         //Assert.AreEqual(expected2, connectionString2);
@@ -280,12 +282,12 @@ public class DbConfigExtensionsTest
         };
 
 
-        string expected1 = "Host=server1;Port=123;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+        string expected1 = "Host=server1;Port=123;Database=db12;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         string connectionString1 = config.GetConnectionString(true);
-        Console.WriteLine(connectionString1);
         Assert.AreEqual(expected1, connectionString1);
 
-        //string expected2 = "Host=server1;Port=123;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest;";
+
+        //string expected2 = "Host=server1;Port=123;Username=user1;Password=xxx;Application Name=ClownFish.UnitTest";
         //string connectionString2 = config.GetConnectionString(false);
         //Console.WriteLine(connectionString2);
         //Assert.AreEqual(expected2, connectionString2);
@@ -296,8 +298,6 @@ public class DbConfigExtensionsTest
     [TestMethod]
     public void Test_GetConnectionString_MySQL()
     {
-        string expected = "Server=server1;Uid=user1;Pwd=xxx;";
-
         DbConfig config = new DbConfig {
             DbType = ClownFish.Data.DatabaseType.MySQL,
             Server = "server1",
@@ -305,13 +305,9 @@ public class DbConfigExtensionsTest
             Password = "xxx"
         };
 
-        // 用循环调用，可以检查 config1 有没有被更新
-        for( int i = 0; i < 10; i++ ) {
-            string connectionString = config.GetConnectionString();
-            Console.WriteLine(connectionString);
-
-            Assert.AreEqual(expected, connectionString);
-        }
+        string expected = "Server=server1;User ID=user1;Password=xxx";
+        string connectionString = config.GetConnectionString();
+        Assert.AreEqual(expected, connectionString);
     }
 
 
@@ -319,8 +315,6 @@ public class DbConfigExtensionsTest
     [TestMethod]
     public void Test_GetConnectionString_MySQL_Port_2()
     {
-        string expected = "Server=server1;Port=147;Uid=user1;Pwd=xxx;";
-
         DbConfig config = new DbConfig {
             DbType = ClownFish.Data.DatabaseType.MySQL,
             Server = "server1",
@@ -329,12 +323,9 @@ public class DbConfigExtensionsTest
             Password = "xxx"
         };
 
-        for( int j = 0; j < 10; j++ ) {
-            string connectionString = config.GetConnectionString();
-            Console.WriteLine(connectionString);
-
-            Assert.AreEqual(expected, connectionString);
-        }
+        string expected = "Server=server1;Port=147;User ID=user1;Password=xxx";
+        string connectionString = config.GetConnectionString();
+        Assert.AreEqual(expected, connectionString);
     }
 
 

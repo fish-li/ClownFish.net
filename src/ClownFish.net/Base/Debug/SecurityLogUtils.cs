@@ -3,9 +3,16 @@
 /// <summary>
 /// 日志相关的安全防护工具类
 /// </summary>
-public static class SecurityLogUtils
+public static partial class SecurityLogUtils
 {
+#if NET7_0_OR_GREATER
+    [GeneratedRegex(@"\b(password|pwd)=(?<value>[^,;]+)", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex GetPwdRegex();
+#else
     private static readonly Regex s_pwdRegex = new Regex(@"\b(password|pwd)=(?<value>[^,;]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static Regex GetPwdRegex() => s_pwdRegex;
+#endif
 
     /// <summary>
     /// 隐藏连接字符串中的密码
@@ -17,7 +24,7 @@ public static class SecurityLogUtils
         if( string.IsNullOrEmpty(value) )
             return value;
 
-        return s_pwdRegex.Replace(value, "$1=********");
+        return GetPwdRegex().Replace(value, "$1=********");
     }
 
 

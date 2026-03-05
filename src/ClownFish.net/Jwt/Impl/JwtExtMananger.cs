@@ -20,10 +20,8 @@ internal static class JwtExtMananger
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2065: type.GetField")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: type.GetField")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2065: type.GetField")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075: type.GetField")]
     private static void Init0()
     {
         Type[] types = (from t in typeof(JwtExtMananger).Assembly.GetPublicTypes()

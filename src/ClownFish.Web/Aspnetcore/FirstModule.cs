@@ -1,5 +1,7 @@
 ﻿namespace ClownFish.Web.Aspnetcore;
 
+// https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/middleware/write?view=aspnetcore-10.0
+
 public class FirstModule
 {
     private readonly RequestDelegate _next;
@@ -34,7 +36,7 @@ public class FirstModule
         NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
 
         if( ClownFishWebOptions.DebugHttpLine )
-            Console2.Debug(httpContextNetCore.Request.HttpMethod + " " + httpContextNetCore.Request.FullUrl);
+            Console2.Info(httpContextNetCore.Request.HttpMethod + " " + httpContextNetCore.Request.FullUrl);
 
         // 设置一些上下文及日志作用域
         using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore) ) {
@@ -73,6 +75,7 @@ public class FirstModule
                 app.AuthenticateRequest(httpContextNetCore);
                 app.PostAuthenticateRequest(httpContextNetCore);
                 app.ResolveRequestCache(httpContextNetCore);
+                app.MapRequestHandler(httpContextNetCore);
 
                 isHandled = await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
                 if( isHandled == false ) {

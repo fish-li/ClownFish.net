@@ -141,7 +141,10 @@ public class FileWriterTest
         string savePath = Path.GetDirectoryName(newFilePath);
 
         // 创建足够多的日志文件
-        CreateSomeLogFile(writer, log, savePath, 7);
+        int maxFileCount = LogConfig.Instance.File.MaxCount;
+        Assert.AreEqual(FileUtils.MaxCount, maxFileCount);
+
+        CreateSomeLogFile(writer, log, savePath, maxFileCount + 1);
 
 
         // 开始大量写入，触发将一个文件写满，进而引发清理
@@ -155,7 +158,7 @@ public class FileWriterTest
         }
 
         // 说明：下面几个断言与几个参数有关：
-        // ClownFish.Log.config中的  <File MaxLength="200KB" MaxCount="5" />
+        // ClownFish.UnitTest.config.ini 中的  File=MaxLength=200KB; MaxCount=5
         // OprLog的长度，主要是 Addition = new string('a', 1024),
         // i 的次数，现在是 200
 
@@ -179,13 +182,14 @@ public class FileWriterTest
         string savePath = Path.GetDirectoryName(newFilePath);
 
         // 创建足够多的日志文件
-        CreateSomeLogFile(writer, log, savePath, 7);
+        int maxFileCount = LogConfig.Instance.File.MaxCount + 3;
+        CreateSomeLogFile(writer, log, savePath, maxFileCount);
 
 
         // 执行清理动作
         MethodInfo method = typeof(FileWriter).GetMethod("DeleteOldFile", BindingFlags.Instance | BindingFlags.NonPublic);
         int result = (int)method.Invoke(writer, null);
 
-        Assert.AreEqual(7 - FileUtils.MaxCount + 1, result);
+        Assert.AreEqual(maxFileCount - FileUtils.MaxCount + 1, result);
     }
 }

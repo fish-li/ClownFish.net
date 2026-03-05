@@ -33,7 +33,7 @@ internal static class WriterFactory
         if( LogConfig.Instance.Enable == false )
             return null;
 
-        return s_typeWriterMappings.FirstOrDefault(x => x.DataType == dataType)?.Instances;
+        return s_typeWriterMappings.FirstOrDefault(x => x.DataType == dataType)?.Writers;
     }
 
 

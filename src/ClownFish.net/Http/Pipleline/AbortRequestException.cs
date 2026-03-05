@@ -1,6 +1,5 @@
 ﻿namespace ClownFish.Http.Pipleline;
 
-//[Serializable]
 /// <summary>
 /// 
 /// </summary>

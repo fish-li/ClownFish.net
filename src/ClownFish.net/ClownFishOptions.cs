@@ -65,8 +65,12 @@ internal static class ClownFishOptions
 /// </summary>
 public static class ClownFishPubOptions
 {
+    // 参考文档： https://rabbitmq.cn/docs/quorum-queues
+    //           https://rabbitmq.cn/docs/classic-queues
+
+
     /// <summary>
-    /// RabbitMQ 的默认队列类型，默认值："classic"  ，如果希望使用 quorum queue，可设置为 "quorum"
+    /// RabbitMQ 的默认队列类型："quorum"  ，另外可选值： "classic"
     /// </summary>
-    public static readonly string RabbitmqDefaultQueueType = Settings.GetSetting("ClownFish_RabbitMQ_DefaultQueueType", "classic");
+    public static readonly string RabbitmqDefaultQueueType = Settings.GetSetting("ClownFish_RabbitMQ_DefaultQueueType", "quorum");
 }

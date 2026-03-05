@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Base;
+﻿using System.Runtime;
+
+namespace ClownFish.Base;
 
 
 /// <summary>
@@ -64,10 +66,10 @@ public static class EnvUtils
 
     // RunEnv, ClusterName 的说明
     // RunEnv 取值于  微软定义的 RUNTIME_ENVIRONMENT, ASPNETCORE_ENVIRONMENT
-    // 用于控制进程的运行时行为，例如：if( app.Environment.IsDevelopment() ) xxxxxxxxxxx;
+    // 用于控制进程的运行行为，例如：if( app.Environment.IsDevelopment() ) xxxxxxxxxxx;
 
-    // 而 ClusterName 是指 集群名称，它由多个进程构成的部署环境，它不用来控制程序的行为，仅仅只是一个名称。
-    // PROD, TEST, DEV 这些看起来也称为环境名称，但是它们更像是“运行模式”，用于控制运行时行为，它无法表达“集群”这个概念。
+    // 而 ClusterName 是指 集群名称，它由多个进程构成的【部署环境】，它不用来控制程序的行为，仅仅只是一个名称。
+    // PROD, TEST, DEV 这些看起来也称为环境名称，但是它们通常用于指示程序的“运行模式”，而无法表达“部署集群”这个概念。
     // 如果线上有多个生产集群，如果都用 PROD 这个名称就无法区分了，
     // 而且线上有时候为了方便排查问题，是希望某个进程以 DEV/DEBUG 模式运行的，
     // 这种这种场景下（DEBUG模式），用1个 “ENVIRONMENT-名称” 就无法描述，必须使用2个名称！ 
@@ -114,6 +116,8 @@ public static class EnvUtils
         // 所以，这里提供一个方法，允许特殊场景下修改以下参数值，然后刷新它们。
 
         ApplicationName = GetApplicationName0();
+
+        // 微服务部署时，集群名称由配置服务统一指定
         ClusterName = LocalSettings.GetSetting("CLUSTER_ENVIRONMENT") ?? "cluster1";
     }
 
@@ -130,10 +134,10 @@ public static class EnvUtils
 
     internal static RunEnvEnum GetRunEnvEnum(string env)
     {
-        if( env.IsNullOrEmpty() || env.Is("PROD") || env.StartsWithIgnoreCase("Product") )
+        if( env.IsNullOrEmpty() || env.StartsWithIgnoreCase("PROD") )
             return RunEnvEnum.Prod;
 
-        if( env.Is("TEST") || env.StartsWithIgnoreCase("Test") )
+        if( env.StartsWithIgnoreCase("TEST") )
             return RunEnvEnum.Test;
 
         // 【生产】和【测试】之外的所有环境都认为是【开发】环境
@@ -147,7 +151,7 @@ public static class EnvUtils
             // linux 内置的临时目录 /tmp, /var/tmp 有自动清理机制，所以不使用它们
             return "/temp";
         else
-            return Path.Combine(Path.GetTempPath(), "ClownFishApp", Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath()));
+            return Path.Combine(Path.GetTempPath(), "ClownFishApp", AsmHelper.GetExeName());
     }
 
     private static string GetMachineName()
@@ -168,7 +172,7 @@ public static class EnvUtils
 
     private static string GetApplicationName0()
     {
-        string appName = LocalSettings.GetSetting("Application_Name") ?? Path.GetFileNameWithoutExtension(AsmHelper.GetExeFilePath());
+        string appName = LocalSettings.GetSetting("Application_Name") ?? AsmHelper.GetExeName();
 
         // 检查应用名称是否符合要求，如果不符合要求，则抛出异常
         // 虽然不建议在静态构造方法中抛出异常，但是现在确实想不到更好的方法~~~
@@ -243,50 +247,39 @@ public static class EnvUtils
     public static string GetHostName() => EnvUtils.HostName;
 
 
-#if NETCOREAPP
-
     /// <summary>
     /// 显示系统环境信息
     /// </summary>
-    public static void ShowSysEnvInfo(Dictionary<string, string> dict = null)
+    public static void ShowSysEnvInfo()
     {
         Console2.WriteSeparatedLine();
         ShowSysEnvInfoItem("ApplicationName", EnvUtils.GetAppName());
         ShowSysEnvInfoItem("AppRuntimeId", EnvUtils.AppRuntimeId);
-        ShowSysEnvInfoItem("ProcessId", Environment.ProcessId.ToString());        
+        ShowSysEnvInfoItem("ProcessId", GetProcessId().ToString());
         ShowSysEnvInfoItem("AppStartTime", EnvUtils.AppStartTime.ToTime23String());
 
-        ShowSysEnvInfoItem("IsInDocker", EnvUtils.IsInDocker.ToString2());
-        if( EnvUtils.IsInK8s ) {
-            ShowSysEnvInfoItem("K8S Namespace", EnvUtils.K8sNamespace);
-        }
         ShowSysEnvInfoItem("IsNativeAOT", EnvArgs0.IsAot.ToString2());
-        ShowSysEnvInfoItem("IsSingleFileDeploy", AsmHelper.IsSingleFileDeploy.ToString2());
+        ShowSysEnvInfoItem("IsSingleFileDeploy", EnvArgs0.IsSingleFileDeploy.ToString2());
+        ShowSysEnvInfoItem("IsInDocker", EnvUtils.IsInDocker.ToString2());
+        ShowSysEnvInfoItem("K8S Namespace", EnvUtils.K8sNamespace);
+
         ShowSysEnvInfoItem("CLUSTER_ENVIRONMENT", EnvUtils.GetClusterName());
         ShowSysEnvInfoItem("RUNTIME_ENVIRONMENT", EnvUtils.GetRunEnv());
         ShowSysEnvInfoItem("HostName", EnvUtils.GetHostName());
         ShowSysEnvInfoItem("OS Name", OsUtils.GetOsName());
-        ShowSysEnvInfoItem("OSArchitecture", System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString());
+        ShowSysEnvInfoItem("OSArchitecture", GetOSArchitecture());
         ShowSysEnvInfoItem("ProcessorCount", Environment.ProcessorCount.ToString());
         ShowSysEnvInfoItem("TimeZone", MyTimeZone.CurrentTZ);
         ShowSysEnvInfoItem("CurrentCulture", System.Globalization.CultureInfo.CurrentCulture?.Name);
-        ShowSysEnvInfoItem("GC Mode", (System.Runtime.GCSettings.IsServerGC ? "Server" : "WorkStation"));
-        ShowSysEnvInfoItem("Framework Info", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-        ShowSysEnvInfoItem("ClownFishVer", AsmHelper.GetFileVersion(typeof(EnvUtils)).IfEmpty(ConstValues.CurrentVersion));
-
-        if( dict != null ) {
-            foreach( var kvp in dict ) {
-                ShowSysEnvInfoItem(kvp.Key, kvp.Value);
-            }
-        }
+        ShowSysEnvInfoItem("GC Mode", (GCSettings.IsServerGC ? "Server" : "WorkStation"));
+        ShowSysEnvInfoItem("Framework Info", GetFrameworkInfo());
 
         ShowSysEnvInfoItem("EntryAssembly", AsmHelper.GetExeFilePath());
         ShowSysEnvInfoItem("BaseDirectory", AppContext.BaseDirectory);
         ShowSysEnvInfoItem("CurrentDirectory", Environment.CurrentDirectory);
         ShowSysEnvInfoItem("TempPath", EnvUtils.GetTempPath());
 
-       
-
+        ShowSysEnvInfoItem("ClownFish-Ver", ConstValues.CurrentVersion);
         Console2.WriteSeparatedLine();
     }
 
@@ -294,8 +287,33 @@ public static class EnvUtils
     {
         Console2.WriteLine(name.PadRight(30) + ": " + value);
     }
-#endif
 
+    private static string GetFrameworkInfo()
+    {
+#if NETCOREAPP
+        return System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+#else
+        return System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
+#endif
+    }
+
+    private static string GetOSArchitecture()
+    {
+#if NETCOREAPP
+        return System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString();
+#else
+        return Environment.Is64BitOperatingSystem ? "X64" : "X86";
+#endif
+    }
+
+    private static int GetProcessId()
+    {
+#if NET6_0_OR_GREATER
+        return Environment.ProcessId;
+#else
+        return Process.GetCurrentProcess().Id;
+#endif
+    }
 
 
 }
@@ -303,7 +321,7 @@ public static class EnvUtils
 
 
 /// <summary>
-/// 进程的运行环境类别
+/// 进程的运行模式枚举
 /// </summary>
 internal enum RunEnvEnum
 {

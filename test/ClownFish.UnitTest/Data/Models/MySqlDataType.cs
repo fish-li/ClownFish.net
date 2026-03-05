@@ -2,7 +2,6 @@
 
 // 用于测试 MySQL 数据类型的实体
 
-[Serializable]
 [DbEntity(Alias = "TestType")]
 public partial class MySqlDataType : Entity
 {

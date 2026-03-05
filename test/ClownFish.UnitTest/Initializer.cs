@@ -81,32 +81,22 @@ public class UnitTestAppStartup : ConsoleAppStartup
     public override void ConfigLog()
     {
         ClownFish.Log.LogHelper.RegisterFilter(LogHelperTest.Filter);
-        ClownFishInit.InitLog("ClownFish.Log.config");
+        ClownFishInit.InitLog("ClownFish.UnitTest.config.ini");
     }
 
     public override void ConfigDAL()
     {
         LoadDatabaseClientDlls();
 
-
-        //string dllName = "ClownFish.UnitTest.EntityProxy.dll";
-        //string dllOutPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp", dllName);
-
         ClownFish.Data.Initializer.Instance
-                        //.RegisterSqlServerProvider()
-                        //.RegisterMySqlProvider()
-                        //.RegisterPostgreSqlProvider()
-                        //.RegisterSQLiteProvider()
                         .RegisterClientProvider(XxxBaseClientProvider.ProviderName, XxxBaseClientProvider.Instance)
                         .SetListInitLength(60)
                         .InitConnection()
                         .AddDataFieldTypeHandler(typeof(System.Drawing.Point), new PointDataFieldTypeHandler())
                         .AddDataFieldTypeHandler(typeof(EncSaveString), new EncSaveStringDataFieldTypeHandler())
-                        //.LoadXmlCommandFromDirectory()
                         .LoadXmlCommandFromText(string.Empty);
-                        //.CompileAllEntityProxy(dllOutPath);
 
-        ClownFishInit.InitDAL();
+        ClownFishInit.InitDAL();  // 注册已知的数据库提供程序，生成实体代理类型
 
 #if NET8_0_OR_GREATER
         ClownFish.Data.Initializer.Instance.RegisterDamengProvider();

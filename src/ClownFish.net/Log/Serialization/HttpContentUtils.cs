@@ -42,9 +42,7 @@ internal static class HttpContentUtils
         return null;
     }
 
-#if NET6_0_OR_GREATER
     [DynamicDependency("CreateMemoryStreamForByteArray", typeof(ByteArrayContent))]
-#endif
     private static string TryReadBodyFromByteArrayContent(ByteArrayContent content)
     {
         // TODO: 注意，这里使用了一个内部方法，以后升级.NET后可能无法运行~~
@@ -55,9 +53,7 @@ internal static class HttpContentUtils
         return Encoding.UTF8.GetString(bytes);     // 这里使用固定编码
     }
 
-#if NET6_0_OR_GREATER
     [DynamicDependency("_content", typeof(StreamContent))]
-#endif
     internal static MemoryStream TryGetMemoryStreamFromStreamContent(this StreamContent content)
     {
         if( content != null ) {

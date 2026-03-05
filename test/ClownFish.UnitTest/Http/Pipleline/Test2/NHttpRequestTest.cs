@@ -363,7 +363,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         MockHttpRequest request = requestData;
 
         string pattern = @"/page/(?<id>\w+)/(?<year>\w+)-(?<month>\w+)-(?<day>\w+).aspx";
-        request.RegexMatch = Regex.Match(request.Path, pattern);
+        request.SetRouteResult(Regex.Match(request.Path, pattern));
 
         Assert.AreEqual("123", request.Route("id"));
         Assert.AreEqual("2021", request.Route("year"));

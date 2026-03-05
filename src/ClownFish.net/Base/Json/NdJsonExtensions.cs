@@ -162,19 +162,17 @@ public static class NdJsonExtensions
     private static readonly MethodInfo s_method1 = typeof(NdJsonExtensions).GetMethod(nameof(FromNdjson000), 
                                                                         BindingFlags.Static | BindingFlags.NonPublic);
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2060: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2037: FromNdjson000")]
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2060: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2037: FromNdjson000")]
     [DynamicDependency(nameof(FromNdjson000), typeof(NdJsonExtensions))]
-#endif
     internal static object LoadListFromNdjson(this TextReader reader, Type listType)
     {
         Type elementType = listType.GetGenericArguments()[0];
 
         MethodInfo method2 = s_method1.MakeGenericMethod(elementType);
 
-        return method2.FastInvoke(null, new object[] { reader, 64, null });
+        return method2.FastInvoke(null, new object[] { reader, 64 });
     }
 
 

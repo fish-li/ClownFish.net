@@ -68,7 +68,7 @@ internal abstract class BaseHttpClient
     protected T GetResult<T>(HttpWebResponse response)
     {
         if( response == null )
-            throw new ArgumentNullException("response");
+            throw new ArgumentNullException(nameof(response));
 
 
         if( typeof(T) == typeof(ClownFish.Base.Void) )

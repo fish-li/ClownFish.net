@@ -6,7 +6,7 @@ public class ConfigFileTest
     public void Test_GetLocalFile()
     {
         Assert.IsNull(DefaultConfigFileImpl.GetLocalFile("file1.txt"));
-        Assert.IsNotNull(DefaultConfigFileImpl.GetLocalFile("ClownFish.App.config"));
+        Assert.IsNotNull(DefaultConfigFileImpl.GetLocalFile("ClownFish.UnitTest.config.ini"));
 
         string filePath = Path.Combine(AppContext.BaseDirectory, "_config/file2.txt");
         RetryFile.WriteAllText(filePath, "aaaaa");
@@ -28,8 +28,7 @@ public class ConfigFileTest
         });
 
         Assert.IsNull(ConfigFile.GetFile("file1.txt"));
-        Assert.IsNotNull(ConfigFile.GetFile("ClownFish.App.config"));
-        Assert.IsNotNull(ConfigFile.GetFile("ClownFish.UnitTest.ClownFish.App.config"));
+        Assert.IsNotNull(ConfigFile.GetFile("ClownFish.UnitTest.config.ini"));
 
 
         //-----------------------------------------------------------
@@ -51,10 +50,10 @@ public class ConfigFileTest
     public void Test_IConfigFile()
     {
         ConfigFile.SetImpl(new XConfigFileImpl());
-        Assert.AreEqual("ClownFish.App.config_2384321076a9425683bae0809cb0f456", ConfigFile.GetFile("ClownFish.App.config"));
+        Assert.AreEqual("ClownFish.UnitTest.config.ini_2384321076a9425683bae0809cb0f456", ConfigFile.GetFile("ClownFish.UnitTest.config.ini"));
 
         ConfigFile.SetImpl(null);
-        string text = ConfigFile.GetFile("ClownFish.App.config");
+        string text = ConfigFile.GetFile("ClownFish.UnitTest.config.ini");
         Assert.IsFalse(text.Contains("_2384321076a9425683bae0809cb0f456"));
     }
 }

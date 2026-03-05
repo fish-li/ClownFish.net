@@ -156,43 +156,9 @@ public sealed class LogConfiguration : ILoggingObject
         }
     }
 
-    /// <inheritdoc/>
-    public string ToLoggingText()
-    {
-        StringBuilder sb = StringBuilderPool.Get();
-
-        try {
-            sb.AppendLineRN("[Logging]");
-            sb.AppendLineRN($"Enable={this.Enable.ToString2()}");
-            sb.AppendLineRN($"TimerPeriod={this.TimerPeriod}");
-            if( this.Performance != null ) {
-                sb.AppendLineRN($"Performance={this.Performance.ToString()}");
-            }
-            if( this.File != null ) {
-                sb.AppendLineRN($"File={this.File.ToString()}");
-            }
-            sb.AppendLineRN();
-            if( this.Writers.HasValue() ) {
-                foreach( var w in this.Writers ) {
-                    sb.AppendLineRN(w.ToString());
-                }
-            }
-            sb.AppendLineRN();
-            if( this.Types.HasValue() ) {
-                foreach( var t in this.Types ) {
-                    sb.AppendLineRN(t.ToString());
-                }
-            }
-            sb.AppendLineRN();
-            return sb.ToString();
-        }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
-    }
 
     /// <summary>
-    /// 尝试从本地setting参数中更新日志配置
+    /// 尝试从本地setting参数中更新部分日志配置
     /// </summary>
     public void TryUpdateFromLocalSetting()
     {
@@ -212,8 +178,15 @@ public sealed class LogConfiguration : ILoggingObject
         int x3 = LocalSettings.GetInt("ClownFish_Log_TimerPeriod");
         if( x3 > 0 )
             this.TimerPeriod = x3;
-
     }
+
+
+    /// <inheritdoc/>
+    public string ToLoggingText()
+    {
+        return LogConfigIni.ToIni(this);
+    }
+
 }
 
 

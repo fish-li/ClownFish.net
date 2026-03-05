@@ -1,8 +1,5 @@
 ﻿namespace ClownFish.Data;
 
-// CA2237	将 [Serializable] 添加到 'DbExceuteException'，原因是此类型实现了 ISerializable。
-// 由于DbExceuteException包含了DbCommand，而DbCommand没有标记为可序列化，因此只能禁止CA2237的检查。
-
 /// <summary>
 /// 表示在数据访问执行过程中发生的异常。
 /// </summary>

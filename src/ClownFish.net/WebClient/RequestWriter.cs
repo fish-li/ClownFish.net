@@ -159,9 +159,8 @@ internal struct RequestWriter
         }
     }
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: XmlSerializer")]
-#endif
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerializer")]
     private void WriteAsXmlFormat(Stream stream, object data, bool autoGzip)
     {
         this.ContentType = ResponseContentType.XmlUtf8;
@@ -170,6 +169,7 @@ internal struct RequestWriter
                              : XmlHelper.XmlSerialize(data, Encoding.UTF8);
         WriteTextAutoGzip(stream, text, autoGzip);    // xml
     }
+
 
     private void WriteAsWebFormFormat(Stream stream, object data)
     {

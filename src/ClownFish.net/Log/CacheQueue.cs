@@ -36,9 +36,8 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
     /// <summary>
     /// 写入器实例数组，注意：允许一个类型配置多个写入方式
     /// </summary>
-#pragma warning disable IDE0044 // 下面这个字段会在单元测试中修改，所以不能设置为“只读”！
-    private ILogWriter[] _writers = WriterFactory.GetWriters(typeof(T));
-#pragma warning restore IDE0044 // 添加只读修饰符
+    private ILogWriter[] _writers;
+
 
 
     #region ICacehQueue 成员
@@ -103,6 +102,9 @@ internal class CacheQueue<T> : ICacheQueue where T : class, IMsgObject
         if( tempList.Count > ClownFishCounters.Logging.MaxBatchSize.Get() ) 
             ClownFishCounters.Logging.MaxBatchSize.Set(tempList.Count);
         
+        if( _writers == null ) {
+            _writers = WriterFactory.GetWriters(typeof(T));
+        }
 
         // 如果类型没有配置日志序列化器，就忽略
         if( _writers.IsNullOrEmpty() )

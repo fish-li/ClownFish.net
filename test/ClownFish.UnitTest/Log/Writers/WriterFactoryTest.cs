@@ -20,9 +20,9 @@ public class WriterFactoryTest
     [TestMethod]
     public void Test_GetWriters()
     {
-        Assert.AreEqual(2, WriterFactory.GetWriters(typeof(OprLog)).Length);
-        Assert.AreEqual(4, WriterFactory.GetWriters(typeof(InvokeLog)).Length);
-        Assert.AreEqual(2, WriterFactory.GetWriters(typeof(XMessage)).Length);
+        Assert.AreEqual(3, WriterFactory.GetWriters(typeof(OprLog)).Length);     // Xml,Json,txt
+        Assert.AreEqual(5, WriterFactory.GetWriters(typeof(InvokeLog)).Length);  // Xml,Json,Json2,http,txt
+        Assert.AreEqual(2, WriterFactory.GetWriters(typeof(XMessage)).Length);   // mem,NULL
 
 
         Assert.IsNull(WriterFactory.GetWriters(typeof(string)));

@@ -8,10 +8,8 @@ namespace ClownFish.Data;
 /// </summary>
 public static class QueryExtensions
 {
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL3050: MakeGenericMethod")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2060: MakeGenericMethod")]
-#endif
+    [UnconditionalSuppressMessage("AOT", "IL3050: MakeGenericMethod")]
+    [UnconditionalSuppressMessage("Trimming", "IL2060: MakeGenericMethod")]
     private static TResult Execute<TSource, TResult>(IQueryable<TSource> source, string methodName)
     {
         if( source == null )

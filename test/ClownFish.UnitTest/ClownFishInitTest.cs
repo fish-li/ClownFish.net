@@ -41,8 +41,8 @@ namespace ClownFish.UnitTest.Base;
     [TestMethod]
     public void Test_ShowClownFishAppConfig()
     {
-        EnvironmentVariables.Set("Show_ClownFish_App_Config", "1");
-        BaseInitUtils.ShowClownFishAppConfig();
+        EnvironmentVariables.Set("Show_ClownFish_AppConfig", "1");
+        BaseInitUtils.ShowAppConfig();
     }
 
 

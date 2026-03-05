@@ -26,17 +26,17 @@ internal sealed class MsSqlClientProvider2 : BaseMsSqlClientProvider
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly Type _exceptionType;
     private readonly PropertyInfo _exNumber;
+    private readonly Type _connStringBuilderType;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2057: DynamicallyAccessedMemberTypes")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2080: DynamicallyAccessedMemberTypes")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2080: exceptionType.GetProperty")]
     internal MsSqlClientProvider2()
     {
         Type factoryType = Type.GetType("Microsoft.Data.SqlClient.SqlClientFactory, Microsoft.Data.SqlClient", true, false);
 
         _dbProviderFactory = (DbProviderFactory)factoryType.InvokeMember("Instance",
                                 BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public, null, null, null);
+
+        _connStringBuilderType = Type.GetType("Microsoft.Data.SqlClient.SqlConnectionStringBuilder, Microsoft.Data.SqlClient", true, false);
 
         _exceptionType = Type.GetType("Microsoft.Data.SqlClient.SqlException, Microsoft.Data.SqlClient", true, false);
         PropertyInfo p = _exceptionType.GetProperty("Number");
@@ -57,5 +57,13 @@ internal sealed class MsSqlClientProvider2 : BaseMsSqlClientProvider
         }
 
         return false;
+    }
+
+
+    [UnconditionalSuppressMessage("Trimming", "IL2077: Activator.CreateInstance")]
+    public override string GetConnectionString(IDbConfig dbConfig, bool includeDatabase)
+    {
+        DbConnectionStringBuilder sb = (DbConnectionStringBuilder)Activator.CreateInstance(_connStringBuilderType);
+        return BuildConnectionString(sb, dbConfig, includeDatabase);
     }
 }

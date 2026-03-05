@@ -5,7 +5,6 @@ namespace ClownFish.WebHost.Config;
 /// <summary>
 /// HTTP监听参数
 /// </summary>
-[Serializable]
 public sealed class HttpListenerOption
 {
     /// <summary>

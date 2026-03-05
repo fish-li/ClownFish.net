@@ -1,5 +1,4 @@
-﻿
-namespace ClownFish.Base.Config.Models;
+﻿namespace ClownFish.Base.Config.Models;
 
 
 /// <summary>
@@ -70,35 +69,7 @@ public sealed class AppConfiguration : ILoggingObject
     /// <inheritdoc/>
     public string ToLoggingText()
     {
-        StringBuilder sb = StringBuilderPool.Get();
-        try {
-            sb.AppendLineRN("[AppSettings]");
-            foreach( var x in this.AppSettings ) {
-                sb.AppendLineRN($"{x.Key}={x.Value}");
-            }
-            
-            foreach( var x in this.ConnectionStrings ) {
-                sb.AppendLineRN();
-                sb.AppendLineRN($"[ConnectionStrings:{x.Name}]");
-                sb.AppendLineRN($"ProviderName={x.ProviderName}");
-                sb.AppendLineRN($"ConnectionString={x.ConnectionString}");
-            }
-
-            
-            foreach( var x in this.DbConfigs ) {
-                sb.AppendLineRN();
-                sb.AppendLineRN($"[DbConfig:{x.Name}]");
-                sb.AppendLineRN($"all={x.ToString()}");
-                if( x.Args.HasValue() ) {
-                    sb.AppendLineRN($"Args={x.Args}");
-                }
-            }
-            sb.AppendLineRN();
-            return sb.ToString();
-        }
-        finally {
-            StringBuilderPool.Return(sb);
-        }
+        return AppConfigIni.ToIni(this);
     }
 
 
@@ -108,14 +79,10 @@ public sealed class AppConfiguration : ILoggingObject
     /// <param name="filePath"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerialize")]
-#endif
     internal static AppConfiguration LoadFromFile(string filePath, bool checkExist = true)
     {
         if( filePath.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(filePath));
-
 
         if( File.Exists(filePath) == false ) {
             if( checkExist )
@@ -124,47 +91,36 @@ public sealed class AppConfiguration : ILoggingObject
                 return null;
         }
 
-        // TODO; 应该调用 ConfigFile 来获取文件内容，然后再反序列化~~
-        // app1.Appconfig   or  ClownFish.App.config 
-        if( filePath.EndsWithIgnoreCase(".Appconfig") || filePath.EndsWithIgnoreCase(".App.config") ) {
-            var xmlObject = XmlHelper.XmlDeserializeFromFile<XmlAppConfiguration>(filePath);
-            return xmlObject.ToAppConfiguration();
+        if( filePath.EndsWithIgnoreCase(".ini") ) {
+            return AppConfigIni.LoadFile(filePath);
         }
-        else if( filePath.EndsWithIgnoreCase(".appconfig.json") ) {
-            string json = RetryFile.ReadAllText(filePath);
-            return json.FromJson<AppConfiguration>();
+
+        if( EnvArgs0.IsAot == false ) {
+            if( filePath.EndsWithIgnoreCase(".Appconfig") || filePath.EndsWithIgnoreCase(".App.config") ) {
+                // app1.Appconfig   or  ClownFish.App.config 
+                return AppConfigXml.LoadFile(filePath);
+            }
         }
-        else {
-            throw new NotSupportedException("不支持的配置文件格式。filePath: " + filePath);
-        }
+
+        throw new NotSupportedException("不支持的配置文件格式。filePath: " + filePath);
     }
 
 
-    /// <summary>
-    /// 从XML文件中加载AppConfiguration实例
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <returns></returns>
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("Trimming", "IL2026: XmlSerialize")]
-#endif
-    internal static AppConfiguration LoadFromXml(string xml)
+    internal static AppConfiguration LoadFromString(string text, string textType)
     {
-        if( xml.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(xml));
+        if( textType.Is("ini") ) {
+            return AppConfigIni.LoadText(text);
+        }
 
-        var xmlObject = XmlHelper.XmlDeserialize<XmlAppConfiguration>(xml);
-        return xmlObject.ToAppConfiguration();
+        if( EnvArgs0.IsAot == false ) {
+            if( textType.Is("xml") ) {
+                return AppConfigXml.LoadXml(text);
+            }
+        }
+
+        throw new NotSupportedException("不支持的配置文件格式。textType: " + textType);
     }
 
-
-    internal static AppConfiguration LoadFromJson(string json)
-    {
-        if( json.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(json));
-
-        return json.FromJson<AppConfiguration>();
-    }
 
     /// <summary>
     /// 从System.Configuration.ConfigurationManager中加载AppConfiguration实例

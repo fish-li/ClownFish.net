@@ -175,15 +175,12 @@ public static partial class HttpContextExtensions
 
         response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
-        TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
-
-        using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
-            await writer.WriteAsync(body);
+        using( TransparentOutStream stream = new TransparentOutStream(response.OutputStream, httpContext.OprLog) ) {
+            using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+                await writer.WriteAsync(body);
+            }
+            await stream.FlushAsync();
         }
-
-        await stream.FlushAsync();
-        // 当前方法将会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
-        httpContext.OprLog.OutSize = stream.GetOutSize();
     }
 
     /// <summary>
@@ -208,17 +205,48 @@ public static partial class HttpContextExtensions
 
         response.SetHeader(HttpHeaders.Response.ContentEncoding, "gzip");
 
-        TransparentOutStream stream = new TransparentOutStream(response.OutputStream);
-
-        using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
-            list.ToNdjson(writer);
+        using( TransparentOutStream stream = new TransparentOutStream(response.OutputStream, httpContext.OprLog) ) {
+            using( StreamWriter writer = stream.CreateGzipWriter(4096) ) {
+                list.ToNdjson(writer);
+            }
+            await stream.FlushAsync();
         }
-
-        await stream.FlushAsync();
-        // 当前方法将会产生 Transfer-Encoding: chunked 的输出，导致日志组件不能获取响应的长度，所以这里直接指定
-        httpContext.OprLog.OutSize = stream.GetOutSize();
     }
 
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="data"></param>
+    /// <param name="enableGzip"></param>
+    /// <returns></returns>
+    public static async Task HttpJsonReplyAsync(this NHttpContext httpContext, object data, bool enableGzip = false)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( data == null ) {
+            httpContext.Response.StatusCode = 204;
+            return;
+        }
+
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = 200;
+        response.ContentType = ResponseContentType.JsonUtf8;
+
+        using( TransparentOutStream stream = new TransparentOutStream(response.OutputStream, httpContext.OprLog) ) {
+
+            StreamWriter writer = enableGzip
+                                ? stream.CreateGzipWriter()
+                                : stream.CreateWriter();
+            using( writer ) {
+                data.ToJson(writer);
+            }
+
+            await stream.FlushAsync();
+        }
+    }
 
 
 
@@ -282,6 +310,51 @@ public static partial class HttpContextExtensions
             return;
 
         await response.WriteAllAsync(httpResult.Result);
+    }
+
+
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="httpResult">做为输出的数据对象</param>
+    /// <returns></returns>
+    public static async Task HttpReplyAsync(this NHttpContext httpContext, HttpResult<Stream> httpResult)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+        if( httpResult == null )
+            throw new ArgumentNullException(nameof(httpResult));
+        if( httpResult.Result == null )
+            throw new ArgumentNullException(nameof(httpResult.Result));
+
+        Stream stream = httpResult.Result;
+
+        if( stream.CanRead == false )
+            throw new InvalidOperationException("流不可读！");
+
+        NHttpResponse response = httpContext.Response;
+
+        if( stream.CanSeek && stream.Length == 0 ) {
+            httpContext.Response.StatusCode = 204;
+            return;
+        }
+
+        response.StatusCode = httpResult.StatusCode;
+
+        // 复制响应头
+        response.SetResponseHeaders(httpResult.Headers);
+
+        // response.Content != null 对于 204 这种响应来说没有用，仍然会引发异常，所以需要增加下面的判断
+        if( HttpUtils.CanWriteResponseBody(httpContext.Request.HttpMethod, httpResult.StatusCode) == false )
+            return;
+
+        if( stream.CanSeek ) {
+            stream.Position = 0;
+            response.ContentLength = stream.Length;
+        }
+
+        await stream.CopyToAsync(response.OutputStream);
     }
 
 

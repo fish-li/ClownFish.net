@@ -15,7 +15,7 @@ internal static class MySqlProviderUtils
     public static void RegisterProvider(int flag = 0)
     {
         if( flag == 0 ) {
-            
+
             // 读取本地配置参数，决定使用哪个客户端
             flag = LocalSettings.GetInt("MySqlClientProviderSupport", 0);
 
@@ -53,7 +53,7 @@ internal static class MySqlProviderUtils
                     DbClientFactory.RegisterProvider(DatabaseClients.MySqlConnector, MySqlConnectorClientProvider.Instance);
 
                     // 这个为了兼容而保留的名称，放在“后面”注册
-                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);  
+                    DbClientFactory.RegisterProvider(DatabaseClients.MySqlClient, MySqlConnectorClientProvider.Instance);
                     break;
                 }
 

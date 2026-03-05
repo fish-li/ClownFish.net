@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json.Serialization;
 
 namespace ClownFish.Web.Security.Auth;
 
@@ -20,7 +21,7 @@ internal sealed class JwtJsonUserTypesBinder : ISerializationBinder
         s_userInfoTypes.Add(typeof(T));
     }
 
-
+    [UnconditionalSuppressMessage("Trimming", "IL2026: TypeHelper.GetType")]
     public Type BindToType(string assemblyName, string typeName)
     {
         if( assemblyName == null )
@@ -47,6 +48,7 @@ internal sealed class JwtJsonUserTypesBinder2 : ISerializationBinder
 {
     public static readonly JwtJsonUserTypesBinder2 Instance = new JwtJsonUserTypesBinder2();
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026: TypeHelper.GetType")]
     public Type BindToType(string assemblyName, string typeName)
     {
         return TypeHelper.GetType(typeName + ", " + assemblyName, true);

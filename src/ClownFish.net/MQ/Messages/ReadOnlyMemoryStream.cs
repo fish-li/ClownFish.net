@@ -10,11 +10,9 @@ public static class BufferExtension
 {
     private static readonly ConstructorInfo s_ctor = null;
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: Assembly.GetType")]
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2075: type.GetConstructor")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026: Assembly.GetType")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075: type.GetConstructor")]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(System.Net.Http.ReadOnlyMemoryContent))]  // 确保 ReadOnlyMemoryStream 不被裁剪
-#endif
     static BufferExtension()
     {
         // ReadOnlyMemoryStream 这个类型在 .NET BCL 中一直存在，只是没有公开，

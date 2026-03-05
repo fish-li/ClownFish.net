@@ -3,9 +3,12 @@
 /// <summary>
 /// HttpClientLogger
 /// </summary>
-internal static class HttpClientLogger
+public static class HttpClientLogger
 {
-    internal static void Init()
+    /// <summary>
+    /// Init
+    /// </summary>
+    public static void Init()
     {
         HttpClientEvent.OnRequestFinished += HttpClientOnRequestFinished;
     }

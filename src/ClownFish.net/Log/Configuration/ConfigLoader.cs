@@ -2,10 +2,8 @@
 
 namespace ClownFish.Log.Configuration;
 
-#if NETCOREAPP
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: RequiresUnreferencedCode")]
-[UnconditionalSuppressMessage("TrimAnalyzer", "IL2072: DynamicallyAccessedMemberTypes")]
-#endif
+[UnconditionalSuppressMessage("Trimming", "IL2026: TypeHelper.GetType")]
+[UnconditionalSuppressMessage("Trimming", "IL2072: Activator.CreateInstance")]
 internal class ConfigLoader
 {
     private LogConfiguration _config;
@@ -28,10 +26,7 @@ internal class ConfigLoader
         CheckWritersConfig();
 
         // 生成【数据类型】和【写入器】的映射关系
-        List<DataTypeWriterMap> maps = GetMapList();
-
-        // 初始化写入器
-        InitWrites();
+        List<DataTypeWriterMap> maps = CreateMapList();
 
         return maps;
     }
@@ -74,7 +69,7 @@ internal class ConfigLoader
 
         // 先统计使用了哪些写入器，对于没有使用的写入器，不执行初始化。
         // 好处是：预先配置各种写入器，项目使用时开箱即用。
-        // 例如：可以先在配置文件中指定 Rabbit, MongoDb，连接参数指向配置服务，可以事先不安装这些依赖服务。
+        // 例如：可以先在配置文件中指定 Rabbit, MongoDb，当项目不启用时不必安装这些依赖服务。
         string names = string.Join(";", _config.Types.Select(x => x.Writers).ToArray());
         string[] allwriters = names.ToArray2().Distinct().ToArray();
 
@@ -99,24 +94,15 @@ internal class ConfigLoader
 
 
             // 确认可以实例化
-            ILogWriter instance = (ILogWriter)Activator.CreateInstance(t);
+            _ = (ILogWriter)Activator.CreateInstance(t);
 
-            // 目前写入器都是单例的，所以用内部变量来实现
-            // 如果以后要支持 “不同数据类型使用自己专属的写入器“，那么需要重构这里！
             wconf.TypeObject = t;
-            wconf.WriterInstnace = instance;
         }
     }
 
 
-    private void InitWrites()
-    {
-        foreach( var wconf in _config.Writers.Where(x => x.WriterInstnace != null) ) {
-            wconf.WriterInstnace.Init(_config, wconf);
-        }
-    }
-
-    private List<DataTypeWriterMap> GetMapList()
+    [UnconditionalSuppressMessage("Trimming", "IL2067: Activator.CreateInstance")]
+    private List<DataTypeWriterMap> CreateMapList()
     {
         List<DataTypeWriterMap> resultList = new List<DataTypeWriterMap>(_config.Types.Length);
 
@@ -126,11 +112,10 @@ internal class ConfigLoader
             string[] writers = item.Writers.ToArray2().Distinct().ToArray();
             List<WriterConfig> list = new List<WriterConfig>(writers.Length);
 
-            for( int i = 0; i < writers.Length; i++ ) {
-                string writerName = writers[i];
+            foreach( string writerName in writers ) {
                 WriterConfig conf = _config.Writers.FirstOrDefault(x => x.Name.Is(writerName) && x.TypeObject != null);
 
-                if( conf != null ) { 
+                if( conf != null ) {
                     list.Add(conf);
                 }
                 else
@@ -140,11 +125,17 @@ internal class ConfigLoader
 
             DataTypeWriterMap map = new DataTypeWriterMap();
             map.DataType = item.TypeObject;
-            map.WriteTypes = list.Select(x => x.TypeObject).ToArray();
+            map.WriterTypes = list.Select(x => x.TypeObject).ToArray();
 
-            // 注意：这里的写入器实例可能供多个数据类型共享使用
-            map.Instances = list.Select(x => x.WriterInstnace).ToArray();
+            // 如果写入器被引用多次，那就创建多个实例，不能共用。
+            // 例如：FileWriter 就是一个典型的需要多个实例的写入器，因为每个数据类型都要写入不同的文件。
+            map.Writers = map.WriterTypes.Select(x => (ILogWriter)Activator.CreateInstance(x)).ToArray();
             resultList.Add(map);
+
+            // 初始化写入器
+            foreach( var x in map.Writers ) {
+                x.Init(_config, item.TypeObject);
+            }
         }
 
         return resultList;

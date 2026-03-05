@@ -14,9 +14,7 @@ public static class NHttpModuleFactory
     /// </summary>
     /// <param name="moduleType">NHttpModule的类型</param>
     [MethodImpl(MethodImplOptions.Synchronized)]
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2026: moduleType.CanNew")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2026: moduleType.CanNew")]
     public static void RegisterModule(Type moduleType)
     {
         if( moduleType == null )
@@ -51,9 +49,7 @@ public static class NHttpModuleFactory
     }
 
 
-#if NETCOREAPP
-    [UnconditionalSuppressMessage("TrimAnalyzer", "IL2072: Activator.CreateInstance")]
-#endif
+    [UnconditionalSuppressMessage("Trimming", "IL2072: Activator.CreateInstance")]
     internal static List<NHttpModule> CreateModuleList()
     {
         if( s_inited == false )

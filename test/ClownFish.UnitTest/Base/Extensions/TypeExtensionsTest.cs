@@ -19,6 +19,11 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.IsTrue(typeof(Guid).IsSimpleValueType());
             Assert.IsTrue(typeof(decimal).IsSimpleValueType());
             Assert.IsTrue(typeof(DayOfWeek).IsSimpleValueType());
+            Assert.IsTrue(typeof(int).IsSimpleValueType());
+            Assert.IsTrue(typeof(long).IsSimpleValueType());
+            Assert.IsTrue(typeof(float).IsSimpleValueType());
+            Assert.IsTrue(typeof(double).IsSimpleValueType());
+            Assert.IsTrue(typeof(char).IsSimpleValueType());
         }
 
 
@@ -122,7 +127,10 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.AreEqual("ClownFish.Data.CPQuery[]", typeof(CPQuery[]).GetTypeCodeText());
             Assert.AreEqual("System.Collections.Generic.List<ClownFish.Data.CPQuery>", typeof(List<CPQuery>).GetTypeCodeText());
             Assert.AreEqual("System.Collections.Generic.List<ClownFish.Data.CPQuery[]>", typeof(List<CPQuery[]>).GetTypeCodeText());
-            Assert.AreEqual("System.Collections.Generic.Dictionary<int, ClownFish.Data.CPQuery[]>", typeof(Dictionary<int, CPQuery[]>).GetTypeCodeText());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Int32, ClownFish.Data.CPQuery[]>", typeof(Dictionary<int, CPQuery[]>).GetTypeCodeText());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Int32, System.Collections.Generic.List<ClownFish.Data.CPQuery>[]>", typeof(Dictionary<int, List<CPQuery>[]>).GetTypeCodeText());
+            Assert.AreEqual("System.Collections.Generic.Dictionary<System.Int32, System.Collections.Generic.List<ClownFish.Data.CPQuery[]>>", typeof(Dictionary<int, List<CPQuery[]>>).GetTypeCodeText());
+            Assert.AreEqual("System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.Int32, ClownFish.Data.CPQuery[]>>", typeof(List<Dictionary<int, CPQuery[]>>).GetTypeCodeText());
             Assert.AreEqual("ClownFish.Base.CacheItem<ClownFish.Data.CPQuery[]>", typeof(CacheItem<CPQuery[]>).GetTypeCodeText());
 
             MyAssert.IsError<ArgumentNullException>(() => {
@@ -130,4 +138,6 @@ namespace ClownFish.UnitTest.Base.Extensions
             });
         }
     }
+
+
 }
