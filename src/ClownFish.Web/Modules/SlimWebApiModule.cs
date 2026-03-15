@@ -43,7 +43,8 @@ public sealed class SlimWebApiModule : NHttpModule
 
                     // 检查方法签名是否符合要求: Task/Task<xx> ActionName(NHttpContext httpContext)
 
-                    if( method.IsTaskMethod() == false )
+                    if( method.IsTaskMethod() == false 
+                        && method.ReturnType.IsCompatible(typeof(IOutActionResult)) == false )
                         continue;
 
                     if( method.GetParameters().Length != 1 || method.GetParameters()[0].ParameterType != typeof(NHttpContext) )

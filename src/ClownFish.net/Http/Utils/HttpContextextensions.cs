@@ -249,6 +249,41 @@ public static partial class HttpContextExtensions
     }
 
 
+    /// <summary>
+    /// 响应HTTP请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="data"></param>
+    /// <param name="enableGzip"></param>
+    /// <returns></returns>
+    public static async Task HttpXmlReplyAsync(this NHttpContext httpContext, object data, bool enableGzip = false)
+    {
+        if( httpContext == null )
+            throw new ArgumentNullException(nameof(httpContext));
+
+        if( data == null ) {
+            httpContext.Response.StatusCode = 204;
+            return;
+        }
+
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = 200;
+        response.ContentType = ResponseContentType.XmlUtf8;
+
+        using( TransparentOutStream stream = new TransparentOutStream(response.OutputStream, httpContext.OprLog) ) {
+
+            StreamWriter writer = enableGzip
+                                ? stream.CreateGzipWriter()
+                                : stream.CreateWriter();
+            using( writer ) {
+                XmlHelper.XmlSerializeNoNamespace(stream, data, EncodingUtils.UTF8NoBOM);
+            }
+
+            await stream.FlushAsync();
+        }
+    }
+
+
 
     /// <summary>
     /// 响应HTTP请求

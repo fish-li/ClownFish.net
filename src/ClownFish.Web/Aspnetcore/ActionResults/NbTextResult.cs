@@ -1,5 +1,4 @@
-﻿using ClownFish.Base.Xml;
-using ClownFish.Web.Aspnetcore.ActionResults;
+﻿using ClownFish.Web.Aspnetcore.ActionResults;
 
 namespace ClownFish.Web.AspnetCore.ActionResults;
 
@@ -118,10 +117,7 @@ public sealed class NbTextResult : ActionResult, IOutActionResult
         }
 
         if( _data != null && ContentType == ResponseContentType.XmlUtf8 ) {
-            using( TransparentOutStream stream = new TransparentOutStream(httpContext.Response.OutputStream, httpContext.OprLog) ) {
-                XmlHelper.XmlSerializeNoNamespace(stream, _data, EncodingUtils.UTF8NoBOM);
-                await stream.FlushAsync();
-            }
+            await httpContext.HttpXmlReplyAsync(_data);
             return;
         }
 
