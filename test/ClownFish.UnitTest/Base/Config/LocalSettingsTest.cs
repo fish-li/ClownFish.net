@@ -52,8 +52,8 @@ public class LocalSettingsTest
     [TestMethod]
     public void Test_Error()
     {
-        MyAssert.IsError<ArgumentNullException>(()=> {
-            _= LocalSettings.GetSetting("");
+        MyAssert.IsError<ArgumentNullException>(() => {
+            _ = LocalSettings.GetSetting("");
         });
 
         MyAssert.IsError<ConfigurationErrorsException>(() => {
@@ -76,11 +76,16 @@ public class LocalSettingsTest
     [TestMethod]
     public void Test_ILocalSettings()
     {
-        LocalSettings.SetImpl(new XLocalSettingsImpl());
-        Assert.AreEqual("key_test_setting_xx", LocalSettings.GetSetting("key_test_setting"));
+        try {
+            LocalSettings.SetImpl(new XLocalSettingsImpl());
+            Assert.AreEqual("key_test_setting_xx", LocalSettings.GetSetting("key_test_setting"));
 
-        LocalSettings.SetImpl(null);
-        Assert.AreEqual("123456789", LocalSettings.GetSetting("key_test_setting"));
+            LocalSettings.SetImpl(null);
+            Assert.AreEqual("123456789", LocalSettings.GetSetting("key_test_setting"));
+        }
+        finally {
+            LocalSettings.SetImpl(null);
+        }
     }
 }
 

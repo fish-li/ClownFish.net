@@ -82,11 +82,16 @@ public class SettingsTest
     [TestMethod]
     public void Test_ISettings()
     {
-        Settings.SetImpl(new XSettingsImpl());
-        Assert.AreEqual("key_test_setting_xx", Settings.GetSetting("key_test_setting"));
+        try {
+            Settings.SetImpl(new XSettingsImpl());
+            Assert.AreEqual("key_test_setting_xx", Settings.GetSetting("key_test_setting"));
 
-        Settings.SetImpl(null);
-        Assert.AreEqual("123456789", Settings.GetSetting("key_test_setting"));
+            Settings.SetImpl(null);
+            Assert.AreEqual("123456789", Settings.GetSetting("key_test_setting"));
+        }
+        finally {
+            Settings.SetImpl(null);
+        }
     }
 }
 

@@ -24,7 +24,7 @@ public class EntityHelperTest
     [TestMethod]
     public void Test_GetDbTableName()
     {
-        Assert.AreEqual("OrderDetailX2", typeof(OrderDetailX2).GetDbTableName());
+        Assert.AreEqual("OrderDetails2", typeof(OrderDetailX2).GetDbTableName());
 
         Assert.AreEqual("OrderDetail_x3", typeof(OrderDetailX3).GetDbTableName());
 

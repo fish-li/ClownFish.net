@@ -18,7 +18,12 @@ internal static class CodeCompilerHelper
 
         MethodInfo method = typeof(CodeCompilerHelper).Assembly.GetType("ClownFish.Data.CodeDom.CodeCompilerHelper0")
                                 .GetMethod("CompileCode", BindingFlags.NonPublic | BindingFlags.Static);
-        return (Assembly)method.Invoke(null, new object[] { code, dllOutPath });
+        try {
+            return (Assembly)method.Invoke(null, new object[] { code, dllOutPath });
+        }
+        catch( TargetInvocationException ex ) {
+            throw ex.InnerException;
+        }
     }
 }
 

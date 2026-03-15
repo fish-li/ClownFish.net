@@ -11,13 +11,9 @@
     <Project Path="src/ClownFish.Web/ClownFish.Web.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test/ClownFish.UnitTest/ClownFish.UnitTest.csproj">
-      <Build Solution="Release|*" Project="false" />
-    </Project>
+    <Project Path="test/ClownFish.UnitTest/ClownFish.UnitTest.csproj" />
     <Project Path="test/ClownFish.Web.UnitTest/ClownFish.Web.UnitTest.csproj" />
-    <Project Path="test/PerformanceTest/PerformanceTest.csproj">
-      <Build Solution="Release|*" Project="false" />
-    </Project>
+    <Project Path="test/PerformanceTest/PerformanceTest.csproj" />
     <Project Path="test/TestWebSite1/" Type="Website" DisplayName="TestWebSite1" Id="7ce6ac9d-272e-4472-a66f-f1447b340620">
       <BuildType Project="Debug" />
       <Build Solution="Release|*" Project="false" />

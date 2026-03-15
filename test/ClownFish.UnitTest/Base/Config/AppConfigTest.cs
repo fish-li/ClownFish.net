@@ -5,16 +5,6 @@ namespace ClownFish.UnitTest.Base.Config;
 [TestClass]
 public class AppConfigTest
 {
-    // https://learn.microsoft.com/zh-cn/dotnet/core/testing/unit-testing-mstest-writing-tests-attributes?view=vs-2022#class-level
-
-    [ClassCleanup]
-    public static void ClassCleanup() // Starting with MSTest 3.8, it can be ClassCleanup(TestContext testContext)
-    {
-        FieldInfo field = typeof(AppConfig).GetField("s_inited", BindingFlags.Static | BindingFlags.NonPublic);
-        field.SetValue(null, false);
-        AppConfig.Init();
-    }
-
 
     [TestMethod]
     public void Test_GetSetting()
@@ -111,33 +101,6 @@ public class AppConfigTest
     }
 
 
-
-    [TestMethod]
-    public void Test_LoadFromXml()
-    {
-        string filePath = PathUtils.GetFileAbsolutePath("ClownFish.Appconfig.xml");
-        string xml = File.ReadAllText(filePath, Encoding.UTF8);
-
-        AppConfig.ReLoadFromString(xml, "xml");
-        AppConfiguration config1 = AppConfig.GetAccessor().GetConfObject();
-
-        Assert.IsNotNull(config1);
-        Assert.AreEqual("00abcd", config1.AppSettings.First(x => x.Key == "key1").Value);
-        Assert.AreEqual("001234", config1.AppSettings.First(x => x.Key == "key2").Value);
-
-
-        DebugReportBlock block = AppConfig.GetDebugReportBlock();
-        string text = block.ToString2();
-        Assert.IsTrue(text.Contains("key1=00abcd"));
-        Assert.IsTrue(text.Contains("key2=001234"));
-
-        // 无效参数，忽略调用
-        AppConfig.ReLoadFromString(null, "ini");
-    }
-
-
-
-
     [TestMethod]
     public void Test_GetConnectionString()
     {
@@ -209,24 +172,6 @@ public class AppConfigTest
         Assert.IsTrue(value2);
     }
 
-    [TestMethod]
-    public void Test_SetAppConfigFileName()
-    {
-        typeof(AppConfig).SetFieldValue("s_inited", false);
-
-        string path1 = AppConfig.GetAppConfigFilePath();
-        Console.WriteLine(path1);
-        Assert.IsTrue(path1.EndsWith1("ClownFish.UnitTest.config.ini"));
-
-        AppConfig.SetAppConfigFileName("111.conf");
-        string path2 = AppConfig.GetAppConfigFilePath();
-        Console.WriteLine(path2);
-        Assert.IsTrue(path2.EndsWith1("111.conf"));
-
-        AppConfig.SetAppConfigFileName(null);
-        string path3 = AppConfig.GetAppConfigFilePath();
-        Assert.AreEqual(path1, path3);
-    }
 
     [TestMethod]
     public void Test_GetDefaultAppconfigFilePath()

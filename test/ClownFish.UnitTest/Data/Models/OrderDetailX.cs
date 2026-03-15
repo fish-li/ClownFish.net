@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.UnitTest.Data.Models;
 
-//[DbEntity(Alias = "OrderDetails1")]
+[DbEntity(Alias = "OrderDetails1")]
 public partial class OrderDetailX1
 {
     [DbColumn(PrimaryKey = true)]
@@ -15,7 +15,7 @@ public partial class OrderDetailX1
 }
 
 
-//[DbEntity(Alias = "OrderDetails2")]
+[DbEntity(Alias = "OrderDetails2")]
 public partial class OrderDetailX2 : Entity
 {
     [DbColumn(Identity = true)]

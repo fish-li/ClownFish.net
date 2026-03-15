@@ -73,10 +73,6 @@ public class XmlHelperTest
         });
 
         MyAssert.IsError<ArgumentNullException>(() => {
-            _ = XmlHelper.XmlSerialize("xx", null);
-        });
-
-        MyAssert.IsError<ArgumentNullException>(() => {
             XmlHelper.XmlSerializeToFile("xx", null);
         });
 

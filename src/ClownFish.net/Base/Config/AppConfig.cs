@@ -115,14 +115,11 @@ public static class AppConfig
     //}
 
     /// <summary>
-    /// 设置 Appconfig 的名称。 【强烈建议】：如果需要调用这个方法，那么这个调用放在程序运行的 【第一行】
+    /// 设置 Appconfig 的名称，此方法仅在初始化之前调用有效。 【强烈建议】：如果需要调用这个方法，那么这个调用放在程序运行的【第一行】
     /// </summary>
     /// <param name="filenName"></param>
     public static void SetAppConfigFileName(string filenName)
     {
-        if( s_inited )
-            throw new InvalidOperationException("此时调用当前方法无效（时机过晚），因为 AppConfig 已初始化完成！");
-
         s_filename = filenName;
     }
 
