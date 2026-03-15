@@ -104,13 +104,13 @@ public struct HttpStreamReader
 
     private static string ReadAllText0(Stream stream, Encoding encoding)
     {
-        using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
+        using StreamReader reader = new StreamReader(stream, encoding, true, 4096, true);
         return reader.ReadToEnd();
     }
 
     private static async Task<string> ReadAllText0Async(Stream stream, Encoding encoding)
     {
-        using StreamReader reader = new StreamReader(stream, encoding, true, 1024, true);
+        using StreamReader reader = new StreamReader(stream, encoding, true, 4096, true);
         return await reader.ReadToEndAsync();
     }
 

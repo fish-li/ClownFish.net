@@ -207,7 +207,7 @@ public sealed partial class ResponseReader : IDisposable
         JsonSerializerSettings settings = JsonSerializerSettingsUtils.Get(JsonStyle.None);
         JsonSerializer jsonSerializer = settings.CreateJsonSerializer();
 
-        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 4096, true);
 
         using( JsonTextReader reader2 = new JsonTextReader(reader) ) {
             return (T)jsonSerializer.Deserialize(reader, typeof(T));
@@ -217,7 +217,7 @@ public sealed partial class ResponseReader : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static LIST ReturnListFromNdjsonStream<LIST>(Stream responseStream, Encoding encoding)
     {
-        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 4096, true);
 
         return (LIST)NdJsonExtensions.LoadListFromNdjson(reader, typeof(LIST));
     }
@@ -246,7 +246,7 @@ public sealed partial class ResponseReader : IDisposable
     {
         XmlSerializer mySerializer = new XmlSerializer(typeof(T));
 
-        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+        using StreamReader reader = new StreamReader(responseStream, (encoding ?? Encoding.UTF8), true, 4096, true);
 
         return (T)mySerializer.Deserialize(reader);
     }
@@ -319,14 +319,14 @@ public sealed partial class ResponseReader : IDisposable
             return string.Empty;
 
         if( maxLimitLen <= 0 ) {   // 不检查长度
-            using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+            using( StreamReader reader = new StreamReader(stream, encoding, true, 4096, true) ) {
                 return reader.ReadToEnd();
             }
         }
 
         // 读取流，并检查最大了限制长度
         StringBuilder sb = new StringBuilder();
-        using( StreamReader reader = new StreamReader(stream, encoding, true, 1024, true) ) {
+        using( StreamReader reader = new StreamReader(stream, encoding, true, 4096, true) ) {
             string line = null;
             while( (line = reader.ReadLine()) != null ) {
                 if( sb.Length + line.Length + 2 > maxLimitLen ) {  // 2 = 换行符 \r\n 长度
@@ -365,7 +365,7 @@ public sealed partial class ResponseReader : IDisposable
             StringBuilder html = StringBuilderPool.Get();
             try {
                 // 按 tryEncoding 的编码方式读取，也有可能一直读到结束
-                using( StreamReader reader = new StreamReader(ms, tryEncoding, true, 1024, leaveOpen: true) ) {
+                using( StreamReader reader = new StreamReader(ms, tryEncoding, true, 4096, leaveOpen: true) ) {
                     while( (line = reader.ReadLine()) != null ) {
 
                         html.AppendLine(line);

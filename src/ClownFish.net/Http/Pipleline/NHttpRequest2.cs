@@ -378,12 +378,12 @@ public partial class NHttpRequest : ILoggingObject
 
         string contentEncoding = this.Header(HttpHeaders.Request.ContentEncoding);
         if( contentEncoding.IsNullOrEmpty() ) {
-            using StreamReader reader = new StreamReader(this.InputStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+            using StreamReader reader = new StreamReader(this.InputStream, (encoding ?? Encoding.UTF8), true, 4096, true);
             return (T)reader.FromJson(typeof(T));
         }
         else {
             using Stream zipStream = this.InputStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress);
-            using StreamReader reader = new StreamReader(zipStream, (encoding ?? Encoding.UTF8), true, 1024, true);
+            using StreamReader reader = new StreamReader(zipStream, (encoding ?? Encoding.UTF8), true, 4096, true);
             return (T)reader.FromJson(typeof(T));
         }
     }

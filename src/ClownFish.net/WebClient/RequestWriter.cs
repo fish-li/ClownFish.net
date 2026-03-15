@@ -71,7 +71,7 @@ internal struct RequestWriter
     {
         if( text != null && text.Length > 0 ) {
 
-            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 4096, true) ) {
 
                 writer.Write(text);
             }
@@ -153,7 +153,7 @@ internal struct RequestWriter
             IsBinaryData = true;
         }
         else {
-            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 1024, true) ) {
+            using( StreamWriter writer = new StreamWriter(stream, EncodingUtils.UTF8NoBOM, 4096, true) ) {
                 list.ToNdjson(writer);
             }
         }

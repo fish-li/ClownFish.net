@@ -64,7 +64,7 @@ public class HttpRequestSysNet : NHttpRequest
     //                    _body = string.Empty;
     //                }
     //                else {
-    //                    using( StreamReader reader = new StreamReader(_request.InputStream, Encoding.UTF8, true, 1024, true) ) {
+    //                    using( StreamReader reader = new StreamReader(_request.InputStream, Encoding.UTF8, true, 4096, true) ) {
     //                        _body = reader.ReadToEnd();
     //                    }
     //                }

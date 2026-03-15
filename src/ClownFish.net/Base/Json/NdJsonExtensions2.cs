@@ -114,7 +114,7 @@
 //        List<T> list = new List<T>(capacity);
 //        Type destType = typeof(T);
 
-//        using( StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true) ) {
+//        using( StreamReader reader = new StreamReader(stream, Encoding.UTF8, true, 4096, true) ) {
 
 //            while( true ) {
 //                string line = reader.ReadLine();

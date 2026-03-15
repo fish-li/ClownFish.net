@@ -25,11 +25,11 @@ public sealed class NdJsonReader : IDisposable
         Encoding encoding2 = encoding ?? Encoding.UTF8;
 
         if( contentEncoding.IsNullOrEmpty() ) {
-            _streamReader = new StreamReader(httpStream, encoding2, true, 1024, true);
+            _streamReader = new StreamReader(httpStream, encoding2, true, 4096, true);
         }
         else {
             Stream zipStream = httpStream.CreateCompressionStream(contentEncoding, CompressionMode.Decompress);
-            _streamReader = new StreamReader(zipStream, encoding2, true, 1024, false);
+            _streamReader = new StreamReader(zipStream, encoding2, true, 4096, false);
         }
 
         if( autoCloseStream ) {

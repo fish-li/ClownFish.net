@@ -134,7 +134,7 @@ public static class StreamExtensions
         CheckStreamRead(stream);
 
         encoding = encoding ?? Encoding.UTF8;
-        using( StreamReader reader = new StreamReader(stream, encoding, true, -1, true) ) {
+        using( StreamReader reader = new StreamReader(stream, encoding, true, 4096, true) ) {
             return reader.ReadToEnd();
         }
     }

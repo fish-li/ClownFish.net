@@ -235,7 +235,7 @@ public sealed class SimpleEsClient
             return;
 
         using MemoryStream ms = MemoryStreamPool.GetStream();
-        using StreamWriter writer = new StreamWriter(ms, EncodingUtils.UTF8NoBOM, 1024, true);
+        using StreamWriter writer = new StreamWriter(ms, EncodingUtils.UTF8NoBOM, 4096, true);
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName, writer);
 
@@ -263,7 +263,7 @@ public sealed class SimpleEsClient
             return;
 
         using MemoryStream ms = MemoryStreamPool.GetStream();
-        using StreamWriter writer = new StreamWriter(ms, EncodingUtils.UTF8NoBOM, 1024, true);
+        using StreamWriter writer = new StreamWriter(ms, EncodingUtils.UTF8NoBOM, 4096, true);
 
         HttpOption httpOption = GetWriteListHttpOption(list, indexName, writer);
 
