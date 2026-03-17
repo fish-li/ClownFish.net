@@ -1,7 +1,6 @@
 ﻿using System.Net;
-using ClownFish.Web.Aspnetcore.ActionResults;
 
-namespace ClownFish.Web.AspnetCore.ActionResults;
+namespace ClownFish.Web.Aspnetcore.ActionResults;
 
 /// <summary>
 /// 

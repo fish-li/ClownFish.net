@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace ClownFish.Web.AspnetCore.ActionResults;
+namespace ClownFish.Web.Aspnetcore.ActionResults;
 
 /// <summary>
 /// PageResult

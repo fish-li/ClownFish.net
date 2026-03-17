@@ -1,6 +1,4 @@
-﻿using ClownFish.Web.Aspnetcore.ActionResults;
-
-namespace ClownFish.Web.AspnetCore.ActionResults;
+﻿namespace ClownFish.Web.Aspnetcore.ActionResults;
 
 /// <summary>
 /// 表示一个响应体内容为文本字符串的 ActionResult

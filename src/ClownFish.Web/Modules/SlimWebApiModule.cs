@@ -4,9 +4,9 @@ using ClownFish.Web.Attributes;
 
 namespace ClownFish.Web.Modules;
 
-// ApiModule 主要用于AOT模式下提供基本的 WebApi 功能支持，
+// SlimWebApiModule 主要用于AOT模式下提供基本的 WebApi 功能支持，
 // 为了简化实现，必须满足以下要求：
-// 1. Controller 类型必须标记 [WebApiController]，
+// 1. Controller 类型必须标记 [WebApi]，
 // 2. Action方法签名必须是：public Task/Task<xx> ActionName(NHttpContext httpContext)
 
 public sealed class SlimWebApiModule : NHttpModule
