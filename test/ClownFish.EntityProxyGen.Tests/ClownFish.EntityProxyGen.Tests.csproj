@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+		<TargetFrameworks>net10.0;net8.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <IsPackable>false</IsPackable>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Models\_Generated\**" />
+        <Compile Remove="Models\_CodeDomGen\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+        <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ClownFish.net\ClownFish.net.csproj" />
+        <ProjectReference Include="..\..\src\ClownFish.EntityProxyGen\ClownFish.EntityProxyGen.csproj" />
+    </ItemGroup>
+</Project>

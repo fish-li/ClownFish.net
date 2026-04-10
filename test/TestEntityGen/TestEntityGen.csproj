@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>_CodeGenerated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="ClownFishEntityProxyGenEnableXmlRootAttribute" />
+    </ItemGroup>
+    <PropertyGroup>
+        <ClownFishEntityProxyGenEnableXmlRootAttribute>true</ClownFishEntityProxyGenEnableXmlRootAttribute>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <Compile Remove="_CodeGenerated\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\Category.cs" Link="Models\Category.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\ComplexEntity.cs" Link="Models\ComplexEntity.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\Customer.cs" Link="Models\Customer.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\Model11.cs" Link="Models\Model11.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\ModelX.cs" Link="Models\ModelX.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\MsSqlDataType.cs" Link="Models\MsSqlDataType.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\MySqlDataType.cs" Link="Models\MySqlDataType.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\Product.cs" Link="Models\Product.cs" />
+        <Compile Include="..\ClownFish.EntityProxyGen.Tests\Models\TestDateTimeTable.cs" Link="Models\TestDateTimeTable.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ClownFish.net\ClownFish.net.csproj" />
+        <ProjectReference Include="..\..\src\ClownFish.EntityProxyGen\ClownFish.EntityProxyGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+</Project>
