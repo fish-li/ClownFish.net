@@ -14,6 +14,7 @@ public static class TypeExtensionsCF
     /// </summary>
     /// <param name="t"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsSimpleValueType(this Type t)
     {
         return t.IsPrimitive

@@ -1,6 +1,6 @@
 ﻿namespace ClownFish.Web.Aspnetcore.ActionResults;
 
-public sealed class NdjsonResult : ActionResult, IOutActionResult
+public sealed class NdjsonResult : ActionResult, IWebApiResult
 {
     private readonly ICollection _list;
 

@@ -1,6 +1,4 @@
-﻿using ClownFish.Web.Handlers;
-
-namespace ClownFish.Web.Modules;
+﻿namespace ClownFish.Web.Modules;
 public sealed class WebStaticFileModule : NHttpModule
 {
     // 这里只挑选了一些常见的静态文件类型，

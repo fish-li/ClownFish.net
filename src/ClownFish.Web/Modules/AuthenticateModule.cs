@@ -1,6 +1,4 @@
-﻿using ClownFish.Web.Security.Auth;
-
-namespace ClownFish.Web.Modules;
+﻿namespace ClownFish.Web.Modules;
 
 public sealed class AuthenticateModule : NHttpModule
 {

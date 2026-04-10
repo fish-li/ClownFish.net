@@ -11,6 +11,7 @@ public static class MethodExtensions
     /// </summary>
     /// <param name="m"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasReturn(this MethodInfo m)
     {
         return m.ReturnType != typeof(void);
@@ -21,6 +22,7 @@ public static class MethodExtensions
     /// </summary>
     /// <param name="method"></param>
     /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsTaskMethod(this MethodInfo method)
     {
         if( method.ReturnType == typeof(Task) )

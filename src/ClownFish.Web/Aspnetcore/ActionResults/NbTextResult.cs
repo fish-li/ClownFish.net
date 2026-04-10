@@ -3,7 +3,7 @@
 /// <summary>
 /// 表示一个响应体内容为文本字符串的 ActionResult
 /// </summary>
-public sealed class NbTextResult : ActionResult, IOutActionResult
+public sealed class NbTextResult : ActionResult, IWebApiResult
 {
     /// <summary>
     /// 响应体内容

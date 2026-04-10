@@ -13,7 +13,8 @@ internal static class LogInitUtils
         LogConfiguration config1 = baseConfig ?? LoadFromClownFishAssembly();
 
         // 加载应用程序中定制的配置文件
-        LogConfiguration config2 = addConfig ?? LoadFile(ConfigFile.LogConfigFileName) ?? LoadFile("ClownFish.logconfig.ini");
+        LogConfiguration config2 = addConfig ?? LoadFile(ConfigFile.LogConfigFileName) ?? LoadFile("ClownFish.logconfig.ini") 
+                                             ??  LoadFile(ConfigFile.AppConfigFileName);
 
         // 合并配置项，同名参数节点用config2覆盖config1
         LogConfiguration config3 = LogConfiguration.MegerConfig(config1, config2);
@@ -33,10 +34,11 @@ internal static class LogInitUtils
     internal static LogConfiguration LoadFile(string filename)
     {
         string fileBody = ConfigFile.GetFile(filename);
-        if( fileBody.IsNullOrEmpty() == false ) {
-            return LogConfig.LoadFromIni(fileBody);
+        if( fileBody.IsNullOrEmpty() ) {
+            return null;
         }
-        return null;
+
+        return LogConfig.LoadFromIni(fileBody);
     }
 
 

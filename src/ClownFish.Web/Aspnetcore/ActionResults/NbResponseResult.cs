@@ -5,7 +5,7 @@ namespace ClownFish.Web.Aspnetcore.ActionResults;
 /// <summary>
 /// 
 /// </summary>
-public sealed class NbResponseResult : ActionResult, IOutActionResult
+public sealed class NbResponseResult : ActionResult, IWebApiResult
 {
     private readonly HttpResult<string> _httpResult;
     private readonly HttpResult<byte[]> _httpResult2;

@@ -45,10 +45,16 @@ public static class HttpContextUtils
     /// 获取当前请求相关的用户信息，结果可能为NULL
     /// </summary>
     /// <param name="httpContext"></param>
+    /// <param name="ifNotLoginThrowError">如果当前用户没有登录导致获取不到用户信息时，是否抛出异常</param>
     /// <returns></returns>
-    public static IUserInfo GetUserInfo(this NHttpContext httpContext)
+    public static IUserInfo GetUserInfo(this NHttpContext httpContext, bool ifNotLoginThrowError = false)
     {
-        return (httpContext?.User?.Identity as INbIdentity)?.UserInfo;
+        IUserInfo userinfo = (httpContext?.User?.Identity as INbIdentity)?.UserInfo;
+
+        if( userinfo == null && ifNotLoginThrowError )
+            throw new InvalidOperationException("当前用户没有登录，不能获取到用户身份信息。");
+
+        return userinfo;
     }
 
     /// <summary>

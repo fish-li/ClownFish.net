@@ -420,6 +420,18 @@ public static partial class HttpContextExtensions
         httpContext.PipelineContext.RespResult = body;
     }
 
+    /// <summary>
+    /// 重定向当前请求
+    /// </summary>
+    /// <param name="httpContext"></param>
+    /// <param name="url"></param>
+    public static Task Redirect(this NHttpContext httpContext, string url)
+    {
+        NHttpResponse response = httpContext.Response;
+        response.StatusCode = 302;
+        response.SetHeader("Location", url);
 
+        return Task.CompletedTask;  // 可简化 Action 代码
+    }
 
 }

@@ -3,9 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net10.0;net8.0;net462</TargetFrameworks>
 		<RootNamespace>ClownFish</RootNamespace>
-		<AssemblyVersion>10.0.0.0</AssemblyVersion>
-		<Version>10.26.317.1</Version>
-		<FileVersion>10.26.317.1</FileVersion>
 		<SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<LangVersion>latest</LangVersion>
@@ -15,6 +12,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<AssemblyVersion>10.0.0.0</AssemblyVersion>
+		<Version>10.26.409.2</Version>
+		<FileVersion>10.26.409.2</FileVersion>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<Authors>Fish Li</Authors>

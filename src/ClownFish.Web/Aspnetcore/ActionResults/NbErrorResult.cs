@@ -3,7 +3,7 @@
 /// <summary>
 /// NbErrorResult
 /// </summary>
-public sealed class NbErrorResult : ActionResult, IOutActionResult
+public sealed class NbErrorResult : ActionResult, IWebApiResult
 {
     private readonly Exception _exception;
 

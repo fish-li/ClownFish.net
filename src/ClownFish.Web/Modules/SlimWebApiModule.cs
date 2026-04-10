@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using ClownFish.Web.Aspnetcore.ActionResults;
 using ClownFish.Web.Attributes;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace ClownFish.Web.Modules;
 
@@ -9,12 +10,16 @@ namespace ClownFish.Web.Modules;
 // 1. Controller 类型必须标记 [WebApi]，
 // 2. Action方法签名必须是：public Task/Task<xx> ActionName(NHttpContext httpContext)
 
+
+
+
 public sealed class SlimWebApiModule : NHttpModule
 {
     private class ApiActionInfo
     {
         public Type ControllerType { get; set; }
         public MethodInfo Method { get; set; }
+        public string[] HttpMethods { get; set; }
         public UrlRouteAttribute Attribute { get; set; }
         public Regex RouteRegex { get; set; }
     }
@@ -22,6 +27,8 @@ public sealed class SlimWebApiModule : NHttpModule
     private static readonly Dictionary<string, ApiActionInfo> s_urlMapDict = new(300, StringComparer.OrdinalIgnoreCase);
     private static readonly List<ApiActionInfo> s_regexRouteList = new(100);
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ApiActionInfo))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ApiActionHandler))]
     public override void Init()
     {
         BuildRouteDict();
@@ -43,11 +50,10 @@ public sealed class SlimWebApiModule : NHttpModule
 
                     // 检查方法签名是否符合要求: Task/Task<xx> ActionName(NHttpContext httpContext)
 
-                    if( method.IsTaskMethod() == false 
-                        && method.ReturnType.IsCompatible(typeof(IOutActionResult)) == false )
+                    if( CheckActionMethodReturnType(method) == false )
                         continue;
 
-                    if( method.GetParameters().Length != 1 || method.GetParameters()[0].ParameterType != typeof(NHttpContext) )
+                    if( CheckActionMethodParameter(method) == false )
                         continue;
 
                     var attrs = method.GetCustomAttributes<UrlRouteAttribute>();
@@ -60,9 +66,14 @@ public sealed class SlimWebApiModule : NHttpModule
                                 Attribute = attr
                             };
 
+                            var httpMethods = method.GetCustomAttributes<HttpMethodAttribute>();
+                            actionInfo.HttpMethods = (from x in httpMethods
+                                                      let m = x.HttpMethods.First()
+                                                      select m
+                                                      ).ToArray();
+
                             if( RegexUtils.HasRouteName(attr.Route) ) {
                                 actionInfo.RouteRegex = RegexUtils.CreateRouteRegex(attr.Route);
-
                                 s_regexRouteList.Add(actionInfo);
                             }
                             else {
@@ -77,6 +88,28 @@ public sealed class SlimWebApiModule : NHttpModule
         Console2.Info($"ClownFish.Web SlimWebApiModule: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} actions");
     }
 
+
+    private static bool CheckActionMethodReturnType(MethodInfo method)
+    {
+        if( method.IsTaskMethod() )
+            return true;
+
+        Type returnType = method.ReturnType;
+
+        if( returnType.IsCompatible(typeof(IWebApiResult))
+            || returnType.IsSimpleValueType()
+            || returnType == typeof(string)
+            || returnType == typeof(object)
+            || returnType == typeof(void) )
+            return true;
+
+        return false;
+    }
+
+    private static bool CheckActionMethodParameter(MethodInfo method)
+    {
+        return method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(NHttpContext);
+    }
 
     public override void MapRequestHandler(NHttpContext httpContext)
     {
@@ -99,69 +132,86 @@ public sealed class SlimWebApiModule : NHttpModule
         }
 
         if( actionInfo != null ) {
-            ApiActionHandler handler = new ApiActionHandler(actionInfo.ControllerType, actionInfo.Method);
+            ApiActionHandler handler = new ApiActionHandler(actionInfo);
             httpContext.PipelineContext.SetHttpHandler(handler);
         }
-
-    }
-}
-
-
-internal class ApiActionHandler : IAsyncNHttpHandler
-{
-    private readonly Type _controllerType;
-    private readonly MethodInfo _method;
-
-    public ApiActionHandler(Type controllerType, MethodInfo method)
-    {
-        _controllerType = controllerType;
-        _method = method;
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2026: CallMethod")]
-    [UnconditionalSuppressMessage("Trimming", "IL2077: CallMethod")]
-    public async Task ProcessRequestAsync(NHttpContext httpContext)
+
+
+    private class ApiActionHandler : IAsyncNHttpHandler
     {
-        object instance = Activator.CreateInstance(_controllerType);
+        private readonly ApiActionInfo _actionInfo;
 
-        IDisposable disposable = (instance as IDisposable) ?? NullDisposable.Instance;
-
-        using( disposable ) {
-            object result = await ReflectionUtils.CallMethod(instance, _method, new object[] { httpContext });
-
-            await OutputResultAsync(httpContext, result);
-        }
-    }
-
-    private async Task OutputResultAsync(NHttpContext httpContext, object result)
-    {
-        if( result == null )
-            return;
-
-        if( result is string str ) {
-            await httpContext.HttpReplyAsync(str);
-            return;
-        }
-
-        if( result.GetType().IsSimpleValueType() ) {
-            await httpContext.HttpReplyAsync(result.ToString());
-        }
-
-        if( result is IOutActionResult actionResult ) {
-            await actionResult.OutResultAsync(httpContext);
-            return;
-        }
-
-        await httpContext.HttpJsonReplyAsync(result);
-    }
-
-    private sealed class NullDisposable : IDisposable
-    {
-        internal static readonly NullDisposable Instance = new NullDisposable();
-        public void Dispose()
+        public ApiActionHandler(ApiActionInfo actionInfo)
         {
-            // 什么都不做
+            _actionInfo = actionInfo;
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026: CallMethod")]
+        [UnconditionalSuppressMessage("Trimming", "IL2077: CallMethod")]
+        [UnconditionalSuppressMessage("Trimming", "IL2072: Activator.CreateInstance")]
+        public async Task ProcessRequestAsync(NHttpContext httpContext)
+        {
+            if( CheckHttpMethod(httpContext, _actionInfo) == false ) {
+                await httpContext.HttpReplyAsync(405, "HttpMethod与Action申明的调用方法不匹配！");
+            }
+
+            object instance = Activator.CreateInstance(_actionInfo.ControllerType);
+
+            if( instance is IControllerInit handler ) {
+                handler.Init(httpContext);
+            }
+
+            IDisposable disposable = (instance as IDisposable) ?? NullDisposable.Instance;
+
+            using( disposable ) {
+                object result = await ReflectionUtils.CallMethod(instance, _actionInfo.Method, new object[] { httpContext });
+
+                await OutputResultAsync(httpContext, result);
+            }
+        }
+
+        private bool CheckHttpMethod(NHttpContext httpContext, ApiActionInfo actionInfo)
+        {
+            string[] methods = actionInfo.HttpMethods;
+            if( methods.IsNullOrEmpty() )
+                return true;
+
+            string current = httpContext.Request.HttpMethod;
+            return methods.Contains(current);
+        }
+
+        private async Task OutputResultAsync(NHttpContext httpContext, object result)
+        {
+            if( result == null )
+                return;
+
+            if( result is string str ) {
+                await httpContext.HttpReplyAsync(str);
+                return;
+            }
+
+            if( result.GetType().IsSimpleValueType() ) {
+                await httpContext.HttpReplyAsync(result.ToString());
+            }
+
+            if( result is IWebApiResult actionResult ) {
+                await actionResult.OutResultAsync(httpContext);
+                return;
+            }
+
+            await httpContext.HttpJsonReplyAsync(result);
+        }
+
+        private sealed class NullDisposable : IDisposable
+        {
+            internal static readonly NullDisposable Instance = new NullDisposable();
+            public void Dispose()
+            {
+                // 什么都不做
+            }
         }
     }
-}
 
+}

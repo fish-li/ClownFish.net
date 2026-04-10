@@ -211,8 +211,7 @@ public static class AspnetCoreStarter
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthenticateModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthorizeModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UrlRouteModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SlimWebApiModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ApiActionHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SlimWebApiModule))]    
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExecHttpUiModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebStaticFileModule))]
     private static void LoadModules()

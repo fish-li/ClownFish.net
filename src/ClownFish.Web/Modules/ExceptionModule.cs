@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Web.Aspnetcore;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ClownFish.Web.Aspnetcore;
 
 public sealed class ExceptionModule : NHttpModule
 {
@@ -10,6 +12,10 @@ public sealed class ExceptionModule : NHttpModule
     private static readonly string s_icoFilePath = Path.Combine(AppContext.BaseDirectory, "wwwroot/favicon.ico");
     //private static readonly bool s_icoExist = File.Exists(s_icoFilePath);  // 这样不利于开发阶段更换文件
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(StaticFileHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(FavIconHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ErrorPageModel))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RemoteWebException))]
     public override void NotFoundAction(NHttpContext httpContext)
     {
         if( httpContext.Response.StatusCode == 404 && httpContext.Request.Path == "/favicon.ico" ) {

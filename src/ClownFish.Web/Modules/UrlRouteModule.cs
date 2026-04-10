@@ -17,6 +17,7 @@ public sealed class UrlRouteModule : NHttpModule
         public IAsyncNHttpHandler StaicInstance { get; set; }
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HandlerInfo))]
     public override void Init()
     {
         BuildRouteDict();
