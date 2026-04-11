@@ -8,7 +8,7 @@ public static class ConstValues
     /// <summary>
     /// 
     /// </summary>
-    public static readonly string CurrentVersion = "10.26.409.2";
+    public static readonly string CurrentVersion = "10.26.411.1";
 
     /// <summary>
     /// 
@@ -17,7 +17,7 @@ public static class ConstValues
 
     static ConstValues()
     {
-        // 示例：ClownFish.HttpClient/10.26.409.2
+        // 示例：ClownFish.HttpClient/10.26.411.1
         HttpClientUserAgent = $"ClownFish.HttpClient/{CurrentVersion}";
     }
 

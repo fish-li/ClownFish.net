@@ -119,7 +119,13 @@ public class WebApplicationStartup
 
     public virtual WebApplicationBuilder CreateWebApplicationBuilder()
     {
+        // asp.net core 6: WebApplication.CreateBuilder()
+
+        // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/native-aot?view=aspnetcore-10.0#createslimbuilder-vs-createbuilder
         return WebApplication.CreateSlimBuilder();
+
+        // 还可以调用 WebApplication.CreateEmptyBuilder 创建一个更精简的构建器
+        // https://learn.microsoft.com/zh-cn/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-10.0#new-createemptybuilder-method
     }
 
 

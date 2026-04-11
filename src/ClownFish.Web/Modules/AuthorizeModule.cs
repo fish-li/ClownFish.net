@@ -28,19 +28,22 @@ public sealed class AuthorizeModule : NHttpModule
     }
 
 
-    internal static bool AuthorizeCheck(NHttpContext httpContext)
+    internal static bool AuthorizeCheck(NHttpContext httpContext, IBaseActionInfo actionInfo = null)
     {
+        if( actionInfo == null )
+            actionInfo = httpContext.PipelineContext.Action;
+
         // 当前Action 不允许 匿名访问
-        AllowAnonymousAttribute allowAnonymous = httpContext.PipelineContext.Action.GetActionAttribute<AllowAnonymousAttribute>();
+        AllowAnonymousAttribute allowAnonymous = actionInfo.GetActionAttribute<AllowAnonymousAttribute>();
         if( allowAnonymous == null ) {
 
             // 当前Action已明确标记， [Authorize] ，要求做权限检查
-            AuthorizeAttribute attribute = httpContext.PipelineContext.Action.GetActionAttribute<AuthorizeAttribute>();
+            AuthorizeAttribute attribute = actionInfo.GetActionAttribute<AuthorizeAttribute>();
             if( attribute != null ) {
 
                 // 当前用户没有登录
                 if( httpContext.IsAuthenticated == false ) {
-                    httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "NotLogin");
+                    httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "Unauthorized");
                     httpContext.HttpReply(401, "Please login.");
                     httpContext.Response.End();
                     return false;
@@ -48,7 +51,7 @@ public sealed class AuthorizeModule : NHttpModule
 
                 // 当前用户没有相应的访问权限，禁止访问
                 if( attribute.AuthenticateRequest(httpContext) == false ) {
-                    httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "NoPermission");
+                    httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "Forbidden");
                     httpContext.HttpReply(403, "Authorize validate failed.");
                     httpContext.Response.End();
                     return false;

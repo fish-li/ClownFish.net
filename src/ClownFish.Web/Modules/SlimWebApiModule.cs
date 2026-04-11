@@ -15,10 +15,10 @@ namespace ClownFish.Web.Modules;
 
 public sealed class SlimWebApiModule : NHttpModule
 {
-    private class ApiActionInfo
+    private class ApiActionInfo : IBaseActionInfo
     {
         public Type ControllerType { get; set; }
-        public MethodInfo Method { get; set; }
+        public MethodInfo MethodInfo { get; set; }
         public string[] HttpMethods { get; set; }
         public UrlRouteAttribute Attribute { get; set; }
         public Regex RouteRegex { get; set; }
@@ -62,7 +62,7 @@ public sealed class SlimWebApiModule : NHttpModule
 
                             ApiActionInfo actionInfo = new ApiActionInfo {
                                 ControllerType = controllerType,
-                                Method = method,
+                                MethodInfo = method,
                                 Attribute = attr
                             };
 
@@ -155,6 +155,11 @@ public sealed class SlimWebApiModule : NHttpModule
         {
             if( CheckHttpMethod(httpContext, _actionInfo) == false ) {
                 await httpContext.HttpReplyAsync(405, "HttpMethod与Action申明的调用方法不匹配！");
+                return;
+            }
+
+            if( AuthorizeModule.AuthorizeCheck(httpContext, _actionInfo) == false ) {
+                return;
             }
 
             object instance = Activator.CreateInstance(_actionInfo.ControllerType);
@@ -166,7 +171,7 @@ public sealed class SlimWebApiModule : NHttpModule
             IDisposable disposable = (instance as IDisposable) ?? NullDisposable.Instance;
 
             using( disposable ) {
-                object result = await ReflectionUtils.CallMethod(instance, _actionInfo.Method, new object[] { httpContext });
+                object result = await ReflectionUtils.CallMethod(instance, _actionInfo.MethodInfo, new object[] { httpContext });
 
                 await OutputResultAsync(httpContext, result);
             }

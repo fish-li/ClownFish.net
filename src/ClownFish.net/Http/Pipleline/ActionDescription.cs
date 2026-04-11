@@ -1,9 +1,47 @@
 ﻿namespace ClownFish.Http.Pipleline;
 
 /// <summary>
+/// 
+/// </summary>
+public interface IBaseActionInfo
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    Type ControllerType { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    MethodInfo MethodInfo { get; }
+}
+
+/// <summary>
+/// 
+/// </summary>
+public static class BaseActionInfoExtensions
+{
+    /// <summary>
+    /// 从将要执行的方法或者类型查找特定的标记
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetActionAttribute<T>(this IBaseActionInfo actionInfo) where T : Attribute
+    {
+        T attr = actionInfo.MethodInfo.GetMyAttribute<T>();
+
+        if( attr == null )
+            attr = actionInfo.ControllerType.GetMyAttribute<T>();
+
+        return attr;
+    }
+
+}
+
+
+/// <summary>
 /// 当前正在执行Action描述信息
 /// </summary>
-public sealed class ActionDescription
+public sealed class ActionDescription : IBaseActionInfo
 {
     /// <summary>
     /// Action的方法信息
@@ -65,19 +103,5 @@ public sealed class ActionDescription
 
 
 
-    /// <summary>
-    /// 从将要执行的方法或者类型查找特定的标记
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public T GetActionAttribute<T>() where T : Attribute
-    {
-        T attr = this.MethodInfo.GetMyAttribute<T>();
-
-        if( attr == null )
-            attr = this.ControllerType.GetMyAttribute<T>();
-
-        return attr;
-    }
-
+    
 }
