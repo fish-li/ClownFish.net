@@ -14,18 +14,15 @@ public static class BackgroundTaskManager
     [UnconditionalSuppressMessage("Trimming", "IL2026: CanNew")]
     public static List<Type> SearchBackgroundTaskTypes()
     {
-        List<Type> types1 = (from asm in AppPartUtils.GetApplicationPartAsmList()
-                             from t in asm.GetPublicTypes()
-                             where t.IsClass && t.IsAbstract == false && t.IsSubclassOf(typeof(BackgroundTask)) && t.CanNew()
-                             select t).ToList();
+        List<Type> list = (from asm in AppPartUtils.GetApplicationPartAsmList()
+                           from t in asm.GetPublicTypes()
+                           where t.IsClass
+                                 && t.IsAbstract == false
+                                 && (t.IsSubclassOf(typeof(BackgroundTask)) || t.IsSubclassOf(typeof(AsyncBackgroundTask)))
+                                 && t.CanNew()
+                           select t).ToList();
 
-        List<Type> types2 = (from asm in AppPartUtils.GetApplicationPartAsmList()
-                             from t in asm.GetPublicTypes()
-                             where t.IsClass && t.IsAbstract == false && t.IsSubclassOf(typeof(AsyncBackgroundTask)) && t.CanNew()
-                             select t).ToList();
-
-        types1.AddRange(types2);
-        return types1;   // 返回 List 可方便调用者继续添加一些 internal 的实现类型
+        return list;   // 返回 List 可方便调用者继续添加一些 internal 的实现类型
     }
 
     /// <summary>
@@ -40,7 +37,7 @@ public static class BackgroundTaskManager
         if( s_taskList.Count > 0 )
             throw new InvalidOperationException("此方法不允许多次调用！");
 
-        foreach(Type t in types ) {
+        foreach( Type t in types ) {
 
             if( t.ModuleIsEnable() == false ) {
                 Console2.Info($"BackgroundTask {t.FullName} has been disabled.");
@@ -80,7 +77,7 @@ public static class BackgroundTaskManager
 
         Console2.Info("Start AsyncBackgroundTask: " + t.FullName);
 
-        ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);        
+        ThreadUtils.RunAsync("AsyncBackgroundTask_Start", task.RunAsync);
     }
 
     //internal static DebugReportBlock GetReportBlock()
@@ -145,7 +142,7 @@ public static class BackgroundTaskManager
 
     internal static void StopAll()   // 单元测试用
     {
-        foreach(var task in s_taskList ) {
+        foreach( var task in s_taskList ) {
             task.OnAppExit();
         }
 

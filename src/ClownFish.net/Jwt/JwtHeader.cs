@@ -24,6 +24,7 @@ internal sealed class JwtHeader
     //[JsonProperty("x5t")]
     //public string X5t { get; set; }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(JwtHeader))]
     internal static JwtHeader Create(string algorithm)
     {
         return new JwtHeader { Type = "JWT", Algorithm = algorithm };

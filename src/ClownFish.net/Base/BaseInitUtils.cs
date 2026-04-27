@@ -1,4 +1,5 @@
 ﻿using System.Runtime;
+using ClownFish.Http.Proxy;
 
 namespace ClownFish.Base;
 internal static class BaseInitUtils
@@ -14,6 +15,10 @@ internal static class BaseInitUtils
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(IValidate))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EndClientUserInfo))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebUserInfo))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpOption))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RemoteWebException))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpProxyModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpProxyHandler2))]
 #endif
     public static void InitBase()
     {

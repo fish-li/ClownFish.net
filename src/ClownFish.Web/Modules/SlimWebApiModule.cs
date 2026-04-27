@@ -108,7 +108,11 @@ public sealed class SlimWebApiModule : NHttpModule
 
     private static bool CheckActionMethodParameter(MethodInfo method)
     {
-        return method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(NHttpContext);
+        var ps = method.GetParameters();
+        if( ps.Length == 0 )
+            return true;
+
+        return ps.Length == 1 && ps[0].ParameterType == typeof(NHttpContext);
     }
 
     public override void MapRequestHandler(NHttpContext httpContext)
@@ -168,10 +172,19 @@ public sealed class SlimWebApiModule : NHttpModule
                 handler.Init(httpContext);
             }
 
+            OprLogScope scope = httpContext.PipelineContext.OprLogScope;
+            if( scope.CanLog ) {
+                OprLog oprLog = scope.OprLog;
+                oprLog.Module = _actionInfo.ControllerType.Namespace;
+                oprLog.Controller = _actionInfo.ControllerType.Name;
+                oprLog.Action = _actionInfo.MethodInfo.Name;
+            }
+
             IDisposable disposable = (instance as IDisposable) ?? NullDisposable.Instance;
 
             using( disposable ) {
-                object result = await ReflectionUtils.CallMethod(instance, _actionInfo.MethodInfo, new object[] { httpContext });
+                object[] args = _actionInfo.MethodInfo.GetParameters().Length == 0 ? Array.Empty<object>() : new object[] { httpContext };
+                object result = await ReflectionUtils.CallMethod(instance, _actionInfo.MethodInfo, args);
 
                 await OutputResultAsync(httpContext, result);
             }
@@ -199,6 +212,7 @@ public sealed class SlimWebApiModule : NHttpModule
 
             if( result.GetType().IsSimpleValueType() ) {
                 await httpContext.HttpReplyAsync(result.ToString());
+                return;
             }
 
             if( result is IWebApiResult actionResult ) {

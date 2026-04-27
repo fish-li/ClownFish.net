@@ -337,9 +337,9 @@ public partial class NHttpRequest : ILoggingObject
     /// 按 ndjson 的方式读取请求体，并反序列化成指定的类型-实例列表。
     /// 【##### 此方法不做结果缓存，因此不要多次调用 #####】
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">列表[子元素]的类型参数</typeparam>
     /// <returns></returns>
-    public List<T> ReadBodyAsNdjonsToList<T>()
+    public List<T> ReadBodyAsNdjson<T>()
     {
         HttpUtils.ParseContentType(this.ContentType, out string mediaType, out Encoding encoding);
         if( mediaType != RequestContentType.Ndjson )
@@ -366,7 +366,7 @@ public partial class NHttpRequest : ILoggingObject
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public T ReadBodyAsJsonTo<T>()
+    public T ReadBodyAsJson<T>()
     {
         HttpUtils.ParseContentType(this.ContentType, out string mediaType, out Encoding encoding);
         if( mediaType != RequestContentType.Json )

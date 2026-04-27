@@ -30,19 +30,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="files\ExecHttp.html" />
-		<None Remove="files\http403-not-login.html" />
-		<None Remove="files\http404-url-error.html" />
-		<None Remove="files\favicon.ico" />
-		<None Remove="files\UserLogin.html" />
+		<None Remove="files\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="files\ExecHttp.html" />
-		<EmbeddedResource Include="files\http403-not-login.html" />
-		<EmbeddedResource Include="files\http404-url-error.html" />
-		<EmbeddedResource Include="files\favicon.ico" />
-		<EmbeddedResource Include="files\UserLogin.html" />
+		<EmbeddedResource Include="files\**" />
 	</ItemGroup>
 
 	<ItemGroup>

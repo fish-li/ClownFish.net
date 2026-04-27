@@ -22,13 +22,13 @@ internal sealed class RabbitHttpWriter : ILogWriter
         string configValue = Settings.GetSetting(settingName);
 
         if( configValue.IsNullOrEmpty() ) {
-            Console2.Info($"##### RabbitHttpWriter 不能完成初始化，因为没有找到 {settingName} 的连接配置参数！");
+            Console2.Info($"##### RabbitHttpWriter 未能完成初始化，因为没有找到 {settingName} 的连接配置参数！");
             return -1;
         }
 
         RabbitOption option = configValue.ToObject<RabbitOption>();
         if( option.Server.IsNullOrEmpty() ) {
-            Console2.Info($"##### RabbitHttpWriter 不能完成初始化，因为连接配置参数 {settingName} 的 Server 为空！");
+            Console2.Info($"##### RabbitHttpWriter 未能完成初始化，因为连接配置参数 {settingName} 的 Server 为空！");
             return -2;
         }
 

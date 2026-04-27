@@ -52,6 +52,10 @@ public static class LogConfig
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLog))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(InvokeLog))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLogScope))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(CodeSnippetContext))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DbLogger))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpClientLogger2))]
 #endif
     public static void Init(LogConfiguration config)
     {

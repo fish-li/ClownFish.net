@@ -409,7 +409,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         MockHttpRequest request = requestData;
 
         MyAssert.IsError<InvalidOperationException>(()=> {
-            NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+            NameValue nv = request.ReadBodyAsJson<NameValue>();
         });
     }
 
@@ -428,7 +428,7 @@ Content-Type: application/json; charset=utf-8
 
         string body = request.ReadBodyAsText();   // 先读一次
 
-        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        NameValue nv = request.ReadBodyAsJson<NameValue>();
         Assert.IsNull(nv);
     }
 
@@ -445,7 +445,7 @@ Content-Type: application/json; charset=utf-8
         MockRequestData requestData = MockRequestData.FromText(requestText);
         MockHttpRequest request = requestData;
 
-        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        NameValue nv = request.ReadBodyAsJson<NameValue>();
         Assert.IsNotNull(nv);
         Assert.AreEqual("name1", nv.Name);
         Assert.AreEqual("中文汉字#abcd", nv.Value);
@@ -466,7 +466,7 @@ Content-Encoding: gzip
 
         MockHttpRequest request = requestData;
 
-        NameValue nv = request.ReadBodyAsJsonTo<NameValue>();
+        NameValue nv = request.ReadBodyAsJson<NameValue>();
         Assert.IsNotNull(nv);
         Assert.AreEqual("name1", nv.Name);
         Assert.AreEqual("中文汉字#abcd", nv.Value);
@@ -488,7 +488,7 @@ Content-Type: application/json; charset=utf-8
         MockHttpRequest request = requestData;
 
         MyAssert.IsError<InvalidOperationException>(() => {
-            _ = request.ReadBodyAsNdjonsToList<NameValue>();
+            _ = request.ReadBodyAsNdjson<NameValue>();
         });
     }
 
@@ -508,7 +508,7 @@ Content-Type: application/x-ndjson
 
         string body = request.ReadBodyAsText();   // 先读一次
 
-        List<NameValue> list = request.ReadBodyAsNdjonsToList<NameValue>();
+        List<NameValue> list = request.ReadBodyAsNdjson<NameValue>();
         Assert.IsNull(list);
     }
 
@@ -528,7 +528,7 @@ Content-Type: application/x-ndjson
         MockRequestData requestData = MockRequestData.FromText(requestText);
         MockHttpRequest request = requestData;
 
-        List<Product3> list2 = request.ReadBodyAsNdjonsToList<Product3>();
+        List<Product3> list2 = request.ReadBodyAsNdjson<Product3>();
         Assert.AreEqual(900, list2.Count);
     }
 
@@ -550,7 +550,7 @@ Content-Encoding: gzip
 
         MockHttpRequest request = requestData;
 
-        List<Product3> list2 = request.ReadBodyAsNdjonsToList<Product3>();
+        List<Product3> list2 = request.ReadBodyAsNdjson<Product3>();
         Assert.AreEqual(900, list2.Count);
     }
 

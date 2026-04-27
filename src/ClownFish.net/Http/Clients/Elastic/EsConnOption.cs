@@ -93,6 +93,7 @@ public sealed class EsConnOption : IValidate
     /// <param name="connName"></param>
     /// <param name="checkExist"></param>
     /// <returns></returns>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EsConnOption))]
     public static EsConnOption Create(string connName, bool checkExist = true)
     {
         EsConnOption opt = Create1(DbConnManager.GetAppDbConfig(connName, false))

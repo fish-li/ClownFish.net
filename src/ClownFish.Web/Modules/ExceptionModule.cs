@@ -52,7 +52,7 @@ public sealed class ExceptionModule : NHttpModule
         // 如果请求体已发出，就不能再处理了，否则会出现新的异常
         // 例如：System.InvalidOperationException: StatusCode cannot be set because the response has already started.
         if( httpContext.Response.HasStarted ) {
-            Console2.Info("Response.HasStarted is true, ExceptionModule ignore current error....., original exception:");
+            Console2.Info($"Response.HasStarted is true, ExceptionModule ignore current error....., \n  current url: {httpContext.Request.RawUrl} \n  original exception:");
             Console2.Warnning(ex);
             return;
         }

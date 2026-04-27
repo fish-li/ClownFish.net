@@ -74,6 +74,28 @@ public static class AspnetCoreStarter
     /// </summary>
     /// <param name="startup"></param>
     /// <returns></returns>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpContext))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpPipelineContext))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpApplication))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpRequest))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpResponse))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebApplicationStartup))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ActionDescription))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Http302Handler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Http403Handler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Http404Handler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpXxxHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(StaticFileHandler))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLogModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TransferModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExceptionModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthenticateModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthorizeModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UrlRouteModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SlimWebApiModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExecHttpUiModule))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebStaticFileModule))]
     internal static WebApplication CreateWebApp(WebApplicationStartup startup = null)
     {
         if( startup == null )
@@ -204,16 +226,6 @@ public static class AspnetCoreStarter
         NHttpApplication.Instance.ShowModules(1);
     }
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(NHttpModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(OprLogModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TransferModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExceptionModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthenticateModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthorizeModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UrlRouteModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SlimWebApiModule))]    
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExecHttpUiModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebStaticFileModule))]
     private static void LoadModules()
     {
         // 先注册框架内部的Http模块

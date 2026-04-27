@@ -25,6 +25,7 @@ public sealed class SimpleEsClient
     /// </summary>
     /// <param name="option">elasticsearch连接参数</param>
     /// <param name="indexNameTimeFormat">调用WriteXXX方法写数据时，如果不指定indexName，那么将根据这个参数来生成indexName</param>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(EsConnOption))]
     public SimpleEsClient(EsConnOption option, string indexNameTimeFormat = "-yyyyMMdd")
     {
         if( option == null )
@@ -276,11 +277,25 @@ public sealed class SimpleEsClient
         }
     }
 
+#pragma warning disable IDE1006 // 命名样式
+    internal class bulk_index
+    {
+        public bulk_index_id index { get; set; }
+    }
+    internal class bulk_index_id
+    {
+        public string _id { get; set; }
+    }
+#pragma warning restore IDE1006 // 命名样式
+
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(bulk_index))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(bulk_index_id))]
     private HttpOption GetWriteListHttpOption<T>(List<T> list, string indexName, StreamWriter writer) where T : class, IMsgObject
     {
         var dataList = new List<object>(list.Count * 2);
         foreach( T item in list ) {
-            dataList.Add(new { index = new { _id = GetDocumentId(item) } });
+            dataList.Add(new bulk_index { index = new bulk_index_id { _id = GetDocumentId(item) } });
             dataList.Add(item);
         }
 
@@ -324,23 +339,25 @@ public sealed class SimpleEsClient
 
     #region 搜索数据
 
-    internal class SearchResponse<T>
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+    public sealed class SearchResponse<T>
     {
         [JsonProperty("hits")]
         public SearchHit<T> Hits { get; set; }
     }
 
-    internal class SearchHit<T>
+    public sealed class SearchHit<T>
     {
         [JsonProperty("hits")]
         public List<HitData<T>> Hits { get; set; }
     }
 
-    internal class HitData<T>
+    public sealed class HitData<T>
     {
         [JsonProperty("_source")]
         public T Data { get; set; }
     }
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
     /// <summary>
     /// 搜索数据
@@ -380,6 +397,9 @@ public sealed class SimpleEsClient
     }
 
 
+    //[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SearchResponse<>))]
+    //[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SearchHit<>))]
+    //[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HitData<>))]    //  由最终的应用程序添加DynamicDependency特性，那里可以指定封闭类型
     private HttpOption GetSearchHttpOption(string index, object body)
     {
         HttpOption httpOption = new HttpOption {

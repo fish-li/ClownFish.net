@@ -1,4 +1,5 @@
-﻿using ClownFish.Jwt;
+﻿using System.Diagnostics.CodeAnalysis;
+using ClownFish.Jwt;
 
 namespace ClownFish.Web.Security.Auth;
 
@@ -29,6 +30,7 @@ public sealed class JwtProvider
     /// <param name="issueTime"></param>
     /// <param name="expiration">登录凭证有效期</param>
     /// <returns></returns>
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoginTicket))]
     public string CreateToken(IUserInfo data, DateTime issueTime, DateTime expiration)
     {
         if( data == null )

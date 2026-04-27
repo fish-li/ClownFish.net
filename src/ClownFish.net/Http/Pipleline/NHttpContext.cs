@@ -57,9 +57,14 @@ public abstract class NHttpContext
     public bool LogRequestBody { get; set; } = LoggingOptions.Http.LogRequestBody;
 
     /// <summary>
-    /// OprLog
+    /// OprLog 实例
     /// </summary>
     public OprLog OprLog => this.PipelineContext?.OprLogScope.OprLog;
+
+    /// <summary>
+    /// OprLogScope 实例
+    /// </summary>
+    public OprLogScope OprLogScope => this.PipelineContext?.OprLogScope;
 
     /// <summary>
     /// 当前是否为转发请求

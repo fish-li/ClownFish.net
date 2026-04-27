@@ -22,7 +22,7 @@ internal sealed class OprlogEsWriter : ILogWriter
         EsConnOption opt1 = EsConnOption.Create(settingName, false);
 
         if( opt1 == null ) {
-            Console2.Info($"##### OprlogEsWriter 不能完成初始化，因为没有找到 {settingName} 连接配置参数！");
+            Console2.Info($"##### OprlogEsWriter 未能完成初始化，因为没有找到 {settingName} 连接配置参数！");
             return false;
         }
 
@@ -69,13 +69,18 @@ internal sealed class OprlogEsWriter : ILogWriter
         }
         catch( EsHttpException ex1 ) {
             if( s_showError ) {
-                Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex1.Response);
+                Console2.Warnning($"OprlogEsWriter.WriteList ERROR ({ex1.GetType().FullName}): {ex1.Response}");
+            }
+        }
+        catch( RemoteWebException ex2 ) {
+            if( s_showError ) {
+                Console2.Warnning($"OprlogEsWriter.WriteList ERROR ({ex2.GetType().FullName}): {ex2.Message} \r\n [ResponseText]: {ex2.ResponseText}");
             }
         }
         catch( Exception ex ) {
             if( s_showError ) {
                 // 这里不显示完整的“调用堆栈”，是因为调用点已经非常明确，完全可以根据下面的“特征字符串”找到是这里发生的异常
-                Console2.Warnning("OprlogEsWriter.WriteList ERROR: " + ex.Message);
+                Console2.Warnning($"OprlogEsWriter.WriteList ERROR ({ex.GetType().FullName}): {ex.Message}");
             }
         }
 

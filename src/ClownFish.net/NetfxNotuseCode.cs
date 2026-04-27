@@ -22,8 +22,9 @@ internal sealed class RequiresUnreferencedCodeAttribute : Attribute
 internal sealed class DynamicDependencyAttribute : Attribute
 {
     public DynamicDependencyAttribute(string memberSignature, Type type) { }
-}
 
+    public DynamicDependencyAttribute(DynamicallyAccessedMemberTypes memberTypes, Type type) { }
+}
 
 
 [AttributeUsage(

@@ -1,4 +1,6 @@
-﻿namespace ClownFish.Web.Modules;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ClownFish.Web.Modules;
 public sealed class WebStaticFileModule : NHttpModule
 {
     // 这里只挑选了一些常见的静态文件类型，
@@ -48,6 +50,7 @@ public sealed class WebStaticFileModule : NHttpModule
     //    // 在那个方法中，检查 用户是否可以访问某个 URL 
     //}
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(StaticFileHandler))]
     public override void ResolveRequestCache(NHttpContext httpContext)
     {
         if( httpContext.PipelineContext.Action != null )

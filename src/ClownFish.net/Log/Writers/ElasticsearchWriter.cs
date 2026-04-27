@@ -22,7 +22,7 @@ internal sealed class ElasticsearchWriter : ILogWriter
         EsConnOption opt = EsConnOption.Create(settingName, false);
 
         if( opt == null ) {
-            Console2.Info($"##### ElasticsearchWriter 不能完成初始化，因为没有找到 {settingName} 连接配置参数！");
+            Console2.Info($"##### ElasticsearchWriter 未能完成初始化，因为没有找到 {settingName} 连接配置参数！");
             return false;
         }
 

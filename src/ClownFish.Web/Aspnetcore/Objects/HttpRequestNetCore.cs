@@ -40,19 +40,22 @@ public sealed class HttpRequestNetCore : NHttpRequest
     /// </summary>
     public override string HttpMethod => _request.Method;
 
+    private string _rootUrl;
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public override string RootUrl => string.Concat(
+    public override string RootUrl => (_rootUrl ??= string.Concat(
                                              _request.Scheme,
                                              "://",
-                                             _request.Host.ToString());
+                                             _request.Host.ToString()));
+
+    private string _path;
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public override string Path => string.Concat(
+    public override string Path => (_path ??= string.Concat(
                                             _request.PathBase.ToUriComponent(),
-                                            _request.Path.ToUriComponent());
+                                            _request.Path.ToUriComponent()));
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
@@ -60,13 +63,14 @@ public sealed class HttpRequestNetCore : NHttpRequest
 
     // https://stackoverflow.com/questions/58614864/whats-the-difference-between-httprequest-path-and-httprequest-pathbase-in-asp-n
 
+    private string _rawUrl;
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public override string RawUrl => string.Concat(
+    public override string RawUrl => (_rawUrl ??= string.Concat(
                                             _request.PathBase.ToUriComponent(),
                                             _request.Path.ToUriComponent(),
-                                            _request.QueryString.ToUriComponent());
+                                            _request.QueryString.ToUriComponent()));
 
     /// <summary>
     /// <inheritdoc/>
