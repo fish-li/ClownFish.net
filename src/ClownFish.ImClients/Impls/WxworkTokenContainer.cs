@@ -6,9 +6,9 @@ internal class WxworkTokenContainer
 
     public static readonly WxworkTokenContainer Instance = new WxworkTokenContainer();
 
-    public string GetAccessToken(string corpId, string appSecret)
+    public string GetAccessToken(string corpId, string corpSecret)
     {
-        string cacheKey = corpId + "\n" + appSecret;
+        string cacheKey = corpId + "\n" + corpSecret;
 
         string token = _cache.Get(cacheKey);
         if( token != null )
@@ -21,7 +21,7 @@ internal class WxworkTokenContainer
             Url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken",
             Data = new {
                 corpid = corpId,
-                corpsecret = appSecret
+                corpsecret = corpSecret
             }
         };
 

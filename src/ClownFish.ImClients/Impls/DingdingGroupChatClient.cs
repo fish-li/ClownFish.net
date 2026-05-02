@@ -13,7 +13,7 @@ public class DingdingGroupChatClient : IGroupChatClient
     /// <param name="appId"></param>
     /// <param name="appSecret"></param>
     /// <param name="agentId"></param>
-    public DingdingGroupChatClient(string appId, string appSecret, long agentId)
+    public DingdingGroupChatClient(string appId, string appSecret, string agentId)
     {
         _client = new DingdingInternalClient(appId, appSecret, agentId);
     }

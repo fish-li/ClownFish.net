@@ -29,12 +29,12 @@ internal sealed class OprlogEsWriter : ILogWriter
         _clientAll = new SimpleEsClient(opt1, ElasticsearchWriter.IndexNameTimeFormat);
 
         EsConnOption opt2 = EsConnOption.Create(settingName, true);
-        _clientSlow = new SimpleEsClient(opt2, "xx");
+        _clientSlow = new SimpleEsClient(opt2, "xx");  // 写入数据时直接指定 index-name，所以第2个参数不起作用
 
         EsConnOption opt3 = EsConnOption.Create(settingName, true);
-        _clientError = new SimpleEsClient(opt3, "xx");
+        _clientError = new SimpleEsClient(opt3, "xx");  // 写入数据时直接指定 index-name，所以第2个参数不起作用
 
-        Console2.Info(this.GetType().FullName + " Init OK");
+        Console2.Info($"{this.GetType().FullName} Init OK, es url: {opt1.Url}, IndexNameFormat: {ElasticsearchWriter.IndexNameTimeFormat}");
         _inited = true;
         return true;
     }

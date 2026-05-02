@@ -12,11 +12,11 @@ public class WxworkAppMsgClient : IAppMsgClient
     /// 构造方法
     /// </summary>
     /// <param name="corpId"></param>
-    /// <param name="appSecret"></param>
+    /// <param name="corpSecret"></param>
     /// <param name="agentId"></param>
-    public WxworkAppMsgClient(string corpId, string appSecret, long agentId)
+    public WxworkAppMsgClient(string corpId, string corpSecret, string agentId)
     {
-        _client = new WxworkInternalClient(corpId, appSecret, agentId);
+        _client = new WxworkInternalClient(corpId, corpSecret, agentId);
     }
 
 

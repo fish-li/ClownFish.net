@@ -85,7 +85,7 @@ public sealed class SlimWebApiModule : NHttpModule
             }
         }
 
-        Console2.Info($"ClownFish.Web SlimWebApiModule: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} actions");
+        Console2.Info($"{typeof(SlimWebApiModule).FullName}: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} actions");
     }
 
 

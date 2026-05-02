@@ -16,14 +16,14 @@ public sealed class ImAppAuthConfig : IValidate
     public string AppId { get; set; }
 
     /// <summary>
-    /// 企业微信的 Secret，飞书的 AppSecret，钉钉的 AppSecret
+    /// 企业微信的 CorpSecret，飞书的 AppSecret，钉钉的 AppSecret
     /// </summary>
     public string AppSecret { get; set; }
 
     /// <summary>
     /// 企业微信/钉钉的 AgentId，飞书不使用此参数
     /// </summary>
-    public long AgentId { get; set; }
+    public string AgentId { get; set; }
 
 
     /// <summary>

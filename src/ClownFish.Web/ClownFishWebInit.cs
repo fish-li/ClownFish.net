@@ -28,7 +28,7 @@ public static class ClownFishWebInit
             VerifyTokenExpiration = LocalSettings.GetBool("ClownFish_JwtToken_VerifyExpiration", 1)
         };
 
-        Console2.Info($"JwtOptions: HashName={hashName}; ShortTimeFormat={jwtOptions.ShortTime}; ShortTypeName={jwtOptions.ShortTypeName}; LoadUnknownUserType={jwtOptions.LoadUnknownUser}; VerifyExpiration={jwtOptions.VerifyTokenExpiration}");
+        Console2.Info($"Jwt-Options: HashName={hashName}; ShortTimeFormat={jwtOptions.ShortTime}; ShortTypeName={jwtOptions.ShortTypeName}; LoadUnknownUserType={jwtOptions.LoadUnknownUser}; VerifyExpiration={jwtOptions.VerifyTokenExpiration}");
 
         // HMACSHA 系列HASH算法，它们只需要一个密钥就可以了
         if( jwtOptions.AlgorithmName.StartsWith0("HS") ) {

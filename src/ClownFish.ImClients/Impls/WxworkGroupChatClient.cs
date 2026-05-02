@@ -12,11 +12,11 @@ public class WxworkGroupChatClient : IGroupChatClient
     /// 构造方法
     /// </summary>
     /// <param name="corpId"></param>
-    /// <param name="appSecret"></param>
+    /// <param name="corpSecret"></param>
     /// <param name="agentId"></param>
-    public WxworkGroupChatClient(string corpId, string appSecret, long agentId)
+    public WxworkGroupChatClient(string corpId, string corpSecret, string agentId)
     {
-        _client = new WxworkInternalClient(corpId, appSecret, agentId);
+        _client = new WxworkInternalClient(corpId, corpSecret, agentId);
     }
 
     /// <summary>

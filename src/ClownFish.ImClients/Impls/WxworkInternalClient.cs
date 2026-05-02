@@ -2,8 +2,8 @@
 
 internal class WxworkInternalClient : WxworkClient
 {
-    public WxworkInternalClient(string corpId, string appSecret, long agentId) 
-        : base(corpId, appSecret, agentId)
+    public WxworkInternalClient(string corpId, string corpSecret, string agentId) 
+        : base(corpId, corpSecret, agentId)
     {
     }
 

@@ -42,7 +42,7 @@ internal sealed class RabbitHttpWriter : ILogWriter
         // 为每种日志的数据类型创建对应的队列
         AutoCreateQueue(dataType);
 
-        Console2.Info(this.GetType().FullName + " Init OK, config: " + option.ToString());
+        Console2.Info($"{this.GetType().FullName} Init OK, conn-config: {option}");
         return 1;
     }
 

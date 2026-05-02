@@ -23,23 +23,23 @@ public enum PushMsgType
 public class WxworkClient
 {
     private readonly string _corpId;
-    private readonly string _appSecret;
-    private readonly long _agentId;
+    private readonly string _corpSecret;
+    private readonly string _agentId;
 
     /// <summary>
     /// AgentId
     /// </summary>
-    public long AgentId => _agentId;
+    public string AgentId => _agentId;
 
-    internal WxworkClient(string corpId, string appSecret, long agentId)
+    internal WxworkClient(string corpId, string corpSecret, string agentId)
     {
         if( corpId.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(corpId));
-        if( appSecret.IsNullOrEmpty() )
-            throw new ArgumentNullException(nameof(appSecret));
+        if( corpSecret.IsNullOrEmpty() )
+            throw new ArgumentNullException(nameof(corpSecret));
 
         _corpId = corpId;
-        _appSecret = appSecret;
+        _corpSecret = corpSecret;
         _agentId = agentId;
     }
 
@@ -57,14 +57,14 @@ public class WxworkClient
         opt.Validate();
 
         _corpId = opt.AppId;
-        _appSecret = opt.AppSecret;
+        _corpSecret = opt.AppSecret;
         _agentId = opt.AgentId;
     }
 
 
     private HttpOption SetAuthorization(HttpOption httpOption)
     {
-        string token = WxworkTokenContainer.Instance.GetAccessToken(_corpId, _appSecret);
+        string token = WxworkTokenContainer.Instance.GetAccessToken(_corpId, _corpSecret);
         if( httpOption.Url.IndexOf('?') < 0 )
             httpOption.Url = httpOption.Url + "?access_token=" + token.UrlEncode();
         else

@@ -67,7 +67,7 @@ public sealed class UrlRouteModule : NHttpModule
             }
         }
 
-        Console2.Info($"ClownFish.Web UrlRouteModule: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} handlers");
+        Console2.Info($"{typeof(UrlRouteModule).FullName}: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} handlers");
     }
 
 

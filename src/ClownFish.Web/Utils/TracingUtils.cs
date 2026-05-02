@@ -33,7 +33,7 @@ internal static class TracingUtils
         if( ReflectionUtils.CallStaticMethod("ClownFish.Rabbit.RabbitLogger, ClownFish.Rabbit", "Init") == 1 )
             flags.Add("RabbitLogger");
 
-        Console2.Info($"ClownFish.Tracing 性能监控模块 {string.Join('/', flags.ToArray())} 已启用。");
+        Console2.Info($"ClownFish.Tracing 已启用监控模块: {string.Join('/', flags.ToArray())}");
     }
 
 

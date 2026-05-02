@@ -14,7 +14,7 @@ public class DingdingAppMsgClient : IAppMsgClient
     /// <param name="appId"></param>
     /// <param name="appSecret"></param>
     /// <param name="agentId"></param>
-    public DingdingAppMsgClient(string appId, string appSecret, long agentId)
+    public DingdingAppMsgClient(string appId, string appSecret, string agentId)
     {
         _client = new DingdingInternalClient(appId, appSecret, agentId);
     }

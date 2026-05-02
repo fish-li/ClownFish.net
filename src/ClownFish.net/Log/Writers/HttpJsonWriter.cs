@@ -23,7 +23,7 @@ internal class HttpJsonWriter : ILogWriter
             return;
         }
 
-        Console2.Info(this.GetType().FullName + " Init OK, upload url: " + _url);
+        Console2.Info($"{this.GetType().FullName} Init OK, upload url: {_url}");
     }
 
     internal int InitUrl(string configValue)

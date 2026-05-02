@@ -4,9 +4,9 @@ internal class DingdingInternalClient
 {
     private readonly string _appId;
     private readonly string _appSecret;
-    private readonly long _agentId;
+    private readonly string _agentId;
 
-    public DingdingInternalClient(string appId, string appSecret, long agentId)
+    public DingdingInternalClient(string appId, string appSecret, string agentId)
     {
         if( appId.IsNullOrEmpty() )
             throw new ArgumentNullException(nameof(appId));
