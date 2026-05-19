@@ -131,6 +131,8 @@ public sealed class NHttpApplication
         IAsyncNHttpHandler handler = httpContext.PipelineContext.Action?.Controller as IAsyncNHttpHandler;
         if( handler != null ) {
 
+            this.PreRequestExecute(httpContext);
+
             httpContext.BeginExecuteTime = DateTime.Now;
             httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
 
@@ -138,6 +140,8 @@ public sealed class NHttpApplication
 
             httpContext.EndExecuteTime = DateTime.Now;
             httpContext.LogFxEvent(new NameTime("UserCode end", httpContext.EndExecuteTime));
+
+            this.PostRequestExecute(httpContext);
             //httpContext.Response.End();
             return true;
         }
@@ -330,7 +334,7 @@ public sealed class NHttpApplication
                     module2.FxLogRequest(httpContext);
                 }
                 catch( Exception ex2 ) {
-                    Console2.Error("NHttpApplication.End2Request ERROR.", ex2);
+                    Console2.Error("NHttpApplication.FxLogRequest ERROR.", ex2);
                 }
             }
         }

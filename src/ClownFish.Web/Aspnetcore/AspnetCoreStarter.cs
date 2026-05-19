@@ -93,7 +93,6 @@ public static class AspnetCoreStarter
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthenticateModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthorizeModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UrlRouteModule))]
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SlimWebApiModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ExecHttpUiModule))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(WebStaticFileModule))]
     internal static WebApplication CreateWebApp(WebApplicationStartup startup = null)
@@ -117,7 +116,8 @@ public static class AspnetCoreStarter
         startup.AfterApplicationBuild(app);
 
         // 配置ASP.NET管道
-        app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来放在第一位!
+        //app.UseMiddleware<FirstModule>();   // 这个太重要，必须固定下来放在第一位!
+        startup.ConfigureModules(app);
         startup.ConfigureWeb(app);
 
         Console2.Info($"ASP.NET WebApplication init OK, execute time: {(DateTime.Now - start)}");
@@ -246,10 +246,6 @@ public static class AspnetCoreStarter
 
         if( LocalSettings.GetBool("ClownFish_UrlRouteModule_Enable") ) {
             NHttpModuleFactory.RegisterModule<UrlRouteModule>();
-        }
-
-        if( LocalSettings.GetBool("ClownFish_SlimWebApiModule_Enable") ) {
-            NHttpModuleFactory.RegisterModule<SlimWebApiModule>();
         }
 
         if( LocalSettings.GetBool("ClownFish_ExecHttpUiModule_Enable") ) {

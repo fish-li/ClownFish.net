@@ -165,7 +165,7 @@ public partial class OprLog
             && this.Module == null && this.Controller == null && this.Action == null
             && httpContext.PipelineContext.Action != null ) {
 
-            ActionDescription action = httpContext.PipelineContext.Action;
+            IWebApiActionInfo action = httpContext.PipelineContext.Action;
 
             MethodBase actionMethod = action.MethodInfo;
             Type controllerType = action.ControllerType;

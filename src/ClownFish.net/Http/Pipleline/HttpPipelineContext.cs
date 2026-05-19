@@ -92,7 +92,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     /// <summary>
     /// 当前请求映射到的Action对象
     /// </summary>
-    public ActionDescription Action { get; private set; }
+    public IWebApiActionInfo Action { get; private set; }
 
     /// <summary>
     /// 当前请求是否为登录相关的操作。
@@ -128,7 +128,7 @@ public sealed class HttpPipelineContext : BasePipelineContext, IDisposable
     /// </summary>
     /// <param name="action"></param>
     /// <param name="isLoginAction"></param>
-    public void SetAction(ActionDescription action, bool isLoginAction = false)
+    public void SetAction(IWebApiActionInfo action, bool isLoginAction = false)
     {
         if( action == null )
             throw new ArgumentNullException(nameof(action));

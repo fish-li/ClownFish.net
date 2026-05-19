@@ -18,11 +18,11 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
                                                         actionDescriptor.ControllerTypeInfo);
 
         // 检查当前Action是否与登录有关，如果是，则做个标记，避免日志时记录敏感信息
-        bool isLogin = LoginActionAttribute.CurrentIsLogin(action);
+        bool isLogin = LoginActionAttribute.CurrentIsLogin(action.MethodInfo);
         pipelineContext.SetAction(action, isLogin);
 
 
-        bool allowed = OnlyTestEnvAttribute.CurrentIsAllow(action);
+        bool allowed = OnlyTestEnvAttribute.CurrentIsAllow(action.ControllerType);
         if( allowed == false ) {
             context.Result = new NotFoundResult();
             return;
@@ -44,8 +44,7 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
         NHttpApplication app = NHttpApplication.Instance;
         app.PostFindAction(httpContext);
         app.AuthorizeRequest(httpContext);
-
-        ControllerInit(httpContext);
+        
         app.PreRequestExecute(httpContext);
 
         if( pipelineContext.OprLogScope.IsNull == false ) {
@@ -55,6 +54,7 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
         httpContext.BeginExecuteTime = DateTime.Now;
         httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
 
+        ControllerInit(httpContext);
         ValidateArgs(context);
         await next();
 
@@ -81,7 +81,7 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 
     private void ControllerInit(NHttpContext httpContext)
     {
-        ActionDescription action = httpContext.PipelineContext.Action;
+        IWebApiActionInfo action = httpContext.PipelineContext.Action;
 
         IControllerInit controller = action.Controller as IControllerInit;
         if( controller != null ) {

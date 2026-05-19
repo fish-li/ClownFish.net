@@ -4,7 +4,7 @@
 
 public class FirstModule
 {
-    private readonly RequestDelegate _next;
+    protected readonly RequestDelegate _next;
 
     public FirstModule(RequestDelegate next)
     {
@@ -128,7 +128,7 @@ public class FirstModule
         httpContext.TrySetRequestBodyBuffering();
     }
 
-    private void ValidateMaxRequestBodySize(NHttpContext httpContext)
+    public virtual void ValidateMaxRequestBodySize(NHttpContext httpContext)
     {
         if( httpContext.Request.ContentLength > ClownFishWebOptions.MaxRequestBodySize ) {
 

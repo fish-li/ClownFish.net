@@ -18,10 +18,10 @@ public sealed class LoginActionAttribute : Attribute
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="action"></param>
+    /// <param name="method"></param>
     /// <returns></returns>
-    public static bool CurrentIsLogin(ActionDescription action)
+    public static bool CurrentIsLogin(MethodInfo method)
     {
-        return action.MethodInfo.GetMyAttribute<LoginActionAttribute>() != null;
+        return method.GetMyAttribute<LoginActionAttribute>() != null;
     }
 }

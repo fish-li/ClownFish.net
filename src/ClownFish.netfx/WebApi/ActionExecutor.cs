@@ -10,7 +10,7 @@ internal static class ActionExecutor
         if( pipelineContext.RespResult != null )
             return;
 
-        ActionDescription action = pipelineContext.Action;
+        IWebApiActionInfo action = pipelineContext.Action;
         if( action == null )
             return;
 
@@ -30,7 +30,7 @@ internal static class ActionExecutor
 
     private static async Task ExecuteActionMethod(HttpPipelineContext pipelineContext)
     {
-        ActionDescription action = pipelineContext.Action;
+        IWebApiActionInfo action = pipelineContext.Action;
 
         // 构造方法的调用参数
         object[] parameters = ActionParameterResolver.GetParameters(action.MethodInfo, pipelineContext.HttpContext.Request);

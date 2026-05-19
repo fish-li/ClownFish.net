@@ -3,45 +3,39 @@
 /// <summary>
 /// 
 /// </summary>
-public interface IBaseActionInfo
+public interface IWebApiActionInfo
 {
     /// <summary>
-    /// 
+    /// Action的方法信息
+    /// </summary>
+    MethodInfo MethodInfo { get; }
+    /// <summary>
+    /// Controller Type
     /// </summary>
     Type ControllerType { get; }
     /// <summary>
-    /// 
+    /// Controller instance
     /// </summary>
-    MethodInfo MethodInfo { get; }
+    object Controller { get; set; }    
 }
 
 /// <summary>
 /// 
 /// </summary>
-public static class BaseActionInfoExtensions
+public interface IGetActionInfo
 {
     /// <summary>
-    /// 从将要执行的方法或者类型查找特定的标记
+    /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T GetActionAttribute<T>(this IBaseActionInfo actionInfo) where T : Attribute
-    {
-        T attr = actionInfo.MethodInfo.GetMyAttribute<T>();
-
-        if( attr == null )
-            attr = actionInfo.ControllerType.GetMyAttribute<T>();
-
-        return attr;
-    }
-
+    IWebApiActionInfo GetActionInfo();
 }
 
 
 /// <summary>
 /// 当前正在执行Action描述信息
 /// </summary>
-public sealed class ActionDescription : IBaseActionInfo
+public sealed class ActionDescription : IWebApiActionInfo
 {
     /// <summary>
     /// Action的方法信息
@@ -100,8 +94,27 @@ public sealed class ActionDescription : IBaseActionInfo
         this.MethodInfo = method;
     }
 
+}
 
 
+/// <summary>
+/// 
+/// </summary>
+public static class ActionInfoExtensions
+{
+    /// <summary>
+    /// 从将要执行的方法或者类型查找特定的标记
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetActionAttribute<T>(this IWebApiActionInfo actionInfo) where T : Attribute
+    {
+        T attr = actionInfo.MethodInfo.GetMyAttribute<T>();
 
-    
+        if( attr == null )
+            attr = actionInfo.ControllerType.GetMyAttribute<T>();
+
+        return attr;
+    }
+
 }

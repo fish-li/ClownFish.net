@@ -19,7 +19,7 @@ internal class ControllerFactory
 
     public virtual void CreateController(HttpPipelineContext pipelineContext)
     {
-        ActionDescription action = pipelineContext.Action;
+        IWebApiActionInfo action = pipelineContext.Action;
 
 
         // 允许在框架外部直接指定结果，所以 action.Controller 有可能不为NULL

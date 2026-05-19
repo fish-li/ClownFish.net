@@ -6,9 +6,9 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class OnlyTestEnvAttribute : Attribute
 {
-    internal static bool CurrentIsAllow(ActionDescription action)
+    internal static bool CurrentIsAllow(Type controllerType)
     {
-        if( EnvUtils.IsProdEnv && action.ControllerType.GetMyAttribute<OnlyTestEnvAttribute>() != null )
+        if( EnvUtils.IsProdEnv && controllerType.GetMyAttribute<OnlyTestEnvAttribute>() != null )
             return false;
 
         return true;

@@ -28,10 +28,13 @@ public sealed class AuthorizeModule : NHttpModule
     }
 
 
-    internal static bool AuthorizeCheck(NHttpContext httpContext, IBaseActionInfo actionInfo = null)
+    internal static bool AuthorizeCheck(NHttpContext httpContext, IWebApiActionInfo actionInfo = null)
     {
+        actionInfo ??= httpContext.PipelineContext.Action;
+
         if( actionInfo == null )
-            actionInfo = httpContext.PipelineContext.Action;
+            return true;
+
 
         // 当前Action 不允许 匿名访问
         AllowAnonymousAttribute allowAnonymous = actionInfo.GetActionAttribute<AllowAnonymousAttribute>();

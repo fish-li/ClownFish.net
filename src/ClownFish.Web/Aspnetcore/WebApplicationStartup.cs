@@ -30,6 +30,11 @@ public class WebApplicationStartup
     public virtual bool AutoInitTracing => false;
 
     /// <summary>
+    /// 是否启用“精简WebApi”功能，可用于 NativeAOT 模式。默认值：false。
+    /// </summary>
+    public virtual bool EnableMiniWebApi => false;
+
+    /// <summary>
     /// 在 ClownFish 执行初始化之前的事件阶段。 默认行为：什么也不做。
     /// </summary>
     public virtual void BeforeClownFishInit()
@@ -148,6 +153,20 @@ public class WebApplicationStartup
     }
 
     /// <summary>
+    /// 配置ASP.NET管道
+    /// </summary>
+    public virtual void ConfigureModules(WebApplication app)
+    {
+        if( this.EnableMiniWebApi ) {
+            MiniWebApiUtil.Init();
+            app.UseMiddleware<MiniWebApiModule>();
+        }
+        else {
+            app.UseMiddleware<FirstModule>();
+        }
+    }
+
+    /// <summary>
     /// 给 Ioc 容器注册组件。 默认行为：配置基本的KestrelServerOptions参数，UnicodeRanges.All
     /// </summary>
     /// <param name="services"></param>
@@ -172,7 +191,7 @@ public class WebApplicationStartup
 
 
     /// <summary>
-    /// 配置ASP.NET管道。 默认行为：什么也不做。
+    /// 配 WebApplication 默认行为：什么也不做。
     /// </summary>
     /// <param name="app"></param>
     public virtual void ConfigureWeb(WebApplication app)
