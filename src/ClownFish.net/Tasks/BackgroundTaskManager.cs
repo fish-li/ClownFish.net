@@ -107,13 +107,14 @@ public static class BackgroundTaskManager
             BgTaskStatus x = new BgTaskStatus {
                 TaskName = task.GetType().FullName,
                 Kind = (task is AsyncBackgroundTask) ? 1 : 0,
+                Status = task.Status,
+                LastStatus = task.LastStatus,
+                EnableLog = task.EnableLog,
                 SleepSeconds = task.SleepSeconds.GetValueOrDefault(),
                 CronValue = task.CronValue,
-                Status = task.Status,
                 ExecuteCount = task.ExecuteCount,
                 ErrorCount = task.ErrorCount,
                 LastRunTime = task.LastRunTime,
-                LastStatus = task.LastStatus,
                 NextRunTime = task.NextRunTime
             };
             list.Add(x);

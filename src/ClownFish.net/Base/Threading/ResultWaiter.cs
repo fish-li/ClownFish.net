@@ -78,9 +78,11 @@ public sealed class ResultWaiter : IDisposable
     {
         if( _result != null )
             return _result;
-        
 
-        _cancellationTokenSource = new CancellationTokenSource(timeout);
+
+        CancellationTokenSource ctsTimeout = new CancellationTokenSource(timeout);
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, ClownFishInit.AppExitToken);
+
         _tokenRegistration = _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
 
         if( _result != null ) 

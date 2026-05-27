@@ -1,9 +1,12 @@
-﻿using ClownFish.Jwt;
+﻿using System.Diagnostics.CodeAnalysis;
+using ClownFish.Jwt;
 
 namespace ClownFish.Web;
 
 public static class ClownFishWebInit
 {
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthOptions))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFishWebOptions))]
     public static void InitOptions()
     {
         AuthOptions.Init();
@@ -11,6 +14,7 @@ public static class ClownFishWebInit
         DebugReport.RegisterOptionsType(typeof(ClownFish.Web.ClownFishWebOptions));
     }
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(JwtOptions))]
     public static void InitAuth()
     {
         string hashName = Settings.GetSetting("ClownFish_JwtToken_AlgorithmName");

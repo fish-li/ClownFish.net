@@ -172,6 +172,7 @@ public static class DebugReport
                     RegisterOptionsType(typeof(LoggingLimit));
                     RegisterOptionsType(typeof(LoggingLimit.OprLog));
                     RegisterOptionsType(typeof(LoggingLimit.SQL));
+                    RegisterOptionsType(typeof(LoggingLimit.HttpClient));
                     RegisterOptionsType(typeof(HttpClientDefaults));
                     RegisterOptionsType(typeof(CacheOption));
                     RegisterOptionsType(typeof(ClownFishOptions));
@@ -240,6 +241,18 @@ public static class DebugReport
         return blocks.AddRange2(s_configList);
     }
 
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingLimit))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingLimit.OprLog))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingLimit.SQL))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingLimit.HttpClient))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingOptions))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingOptions.Http))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(LoggingOptions.HttpClient))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpClientDefaults))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(CacheOption))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFishOptions))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFishPubOptions))]
     internal static List<DebugReportBlock> GetStaticVariables()
     {
         List<DebugReportBlock> blocks = new List<DebugReportBlock>(1);
