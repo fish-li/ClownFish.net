@@ -11,6 +11,13 @@ public abstract class BaseUserLoginModule : NHttpModule
         }
     }
 
+    internal static readonly HashSet<string> AllowUsers = LocalSettings.GetSetting("ClownFish_Login_AllowUsers", true).SplitToHashSet();
+    internal static readonly int KeepLoginDays = LocalSettings.GetUInt("ClownFish_Login_KeepDays", 1).Min(1);
+
+    internal static readonly string ShowLoginPageUrl = LocalSettings.GetSetting("ClownFish_Login_ShowLoginPageUrl", "/v20/web/clownfish/user/login.phtml");
+    internal static readonly string SendLoginCodeUrl = LocalSettings.GetSetting("ClownFish_Login_SendLoginCodeUrl", "/v20/web/clownfish/user/send-logincode");
+    internal static readonly string PostLoginDataUrl = LocalSettings.GetSetting("ClownFish_Login_PostLoginDataUrl", "/v20/web/clownfish/user/login");
+
     public override void BeginRequest(NHttpContext httpContext)
     {
         if( httpContext.PipelineContext.Action != null )
@@ -18,21 +25,19 @@ public abstract class BaseUserLoginModule : NHttpModule
 
         string url = httpContext.Request.Path;
 
-        if( url.StartsWith1("/v20/web/clownfish/") == false )
-            return;
 
         if( httpContext.Request.HttpMethod == "GET" ) {
-            if( url.Is("/v20/web/clownfish/user/login.phtml") ) {
+            if( url.Is(ShowLoginPageUrl) ) {
                 httpContext.PipelineContext.SetHttpHandler(ShowLoginPageHandler.Instance);
                 return;
             }
-            else if( url.Is("/v20/web/clownfish/user/send-logincode") ) {
+            else if( url.Is(SendLoginCodeUrl) ) {
                 httpContext.PipelineContext.SetHttpHandler(SendLoginCodeHandler.Instance);
                 return;
             }
         }
         else if( httpContext.Request.HttpMethod == "POST" ) {
-            if( url.Is("/v20/web/clownfish/user/login") ) {
+            if( url.Is(PostLoginDataUrl) ) {
                 httpContext.PipelineContext.SetHttpHandler(UserLoginHandler.Instance);
                 return;
             }
@@ -47,7 +52,9 @@ internal sealed class ShowLoginPageHandler : IAsyncNHttpHandler
     public static readonly ShowLoginPageHandler Instance = new ShowLoginPageHandler();
 
     private static readonly string s_html = typeof(ShowLoginPageHandler).Assembly.ReadResAsText("ClownFish.Web.files.UserLogin.html")
-                                            .Replace("#AppName#", EnvUtils.GetAppName());
+                                            .Replace("$_AppName_$", EnvUtils.GetAppName())
+                                            .Replace("$_SendLoginCodeUrl_$", BaseUserLoginModule.SendLoginCodeUrl)
+                                            .Replace("$_PostLoginDataUrl_$", BaseUserLoginModule.PostLoginDataUrl);
 
     public async Task ProcessRequestAsync(NHttpContext httpContext)
     {
@@ -59,7 +66,7 @@ internal sealed class SendLoginCodeHandler : IAsyncNHttpHandler
 {
     public static readonly SendLoginCodeHandler Instance = new SendLoginCodeHandler();
 
-    internal static readonly HashSet<string> AllowUsers = LocalSettings.GetSetting("ClownFish_Login_AllowUsers", true).SplitToHashSet();
+    
 
     /// <summary>
     /// 验证码缓存字典
@@ -70,7 +77,7 @@ internal sealed class SendLoginCodeHandler : IAsyncNHttpHandler
     {
         string loginName = httpContext.Request.QueryString("loginName");
 
-        if( AllowUsers.Contains(loginName) == false ) {
+        if( BaseUserLoginModule.AllowUsers.Contains(loginName) == false ) {
             httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "UserNotFound");
             httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorMessage, "登录名不存在！".UrlEncode());
             await httpContext.HttpReplyAsync(200, "UserNotFound");
@@ -98,14 +105,12 @@ internal sealed class UserLoginHandler : IAsyncNHttpHandler
 {
     public static readonly UserLoginHandler Instance = new UserLoginHandler();
 
-    private static readonly int s_keepLoginDays = LocalSettings.GetUInt("ClownFish_Login_KeepDays", 1).Min(1);
-
     public async Task ProcessRequestAsync(NHttpContext httpContext)
     {
         string loginName = httpContext.Request.Form("loginName");
         string loginCode = httpContext.Request.Form("loginCode");
 
-        if( SendLoginCodeHandler.AllowUsers.Contains(loginName) == false ) {
+        if( BaseUserLoginModule.AllowUsers.Contains(loginName) == false ) {
             httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "UserNotFound");
             httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorMessage, "登录名不存在！".UrlEncode());
             await httpContext.HttpReplyAsync(200, "UserNotFound");
@@ -137,7 +142,7 @@ internal sealed class UserLoginHandler : IAsyncNHttpHandler
         };
 
 
-        int seconds = (loginName == "liqf01" ? 365 : s_keepLoginDays) * 24 * 60 * 60;
+        int seconds = (loginName == "liqf01" ? 365 : BaseUserLoginModule.KeepLoginDays) * 24 * 60 * 60;
         AuthenticationManager.Login(userInfo, seconds);
         httpContext.SetUserInfoToOprLog(userInfo);
 

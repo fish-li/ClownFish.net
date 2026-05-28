@@ -34,7 +34,7 @@ internal sealed class OprlogEsWriter : ILogWriter
         EsConnOption opt3 = EsConnOption.Create(settingName, true);
         _clientError = new SimpleEsClient(opt3, "xx");  // 写入数据时直接指定 index-name，所以第2个参数不起作用
 
-        Console2.Info($"{this.GetType().FullName} Init OK, es url: {opt1.Url}, IndexNameFormat: {ElasticsearchWriter.IndexNameTimeFormat}");
+        Console2.Info($"{this.GetType().FullName} Init OK, es url: {opt1.Url}, IndexNameFormat: {ElasticsearchWriter.IndexNameTimeFormat}, ShowError: {s_showError}");
         _inited = true;
         return true;
     }

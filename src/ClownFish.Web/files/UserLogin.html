@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>用户登录 - #AppName#</title>
+    <title>用户登录 - $_AppName_$</title>
     <style type="text/css">
         * {
             font-family: Consolas, 'Courier New', '微软雅黑', '宋体';
@@ -95,7 +95,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "/v20/web/clownfish/user/send-logincode",
+                url: "$_SendLoginCodeUrl_$",
                 data: {
                     loginName: $("#txtLoginName").val()
                 },
@@ -137,7 +137,7 @@
 
             $.ajax({
                 method: "POST",
-                url: "/v20/web/clownfish/user/login",
+                url: "$_PostLoginDataUrl_$",
                 data: {
                     loginName: $("#txtLoginName").val(),
                     logincode: $("#txtLoginCode").val()

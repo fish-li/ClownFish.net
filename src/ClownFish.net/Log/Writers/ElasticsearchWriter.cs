@@ -28,7 +28,7 @@ internal sealed class ElasticsearchWriter : ILogWriter
 
         _client = new SimpleEsClient(opt, IndexNameTimeFormat);
 
-        Console2.Info($"{this.GetType().FullName} Init OK, es url: {opt.Url} , IndexNameFormat: {IndexNameTimeFormat}");
+        Console2.Info($"{this.GetType().FullName} Init OK, es url: {opt.Url} , IndexNameFormat: {IndexNameTimeFormat}, ShowError: {s_showError}");
         return true;
     }
 
