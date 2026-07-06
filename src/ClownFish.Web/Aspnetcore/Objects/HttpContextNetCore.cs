@@ -52,17 +52,20 @@ public sealed class HttpContextNetCore : NHttpContext
     //}
 
 
-    private XDictionary _items;
+    
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public override object TryGetCtxItem(string key)
+    {
+        return _context.Items.TryGetValue(key, out var value) ? value : null;
+    }
 
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public override XDictionary Items {
-        get {
-            if( _items == null )
-                _items = new XDictionary(_context.Items);
-            return _items;
-        }
+    public override void SetCtxItem(string key, object value)
+    {
+        _context.Items[key] = value;
     }
-
 }

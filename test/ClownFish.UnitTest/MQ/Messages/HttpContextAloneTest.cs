@@ -41,7 +41,11 @@ public class HttpContextAloneTest
         });
 
         MyAssert.IsError<NotImplementedException>(() => {
-            _ = HttpContextAlone.Instance.Items;
+            _ = HttpContextAlone.Instance.TryGetCtxItem("xx");
+        });
+
+        MyAssert.IsError<NotImplementedException>(() => {
+            HttpContextAlone.Instance.SetCtxItem("xx", "value");
         });
     }
 }

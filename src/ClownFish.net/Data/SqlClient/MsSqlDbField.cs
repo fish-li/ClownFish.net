@@ -77,7 +77,13 @@ public sealed class MsSqlDbField
     /// 注意：此属性不由 ClownFish.Data 填充，仅供应用程序标记使用。
     /// </summary>
     [XmlAttribute]
-    public bool IsPK { get; set; }
+    public bool IsPrimaryKey { get; set; }
+
+    /// <summary>
+    /// 字段的注释信息
+    /// </summary>
+    [XmlAttribute]
+    public string Description { get; set; }
 
     /// <summary>
     /// ToString

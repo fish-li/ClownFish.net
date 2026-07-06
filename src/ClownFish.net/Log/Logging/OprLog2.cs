@@ -191,36 +191,36 @@ public partial class OprLog
     internal void TryGetBizInfo(NHttpContext httpContext)
     {
         if( this.TenantId == null ) {
-            this.TenantId = httpContext.Items.TryGet("TenantId") as string;
+            this.TenantId = httpContext.TryGetCtxItem("TenantId") as string;
         }
         if( this.UserId == null ) {
-            this.UserId = httpContext.Items.TryGet("UserId") as string;
+            this.UserId = httpContext.TryGetCtxItem("UserId") as string;
         }
         if( this.UserCode == null ) {
-            this.UserCode = httpContext.Items.TryGet("UserCode") as string;
+            this.UserCode = httpContext.TryGetCtxItem("UserCode") as string;
         }
         if( this.UserName == null ) {
-            this.UserName = httpContext.Items.TryGet("UserName") as string;
+            this.UserName = httpContext.TryGetCtxItem("UserName") as string;
         }
         if( this.UserRole == null ) {
-            this.UserRole = httpContext.Items.TryGet("UserRole") as string;
+            this.UserRole = httpContext.TryGetCtxItem("UserRole") as string;
         }
 
         if( this.BizId == null ) {
-            this.BizId = httpContext.Items.TryGet("Biz-Id") as string;
+            this.BizId = httpContext.TryGetCtxItem("Biz-Id") as string;
         }
         if( this.BizName == null ) {
-            this.BizName = httpContext.Items.TryGet("Biz-Name") as string;
+            this.BizName = httpContext.TryGetCtxItem("Biz-Name") as string;
         }
 
         if( this.Module == null ) {
-            this.Module = httpContext.Items.TryGet("Biz-Module") as string;
+            this.Module = httpContext.TryGetCtxItem("Biz-Module") as string;
         }
         if( this.Controller == null ) {
-            this.Controller = httpContext.Items.TryGet("Biz-Controller") as string;
+            this.Controller = httpContext.TryGetCtxItem("Biz-Controller") as string;
         }
         if( this.Action == null ) {
-            this.Action = httpContext.Items.TryGet("Biz-Action") as string;
+            this.Action = httpContext.TryGetCtxItem("Biz-Action") as string;
         }
     }
 

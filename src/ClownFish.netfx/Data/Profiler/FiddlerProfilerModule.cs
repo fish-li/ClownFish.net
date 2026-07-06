@@ -40,7 +40,7 @@ public sealed class FiddlerProfilerModule : NHttpModule
         // 如果Fiddler插件中的【数据库访问】 选项卡已启用
         if( headerValue.IndexOf("db", StringComparison.Ordinal) >= 0 ) {
             // 创建一个列表，用于存储当前请求过程中发生的数据访问操作
-            httpContext.Items[ContextItemKey] = new List<DbActionInfo>(32);
+            httpContext.SetCtxItem(ContextItemKey, new List<DbActionInfo>(32));
         }
     }
 
@@ -62,7 +62,7 @@ public sealed class FiddlerProfilerModule : NHttpModule
             httpContext.Response.SetHeader("X-Fiddler-AnalyzeRequest", "OK");
 
 
-        List<DbActionInfo> list = httpContext.Items[ContextItemKey] as List<DbActionInfo>;
+        List<DbActionInfo> list = httpContext.TryGetCtxItem(ContextItemKey) as List<DbActionInfo>;
         if( list == null || list.Count == 0 )
             return;
 

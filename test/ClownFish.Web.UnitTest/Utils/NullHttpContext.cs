@@ -14,6 +14,8 @@ internal sealed class NullHttpContext : NHttpContext
 
     public override bool SkipAuthorization { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public override XDictionary Items => throw new NotImplementedException();
+    public override object TryGetCtxItem(string key) => throw new NotImplementedException();
+
+    public override void SetCtxItem(string key, object value) => throw new NotImplementedException();
 
 }

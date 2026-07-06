@@ -328,7 +328,11 @@ public sealed class HttpContextAlone : NHttpContext
     /// <summary>
     /// 
     /// </summary>
-    public override XDictionary Items => throw new NotImplementedException();
+    public override object TryGetCtxItem(string key) => throw new NotImplementedException();
+    /// <summary>
+    /// 
+    /// </summary>
+    public override void SetCtxItem(string key, object value) => throw new NotImplementedException();
 
 }
 #endif

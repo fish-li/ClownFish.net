@@ -36,7 +36,7 @@ fabbd011e6804d82987a453e7902234c
 
 
             Assert.AreEqual("my57972739adc90", request.GetValue("tenantId"));
-            Assert.AreEqual("text/plain", request.GetValue("Content-Type"));
+            Assert.AreEqual("text/plain", request.Header("Content-Type"));
 
             Assert.AreEqual("fabbd011e6804d82987a453e7902234c", request.GetBodyText());
         }

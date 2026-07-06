@@ -47,15 +47,6 @@ internal static class MiniWebApiUtil
                 MethodInfo[] methods = controllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
                 foreach( MethodInfo method in methods ) {
 
-                    // 检查方法签名是否符合要求: Task/Task<xx> ActionName(NHttpContext httpContext)
-
-                    if( CheckActionMethodReturnType(method) == false )
-                        continue;
-
-                    if( CheckActionMethodParameter(method) == false )
-                        continue;
-
-
                     var attrs = method.GetCustomAttributes<UrlRouteAttribute>();
                     foreach( UrlRouteAttribute attr in attrs ) {
                         if( attr != null && attr.Route.HasValue() ) {
@@ -90,32 +81,6 @@ internal static class MiniWebApiUtil
         }
 
         Console2.Info($"{typeof(MiniWebApiUtil).FullName}: BuildRouteDict, found {s_urlMapDict.Count + s_regexRouteList.Count} actions");
-    }
-
-    private static bool CheckActionMethodReturnType(MethodInfo method)
-    {
-        if( method.IsTaskMethod() )
-            return true;
-
-        Type returnType = method.ReturnType;
-
-        if( returnType.IsCompatible(typeof(IWebApiResult))
-            || returnType.IsSimpleValueType()
-            || returnType == typeof(string)
-            || returnType == typeof(object)
-            || returnType == typeof(void) )
-            return true;
-
-        return false;
-    }
-
-    private static bool CheckActionMethodParameter(MethodInfo method)
-    {
-        var ps = method.GetParameters();
-        if( ps.Length == 0 )
-            return true;
-
-        return ps.Length == 1 && ps[0].ParameterType == typeof(NHttpContext);
     }
 
 
@@ -194,7 +159,7 @@ internal static class MiniWebApiUtil
         }
 
 
-        object[] args = actionInfo.MethodInfo.GetParameters().Length == 0 ? Array.Empty<object>() : new object[] { httpContext };
+        object[] args = GetCallArgs(actionInfo, httpContext);   // new object[] { httpContext };
         object result = null;
 
         httpContext.BeginExecuteTime = DateTime.Now;
@@ -227,6 +192,53 @@ internal static class MiniWebApiUtil
         return methods.Contains(current);
     }
 
+
+    private static object[] GetCallArgs(WebApiActionInfo actionInfo, NHttpContext httpContext)
+    {
+        var ps = actionInfo.MethodInfo.GetParameters();
+        if( ps.Length == 0 )
+            return Empty.Array<object>();
+
+        if( ps.Length == 1 && ps[0].ParameterType == typeof(NHttpContext) )
+            return new object[] { httpContext };
+
+
+        List<object> list = new List<object>();
+
+        foreach( var p in ps ) {
+            if( p.ParameterType == typeof(NHttpContext) ) {
+                list.Add(httpContext);
+                continue;
+            }
+
+            if( p.ParameterType == typeof(NHttpRequest) ) {
+                list.Add(httpContext.Request);
+                continue;
+            }
+
+            if( p.Name == "body" && p.ParameterType == typeof(string) ) {
+                string body = httpContext.Request.GetBodyText();
+                list.Add(body);
+                continue;
+            }
+
+            if( p.ParameterType.IsSimpleValueType() || p.ParameterType == typeof(string) ) {
+                string text = httpContext.Request.GetValue(p.Name);
+                object value = StringConverter.ChangeType(text, 
+                                                p.ParameterType.GetRealType());  // 支持 int? 这种可空类型参数
+                list.Add(value);
+                continue;
+            }
+
+            // 剩下的类型，应该是一些复杂类型的参数，为了简化实现，暂时不支持自动绑定参数
+            // 实际应用时可将参数申明为：　string body  ，然后自行反序列化或者其它的转换处理
+            throw new NotSupportedException($"不支持为Action参数准备调用数据，Name={p.Name}, ParameterType={p.ParameterType.FullName}");
+        }
+
+        return list.ToArray();
+    }
+
+
     private static async Task OutputResultAsync(NHttpContext httpContext, object result)
     {
         if( result == null )
@@ -237,13 +249,13 @@ internal static class MiniWebApiUtil
             return;
         }
 
-        if( result.GetType().IsSimpleValueType() ) {
-            await httpContext.HttpReplyAsync(result.ToString());
+        if( result is IWebApiResult actionResult ) {
+            await actionResult.OutResultAsync(httpContext);
             return;
         }
 
-        if( result is IWebApiResult actionResult ) {
-            await actionResult.OutResultAsync(httpContext);
+        if( result.GetType().IsSimpleValueType() ) {
+            await httpContext.HttpReplyAsync(result.ToString());
             return;
         }
 

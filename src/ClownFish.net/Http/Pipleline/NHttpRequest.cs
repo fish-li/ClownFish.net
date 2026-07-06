@@ -309,7 +309,7 @@ public abstract partial class NHttpRequest
     }
 
     /// <summary>
-    /// 从各种数据集合中获取（Route, QueryString, Form, Header）获取指定名称的数据
+    /// 从各种数据集合中获取（Route, QueryString, Form）获取指定名称的数据
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
@@ -317,8 +317,12 @@ public abstract partial class NHttpRequest
     {
         return this.Route(name)
                 ?? this.QueryString(name)
-                ?? this.Form(name)
-                ?? this.Header(name);
+                ?? this.Form(name);
+
+        // 请求头的名称通常包含 横线，例如： Content-Type, User-Agent, Accept-Encoding 等等，
+        // 即使是自定义的请求头，也会包含横线，例如： X-My-Header
+        // 这种名称在C#中是无法作为参数名的，所以不考虑从请求头中获取数据。
+        // ?? this.Header(name);
     }
 
 

@@ -37,10 +37,18 @@ public abstract class NHttpContext
     public abstract bool SkipAuthorization { get; set; }
 
     /// <summary>
-    /// 存放一些与请求相关的临时数据
+    /// 从 Items 集合中获取指定的值，如果不存在则返回 null，
     /// </summary>
-    public abstract XDictionary Items { get; }
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public abstract object TryGetCtxItem(string key);
 
+    /// <summary>
+    /// 给 Items 集合添加新元素，如果已存在则覆盖原有值。
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    public abstract void SetCtxItem(string key, object value);
 
     /// <summary>
     /// 是否启用日志(OprLog + InvokeLog)，如果日志不启用，那么将不会统计调用次数，Venus界面看不到统计结果。

@@ -85,22 +85,71 @@ where name not like 'sp_%' order by name";
     /// SQL脚本，用于获取某个数据表的列定义描述
     /// </summary>
     public static readonly string ScriptGetTableFields = @"
-SELECT clmns.name AS [Name], baset.name AS [DataType], 
-		CAST(CASE WHEN baset.name IN (N'nchar', N'nvarchar') AND clmns.max_length <> -1 
-			THEN clmns.max_length/2 ELSE clmns.max_length END AS int) AS [Length], clmns.scale,
-		CAST(clmns.precision AS int) AS [Precision], clmns.is_identity AS [Identity], 
-		clmns.is_nullable AS [Nullable] ,clmns.is_computed as [Computed],cmc.is_persisted as [IsPersisted] ,
-		defCst.definition as [DefaultValue], cmc.definition as [Formular],
-		idc.seed_value as [SeedValue], idc.increment_value as [IncrementValue]
+SELECT 
+    clmns.name AS [Name],
+    baset.name AS [DataType],
+    CAST(CASE WHEN baset.name IN (N'nchar', N'nvarchar') AND clmns.max_length <> -1 
+              THEN clmns.max_length/2 ELSE clmns.max_length END AS int) AS [Length],
+    clmns.scale,
+    CAST(clmns.precision AS int) AS [Precision],
+    clmns.is_identity AS [Identity],
+    clmns.is_nullable AS [Nullable],
+    clmns.is_computed AS [Computed],
+    cmc.is_persisted AS [IsPersisted],
+    defCst.definition AS [DefaultValue],
+    cmc.definition AS [Formular],
+    idc.seed_value AS [SeedValue],
+    idc.increment_value AS [IncrementValue],
+     CASE WHEN pk.column_id IS NOT NULL THEN 1 ELSE 0 END AS [IsPrimaryKey],
+    ep.value AS [Description]
 FROM sys.tables AS tbl 
-INNER JOIN sys.all_columns AS clmns ON clmns.object_id=tbl.object_id 
-LEFT OUTER JOIN sys.types AS baset ON baset.user_type_id = clmns.system_type_id and baset.user_type_id = baset.system_type_id 
+INNER JOIN sys.all_columns AS clmns ON clmns.object_id = tbl.object_id 
+LEFT OUTER JOIN sys.types AS baset 
+    ON baset.user_type_id = clmns.system_type_id 
+    AND baset.user_type_id = baset.system_type_id 
 LEFT OUTER JOIN sys.schemas AS sclmns ON sclmns.schema_id = baset.schema_id 
-LEFT OUTER JOIN sys.identity_columns AS ic ON ic.object_id = clmns.object_id and ic.column_id = clmns.column_id 
-left outer join sys.default_constraints defCst on defCst.parent_object_id = clmns.object_id and defCst.parent_column_id = clmns.column_id 
-left outer join sys.computed_columns cmc on cmc.object_id = clmns.object_id and cmc.column_id = clmns.column_id 
-left outer join sys.identity_columns idc on idc.object_id = clmns.object_id and idc.column_id = clmns.column_id 
-WHERE (tbl.name= @TableName ) ORDER BY clmns.column_id ASC";
+LEFT OUTER JOIN sys.default_constraints defCst 
+    ON defCst.parent_object_id = clmns.object_id 
+    AND defCst.parent_column_id = clmns.column_id 
+LEFT OUTER JOIN sys.computed_columns cmc 
+    ON cmc.object_id = clmns.object_id AND cmc.column_id = clmns.column_id 
+LEFT OUTER JOIN sys.identity_columns idc 
+    ON idc.object_id = clmns.object_id AND idc.column_id = clmns.column_id 
+-- 获取主键列（使用子查询避免 INNER JOIN 过滤掉非主键列）
+LEFT OUTER JOIN (
+    SELECT ic.object_id, ic.column_id
+    FROM sys.index_columns ic
+    INNER JOIN sys.indexes i 
+        ON ic.object_id = i.object_id 
+        AND ic.index_id = i.index_id 
+        AND i.is_primary_key = 1
+) pk ON pk.object_id = clmns.object_id AND pk.column_id = clmns.column_id
+-- 获取字段备注（MS_Description 扩展属性）
+LEFT OUTER JOIN sys.extended_properties ep 
+    ON ep.major_id = clmns.object_id 
+    AND ep.minor_id = clmns.column_id 
+    AND ep.class = 1 
+    AND ep.name = 'MS_Description'
+WHERE tbl.name = @TableName
+ORDER BY clmns.column_id ASC
+";
+//    public static readonly string ScriptGetTableFields = @"
+//SELECT clmns.name AS [Name], baset.name AS [DataType], 
+//		CAST(CASE WHEN baset.name IN (N'nchar', N'nvarchar') AND clmns.max_length <> -1 
+//			THEN clmns.max_length/2 ELSE clmns.max_length END AS int) AS [Length], clmns.scale,
+//		CAST(clmns.precision AS int) AS [Precision], clmns.is_identity AS [Identity], 
+//		clmns.is_nullable AS [Nullable] ,clmns.is_computed as [Computed],cmc.is_persisted as [IsPersisted] ,
+//		defCst.definition as [DefaultValue], cmc.definition as [Formular],
+//		idc.seed_value as [SeedValue], idc.increment_value as [IncrementValue]
+//FROM sys.tables AS tbl 
+//INNER JOIN sys.all_columns AS clmns ON clmns.object_id=tbl.object_id 
+//LEFT OUTER JOIN sys.types AS baset ON baset.user_type_id = clmns.system_type_id and baset.user_type_id = baset.system_type_id 
+//LEFT OUTER JOIN sys.schemas AS sclmns ON sclmns.schema_id = baset.schema_id 
+//LEFT OUTER JOIN sys.identity_columns AS ic ON ic.object_id = clmns.object_id and ic.column_id = clmns.column_id 
+//left outer join sys.default_constraints defCst on defCst.parent_object_id = clmns.object_id and defCst.parent_column_id = clmns.column_id 
+//left outer join sys.computed_columns cmc on cmc.object_id = clmns.object_id and cmc.column_id = clmns.column_id 
+//left outer join sys.identity_columns idc on idc.object_id = clmns.object_id and idc.column_id = clmns.column_id 
+//WHERE (tbl.name= @TableName ) ORDER BY clmns.column_id ASC";
 
 
 

@@ -1,7 +1,7 @@
 ﻿using ClownFish.Web.Aspnetcore.ActionResults;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace ClownFish.Web.AspnetCore.Filters;
+namespace ClownFish.Web.Aspnetcore.Filters;
 
 public sealed class SimpleResultFilter : IResultFilter
 {

@@ -24,7 +24,7 @@ internal static class DbContextEventSubscriber
             return null;
 
         // 集合在FiddlerProfilerModule.App_PostResolveRequestCache方法中创建
-        return pipelineContext.HttpContext.Items[FiddlerProfilerModule.ContextItemKey] as List<DbActionInfo>;
+        return pipelineContext.HttpContext.TryGetCtxItem(FiddlerProfilerModule.ContextItemKey) as List<DbActionInfo>;
     }
 
     private static void DbContextEvent_ConnectionOpened(object sender, OpenConnEventArgs e)

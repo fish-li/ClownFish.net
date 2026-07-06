@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace ClownFish.Web.AspnetCore.Filters;
+namespace ClownFish.Web.Aspnetcore.Filters;
 
 public sealed class StatusCodeFilter : IResultFilter
 {

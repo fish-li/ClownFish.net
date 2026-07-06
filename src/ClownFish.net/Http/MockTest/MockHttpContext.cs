@@ -53,16 +53,28 @@ public class MockHttpContext : NHttpContext
     public override IPrincipal User { get; set; }
 
 
-    private XDictionary _items;
+    private Dictionary<string, object> _items;
+
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public override XDictionary Items {
-        get {
-            if( _items == null )
-                _items = new XDictionary();
-            return _items;
-        }
+    public override object TryGetCtxItem(string key)
+    {
+        if( _items == null )
+            return null;
+
+        return _items.TryGetValue(key, out var value) ? value : null;
+    }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public override void SetCtxItem(string key, object value)
+    {
+        if( _items == null )
+            _items = new Dictionary<string, object>();
+
+        _items[key] = value;
     }
 
 }

@@ -249,8 +249,8 @@ public class WebApplicationStartup
     {
         int order = int.MinValue;
         x.Filters.Add(typeof(ClownFish.Web.Aspnetcore.Filters.FirstFilter), order++);
-        x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.SimpleResultFilter), order++);
-        x.Filters.Add(typeof(ClownFish.Web.AspnetCore.Filters.StatusCodeFilter), order++);
+        x.Filters.Add(typeof(ClownFish.Web.Aspnetcore.Filters.SimpleResultFilter), order++);
+        x.Filters.Add(typeof(ClownFish.Web.Aspnetcore.Filters.StatusCodeFilter), order++);
     }
 
     /* RegisterInnerMvcFilters 方法给派生类使用，例如下面的示例代码

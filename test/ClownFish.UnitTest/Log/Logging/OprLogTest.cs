@@ -357,17 +357,17 @@ public class OprLogTest
         };
         using MockHttpPipeline mock = new MockHttpPipeline(requestData);
 
-        mock.HttpContext.Items["TenantId"] = "TenantId_11111";
-        mock.HttpContext.Items["UserId"] = "UserId_11111";
-        mock.HttpContext.Items["UserCode"] = "UserCode_11111";
-        mock.HttpContext.Items["UserName"] = "UserName_11111";
-        mock.HttpContext.Items["UserRole"] = "UserRole_111111";
-        mock.HttpContext.Items["Biz-Id"] = "BizId_111111";
-        mock.HttpContext.Items["Biz-Name"] = "BizName_1111111";
-        mock.HttpContext.Items["Biz-Module"] = "Module_11111";
-        mock.HttpContext.Items["Biz-Controller"] = "Controller_11111";
-        mock.HttpContext.Items["Biz-Action"] = "Action_1111111";
-        mock.HttpContext.Items["Count1"] = "123";
+        mock.HttpContext.SetCtxItem("TenantId", "TenantId_11111");
+        mock.HttpContext.SetCtxItem("UserId", "UserId_11111");
+        mock.HttpContext.SetCtxItem("UserCode", "UserCode_11111");
+        mock.HttpContext.SetCtxItem("UserName", "UserName_11111");
+        mock.HttpContext.SetCtxItem("UserRole", "UserRole_111111");
+        mock.HttpContext.SetCtxItem("Biz-Id", "BizId_111111");
+        mock.HttpContext.SetCtxItem("Biz-Name", "BizName_1111111");
+        mock.HttpContext.SetCtxItem("Biz-Module", "Module_11111");
+        mock.HttpContext.SetCtxItem("Biz-Controller", "Controller_11111");
+        mock.HttpContext.SetCtxItem("Biz-Action", "Action_1111111");
+        mock.HttpContext.SetCtxItem("Count1", "123");
 
         OprLog log = new OprLog();
         log.TryGetBizInfo(mock.HttpContext);
@@ -552,7 +552,9 @@ public class EmptyHttpContext : NHttpContext
     public override IPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public override bool SkipAuthorization { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public override XDictionary Items => throw new NotImplementedException();
+    public override object TryGetCtxItem(string key) => throw new NotImplementedException();
+
+    public override void SetCtxItem(string key, object value) => throw new NotImplementedException();
 }
 
 
