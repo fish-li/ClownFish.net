@@ -36,6 +36,8 @@ internal static class MiniWebApiUtil
     [UnconditionalSuppressMessage("Trimming", "IL2075: controllerType.GetMethods")]
     private static void BuildRouteDict()
     {
+        HashSet<string> allRoute = new HashSet<string>(128, StringComparer.OrdinalIgnoreCase);
+
         foreach( Assembly asm in AppPartUtils.GetApplicationPartAsmList() ) {
 
             Type[] types = (from x in asm.GetPublicTypes()
@@ -50,6 +52,10 @@ internal static class MiniWebApiUtil
                     var attrs = method.GetCustomAttributes<UrlRouteAttribute>();
                     foreach( UrlRouteAttribute attr in attrs ) {
                         if( attr != null && attr.Route.HasValue() ) {
+
+                            if( allRoute.Add(attr.Route) == false )
+                                // 不支持多个 http-Method 共用一个URL，不太喜欢这样做法！
+                                throw new InvalidCodeException($"重复的路由URL: [{attr.Route}]");
 
                             WebApiActionInfo actionInfo = new WebApiActionInfo {
                                 ControllerType = controllerType,
@@ -159,9 +165,14 @@ internal static class MiniWebApiUtil
         }
 
 
-        object[] args = GetCallArgs(actionInfo, httpContext);   // new object[] { httpContext };
-        object result = null;
+        object[] args = GetCallArgs(actionInfo, httpContext, out string argsError);
 
+        if( argsError.HasValue() ) {
+            await httpContext.HttpReplyAsync(400, argsError);
+            return;
+        }
+
+        object result = null;
         httpContext.BeginExecuteTime = DateTime.Now;
         httpContext.LogFxEvent(new NameTime("UserCode begin", httpContext.BeginExecuteTime));
 
@@ -193,8 +204,10 @@ internal static class MiniWebApiUtil
     }
 
 
-    private static object[] GetCallArgs(WebApiActionInfo actionInfo, NHttpContext httpContext)
+    private static object[] GetCallArgs(WebApiActionInfo actionInfo, NHttpContext httpContext, out string error)
     {
+        error = null;
+
         var ps = actionInfo.MethodInfo.GetParameters();
         if( ps.Length == 0 )
             return Empty.Array<object>();
@@ -206,36 +219,84 @@ internal static class MiniWebApiUtil
         List<object> list = new List<object>();
 
         foreach( var p in ps ) {
-            if( p.ParameterType == typeof(NHttpContext) ) {
-                list.Add(httpContext);
-                continue;
+            
+            if( GetOneCallArgs(p, httpContext, list, out string err2) == false ) {
+                error = err2;
+                return null;     // ############################### 只要发现一个错误，就结束整个方法
             }
-
-            if( p.ParameterType == typeof(NHttpRequest) ) {
-                list.Add(httpContext.Request);
-                continue;
-            }
-
-            if( p.Name == "body" && p.ParameterType == typeof(string) ) {
-                string body = httpContext.Request.GetBodyText();
-                list.Add(body);
-                continue;
-            }
-
-            if( p.ParameterType.IsSimpleValueType() || p.ParameterType == typeof(string) ) {
-                string text = httpContext.Request.GetValue(p.Name);
-                object value = StringConverter.ChangeType(text, 
-                                                p.ParameterType.GetRealType());  // 支持 int? 这种可空类型参数
-                list.Add(value);
-                continue;
-            }
-
-            // 剩下的类型，应该是一些复杂类型的参数，为了简化实现，暂时不支持自动绑定参数
-            // 实际应用时可将参数申明为：　string body  ，然后自行反序列化或者其它的转换处理
-            throw new NotSupportedException($"不支持为Action参数准备调用数据，Name={p.Name}, ParameterType={p.ParameterType.FullName}");
         }
 
         return list.ToArray();
+    }
+
+
+    private static bool GetOneCallArgs(ParameterInfo p, NHttpContext httpContext, List<object> list, out string error)
+    {
+        error = null;
+
+        if( p.ParameterType == typeof(NHttpContext) ) {
+            list.Add(httpContext);
+            return true;
+        }
+
+        if( p.ParameterType == typeof(NHttpRequest) ) {
+            list.Add(httpContext.Request);
+            return true;
+        }
+
+        
+        if( p.ParameterType == typeof(string) ) {
+
+            // 一个特殊的名称，**仅用于** 读取“请求体”         // 查询字符串也要使用这个参数名 ？？不支持！
+            if( p.Name == "requestBody" ) {
+                string body = httpContext.Request.GetBodyText();
+                list.Add(body);
+                return true;
+            }
+            else {
+                string text = httpContext.Request.GetValue(p.Name);
+                if( text.IsNullOrEmpty() ) {
+                    RequiredAttribute attr = p.GetCustomAttribute<RequiredAttribute>();   // 字符串【必填】
+                    if( attr != null ) {
+                        error = $"没有为Action参数指定调用值，Parameter-Name={p.Name}";
+                        return false;     // ############################### 自动获取参数值失败
+                    }
+                }
+                list.Add(text);
+                return true;
+            }
+        }
+
+
+        if( p.ParameterType.IsNullableType() ) {  // 支持 int? 这种可空类型参数
+            Type paramType = p.ParameterType.GetRealType();
+
+            string text = httpContext.Request.GetValue(p.Name);  // 允许 text is null
+            object value = StringConverter.ChangeType(text, paramType);
+            list.Add(value);
+            return true;
+        }
+
+
+        if( p.ParameterType.IsSimpleValueType() ) {
+            string text = httpContext.Request.GetValue(p.Name);
+
+            // **空字符串** 直接转值类型的结果很不靠谱，典型场景：DateTime
+            // 就算参数类型是 int 也不行，因为这种情况可将参数类型申明为 int?  ，这才是理想的目标类型
+            if( text.IsNullOrEmpty() ) {
+                error = $"没有为Action参数指定调用值，Parameter-Name={p.Name}";
+                return false;     // ############################### 自动获取参数值失败
+            }
+
+            object value = StringConverter.ChangeType(text, p.ParameterType);
+            list.Add(value);
+            return true;
+        }
+
+        // 剩下的类型，应该是一些复杂类型的参数，为了简化实现，暂时不支持自动绑定参数
+        // 实际应用时可访问 Request 对象 ，然后自行反序列化或者其它的转换处理
+        error = $"不支持为Action参数准备调用数据(数据类型不支持)，Parameter-Name={p.Name}, Parameter-Type={p.ParameterType.FullName}";
+        return false;
     }
 
 
@@ -246,6 +307,12 @@ internal static class MiniWebApiUtil
 
         if( result is string str ) {
             await httpContext.HttpReplyAsync(str);
+            return;
+        }
+
+        if( result is DataTable table ) {
+            DataTableResult result2 = new DataTableResult(table, "xml");
+            await result2.OutResultAsync(httpContext);
             return;
         }
 

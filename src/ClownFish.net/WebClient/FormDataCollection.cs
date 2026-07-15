@@ -109,26 +109,45 @@ public sealed class FormDataCollection
         if( value == null )
             return AddString(key, string.Empty);
 
-        Type valueType = value.GetType();
+        //Type valueType = value.GetType();
 
-        if( valueType == typeof(string) )
-            return AddString(key, (string)value);
-
-
-        if( valueType == typeof(FileInfo) ) {
-            return AddFile(key, (FileInfo)value);
-        }
-
-        if( valueType == typeof(HttpFile) ) {
-            return AddFile(key, (HttpFile)value);
-        }
-
-        if( valueType == typeof(byte[]) ) {
-            string text = ((byte[])value).ToBase64();
+        if( value is string text )
             return AddString(key, text);
+
+        if( value is DateTime dt )
+            return AddString(key, dt.ToTime27String());
+
+        if( value is double dd )
+            return AddString(key, dd.ToString("F6"));
+
+        if( value is float ff )
+            return AddString(key, ff.ToString("F6"));
+
+        if( value is decimal mm )
+            return AddString(key, mm.ToString("F6"));
+
+        if( value is bool b2 ) {
+            return AddString(key, (b2 ? "true" : "false"));
         }
 
-        // string[] ，不处理，可以通过给 Data 设置来解决（用一个KEY多次指定值）。
+        if( value is FileInfo file ) 
+            return AddFile(key, file);        
+
+        if( value is HttpFile file2 ) 
+            return AddFile(key, file2);
+        
+
+        if( value is IEnumerable<string> textArray ) {
+            foreach( string s in textArray )
+                AddString(key, s);
+
+            return this;
+        }
+
+        if( value is byte[] bb ) {
+            string base64 = bb.ToBase64();
+            return AddString(key, base64);
+        }
 
         _list.Add(new KeyValuePair<string, object>(key, value.ToString()));
         return this;
@@ -293,10 +312,8 @@ public sealed class FormDataCollection
             throw new ArgumentException("参数类型不正确，不应该是一个字符串类型。");
 
 
-        FormDataCollection collection = obj as FormDataCollection;
-        if( collection != null )
+        if( obj is FormDataCollection collection )
             return collection;
-
 
         IDictionary dict = obj as IDictionary;
         if( dict != null )
@@ -357,19 +374,7 @@ public sealed class FormDataCollection
 
         foreach( PropertyInfo p in properties ) {
             object value = p.FastGetValue(obj);
-            if( value == null ) {
-                collection.AddString(p.Name, string.Empty);
-                continue;
-            }
-
-            if( value.GetType() == typeof(string[]) ) {
-                foreach( string s in (string[])value )
-                    collection.AddString(p.Name, (s ?? string.Empty));
-
-            }
-            else {
-                collection.AddObject(p.Name, value);
-            }
+            collection.AddObject(p.Name, value);
         }
 
         return collection;

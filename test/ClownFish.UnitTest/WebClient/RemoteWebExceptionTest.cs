@@ -33,14 +33,14 @@ Server: Kestrel";
         Assert.AreEqual(url, ex.Url);
         Assert.AreEqual("testxxx", ex.ResponseText);
 
-        string text = ex.ToLoggingText();
+        string text = ex.Message;
         Console.WriteLine(text);
 
-        string[] lines = text.ToLines();
-        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: error5 [StatusCode=503]"));
-        Assert.IsTrue(lines.Contains("HTTP/1.1 503 ServiceUnavailable"));
-        Assert.IsTrue(lines.Contains("testxxx"));
-        Assert.IsTrue(lines.Contains("-------------------------Response-------------------------"));
+        string expect = @"error5
+[StatusCode=503]
+=)本次调用的目标地址：http://www.abc.com/aa/bb.txt";
+
+        Assert.AreEqual(expect, text);
     }
 
     // 对于超时场景，存在重大差异
@@ -79,7 +79,8 @@ Server: Kestrel";
         Console.WriteLine(text);
 
         string[] lines = text.ToLines();
-        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: 操作超时 [StatusCode=0]"));
+        Assert.IsTrue(lines.Contains("ClownFish.WebClient.RemoteWebException: 操作超时"));
+        Assert.IsTrue(lines.Contains("[StatusCode=0]"));
     }
 
 #else
@@ -292,7 +293,8 @@ xx_<title>服务端异常XXX</title>", text);
 
         //Console.WriteLine(ex2.ToLoggingText());
 
-        string outText = @"ClownFish.WebClient.RemoteWebException: 服务端异常XXX [StatusCode=503]
+        string outText = @"ClownFish.WebClient.RemoteWebException: 服务端异常XXX 
+[StatusCode=503]
 =)本次调用的目标地址：http://www.abc.com/aa/bb.aspx
  ---> System.Net.WebException: 服务端异常XXX
  ---> ClownFish.Base.Exceptions.MessageException: 一个用于测试的异常

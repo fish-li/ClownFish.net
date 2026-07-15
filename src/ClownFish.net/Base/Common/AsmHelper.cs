@@ -61,18 +61,22 @@ public static class AsmHelper
             return Environment.GetCommandLineArgs()[0];
         }
         else {
-            return GetEntryAssembly().Location;
+            // VS中打开WinForm窗体时（设计器模式下），GetEntryAssembly()返回null
+            return GetEntryAssembly()?.Location ?? string.Empty;
         }
     }
 
-
+    
     private static string s_exeName;
 
     internal static string GetExeName()
     {
         if( s_exeName == null ) {
             string filePath = GetExeFilePath();
-            s_exeName = Path.GetFileNameWithoutExtension(filePath);
+            if( filePath.HasValue() )
+                s_exeName = Path.GetFileNameWithoutExtension(filePath);
+            else
+                s_exeName = "_exe_name_null_91764baf73";   // 一个特殊的字符串，便于以后查问题时搜索到这里
         }
         return s_exeName;
     }

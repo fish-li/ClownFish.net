@@ -540,6 +540,24 @@ public static class StringExtensions
         return result;
     }
 
+    /// <summary>
+    /// 尝试将一个字符串转成【float】，如果失败就返回默认值
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns></returns>
+    public static float TryToFloat(this string text, float defaultValue = 0f)
+    {
+        if( string.IsNullOrEmpty(text) )
+            return defaultValue;
+
+        float result;
+        if( float.TryParse(text, out result) == false )
+            return defaultValue;
+
+        return result;
+    }
+
 
     /// <summary>
     /// 尝试将一个字符串转成【double】，如果失败就返回默认值
@@ -554,6 +572,25 @@ public static class StringExtensions
 
         double result;
         if( double.TryParse(text, out result) == false )
+            return defaultValue;
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// 尝试将一个字符串转成【decimal】，如果失败就返回默认值
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns></returns>
+    public static decimal TryToDecimal(this string text, decimal defaultValue = 0m)
+    {
+        if( string.IsNullOrEmpty(text) )
+            return defaultValue;
+
+        decimal result;
+        if( decimal.TryParse(text, out result) == false )
             return defaultValue;
 
         return result;

@@ -5,13 +5,7 @@
 /// </summary>
 public static class HttpContextUtils
 {
-    public static void LogExecutTime(HttpContext httpContext)
-    {
-        httpContext.Items["x_ClownFish_Web_Aspnetcore_startTime"] = DateTime.Now;
-        httpContext.Response.OnStarting(LogExecutTime0, httpContext);
-    }
-
-    private static Task LogExecutTime0(object state)
+    internal static Task LogExecutTime_cb(object state)
     {
         HttpContext httpContext = (HttpContext)state;
 

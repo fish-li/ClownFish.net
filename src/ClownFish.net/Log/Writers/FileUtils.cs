@@ -47,6 +47,12 @@ internal static class FileUtils
 
         // 检查需要记录的各个数据类型的子目录是否存在。
         foreach( var item in config.Types ) {
+
+            // ClownFish的内置配置会包含 OprLog,InvokeLog 这2个日志数据类型，但有些程序并不一定会使用
+            // 所以就没有必要为它们创建 “空目录”
+            if( item.Writers.IsNullOrEmpty() || item.Writers.Is("NULL") )
+                continue;
+
             string path = rootPath + item.TypeObject.Name;
             if( Directory.Exists(path) == false )
                 Directory.CreateDirectory(path);

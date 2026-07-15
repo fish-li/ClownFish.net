@@ -13,6 +13,8 @@ public class FirstModule
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
+        DateTime startTime = DateTime.Now;
+
         if( IpBlackList.Check(httpContext, true) ) {
             int waitMs = Random.Shared.Next(ClownFishWebOptions.BlockIpMinWaitMs, ClownFishWebOptions.BlockIpMaxWaitMs);
             await Task.Delay(waitMs);
@@ -20,7 +22,8 @@ public class FirstModule
         }
 
         if( ClownFishWebOptions.LogExecutTime ) {
-            HttpContextUtils.LogExecutTime(httpContext);
+            httpContext.Items["x_ClownFish_Web_Aspnetcore_startTime"] = startTime;
+            httpContext.Response.OnStarting(HttpContextUtils.LogExecutTime_cb, httpContext);
         }
 
         if( ClownFishWebOptions.DeleteUselessHeaders ) {
@@ -35,14 +38,17 @@ public class FirstModule
 
         NHttpContext httpContextNetCore = new HttpContextNetCore(httpContext);
 
-        if( ClownFishWebOptions.DebugHttpLine )
-            Console2.Info(httpContextNetCore.Request.HttpMethod + " " + httpContextNetCore.Request.FullUrl);
+        try {
+            // 设置一些上下文及日志作用域
+            using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore) ) {
 
-        // 设置一些上下文及日志作用域
-        using( HttpPipelineContext pipelineContext = HttpPipelineContext.Start(httpContextNetCore) ) {
-
-            // 进入 HTTP 管道的执行过程
-            await Execute(pipelineContext, httpContext);
+                // 进入 HTTP 管道的执行过程
+                await Execute(pipelineContext, httpContext);
+            }
+        }
+        finally {
+            if( ClownFishWebOptions.DebugHttpLine )
+                Console2.Info($"{(DateTime.Now - startTime)} {httpContextNetCore.Request.HttpMethod} {httpContextNetCore.Request.FullUrl}");
         }
     }
 

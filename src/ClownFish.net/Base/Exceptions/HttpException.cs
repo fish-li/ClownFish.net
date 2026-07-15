@@ -13,7 +13,7 @@ public sealed class HttpException : Exception, IErrorCode
     int IErrorCode.GetErrorCode() => this.StatusCode;
 
     /// <summary>
-    /// 
+    /// 构造方法
     /// </summary>
     /// <param name="statusCode"></param>
     /// <param name="message"></param>

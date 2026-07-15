@@ -11,6 +11,10 @@ internal abstract class FileWriter : ILogWriter
     {
         // 初始化目录
         FileUtils.InitDirectory(config);
+
+        // 清理老旧的文件，开发测试阶段，程序反复启动，每个日志文件都比较小，所以也要应及时清理过多的文件
+        string xx = GetFilePath(dataType, DateTime.Now);        
+        DeleteOldFile(Path.GetDirectoryName(xx), this.FileExtName);
     }
 
 
@@ -43,7 +47,7 @@ internal abstract class FileWriter : ILogWriter
     /// <param name="type">数据类型</param>
     /// <param name="time"></param>
     /// <returns></returns>
-    private string GetFilePath(Type type, DateTime time)
+    internal string GetFilePath(Type type, DateTime time)
     {
         string datatype = type.Name;
         string timeString = time.ToString("yyyyMMdd_HHmmss");
@@ -128,7 +132,7 @@ internal abstract class FileWriter : ILogWriter
         if( FileHelper.AppendAllText(_currentFile, text, addNewLine, FileUtils.MaxLength) == false ) {
 
             // 清理老旧的文件
-            DeleteOldFile();
+            DeleteOldFile(Path.GetDirectoryName(_currentFile), this.FileExtName);
 
             // _currentFile 文件已经超过最大长度了，不能再继续追加了，所以必须生成一个新的文件名
             _currentFile = GetFilePath(typeof(T), DateTime.Now);
@@ -142,7 +146,7 @@ internal abstract class FileWriter : ILogWriter
         }
     }
 
-    private int DeleteOldFile()
+    public static int DeleteOldFile(string path, string extName)
     {
         // 每次写入至少存在一个文件，如果只保留一个文件就没有意义了
         if( FileUtils.MaxCount < 2 )
@@ -153,8 +157,8 @@ internal abstract class FileWriter : ILogWriter
         int maxCount = FileUtils.MaxCount - 1;
 
         // 先获取目录中的文件
-        string path = Path.GetDirectoryName(_currentFile);
-        var files = (from f in Directory.GetFiles(path, "*" + this.FileExtName, SearchOption.TopDirectoryOnly)
+        //string path = Path.GetDirectoryName(_currentFile);
+        var files = (from f in Directory.GetFiles(path, "*" + extName, SearchOption.TopDirectoryOnly)
                      let f2 = new FileInfo(f)
                      orderby f2.LastWriteTime descending
                      select f2).ToList();

@@ -13,7 +13,7 @@ public sealed class DuplicateInsertException : Exception, IErrorCode
     int IErrorCode.GetErrorCode() => this.StatusCode;
 
     /// <summary>
-    /// 
+    /// 构造方法
     /// </summary>
     /// <param name="message">解释异常原因的错误信息。</param>
     /// <param name="innerException"></param>

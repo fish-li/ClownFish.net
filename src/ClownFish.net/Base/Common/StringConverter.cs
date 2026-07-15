@@ -98,11 +98,14 @@ public static class StringConverter
         if( conversionType == typeof(bool) )
             return value == "1" || value.Is("true");
 
-        if( conversionType.IsPrimitive || conversionType == typeof(DateTime) || conversionType == typeof(decimal) ) {
+        if( conversionType.IsPrimitive || conversionType == typeof(decimal) ) {
             // 为了简单，直接调用 .net framework中的方法。
             // 如果转换失败，将会抛出异常。
             return Convert.ChangeType(value, conversionType);
         }
+
+        if( conversionType == typeof(DateTime) )
+            return value.ToDateTime();
 
         if( conversionType == typeof(Guid) )
             return new Guid(value);

@@ -82,8 +82,8 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
     /// </summary>
     public override string Message {
         get {
-            return (_message ?? this.GetBaseException().Message) 
-                    + $" [StatusCode={this.StatusCode}]"
+            return (_message ?? this.GetBaseException().Message)
+                    + $"\r\n[StatusCode={this.StatusCode}]"
                     + (string.IsNullOrEmpty(Url) ? string.Empty : ("\r\n=)本次调用的目标地址：" + this.Url));
         }
     }
@@ -141,11 +141,15 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
 
             if( _message.IsNullOrEmpty() ) {
 
-                // 尝试从网页头<title>中获取消息描述
                 string contentType = this.Result.Headers[HttpHeaders.Response.ContentType];
+                if( contentType != null ) {
 
-                if( contentType != null && contentType.StartsWith("text/html", StringComparison.Ordinal) ) {
-                    _message = GetHtmlTitle(this.Result.Result);
+                    if( contentType.StartsWith0("text/plain") ) {  // 服务端输出就是简单的错误描述信息，直接使用即可
+                        _message = this.Result.Result;
+                    }
+                    else if( contentType.StartsWith0("text/html") ) {  // 尝试从网页头<title>中获取消息描述
+                        _message = GetHtmlTitle(this.Result.Result);
+                    }
                 }
             }
         }

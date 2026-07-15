@@ -113,7 +113,7 @@ public class FileWriterTest
         // 先确保产生足够多的文件
         for( int i = fileCount; i > 0; i-- ) {
 
-            string outFilePath = (string)s_method.Invoke(writer, new object[] { typeof(OprLog), DateTime.Now.AddDays(-1 * i) });
+            string outFilePath = writer.GetFilePath(typeof(OprLog), DateTime.Now.AddDays(-1 * i));
             s_field.SetValue(writer, outFilePath);
 
             log.OprId = i.ToString() + "_" + Guid.NewGuid().ToString("N");
@@ -128,7 +128,6 @@ public class FileWriterTest
     }
 
     private static readonly FieldInfo s_field = typeof(FileWriter).GetField("_currentFile", BindingFlags.Instance | BindingFlags.NonPublic);
-    private static readonly MethodInfo s_method = typeof(FileWriter).GetMethod("GetFilePath", BindingFlags.Instance | BindingFlags.NonPublic);
 
 
     [TestMethod]
@@ -137,7 +136,7 @@ public class FileWriterTest
         OprLog log = CreateOprLog();
         XFileWriter writer = new XFileWriter();
 
-        string newFilePath = (string)s_method.Invoke(writer, new object[] { typeof(OprLog), DateTime.Now });
+        string newFilePath = writer.GetFilePath(typeof(OprLog), DateTime.Now);
         string savePath = Path.GetDirectoryName(newFilePath);
 
         // 创建足够多的日志文件
@@ -178,7 +177,7 @@ public class FileWriterTest
         OprLog log = CreateOprLog();
         XFileWriter writer = new XFileWriter();
 
-        string newFilePath = (string)s_method.Invoke(writer, new object[] { typeof(OprLog), DateTime.Now });
+        string newFilePath = writer.GetFilePath(typeof(OprLog), DateTime.Now);
         string savePath = Path.GetDirectoryName(newFilePath);
 
         // 创建足够多的日志文件
@@ -187,8 +186,7 @@ public class FileWriterTest
 
 
         // 执行清理动作
-        MethodInfo method = typeof(FileWriter).GetMethod("DeleteOldFile", BindingFlags.Instance | BindingFlags.NonPublic);
-        int result = (int)method.Invoke(writer, null);
+        int result = FileWriter.DeleteOldFile(savePath, Path.GetExtension(newFilePath));
 
         Assert.AreEqual(maxFileCount - FileUtils.MaxCount + 1, result);
     }

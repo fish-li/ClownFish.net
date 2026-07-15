@@ -282,11 +282,23 @@ public class FormDataCollectionTest
             a = 11,
             b = "abc",
             c = (string)null,
-            d = new string[] { "22", null, "33" }
+            d = new string[] { "22", null, "33" },
+            b1 = true,
+            b2 = false,
+            dt = new DateTime(2026, 7, 12, 1, 2, 3, 123),
+            ts = new TimeSpan(0, 3, 5, 6, 123),
+            dd = 22.3695d,
+            ff = 2.271857f,
+            dc = 715.23m,
+            gg = new Guid("3f064bc8-f1a1-4d19-bb60-cbd4a50ba71d"),
+            bb = "中华文明".GetBytes()
         };
 
         string text = FormDataCollection.GetQueryString(data);
-        Assert.AreEqual("a=11&b=abc&c=&d=22&d=&d=33", text);
+        Assert.AreEqual("a=11&b=abc&c=&d=22&d=&d=33&b1=true&b2=false" 
+                      + "&dt=2026-07-12+01%3a02%3a03.1230000&ts=03%3a05%3a06.1230000" 
+                      + "&dd=22.369500&ff=2.271857&dc=715.230000&gg=3f064bc8-f1a1-4d19-bb60-cbd4a50ba71d" 
+                      + "&bb=5Lit5Y2O5paH5piO", text);
 
         FormDataCollection form1 = FormDataCollection.Create(data);
         FormDataCollection form2 = FormDataCollection.Create(form1);
