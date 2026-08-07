@@ -368,8 +368,38 @@ namespace ClownFish.UnitTest.Base.Extensions
             string s1 = new string('x', 125);
             Assert.AreEqual("xxxxx...125", s1.SubstringN(5));
 
+            Assert.AreEqual(s1, s1.SubstringN(0));
             Assert.AreEqual(s1, s1.SubstringN(125));
             Assert.AreEqual(s1, s1.SubstringN(135));
+
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.SubstringN(0)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.SubstringN(125)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.SubstringN(135)));
+
+            Assert.IsTrue(object.ReferenceEquals(string.Empty, string.Empty.SubstringN(10)));
+
+            string nullstring = null;
+            Assert.IsTrue(object.ReferenceEquals(nullstring, nullstring.SubstringN(10)));
+        }
+
+        [TestMethod]
+        public void Test_LeftN()
+        {
+            string s1 = new string('x', 125);
+            Assert.AreEqual("xxxxx", s1.LeftN(5));
+
+            Assert.AreEqual(s1, s1.LeftN(0));
+            Assert.AreEqual(s1, s1.LeftN(125));
+            Assert.AreEqual(s1, s1.LeftN(135));
+
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.LeftN(0)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.LeftN(125)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.LeftN(135)));
+
+            Assert.IsTrue(object.ReferenceEquals(string.Empty, string.Empty.LeftN(10)));
+
+            string nullstring = null;
+            Assert.IsTrue(object.ReferenceEquals(nullstring, nullstring.LeftN(10)));
         }
 
         [TestMethod]

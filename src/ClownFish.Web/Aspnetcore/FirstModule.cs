@@ -48,7 +48,7 @@ public class FirstModule
         }
         finally {
             if( ClownFishWebOptions.DebugHttpLine )
-                Console2.Info($"{(DateTime.Now - startTime)} {httpContextNetCore.Request.HttpMethod} {httpContextNetCore.Request.FullUrl}");
+                Console2.Info($"{(DateTime.Now - startTime)} [status={httpContext.Response.StatusCode}] {httpContextNetCore.Request.HttpMethod} {httpContextNetCore.Request.FullUrl.SubstringN(200)}");
         }
     }
 

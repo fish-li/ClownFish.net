@@ -500,6 +500,24 @@ public static class StringExtensions
 #endif
     }
 
+
+    /// <summary>
+    /// 从左边第一个字符开始截取一个字符串。
+    /// 如果字符串长度大于指定长度，则返回截取后的字符串，否则返回原字符串。
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="len"></param>
+    /// <returns></returns>
+    public static string LeftN(this string text, int len)
+    {
+        if( string.IsNullOrEmpty(text) || len <= 0 )
+            return text;
+        if( text.Length <= len )
+            return text;
+
+        return text.Substring(0, len);
+    }
+
     /// <summary>
     /// 尝试将一个字符串转成【整数】，如果失败就返回默认值
     /// </summary>

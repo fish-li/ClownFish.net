@@ -4,8 +4,8 @@
         <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
         <RootNamespace>ClownFish.ImClients</RootNamespace>
         <AssemblyVersion>10.0.0.0</AssemblyVersion>
-        <Version>10.26.715.1</Version>
-        <FileVersion>10.26.715.1</FileVersion>
+        <Version>10.26.803.1</Version>
+        <FileVersion>10.26.803.1</FileVersion>
         <SatelliteResourceLanguages>xx</SatelliteResourceLanguages>
         <OutputPath>bin</OutputPath>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
