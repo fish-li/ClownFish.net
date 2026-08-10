@@ -518,6 +518,24 @@ public static class StringExtensions
         return text.Substring(0, len);
     }
 
+
+    /// <summary>
+    /// 截取一个字符串的右部分
+    /// 如果字符串长度大于指定长度，则返回截取后的字符串，否则返回原字符串。
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="len"></param>
+    /// <returns></returns>
+    public static string RightN(this string text, int len)
+    {
+        if( string.IsNullOrEmpty(text) || len <= 0 )
+            return text;
+        if( text.Length <= len )
+            return text;
+
+        return text.Substring(text.Length - len);
+    }
+
     /// <summary>
     /// 尝试将一个字符串转成【整数】，如果失败就返回默认值
     /// </summary>

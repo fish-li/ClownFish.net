@@ -209,7 +209,7 @@ namespace ClownFish.UnitTest.Base.Extensions
             Assert.AreEqual("ccc", s3Array[2]);
 
 
-            MyAssert.IsError<ArgumentNullException>(()=> {
+            MyAssert.IsError<ArgumentNullException>(() => {
                 _ = "xx".ToArray();
             });
 
@@ -385,7 +385,9 @@ namespace ClownFish.UnitTest.Base.Extensions
         [TestMethod]
         public void Test_LeftN()
         {
-            string s1 = new string('x', 125);
+            Assert.AreEqual("abcd", "abcd0000000".LeftN(4));
+
+            string s1 = "xxxxx" + new string('0', 120);
             Assert.AreEqual("xxxxx", s1.LeftN(5));
 
             Assert.AreEqual(s1, s1.LeftN(0));
@@ -400,6 +402,29 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             string nullstring = null;
             Assert.IsTrue(object.ReferenceEquals(nullstring, nullstring.LeftN(10)));
+        }
+
+
+        [TestMethod]
+        public void Test_RightN()
+        {
+            Assert.AreEqual("abcd", "0000000abcd".RightN(4));
+
+            string s1 = new string('0', 120) + "xxxxx";
+            Assert.AreEqual("xxxxx", s1.RightN(5));
+
+            Assert.AreEqual(s1, s1.RightN(0));
+            Assert.AreEqual(s1, s1.RightN(125));
+            Assert.AreEqual(s1, s1.RightN(135));
+
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.RightN(0)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.RightN(125)));
+            Assert.IsTrue(object.ReferenceEquals(s1, s1.RightN(135)));
+
+            Assert.IsTrue(object.ReferenceEquals(string.Empty, string.Empty.RightN(10)));
+
+            string nullstring = null;
+            Assert.IsTrue(object.ReferenceEquals(nullstring, nullstring.RightN(10)));
         }
 
         [TestMethod]
@@ -590,7 +615,7 @@ namespace ClownFish.UnitTest.Base.Extensions
         public void Test_error()
         {
             MyAssert.IsError<ArgumentNullException>(() => {
-                _= StringBuilderExtensions.AppendLineRN(null, "filepath");
+                _ = StringBuilderExtensions.AppendLineRN(null, "filepath");
             });
 
         }
@@ -648,7 +673,7 @@ namespace ClownFish.UnitTest.Base.Extensions
             MyAssert.IsError<ArgumentOutOfRangeException>(() => {
                 names3.CheckNames();
             });
- 
+
         }
 
 
@@ -686,7 +711,7 @@ namespace ClownFish.UnitTest.Base.Extensions
 
             MyAssert.IsError<ArgumentNullException>(() => {
                 char[] separator = null;
-                _=  "1;2;3".SplitToHashSet(separator);
+                _ = "1;2;3".SplitToHashSet(separator);
             });
         }
 

@@ -59,6 +59,27 @@ public static class EnumerableExtensions
     }
 
 
+    /// <summary>
+    /// 将一个集合添加到 HashSet
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="set"></param>
+    /// <param name="collection"></param>
+    /// <returns></returns>
+    public static HashSet<T> AddRange2<T>(this HashSet<T> set, IEnumerable<T> collection)
+    {
+        if( set == null )
+            throw new ArgumentNullException(nameof(set));
+
+        if( collection == null )
+            return set;
+
+        foreach( var item in collection )
+            set.Add(item);
+
+        return set;
+    }
+
 
     /// <summary>
     /// 将一个大列表再拆分成多个子列表
