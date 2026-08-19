@@ -146,7 +146,17 @@ internal static class MiniWebApiUtil
         httpContext.PipelineContext.SetAction(action2, action2.IsLoginAction);
     }
 
-
+    // 为了保证 ReflectionUtils.CallMethod 能正常工作，注册一些Task的封闭类型，可做为Action的返回值类型
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<int>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<long>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<string>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<object>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<DataTable>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<DataTableResult>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<NbErrorResult>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<NbResponseResult>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<NbTextResult>))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<NdjsonResult>))]
     [UnconditionalSuppressMessage("Trimming", "IL2026: CallMethod")]
     [UnconditionalSuppressMessage("Trimming", "IL2077: CallMethod")]
     [UnconditionalSuppressMessage("Trimming", "IL2072: Activator.CreateInstance")]
@@ -181,6 +191,8 @@ internal static class MiniWebApiUtil
                 handler.Init(httpContext);
             }
 
+            // 下面这个方法在 AOT 发布时可能会遇到问题，主要是因为通过反射读取 Task<T>.Result 属性导致的
+            // 所以在需要AOT编译的项目，尽量多使用 Task<object> 来做为返回值
             result = await ReflectionUtils.CallMethod(actionInfo.Controller, actionInfo.MethodInfo, args);
         }
         finally {
@@ -219,7 +231,7 @@ internal static class MiniWebApiUtil
         List<object> list = new List<object>();
 
         foreach( var p in ps ) {
-            
+
             if( GetOneCallArgs(p, httpContext, list, out string err2) == false ) {
                 error = err2;
                 return null;     // ############################### 只要发现一个错误，就结束整个方法
@@ -244,7 +256,7 @@ internal static class MiniWebApiUtil
             return true;
         }
 
-        
+
         if( p.ParameterType == typeof(string) ) {
 
             // 一个特殊的名称，**仅用于** 读取“请求体”         // 查询字符串也要使用这个参数名 ？？不支持！

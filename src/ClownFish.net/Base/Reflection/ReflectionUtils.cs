@@ -86,6 +86,8 @@ public static class ReflectionUtils
 
                 // 从 Task<T> 中获取返回值
                 PropertyInfo property = task.GetType().GetProperty("Result", BindingFlags.Instance | BindingFlags.Public);
+                // 在AOT发布后，由于泛型的原因，Task<T> 的 Result 属性可能会丢失~~~~，此时 property is null
+                // 除非采用注册所有使用过的类型，例如：[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Task<object>))]
                 result = property.FastGetValue(task);
             }
             else {

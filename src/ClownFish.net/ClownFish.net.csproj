@@ -13,8 +13,8 @@
 
 	<PropertyGroup>
 		<AssemblyVersion>10.0.0.0</AssemblyVersion>
-		<Version>10.26.810.1</Version>
-		<FileVersion>10.26.810.1</FileVersion>
+		<Version>10.26.812.1</Version>
+		<FileVersion>10.26.812.1</FileVersion>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<Authors>Fish Li</Authors>

@@ -1,6 +1,12 @@
 ﻿namespace ClownFish.Data;
 
 /// <summary>
+/// 表示一个类型可以为 dbContext.CPQuery.Create(sql, args) 提供参数(第2个)，
+/// 但是要忽略 [DbColumn(Ignore = true  or  ReadOnly = true)] 标记的属性
+/// </summary>
+public interface IDataArgsIgnoreReadOnly { }
+
+/// <summary>
 /// 安全简单的拼接SQL的工具类
 /// </summary>
 public sealed class CPQuery : BaseCommand
@@ -38,7 +44,7 @@ public sealed class CPQuery : BaseCommand
         }
     }
 
- 
+
 
     #endregion
 
@@ -58,12 +64,22 @@ public sealed class CPQuery : BaseCommand
     {
         _initSql = parameterizedSQL ?? string.Empty;
 
-
         if( argsObject == null )
             return;
 
+        bool flag = argsObject is IDataArgsIgnoreReadOnly;
+
         PropertyInfo[] properties = argsObject.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
         foreach( PropertyInfo property in properties ) {
+
+            // 有些场景下，argsObject 是一个大实体，但是需要执行的SQL只需要部分属性即可，
+            // 更关键的是，属性对应的string类型，可以“展开”成一个对象，
+            if( flag ) {
+                DbColumnAttribute attr = property.GetCustomAttribute<DbColumnAttribute>();
+                if( attr != null && (attr.Ignore || attr.ReadOnly) ) {
+                    continue;
+                }
+            }
             object value = property.FastGetValue(argsObject);
             SetParameter(property.Name, value);
         }
@@ -370,7 +386,7 @@ public sealed class CPQuery : BaseCommand
     internal static void ArrayToString(ICollection collection, StringBuilder sb)
     {
         // int[], List<int> 就直接生成到SQL语句中
-        if( collection is IEnumerable<int> or IEnumerable<long>) {
+        if( collection is IEnumerable<int> or IEnumerable<long> ) {
 
             foreach( object obj in collection ) {
                 if( sb.Length > 0 )
@@ -379,7 +395,7 @@ public sealed class CPQuery : BaseCommand
             }
         }
         // Guid[], List<Guid> 就直接生成到SQL语句中
-        else if( collection is IEnumerable<Guid>) {
+        else if( collection is IEnumerable<Guid> ) {
 
             foreach( object obj in collection ) {
                 if( sb.Length > 0 )

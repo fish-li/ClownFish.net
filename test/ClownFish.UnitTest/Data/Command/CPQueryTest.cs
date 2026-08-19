@@ -963,4 +963,112 @@ on a.object_id = b.object_id;
         }
     }
 
+
+    [TestMethod]
+    public void Test_IDataArgsIgnoreReadOnly()
+    {
+        using( DbContext db = DbContext.Create("mysql") ) {
+            string sql = "SELECT * from products WHERE id = @xx";
+            var args = new DataArgs1 {
+                Id = 2,
+                Name = "aaaaaa",
+                Value = "bbbbbb",
+                Number1 = 3
+            };
+            ;
+            CPQuery query = db.CPQuery.Create(sql, args);
+            DbCommand command = query.Command;
+            Assert.AreEqual(2, command.Parameters.Count);
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Id"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Name"));
+            Assert.IsFalse(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Value"));
+            Assert.IsFalse(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Number1"));
+        }
+
+
+        using( DbContext db = DbContext.Create("mysql") ) {
+            string sql = "SELECT * from products WHERE id = @xx";
+            var args = new DataArgs2 {
+                Id = 2,
+                Name = "aaaaaa",
+                Value = "bbbbbb",
+                Number1 = 3
+            };
+            ;
+            CPQuery query = db.CPQuery.Create(sql, args);
+            DbCommand command = query.Command;
+            Assert.AreEqual(4, command.Parameters.Count);
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Id"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Name"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Value"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Number1"));
+        }
+
+        using( DbContext db = DbContext.Create("mysql") ) {
+            string sql = "SELECT * from products WHERE id = @xx";
+            var args = new DataArgs3 {
+                Id = 2,
+                Name = "aaaaaa",
+                Value = "bbbbbb",
+                Number1 = 3
+            };
+            ;
+            CPQuery query = db.CPQuery.Create(sql, args);
+            DbCommand command = query.Command;
+            Assert.AreEqual(4, command.Parameters.Count);
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Id"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Name"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Value"));
+            Assert.IsTrue(command.Parameters.Cast<DbParameter>().Any(x => x.ParameterName == "@Number1"));
+        }
+    }
+
+
+    
+
+}
+
+
+
+public class DataArgs1 : Entity, IDataArgsIgnoreReadOnly   // 加了一个标记接口
+{
+    public int Id { get; set; }
+
+    [DbColumn(Alias = "name1")]
+    public string Name { get; set; }
+
+    [DbColumn(ReadOnly = true)]
+    public string Value { get; set; }
+
+    [DbColumn(Ignore = true)]
+    public int Number1 { get; set; }
+}
+
+public class DataArgs2 : Entity
+{
+    public int Id { get; set; }
+
+    [DbColumn(Alias = "name1")]
+    public string Name { get; set; }
+
+    [DbColumn(ReadOnly = true)]
+    public string Value { get; set; }
+
+    [DbColumn(Ignore = true)]
+    public int Number1 { get; set; }
+}
+
+
+public class DataArgs3 : Entity, IDataArgsIgnoreReadOnly
+{
+    public int Id { get; set; }
+
+    [DbColumn(Alias = "name1")]
+    public string Name { get; set; }
+
+    //[DbColumn(ReadOnly = true)]
+    public string Value { get; set; }
+
+    //[DbColumn(Ignore = true)]
+    public int Number1 { get; set; }
 }
