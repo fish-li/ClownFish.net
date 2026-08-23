@@ -238,8 +238,8 @@ public static class X509Finder
 
 
     /// <summary>
-    /// 从配置文件中加载一个包含私钥的证书文件，
-    /// 配置文件格式：base64(证书加载密码)\nbase64(证书文件二进制内容)
+    /// 从配置文件中加载一个包含私钥的pfx证书文件，
+    /// 配置文件格式：base64(证书加载密码)\nbase64(pfx证书文件二进制内容)
     /// </summary>
     /// <param name="fileBdoy">配置文件内容</param>
     /// <returns></returns>

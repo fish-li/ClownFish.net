@@ -88,8 +88,10 @@ public sealed class RemoteWebException : System.Exception, ILoggingObject, IToAl
         }
     }
 
-
-    internal string ServerMessage => _message;
+    /// <summary>
+    /// 服务端最原始的错误消息。 有可能为空。
+    /// </summary>
+    public string ServerMessage => _message;
 
     /// <summary>
     /// 构造函数
