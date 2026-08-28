@@ -1,5 +1,6 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ClownFish.Web.Aspnetcore;
 
@@ -124,13 +125,21 @@ public class WebApplicationStartup
 
     public virtual WebApplicationBuilder CreateWebApplicationBuilder()
     {
-        // asp.net core 6: WebApplication.CreateBuilder()
-
-        // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/native-aot?view=aspnetcore-10.0#createslimbuilder-vs-createbuilder
-        return WebApplication.CreateSlimBuilder();
-
-        // 还可以调用 WebApplication.CreateEmptyBuilder 创建一个更精简的构建器
-        // https://learn.microsoft.com/zh-cn/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-10.0#new-createemptybuilder-method
+        if( this.EnableMiniWebApi ) {
+            // https://learn.microsoft.com/zh-cn/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-10.0#new-createemptybuilder-method
+            WebApplicationOptions opt = new WebApplicationOptions {
+                ApplicationName = EnvUtils.GetAppName(),
+                EnvironmentName = EnvUtils.GetRunEnv()
+            };
+            var builder = WebApplication.CreateEmptyBuilder(opt);
+            builder.WebHost.UseKestrelCore();
+            return builder;
+        }
+        else {
+            // asp.net core 6: WebApplication.CreateBuilder()
+            // https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/native-aot?view=aspnetcore-10.0#compare-createslimbuilder-and-createbuilder
+            return WebApplication.CreateSlimBuilder();
+        }
     }
 
 
