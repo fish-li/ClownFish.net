@@ -298,8 +298,8 @@ public static class StringExtensions
 
 
     /// <summary>
-    /// 将一个字符串按分隔符拆分成 ImmutableHashSet&lt;string&gt;  ，
-    /// 如果字符串变量 IsNullOrEmpty，则返回 ImmutableHashSet&lt;string&gt;.Empty
+    /// 将一个字符串按分隔符拆分成 HashSet&lt;string&gt;  ，
+    /// 如果字符串变量 IsNullOrEmpty，则返回 HashSet&lt;string&gt;.Empty
     /// </summary>
     /// <param name="str"></param>
     /// <param name="separator"></param>
@@ -328,8 +328,8 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// 将一个字符串按分隔符拆分成 ImmutableHashSet&lt;string&gt;  ，
-    /// 如果字符串变量 IsNullOrEmpty，则返回 ImmutableHashSet&lt;string&gt;.Empty
+    /// 将一个字符串按分隔符拆分成 HashSet&lt;string&gt;  ，
+    /// 如果字符串变量 IsNullOrEmpty，则返回 HashSet&lt;string&gt;.Empty
     /// </summary>
     /// <param name="str"></param>
     /// <returns></returns>

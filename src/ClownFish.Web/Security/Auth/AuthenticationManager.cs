@@ -11,15 +11,15 @@ public static class AuthenticationManager
 
     public static bool Inited => s_jwtImpl != null;
 
-    public static void Init(JwtProvider provider, ICheckRights checkRights)
+    public static void Init(JwtProvider provider, ICheckRights checkRightImpl)
     {
         if( provider == null )
             throw new ArgumentNullException(nameof(provider));
 
         s_jwtImpl = provider;
 
-        if( checkRights != null ) {
-            AuthorizeAttribute.SetCheckRightsImpl(checkRights);
+        if( checkRightImpl != null ) {
+            AuthorizeAttribute.SetCheckRightsImpl(checkRightImpl);
         }
 
         DebugReport.RegisterOptionsObject(AuthenticationManager.GetJwtOptions());

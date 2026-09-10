@@ -106,8 +106,6 @@ public class WebApplicationStartup
 
     internal void ConfigAuth0()
     {
-        ClownFishWebInit.InitOptions();
-
         if( this.AutoInitAuth )
             ClownFishWebInit.InitAuth();
         else

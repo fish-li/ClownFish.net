@@ -5,17 +5,32 @@ namespace ClownFish.Web;
 
 public static class ClownFishWebInit
 {
+    private static bool s_inited = false;
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(AuthOptions))]
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ClownFishWebOptions))]
     public static void InitOptions()
     {
+        if( s_inited )
+            return;
+
         AuthOptions.Init();
         DebugReport.RegisterOptionsType(typeof(ClownFish.Web.Security.Auth.AuthOptions));
         DebugReport.RegisterOptionsType(typeof(ClownFish.Web.ClownFishWebOptions));
+        s_inited = true;
+    }
+
+    
+    public static void InitAuth(JwtProvider provider = null , ICheckRights checkRightImpl = null)
+    {
+        InitOptions();
+        JwtProvider provider2 = provider ?? GetJwtProvider();
+        AuthenticationManager.Init(provider2, checkRightImpl);
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(JwtOptions))]
-    public static void InitAuth()
+    public static JwtProvider GetJwtProvider()
     {
         string hashName = Settings.GetSetting("ClownFish_JwtToken_AlgorithmName");
         if( hashName.IsNullOrEmpty() ) {
@@ -49,8 +64,7 @@ public static class ClownFishWebInit
             jwtOptions.X509Cert = GetAuthX509Cert();
         }
 
-        JwtProvider provider = new JwtProvider(jwtOptions);
-        AuthenticationManager.Init(provider, null);
+        return new JwtProvider(jwtOptions);
     }
 
     public static X509Certificate2 GetAuthX509Cert()  // nebula也要调用这个方法
