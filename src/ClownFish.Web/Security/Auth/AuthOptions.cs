@@ -18,6 +18,11 @@ public static class AuthOptions
     /// </summary>
     public static bool JwtTokenExpirationRenewal { get; set; } = LocalSettings.GetBool("ClownFish_JwtToken_ExpirationRenewal", 1);
 
+
+    public static int If401WaitSeconds { get; set; } = LocalSettings.GetInt("ClownFish_If401_WaitSeconds", 0);
+
+    public static int If403WaitSeconds { get; set; } = LocalSettings.GetInt("ClownFish_If403_WaitSeconds", 0);
+
     internal static void Init()
     {
         // 不需要实际代码，用于触发 cctor

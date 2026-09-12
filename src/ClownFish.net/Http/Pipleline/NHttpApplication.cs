@@ -112,12 +112,15 @@ public sealed class NHttpApplication
     /// BeginRequest
     /// </summary>
     /// <param name="httpContext"></param>
-    public void BeginRequest(NHttpContext httpContext)
+    public async Task BeginRequest(NHttpContext httpContext)
     {
         httpContext.LogFxEvent(new NameTime(nameof(BeginRequest)));
 
         foreach( NHttpModule module in _modules ) {
-            module.BeginRequest(httpContext);
+            if( module is IAsyncBeginModule asyncModule )
+                await asyncModule.BeginRequestAsync(httpContext);
+            else
+                module.BeginRequest(httpContext);
         }
     }
 
@@ -153,7 +156,7 @@ public sealed class NHttpApplication
     /// AuthenticateRequest
     /// </summary>
     /// <param name="httpContext"></param>
-    public void AuthenticateRequest(NHttpContext httpContext)
+    public async Task AuthenticateRequest(NHttpContext httpContext)
     {
         if( httpContext.SkipAuthorization )
             return;
@@ -161,7 +164,10 @@ public sealed class NHttpApplication
         httpContext.LogFxEvent(new NameTime(nameof(AuthenticateRequest)));
 
         foreach( NHttpModule module in _modules ) {
-            module.AuthenticateRequest(httpContext);
+            if( module is IAsyncAuthenticateModule asyncModule )
+                await asyncModule.AuthenticateRequestAsync(httpContext);
+            else
+                module.AuthenticateRequest(httpContext);
         }
     }
 
@@ -185,7 +191,7 @@ public sealed class NHttpApplication
     /// AuthorizeRequest
     /// </summary>
     /// <param name="httpContext"></param>
-    public void AuthorizeRequest(NHttpContext httpContext)
+    public async Task AuthorizeRequest(NHttpContext httpContext)
     {
         if( httpContext.SkipAuthorization )
             return;
@@ -193,7 +199,10 @@ public sealed class NHttpApplication
         httpContext.LogFxEvent(new NameTime(nameof(AuthorizeRequest)));
 
         foreach( NHttpModule module in _modules ) {
-            module.AuthorizeRequest(httpContext);
+            if( module is IAsyncAuthorizeModule asyncModule )
+                await asyncModule.AuthorizeRequestAsync(httpContext);
+            else
+                module.AuthorizeRequest(httpContext);
         }
     }
 

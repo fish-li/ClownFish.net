@@ -1,14 +1,13 @@
 ﻿namespace ClownFish.Web.Modules;
 
-public sealed class AuthorizeModule : NHttpModule
+public sealed class AuthorizeModule : NHttpModule, IAsyncAuthorizeModule
 {
     public override int Order => -10;
 
-    public override void AuthorizeRequest(NHttpContext httpContext)
+    public async Task AuthorizeRequestAsync(NHttpContext httpContext)
     {
-        if( AuthorizeCheck(httpContext) == false )
+        if( await AuthorizeCheck(httpContext) == false )
             return;
-
 
 
         // TOKEN自动续期处理
@@ -28,7 +27,7 @@ public sealed class AuthorizeModule : NHttpModule
     }
 
 
-    internal static bool AuthorizeCheck(NHttpContext httpContext, IWebApiActionInfo actionInfo = null)
+    internal static async Task<bool> AuthorizeCheck(NHttpContext httpContext, IWebApiActionInfo actionInfo = null)
     {
         actionInfo ??= httpContext.PipelineContext.Action;
 
@@ -46,6 +45,12 @@ public sealed class AuthorizeModule : NHttpModule
 
                 // 当前用户没有登录
                 if( httpContext.IsAuthenticated == false ) {
+
+                    if( attribute.If401WaitSeconds > 0 )
+                        await Task.Delay(attribute.If401WaitSeconds * 1000);
+                    else if( AuthOptions.If401WaitSeconds > 0 )
+                        await Task.Delay(AuthOptions.If401WaitSeconds * 1000);
+
                     httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "Unauthorized");
                     httpContext.HttpReply(401, "Please login.");
                     httpContext.Response.End();
@@ -54,6 +59,12 @@ public sealed class AuthorizeModule : NHttpModule
 
                 // 当前用户没有相应的访问权限，禁止访问
                 if( attribute.AuthenticateRequest(httpContext) == false ) {
+
+                    if( attribute.If403WaitSeconds > 0 )
+                        await Task.Delay(attribute.If403WaitSeconds * 1000);
+                    else if( AuthOptions.If403WaitSeconds > 0 )
+                        await Task.Delay(AuthOptions.If403WaitSeconds * 1000);
+
                     httpContext.Response.SetHeader(HttpHeaders.XResponse.ErrorCode, "Forbidden");
                     httpContext.HttpReply(403, "Authorize validate failed.");
                     httpContext.Response.End();

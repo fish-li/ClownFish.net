@@ -33,7 +33,7 @@ internal static class ActionParameterResolver
     private static object GetParameterValue(ParameterInfo p, NHttpRequest requst, bool onlyOne)
     {
         // 参数的第一种取值方式：通过[FromBody]指定，反序列化请求流
-        FromBodyAttribute attr = p.GetMyAttribute<FromBodyAttribute>();
+        FromBodyAttribute attr = p.GetCustomAttribute<FromBodyAttribute>(false);
         if( attr != null ) {
             return FromBodyDeserializeObject(p, requst, true);
         }

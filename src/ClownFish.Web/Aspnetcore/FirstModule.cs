@@ -70,7 +70,7 @@ public class FirstModule
                 app.EnableCors(httpContextNetCore, origin);
 
             app.InitResponse(httpContextNetCore);
-            app.BeginRequest(httpContextNetCore);
+            await app.BeginRequest(httpContextNetCore);
 
             // 允许 body 多次读取
             TrySetRequestBodyBuffering(httpContextNetCore);
@@ -78,7 +78,7 @@ public class FirstModule
             isHandled = await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
             if( isHandled == false ) {
 
-                app.AuthenticateRequest(httpContextNetCore);
+                await app.AuthenticateRequest(httpContextNetCore);
                 app.PostAuthenticateRequest(httpContextNetCore);
                 app.ResolveRequestCache(httpContextNetCore);
                 app.MapRequestHandler(httpContextNetCore);

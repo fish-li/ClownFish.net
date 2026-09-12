@@ -59,6 +59,11 @@ public class AuthorizeAttribute : Attribute
         set => _userInfoType = value;
     }
 
+
+    public int If401WaitSeconds { get; set; } = 0;
+
+    public int If403WaitSeconds { get; set; } = 0;
+
     /// <summary>
     /// 执行授权检查
     /// </summary>
@@ -137,9 +142,6 @@ public class AuthorizeAttribute : Attribute
 
     internal static void SetCheckRightsImpl(ICheckRights impl)
     {
-        if( impl == null)
-            throw new ArgumentNullException(nameof(impl));
-
         s_checkRightsImpl = impl;
     }
 }

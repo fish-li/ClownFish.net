@@ -26,7 +26,7 @@ internal sealed class MiniWebApiModule : FirstModule
                 app.EnableCors(httpContextNetCore, origin);
 
             app.InitResponse(httpContextNetCore);
-            app.BeginRequest(httpContextNetCore);
+            await app.BeginRequest(httpContextNetCore);
 
             // 允许 body 多次读取
             TrySetRequestBodyBuffering(httpContextNetCore);
@@ -34,7 +34,7 @@ internal sealed class MiniWebApiModule : FirstModule
             isHandled = await app.TryExecuteHttpHandlerAsync(httpContextNetCore);
             if( isHandled == false ) {
 
-                app.AuthenticateRequest(httpContextNetCore);
+                await app.AuthenticateRequest(httpContextNetCore);
                 app.PostAuthenticateRequest(httpContextNetCore);
 
                 app.ResolveRequestCache(httpContextNetCore);
@@ -51,7 +51,7 @@ internal sealed class MiniWebApiModule : FirstModule
                         MiniWebApiUtil.SetHttpContextAction(httpContextNetCore, action);
 
                         app.PostFindAction(httpContextNetCore);
-                        app.AuthorizeRequest(httpContextNetCore);
+                        await app.AuthorizeRequest(httpContextNetCore);
 
                         app.PreRequestExecute(httpContextNetCore);
                         await MiniWebApiUtil.ExecuteActionAsync(httpContextNetCore);

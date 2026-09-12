@@ -19,12 +19,12 @@ internal sealed class WebHostSpacer
                 // 设置基本的响应头
                 app.EnableCors(httpContext);
                 app.InitResponse(httpContext);
-                app.BeginRequest(httpContext);
+                await app.BeginRequest(httpContext);
 
                 isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
                 if( isHandled == false ) {
 
-                    app.AuthenticateRequest(httpContext);
+                    await app.AuthenticateRequest(httpContext);
                     app.PostAuthenticateRequest(httpContext);
                     app.ResolveRequestCache(httpContext);
 
@@ -38,7 +38,7 @@ internal sealed class WebHostSpacer
 
                             app.PostFindAction(httpContext);
 
-                            app.AuthorizeRequest(httpContext);
+                            await app.AuthorizeRequest(httpContext);
                             app.PreRequestExecute(httpContext);
 
                             await ActionExecutor.Execute(pipelineContext);
@@ -49,14 +49,14 @@ internal sealed class WebHostSpacer
 
                             if( pipelineContext.Action == null ) {
                                 action = ControllerFactory.CreateHandler(Http404Handler.Instance);
-                                pipelineContext.SetAction(action);                                
+                                pipelineContext.SetAction(action);
                             }
 
                             await ActionExecutor.Execute(pipelineContext);
                         }
                     }
                 }
-                
+
                 app.UpdateRequestCache(httpContext);
 
                 await ActionExecutor.SendResultAsync(pipelineContext);

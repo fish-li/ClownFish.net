@@ -64,7 +64,7 @@ public class MockHttpPipeline : IDisposable
         Init();
         NHttpApplication app = this.Application;
 
-        MockHttpContext httpContext = this.HttpContext;            
+        MockHttpContext httpContext = this.HttpContext;
 
         bool isHandled = false;   // 标记当前请求是否已经被httphandler处理
 
@@ -72,12 +72,12 @@ public class MockHttpPipeline : IDisposable
             // 设置基本的响应头
             app.EnableCors(httpContext);
             app.InitResponse(httpContext);
-            app.BeginRequest(httpContext);
+            await app.BeginRequest(httpContext);
 
             isHandled = await app.TryExecuteHttpHandlerAsync(httpContext);
             if( isHandled == false ) {
 
-                app.AuthenticateRequest(httpContext);
+                await app.AuthenticateRequest(httpContext);
                 app.PostAuthenticateRequest(httpContext);
                 app.ResolveRequestCache(httpContext);
 
@@ -88,14 +88,14 @@ public class MockHttpPipeline : IDisposable
                     // mock的实现，不查找 mvc action
                     app.PostFindAction(httpContext);
 
-                    app.AuthorizeRequest(httpContext);
+                    await app.AuthorizeRequest(httpContext);
                     app.PreRequestExecute(httpContext);
 
                     await app.TryExecuteHttpHandlerAsync(httpContext);
                     app.PostRequestExecute(httpContext);
                 }
             }
-            
+
             app.UpdateRequestCache(httpContext);
         }
         catch( AbortRequestException ex ) { /* 这里就是一个标记异常，所以直接吃掉 */
@@ -113,5 +113,5 @@ public class MockHttpPipeline : IDisposable
         }
     }
 
-    
+
 }

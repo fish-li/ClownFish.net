@@ -9,7 +9,7 @@ internal static partial class RouteHelper
             Url = a2.Url.StartsWith("/", StringComparison.Ordinal) ? a2.Url : a1.Url + a2.Url,
             ControllerType = t.GetTypeInfo(),
             MethodInfo = m,
-            Methods = m.GetMyAttributes<HttpMethodAttribute>()
+            Methods = m.GetCustomAttributes<HttpMethodAttribute>().ToArray()
         };
 
         if( routing.Url.IndexOfIgnoreCase("[controller]") > 0 ) {

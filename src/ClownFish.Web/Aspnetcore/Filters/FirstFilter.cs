@@ -43,8 +43,8 @@ public sealed class FirstFilter : IAsyncActionFilter, IAlwaysRunResultFilter
 
         NHttpApplication app = NHttpApplication.Instance;
         app.PostFindAction(httpContext);
-        app.AuthorizeRequest(httpContext);
-        
+        await app.AuthorizeRequest(httpContext);
+
         app.PreRequestExecute(httpContext);
 
         if( pipelineContext.OprLogScope.IsNull == false ) {
