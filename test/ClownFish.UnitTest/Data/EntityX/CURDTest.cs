@@ -254,12 +254,25 @@ public class CURDTest : BaseTest
 
                 Assert.AreEqual(1, effect);
 
+
+                // update, ignore field
+                int effect2 = db.Entity.Update(product3, nameof(product3.Quantity), nameof(product3.UnitPrice));
+
+                if( db.DatabaseType != DatabaseType.DaMeng )
+                    AssertLastQuery(@"UPDATE Products SET  ProductName=@p14, CategoryID=@p15, Unit=@p16 WHERE ProductID = @p17");
+
+                Assert.AreEqual(1, effect2);
+
+
+                // get one
+                ResetCPQueryParamIndex();
+
                 Product product4 = db.Entity.GetByKey<Product>(newId);
 
                 if( db.DatabaseType == DatabaseType.DaMeng )
-                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=:p14");
+                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=:p1");
                 else
-                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=@p14");
+                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=@p1");
 
                 Assert.IsNotNull(product4);
                 Assert.AreEqual("EntityExtensionsTest_xxxxxxxx", product4.ProductName);
@@ -269,21 +282,23 @@ public class CURDTest : BaseTest
 
 
                 // delete
+                ResetCPQueryParamIndex();
+
                 db.Entity.Delete<Product>(newId);
 
                 if( db.DatabaseType == DatabaseType.DaMeng )
-                    AssertLastQuery(@"DELETE FROM Products WHERE  ProductID=:p15");
+                    AssertLastQuery(@"DELETE FROM Products WHERE  ProductID=:p1");
                 else
-                    AssertLastQuery(@"DELETE FROM Products WHERE  ProductID=@p15");
+                    AssertLastQuery(@"DELETE FROM Products WHERE  ProductID=@p1");
 
                 Product product5 = db.Entity.GetByKey<Product>(newId);
 
                 if( db.DatabaseType == DatabaseType.DaMeng )
-                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=:p16");
+                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=:p2");
                 else
-                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=@p16");
+                    AssertLastQuery(@"SELECT *  FROM Products WHERE  ProductID=@p2");
 
-                Assert.IsNull(product5);
+                Assert.IsNull(product5);                
             }
         }
     }
@@ -335,12 +350,28 @@ public class CURDTest : BaseTest
             };
 
             // update
+            ResetCPQueryParamIndex();
+
             int effect = await dbContext.Entity.UpdateAsync(product3);
-            AssertLastQuery(@"UPDATE [Products] SET  [ProductName]=@p8, [CategoryID]=@p9, [Unit]=@p10, [UnitPrice]=@p11, [Quantity]=@p12 WHERE [ProductID] = @p13");
+            AssertLastQuery(@"UPDATE [Products] SET  [ProductName]=@p1, [CategoryID]=@p2, [Unit]=@p3, [UnitPrice]=@p4, [Quantity]=@p5 WHERE [ProductID] = @p6");
             Assert.AreEqual(1, effect);
 
+
+
+            // update, ignore field
+            ResetCPQueryParamIndex();
+
+            int effect2 = await dbContext.Entity.UpdateAsync(product3, nameof(product3.Quantity), nameof(product3.UnitPrice));
+            AssertLastQuery(@"UPDATE [Products] SET  [ProductName]=@p1, [CategoryID]=@p2, [Unit]=@p3 WHERE [ProductID] = @p4");
+            Assert.AreEqual(1, effect2);
+
+
+
+            // get one
+            ResetCPQueryParamIndex();
+
             Product product4 = await dbContext.Entity.GetByKeyAsync<Product>(newId);
-            AssertLastQuery(@"SELECT *  FROM [Products] WHERE  [ProductID]=@p14");
+            AssertLastQuery(@"SELECT *  FROM [Products] WHERE  [ProductID]=@p1");
             Assert.IsNotNull(product4);
             Assert.AreEqual("EntityExtensionsTest_xxxxxxxx", product4.ProductName);
             Assert.AreEqual(1233, product4.Quantity);
@@ -348,12 +379,15 @@ public class CURDTest : BaseTest
             Assert.AreEqual("AA", product4.Unit);
 
 
+
             // delete
+            ResetCPQueryParamIndex();
+
             await dbContext.Entity.DeleteAsync<Product>(newId);
-            AssertLastQuery(@"DELETE FROM [Products] WHERE  [ProductID]=@p15");
+            AssertLastQuery(@"DELETE FROM [Products] WHERE  [ProductID]=@p1");
 
             Product product5 = await dbContext.Entity.GetByKeyAsync<Product>(newId);
-            AssertLastQuery(@"SELECT *  FROM [Products] WHERE  [ProductID]=@p16");
+            AssertLastQuery(@"SELECT *  FROM [Products] WHERE  [ProductID]=@p2");
             Assert.IsNull(product5);
         }
     }

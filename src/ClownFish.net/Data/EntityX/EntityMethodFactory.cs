@@ -164,10 +164,11 @@ public sealed class EntityMethodFactory
     /// </summary>
     /// <typeparam name="T">实体类型</typeparam>
     /// <param name="entity">实体对象</param>
+    /// <param name="ignoreFields">要忽略的字段对应的实体属性名称</param>
     /// <returns></returns>
-    public int Update<T>(T entity) where T : Entity, new()
+    public int Update<T>(T entity, params string[] ignoreFields) where T : Entity, new()
     {
-        T proxy = EntityCudUtils.CreateUpdateProxy(entity, _dbContext);
+        T proxy = EntityCudUtils.CreateUpdateProxy(entity, _dbContext, ignoreFields);
         return proxy.Update();
     }
 
@@ -177,10 +178,11 @@ public sealed class EntityMethodFactory
     /// </summary>
     /// <typeparam name="T">实体类型</typeparam>
     /// <param name="entity">实体对象</param>
+    /// <param name="ignoreFields">要忽略的字段对应的实体属性名称</param>
     /// <returns></returns>
-    public async Task<int> UpdateAsync<T>(T entity) where T : Entity, new()
+    public async Task<int> UpdateAsync<T>(T entity, params string[] ignoreFields) where T : Entity, new()
     {
-        T proxy = EntityCudUtils.CreateUpdateProxy(entity, _dbContext);
+        T proxy = EntityCudUtils.CreateUpdateProxy(entity, _dbContext, ignoreFields);
         return await proxy.UpdateAsync();
     }
 

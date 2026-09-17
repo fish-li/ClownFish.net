@@ -105,11 +105,11 @@ internal static class EntityCudUtils
 
     internal static CPQuery GetUpdateQuery<T>(T entity, DbContext dbContext) where T : Entity, new()
     {
-        T proxy = CreateUpdateProxy(entity, dbContext);
+        T proxy = CreateUpdateProxy(entity, dbContext, null);
         return proxy.GetUpdateQueryCommand();
     }
 
-    internal static T CreateUpdateProxy<T>(T entity, DbContext dbContext) where T : Entity, new()
+    internal static T CreateUpdateProxy<T>(T entity, DbContext dbContext, string[] ignoreFields) where T : Entity, new()
     {
         CheckArgs(entity, dbContext);
 
@@ -119,6 +119,10 @@ internal static class EntityCudUtils
         EntityDescription description = EntityDescriptionCache.Get(typeof(T));
 
         foreach( var x in description.GetInsertColumns(false) ) {
+
+            if( ignoreFields != null && ignoreFields.Contains(x.PropertyInfo.Name) )
+                continue;
+
             object value = x.PropertyInfo.FastGetValue(entity);
 
             if( value != null )
